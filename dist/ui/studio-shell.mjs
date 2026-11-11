@@ -8,10 +8,12 @@ const TASK_GROUPS = Object.freeze({
 });
 
 export function studioJumpItems(route,navigation,{routeHash,primary,library,settings}) {
+  const keywords=route.params.get('executionMode')==='live'?JUMP_TASK_KEYWORDS:
+    {...JUMP_TASK_KEYWORDS,records:JUMP_TASK_KEYWORDS.records+' 모의 판단',simulations:JUMP_TASK_KEYWORDS.simulations+' 백테스트 실험 결과'};
   const entries=primary.map(([page,,label])=>({label,group:'주요 화면',href:routeHash(route,page,page==='minds'?{profileId:'all',view:'overview'}:{})}));
-  for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label,group:'전체 마인드',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,'minds',{profileId:'all',view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
-  for(const mind of navigation.minds??[])if(mind.id!==navigation.selectedMindId)for(const [view,label]of [['operations','운용'],['records','기록']])entries.push({label:mind.name+' / '+label,taskLabel:mind.name,taskSuffix:label,group:'마인드',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,'minds',{profileId:mind.id,view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
-  if(navigation.selectedMindId&&navigation.selectedMindId!=='all')for(const [view,label]of [['operations','운용'],['principles','전략'],['records','기록'],['knowledge','자료'],['simulations','실험실']])entries.push({label:navigation.scopeName+' / '+label,taskLabel:label,context:navigation.scopeName,group:'현재 마인드',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,'minds',{profileId:navigation.selectedMindId,view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
+  for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label,group:'전체 마인드',keywords:keywords[view]||'',href:routeHash(route,'minds',{profileId:'all',view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
+  for(const mind of navigation.minds??[])if(mind.id!==navigation.selectedMindId)for(const [view,label]of [['operations','운용'],['records','기록']])entries.push({label:mind.name+' / '+label,taskLabel:mind.name,taskSuffix:label,group:'마인드',keywords:keywords[view]||'',href:routeHash(route,'minds',{profileId:mind.id,view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
+  if(navigation.selectedMindId&&navigation.selectedMindId!=='all')for(const [view,label]of [['operations','운용'],['principles','전략'],['records','기록'],['knowledge','자료'],['simulations','실험실']])entries.push({label:navigation.scopeName+' / '+label,taskLabel:label,context:navigation.scopeName,group:'현재 마인드',keywords:keywords[view]||'',href:routeHash(route,'minds',{profileId:navigation.selectedMindId,view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
   for(const [page,items]of [['library',library],['settings',settings]])for(const [view,label]of items)entries.push({label,group:page==='library'?'라이브러리':'설정',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,page,{view,cursor:null})});
   return entries;
 }

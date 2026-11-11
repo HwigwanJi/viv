@@ -115,8 +115,8 @@ function companionTotals(cards,asOf){
   });
 }
 
-function paperRuns(workspace,profileId,asOf){
-  return list(workspace.mindRuns).filter(r=>r.profileId===profileId&&r.experimentType==='FORWARD_PAPER'&&r.mode!=='replay'&&r.decision&&['buy','sell','hold'].includes(r.decision.action)&&iso(r.decisionAt)&&r.decisionAt<=asOf&&(!r.decisionCompletedAt||iso(r.decisionCompletedAt)&&r.decisionCompletedAt<=asOf)&&(!r.provider?.answeredAt||iso(r.provider.answeredAt)&&r.provider.answeredAt<=asOf)).sort((a,b)=>(completedAt(b)??b.decisionAt).localeCompare(completedAt(a)??a.decisionAt)||String(b.id).localeCompare(String(a.id)));
+export function paperRuns(workspace,profileId,asOf){
+  return list(workspace.mindRuns).filter(r=>(profileId===null||r.profileId===profileId)&&r.experimentType==='FORWARD_PAPER'&&r.mode!=='replay'&&r.decision&&['buy','sell','hold'].includes(r.decision.action)&&iso(r.decisionAt)&&r.decisionAt<=asOf&&(!r.decisionCompletedAt||iso(r.decisionCompletedAt)&&r.decisionCompletedAt<=asOf)&&(!r.provider?.answeredAt||iso(r.provider.answeredAt)&&r.provider.answeredAt<=asOf)).sort((a,b)=>(completedAt(b)??b.decisionAt).localeCompare(completedAt(a)??a.decisionAt)||String(b.id).localeCompare(String(a.id)));
 }
 function completedAt(run){const at=run.decisionCompletedAt??run.provider?.answeredAt;return iso(at)?at:null;}
 

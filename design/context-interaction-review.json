@@ -1113,9 +1113,9 @@
         "primitive"
       ],
       "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-10T01:30:11.384Z",
-      "reason": "094: 市場 자료 STALE·기준 시각·저장 시각 구분을 공용 홈/출처에 적용. 기존 요청/주문/추천 실행 경로와 클릭 동작은 보존.",
-      "signature": "f356f4a669cf01cccfaa7e85b1b722e36de3f5ede59851e1866c6a2de97e2c3c",
+      "reviewedAt": "2026-11-11T18:07:21.148Z",
+      "reason": "모의 홈의 최근 판단과 완료 실험에 읽기 전용 원본 링크를 연결하고 기존 성과·운용 조작을 유지한다.",
+      "signature": "6cad4f5950ac46fa917eee3d716f9532c731a5e55cee22c527664bb4d5235969",
       "controls": [
         [
           "data-home-action",
@@ -1199,10 +1199,11 @@
         ],
         [
           "helper:routeLink(",
-          16
+          17
         ]
       ],
-      "sourceHash": "c5e2c256e2adee1298900dd5180a91ad6d7ee1fb90a0aa4963bd236795af8ed5"
+      "sourceHash": "a4f88b1e870ca241567255d8732b663c84ce32ca2f5ac46494670cce063ee650",
+      "customContainers": []
     },
     {
       "file": "dist/ui/hourly-model-component-editor.jsx",
@@ -3292,9 +3293,9 @@
         "navigation",
         "readonly"
       ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T15:32:47.125Z",
-      "reason": "도움말·사용 안내·가이드·사용법·VIV 도움말 검색과 320px 터치, 데스크톱 키보드 이동, 뒤로 가기의 기존 상태를 확인했습니다.",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-11T18:07:21.149Z",
+      "reason": "모의 화면 찾기에서 모의 판단, 백테스트를 기존 기록과 실험 목록에 연결한다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3314,7 +3315,7 @@
           2
         ]
       ],
-      "sourceHash": "d6c866432f780157044e983d395fe7afdc07004b76f509102f451ce1a8a276bc",
+      "sourceHash": "7eb35bfac04e82699a0743666edd65580b2d4b475c19a43208b24d58a9820e96",
       "customContainers": []
     },
     {

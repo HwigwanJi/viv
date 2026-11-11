@@ -21,6 +21,13 @@
 .home-account-summary { @apply ml-auto inline-flex gap-ui-2 items-baseline min-w-0 text-ui-sm text-secondary; }
 .home-account-summary strong { @apply tabular-nums text-foreground font-ui-semibold truncate; }
 .home-account-summary small { @apply text-ui-xs; }
+.home-paper-results { @apply grid grid-cols-2 gap-ui-2 min-w-0; }
+.home-paper-results a { @apply flex items-center justify-between gap-ui-2 min-w-0 rounded-ui-lg px-ui-3 py-ui-3 text-foreground; border: var(--ui-border-width) solid var(--ds-border-subtle); }
+.home-paper-results a:hover { @apply bg-hover; }
+.home-paper-results a>span { @apply min-w-0; }
+.home-paper-results strong { @apply block text-ui-sm font-ui-semibold; }
+.home-paper-results small { @apply block text-ui-xs text-secondary truncate; }
+.home-paper-results svg { @apply shrink-0 text-secondary; }
 .home-feature-grid { @apply grid gap-ui-5 min-w-0; @apply grid-cols-(--home-feature-columns); }
 .home-hero { @apply grid relative overflow-hidden rounded-ui-2xl min-w-0; @apply grid-cols-(--home-hero-columns); @apply min-h-(--home-hero-height); @apply p-(--home-hero-padding); background: var(--home-hero-background); @apply text-(color:--home-hero-ink); border: var(--ui-border-width) solid var(--ds-border-subtle); }
 .home-hero[data-phase="clutch"] { background-image: var(--companion-clutch-gradient); background-size: var(--companion-clutch-background-size); animation: companion-clutch-wash var(--companion-wash-duration) ease-in-out infinite; }

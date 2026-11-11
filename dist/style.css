@@ -132,6 +132,48 @@
 .home-account-summary small {
   font-size: var(--ds-font-size-xs);
 }
+.home-paper-results {
+  display: grid;
+  min-width: 0px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ds-space-2);
+}
+.home-paper-results a {
+  display: flex;
+  min-width: 0px;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-2);
+  border-radius: var(--ds-radius-lg);
+  padding-inline: var(--ds-space-3);
+  padding-block: var(--ds-space-3);
+  color: var(--ds-text-default);
+  border: var(--ui-border-width) solid var(--ds-border-subtle);
+}
+.home-paper-results a:hover {
+  background-color: var(--ds-bg-hover);
+}
+.home-paper-results a>span {
+  min-width: 0px;
+}
+.home-paper-results strong {
+  display: block;
+  font-size: var(--ds-font-size-sm);
+  --tw-font-weight: var(--ds-weight-semibold);
+  font-weight: var(--ds-weight-semibold);
+}
+.home-paper-results small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--ds-font-size-xs);
+  color: var(--ds-text-secondary);
+}
+.home-paper-results svg {
+  flex-shrink: 0;
+  color: var(--ds-text-secondary);
+}
 .home-feature-grid {
   display: grid;
   min-width: 0px;

@@ -1,4 +1,4 @@
-import {buildMindCompanions} from '../dist/domain/mind-companion.mjs';
+import {buildMindCompanions,paperRuns} from '../dist/domain/mind-companion.mjs';
 import {validateMindPaperAccount} from '../dist/domain/mind-paper.mjs';
 import {paperBudgetSummary,validatePaperBudgets} from '../dist/domain/paper-budget.mjs';
 import {hashInputPackage} from '../dist/domain/workspace.mjs';
@@ -8,6 +8,7 @@ import {buildHomePeriodPerformance,selectHomePeriodMetric,HOME_24H_POLICY} from 
 import {readLiveAutomationActivity} from './live-automation-read-model.mjs';
 import {readEventPaperActivity} from './event-paper-store.mjs';
 import {refreshInvestorValuations,projectPaperInvestorPerformance} from './mind-investor-performance.mjs';
+import {resolveInvestmentProfileIdentity} from './profile-read-model.mjs';
 
 export const HOME_PERFORMANCE_POLICY='OWNER_OPERATIONAL_PERFORMANCE_V1';
 const DAY=86400000,MAX_AGE=30000,list=v=>Array.isArray(v)?v:[],finite=v=>typeof v==='number'&&Number.isFinite(v);
@@ -140,15 +141,30 @@ function liveSummaries(connections,asOf){
   });
 }
 
+function completedReport(entry,asOf,workspace){
+  const report=entry.report??entry,{reportHash,...body}=report??{};
+  if(entry.archivedAt||workspace.investmentProfiles?.find(p=>p.id===report?.config?.mindId)?.status==='ARCHIVED'||report?.status!=='COMPLETED'||!iso(report.completedAt)||report.completedAt>asOf||!reportHash||hashInputPackage(body)!==reportHash||report.source?.synthetic!==false)return null;
+  return report;
+}
+
 function experimentViews(reports,asOf,workspace){
   return list(reports).flatMap(entry=>{
-    const r=entry.report??entry,{reportHash,...body}=r??{};
-    if(entry.archivedAt||workspace.investmentProfiles?.find(p=>p.id===r?.config?.mindId)?.status==='ARCHIVED'||r?.status!=='COMPLETED'||!iso(r.completedAt)||r.completedAt>asOf||!reportHash||hashInputPackage(body)!==reportHash||!finite(r.metrics?.totalReturn)||!finite(r.metrics?.maxDrawdown)||r.source?.synthetic!==false)return [];
+    const r=completedReport(entry,asOf,workspace);
+    if(!r||!finite(r.metrics?.totalReturn)||!finite(r.metrics?.maxDrawdown))return [];
+    const {reportHash}=r;
     const warmup=r.coverage?.warmupFrames??null,total=r.coverage?.totalDecisionFrames??null,readyFrames=r.coverage?.readyFrames??null;
     const instrumentId=r.source?.dataInstrumentId??r.source?.instrumentId??r.pins?.dataInstrumentId??null,quoteCurrency=r.source?.quoteCurrency??r.pins?.quoteCurrency??null;
     const modelKind=r.config?.mode??r.mode??null,strategyLabel=({MECHANICAL:'기준 퀀트 전략',GRAPH_CANONICAL:'마인드 전략',JEV_RETROSPECTIVE:'마인드 · JEV'})[modelKind]??null;
     return [{simulationId:r.simulationId,profileId:r.config?.mindId??null,profileName:list(workspace.investmentProfiles).find(p=>p.id===r.config?.mindId)?.name??null,name:r.name,modelKind,strategyLabel,kind:'HISTORICAL_SIMULATION',executionMode:'simulation',completedAt:r.completedAt,startAt:r.config?.startAt,endAt:r.config?.endAt,instrumentId,symbol:r.source?.symbol??instrumentId?.split(':').at(-1)??null,policyInstrumentId:r.source?.policyInstrumentId??r.pins?.policyInstrumentId??null,currency:quoteCurrency,quoteCurrency,initialCapital:r.metrics.initialEquity,returnRatio:r.metrics.totalReturn,maxDrawdown:r.metrics.maxDrawdown,tradeCount:r.metrics.tradeCount,hasPerformance:r.metrics.tradeCount>0,evaluationStatus:warmup===0&&Number.isSafeInteger(total)&&total>0&&readyFrames===total?'FULL_WINDOW':'PARTIAL_WINDOW',readyFrames,totalFrames:total,manifestId:r.pins?.manifestId??null,manifestHash:r.pins?.manifestHash??null,reportHash}];
   }).sort((a,b)=>b.completedAt.localeCompare(a.completedAt)||a.simulationId.localeCompare(b.simulationId));
+}
+
+function latestPaperDecision(workspace,asOf){
+  const profiles=new Set(list(workspace.investmentProfiles).map(profile=>profile.id));
+  const record=paperRuns(workspace,null,asOf).find(run=>run.status!=='FAILED'&&run.id?.startsWith('mind-run-')&&profiles.has(run.profileId));
+  if(!record)return null;
+  return {id:record.id,profileName:resolveInvestmentProfileIdentity(workspace,record.profileId,{record,asOf}).name,
+    instrumentId:record.instrumentId,action:record.decision.action,savedAt:record.decisionCompletedAt??record.provider?.answeredAt??record.decisionAt};
 }
 
 /** Pure, owner-scoped projection. No fixture, FX conversion or historical simulation enters an operating ranking. */
@@ -170,9 +186,15 @@ export function buildHomePerformance({workspace={},valuations=[],periodValuation
   const rankings=rankingCurrencies.map(currency=>({currency,allTime:ranks(cards,currency,'allTime'),last24h:ranks(cards,currency,'last24h')}));
   const experiments=experimentViews(simulationHighlights,asOf,workspace),eligible=experimentViews(simulationBestCandidates??simulationHighlights,asOf,workspace).filter(r=>r.evaluationStatus==='FULL_WINDOW'&&r.hasPerformance).sort((a,b)=>b.returnRatio-a.returnRatio||b.completedAt.localeCompare(a.completedAt)||a.simulationId.localeCompare(b.simulationId)),best=eligible[0]??null;
   const selectionScope=simulationBestCandidates?'OWNER_COMPLETED_FULL_WINDOW_REPORTS':'PROVIDED_COMPLETED_FULL_WINDOW_REPORTS',leaderIds=new Set(),experimentLeaders=eligible.filter(r=>{if(!r.profileId||leaderIds.has(r.profileId))return false;leaderIds.add(r.profileId);return true;}).map(r=>({...r,selectionScope}));
+  const latestExperiment=executionMode==='paper'?list(simulationHighlights).map(entry=>completedReport(entry,asOf,workspace))
+    .filter(report=>report?.simulationId).sort((a,b)=>b.completedAt.localeCompare(a.completedAt)||a.simulationId.localeCompare(b.simulationId))[0]:null;
+  const paperResults=executionMode==='paper'?{latestPaperDecision:latestPaperDecision(workspace,asOf),
+    latestPaperExperiment:latestExperiment?{simulationId:latestExperiment.simulationId,profileId:latestExperiment.config?.mindId,
+      profileName:list(workspace.investmentProfiles).find(profile=>profile.id===latestExperiment.config?.mindId)?.name,
+      name:latestExperiment.name,completedAt:latestExperiment.completedAt}:null}:{};
   const readPolicy=structuredClone(policy);if(periodValuations?.policyVersion===HOME_24H_POLICY)Object.assign(readPolicy.last24h,{method:HOME_24H_POLICY,startingMark:'LEDGER_AND_PUBLIC_CONFIRMED_1H_CLOSE',endingMark:'LEDGER_AND_PUBLIC_CONFIRMED_1H_CLOSE'});
   if(executionMode==='live'){readPolicy.allTime=cards.some(c=>c.liveActivity?.investorMetrics)?{method:'OWN_ACTIVATION_MODIFIED_DIETZ',formula:'(endingEquity - initialCapital - netExternalFlows) / (initialCapital + elapsedTimeWeightedExternalFlows)',denominator:'OWN_ACTIVATION_ELAPSED_TIME_WEIGHTED_CAPITAL',fundingIncluded:true}: {method:LIVE_METHOD,formula:'(ownActivationEquity - ownAllocatedCapital) / ownAllocatedCapital',denominator:'OWN_ACTIVATION_INITIAL_CAPITAL',fundingIncluded:false};readPolicy.last24h={method:'NOT_COMPUTED_WITHOUT_LIVE_BOUNDARY_VALUATIONS',durationMs:DAY,activity:'OBSERVED_ORDERS_WITH_ACTUAL_TRADE_TIMESTAMP_IN_WINDOW',activityCoverage:'BOUNDED_SAVED_ACTIVITY_MAX_30'};}
-  return {schemaVersion:1,policyVersion:HOME_PERFORMANCE_POLICY,executionMode,asOf,revision:workspace.revision??null,policy:readPolicy,last24hWindow:periodValuations?{startAt:periodValuations.startAt,endAt:periodValuations.endAt,timeframe:periodValuations.timeframe,observedAt:periodValuations.observedAt}:null,status:rankings.some(r=>r.allTime.items.length)?'READY':'EMPTY',cards,rankings,accountSummaries:executionMode==='paper'?paperSummaries(workspace,allCards,asOf,paper):liveSummaries(brokerConnections,asOf),experimentHighlights:experiments.slice(0,6),experimentBest:best?{...best,selectionScope}:null,experimentLeaders,limitations:executionMode==='live'?['LIVE_24H_RETURN_REQUIRES_BOUNDARY_VALUATIONS','HELD_LIVE_MARK_NOT_INVENTED','BROKER_BALANCES_SEPARATE_FROM_MIND_CAPITAL','RECENT_ACTIVITY_IS_BOUNDED_NOT_ALL_TIME_FILL_COUNT','CURRENCIES_ARE_SEPARATE','API_BILLING_EXCLUDED']:[periodValuations?'24H_USES_COMMON_COMPLETED_UTC_HOUR':'24H_REQUIRES_EXACT_START_VALUATION',...(paper.length?['EVENT_PAPER_RETURN_IS_PER_PINNED_CAMPAIGN','EVENT_PAPER_24H_RETURN_REQUIRES_BOUNDARY_VALUATIONS']:[]),'CURRENCIES_ARE_SEPARATE','API_BILLING_EXCLUDED']};
+  return {schemaVersion:1,policyVersion:HOME_PERFORMANCE_POLICY,executionMode,asOf,revision:workspace.revision??null,policy:readPolicy,last24hWindow:periodValuations?{startAt:periodValuations.startAt,endAt:periodValuations.endAt,timeframe:periodValuations.timeframe,observedAt:periodValuations.observedAt}:null,status:rankings.some(r=>r.allTime.items.length)?'READY':'EMPTY',cards,rankings,accountSummaries:executionMode==='paper'?paperSummaries(workspace,allCards,asOf,paper):liveSummaries(brokerConnections,asOf),...paperResults,experimentHighlights:experiments.slice(0,6),experimentBest:best?{...best,selectionScope}:null,experimentLeaders,limitations:executionMode==='live'?['LIVE_24H_RETURN_REQUIRES_BOUNDARY_VALUATIONS','HELD_LIVE_MARK_NOT_INVENTED','BROKER_BALANCES_SEPARATE_FROM_MIND_CAPITAL','RECENT_ACTIVITY_IS_BOUNDED_NOT_ALL_TIME_FILL_COUNT','CURRENCIES_ARE_SEPARATE','API_BILLING_EXCLUDED']:[periodValuations?'24H_USES_COMMON_COMPLETED_UTC_HOUR':'24H_REQUIRES_EXACT_START_VALUATION',...(paper.length?['EVENT_PAPER_RETURN_IS_PER_PINNED_CAMPAIGN','EVENT_PAPER_24H_RETURN_REQUIRES_BOUNDARY_VALUATIONS']:[]),'CURRENCIES_ARE_SEPARATE','API_BILLING_EXCLUDED']};
 }
 
 /** Only existing owner snapshots are read. Provider refresh is explicit and uses the shared valuation service. */
