@@ -113,7 +113,7 @@ document.addEventListener('click',event=>dialogFocus.rememberInteraction(event.t
 document.addEventListener('click',event=>{
   if(studio.state().formSaving){event.preventDefault();event.stopImmediatePropagation();return;}
   const settingsLink=event.target.closest('.studio-page-settings .studio-task-nav a[data-studio-route]');
-  const destination=settingsLink||event.target.closest('[data-studio-jump-item]');
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item], [data-broker-paper-home]');
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
     dialogLifecycleToken++;
@@ -128,7 +128,7 @@ document.addEventListener('click',event=>{
   if(event.target.closest('[data-studio-route]'))closeSidebar();
   if(event.target.closest('[data-studio-action="close-dialog"]'))closeDialog();
 });
-$('#detail-dialog').addEventListener('close',()=>{formDrafts.capture();if(!$('#detail-dialog').open)document.documentElement.dataset.readerOpen='false';dialogNavigation.closed();});
+$('#detail-dialog').addEventListener('close',()=>{formDrafts.capture();if(!$('#detail-dialog').open){$('#detail-dialog [data-broker-form]')?.reset();document.documentElement.dataset.readerOpen='false';}dialogNavigation.closed();});
 addEventListener('resize',()=>{const dialog=$('#detail-dialog');if(dialog.open&&dialog.dataset.presentation==='reader')setDialogPresentation(dialog,'reader');});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented&&$('#detail-dialog').open&&$('#detail-dialog').dataset.readerDocked==='true'){event.preventDefault();closeDialog();}});
 // Escape invalidates awaiting views before the browser queues its close event.

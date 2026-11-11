@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T15:27:27.845Z",
-      "reason": "설정 선택 후 제목, 사용 안내와 다음 Tab의 포커스가 목록 로딩 성공과 실패 모두에서 유지되는지 검증했습니다.",
+      "reviewedAt": "2026-11-11T19:08:12.983Z",
+      "reason": "연결 창을 닫으면 비밀번호 입력을 지운다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "2766b7e0204dd7b766c08aed472e2a5c5f223cf8bd4a61158ea43477f70c8165",
+      "sourceHash": "8b9fa3cfb95fb17f5083cc03d695d7b2c1aeeeeaca12a42af0f56183dcc62dba",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -557,9 +557,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T14:56:12.130Z",
-      "reason": "320px에서 서버 준비가 필요한 상태, 문서 바로가기와 닫기 동작을 확인했습니다.",
-      "signature": "1df915ce12599ad22b02645b63e39e32d69c61cadddccfa511e136639396c350",
+      "reviewedAt": "2026-11-11T19:08:12.985Z",
+      "reason": "계좌 연결 창의 발급·허용 IP·모의 복귀와 요청의 성공·실패 상태를 검토했다.",
+      "signature": "067ef7da22fc85367a24395d09db5e46b0337529b0e07e35b984ef9ec8ebd08c",
       "controls": [
         [
           "data-broker-action",
@@ -575,7 +575,7 @@
         ],
         [
           "element:a",
-          3
+          4
         ],
         [
           "element:button",
@@ -586,6 +586,10 @@
           1
         ],
         [
+          "element:summary",
+          2
+        ],
+        [
           "helper:button(",
           5
         ],
@@ -594,7 +598,7 @@
           1
         ]
       ],
-      "sourceHash": "42a2cc038d1bef8ef1e84566b29458af5c2ffd3fa8444b636cc9590f24c2185a",
+      "sourceHash": "7a2596aca0570b8f7f36ec825d63317bfec9e57c64537cf74b10cb131b5940fc",
       "customContainers": []
     },
     {
@@ -3174,9 +3178,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T17:10:16.639Z",
-      "reason": "서비스 연결의 휴대폰 설치 링크에서 전용 페이지로 가고 모바일에서 같은 모의 예산을 재조회했습니다.",
-      "signature": "67f817aa124b1ba84cd65964dd41d243ca99060c9c93dac50e8e6bc600906a71",
+      "reviewedAt": "2026-11-11T19:08:12.988Z",
+      "reason": "실전 계좌 화면의 모의 홈 링크를 기존 화면 이동과 연결했다.",
+      "signature": "c877d39c57b24c8871fb62c9729c758081038b60afa24483cc9993156eeeb93c",
       "controls": [
         [
           "data-auto-action",
@@ -3244,7 +3248,7 @@
         ],
         [
           "element:a",
-          27
+          28
         ],
         [
           "element:button",
@@ -3279,7 +3283,7 @@
           1
         ]
       ],
-      "sourceHash": "9b33adf9c6129a18ecf50ae98eed15c97b45b0b69ef1899f85b728498d5490fc",
+      "sourceHash": "d3d7eccf0ccbca3d74339b2bebf209ead6a2bbc361d182ab02a1285c3e1f6c0f",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

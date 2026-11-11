@@ -1,5 +1,5 @@
 import {paperBudgetFor} from '../dist/domain/paper-budget.mjs';
-import {PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../dist/system/paper-decision-links.mjs';
+import {PAPER_DECISION_ENTRY,PAPER_HOME_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../dist/system/paper-decision-links.mjs';
 
 export const VIV_TUTORIAL_ACTIONS=['pause','resume','complete'];
 
@@ -27,7 +27,7 @@ export const VIV_PLAYBOOK=[
   '사용자가 종목 화면에서 결정 실행을 선택하면 앱에 저장된 결정 상세가 열립니다. read_investment_status를 다시 조회하고, 방금 실행한 종목·마인드·시각과 일치하는 항목의 openUrl을 안내하세요. 근거는 read_trading_context에 항목의 id를 decisionId로, profileId를 mindId로, instrumentId를 그대로 전달해 확인하세요. 개별 선택 근거가 저장되지 않은 경우 적용한 원칙과 선택 분포를 안내하세요. 사용자가 브리핑만 요청하면 기존 기록만 조회하세요.',
   '사용자에게 과업 결과를 실제로 제공한 뒤 action:complete와 lesson 번호를 보내세요. 1~3번은 저장 영수증의 documentId를 보내고 사용자가 자료 저장 없이 보기를 요청했다면 readOnly:true로 진행 상태만 기록합니다. 진행 상태 저장도 원하지 않으면 완료 기록을 남기지 마세요. 4번은 사용자가 실행한 판단의 저장 기록과 근거를 확인한 뒤 decisionId를 함께 보냅니다. 사용자가 브리핑만 원했다면 그 브리핑을 제공한 뒤 번호만 보냅니다. 실행 실패·자료 대기 상태는 완료 처리하지 마세요.',
   '응답 lessons의 남은 항목을 보여주고 0 또는 “여기까지”를 선택하면 action:pause로 중단을 저장하세요. 완료한 항목의 확인 링크는 tutorial.completed에 있습니다. 사용자가 결과를 다시 열어달라고 하면 해당 링크를 제공하세요.',
-  '설치 첫 대화에서 튜토리얼을 마치거나 건너뛴 경우 연결 안내는 한 번만 제공합니다. 복귀 대화에서는 사용자가 실계좌 연결을 요청했을 때만 안내하세요. “실제 투자를 하려면 거래소 API 키 연결이 필요해요. 1 지금 연결 / 2 나중에”라고 물으세요. 지금을 고르면 links.connections를 호스트의 인앱 브라우저에서 열거나 링크로 제공하세요. 키는 VIV의 실전 계좌·자금 화면에서만 입력하도록 안내하세요. 그 화면에서 금융기관을 선택하고 잔고 조회로 연결을 확인합니다.',
+  '설치 첫 대화에서 튜토리얼을 마치거나 건너뛴 경우 연결 안내는 한 번만 제공합니다. 복귀 대화에서는 사용자가 실계좌 연결을 요청했을 때만 안내하세요. “실제 투자를 하려면 거래소 API 키 연결이 필요해요. 1 지금 연결 / 2 나중에”라고 물으세요. 지금을 고르면 links.connections를 호스트의 인앱 브라우저에서 열거나 링크로 제공하세요. 나중에를 고르거나 발급 중 돌아오면 links.paperHome을 열어 저장한 실습을 이어갈 수 있게 하세요. 다시 연결을 권하지 마세요. 키는 VIV의 실전 계좌·자금 화면에만 입력합니다. 잔고 조회 응답을 확인한 경우에만 연결 완료를 안내하세요.',
 ].join('\n');
 
 async function tutorialProgress(db,owner,args){
@@ -55,6 +55,7 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
   const workspace=current.value.workspace;
   if(!workspace||!Number.isSafeInteger(workspace.revision))throw Error('ONBOARDING_WORKSPACE_REQUIRED');
   const links={
+    paperHome:new URL(PAPER_HOME_ENTRY,origin).href,
     paperAccount:origin+'/#settings?view=accounts&executionMode=paper',
     paperDecision:new URL(PAPER_DECISION_ENTRY,origin).href,
     paperPractice:new URL(PAPER_PRACTICE_ENTRY,origin).href,

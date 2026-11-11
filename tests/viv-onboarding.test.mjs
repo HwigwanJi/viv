@@ -27,6 +27,7 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(saved.structuredContent.next,'tutorial_offer');
     assert.equal(saved.structuredContent.paperBudget.receipt.totalBudget,2000000);
     assert.match(saved.structuredContent.links.connections,/#settings\?view=accounts&executionMode=live/);
+    assert.equal(new URL(saved.structuredContent.links.paperHome).hash,'#home?executionMode=paper');
     assert.equal(new URL(saved.structuredContent.links.paperDecision).hash,'#trade?executionMode=paper');
     assert.equal(new URL(saved.structuredContent.links.paperPractice).hash,'#minds?profileId=all&view=simulations&executionMode=paper&setup=new&practice=quant');
     assert.match(saved.structuredContent.playbook,/종목·마인드·시각과 일치하는 항목의 openUrl/);

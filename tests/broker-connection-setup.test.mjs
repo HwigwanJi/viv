@@ -2,6 +2,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {handleBrokerAPI} from '../server/broker-accounts.mjs';
+import {createBrokerConnections} from '../dist/ui/broker-connections.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
 
 test('Upbit connection reports the required step and preserves the last verified connection on failure',async()=>{
@@ -54,3 +55,35 @@ test('Upbit connection reports the required step and preserves the last verified
   }
 });
 
+test('a previously saved snapshot cannot confirm a new connection request',async t=>{
+  t.mock.method(globalThis,'FormData',function(){return [['accessKey','fixture-access'],['secretKey','fixture-secret']];});
+  const saved={provider:'upbit',mode:'READ_ONLY',asOf:'2026-11-10T12:00:00.000Z',accounts:[]};
+  const fields=Object.fromEntries(['[type="submit"]','[data-broker-error]','[data-broker-status]','[data-studio-action="close-dialog"]'].map(selector=>[selector,{}]));
+  let closed=0,reads=0,response={ok:true},mode='paper';
+  const toasts=[];
+  const connections=createBrokerConnections({
+    request:async path=>{
+      if(path.endsWith('/connect'))return response;
+      reads++;
+      return {connections:[{provider:'upbit',snapshot:saved}]};
+    },
+    route:()=>({page:'settings',params:new URLSearchParams({view:'accounts',executionMode:mode})}),
+    close:()=>closed++,redraw:()=>{},toast:message=>toasts.push(message),
+  });
+  const form={dataset:{brokerForm:'upbit'},querySelector:selector=>fields[selector],reset:()=>{}};
+  const event={target:{closest:()=>form},preventDefault:()=>{}};
+  assert.equal(await connections.load(),false);
+  assert.equal(reads,0);
+  mode='live';
+  await connections.load();
+  await connections.submit(event);
+  assert.equal(reads,2);
+  assert.equal(closed,0);
+  assert.deepEqual(toasts,[]);
+  assert.match(fields['[data-broker-error]'].textContent,/이번 연결 결과를 확인하지 못했습니다/);
+
+  response={ok:true,snapshot:{...saved,asOf:'2026-11-11T12:00:00.000Z'}};
+  await connections.submit(event);
+  assert.equal(closed,1);
+  assert.deepEqual(toasts,['업비트 계좌 연결 및 잔고 조회 완료.']);
+});

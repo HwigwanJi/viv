@@ -15,7 +15,7 @@ import {PAPER_MIND_STARTERS} from '../domain/paper-mind-presets.mjs';
 import {STRATEGY_TRACE_TYPES,strategyInputNodeLabel,strategyTraceNodeLabel,strategyTraceValue,strategyTraceSelection} from './decision-method.mjs';
 import {submitPaperFunding} from './paper-funding-request.mjs';
 import {paperBudgetSummary} from '../domain/paper-budget.mjs';
-import {PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../system/paper-decision-links.mjs';
+import {PAPER_DECISION_ENTRY,PAPER_HOME_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../system/paper-decision-links.mjs';
 import {subscriptionInstrumentIds} from '../domain/mind-subscriptions.mjs';
 import {createBrokerConnections} from './broker-connections.mjs';
 import {createAutomatedTrading,isEventAutomationMind,saveLiveStrategyUpdate} from './automated-trading.mjs';
@@ -904,7 +904,7 @@ export function createStudioController(hooks={},options={}){
     return title('서비스 연결',button(connectionLoading?'상태 조회 중…':'상태 새로고침','connections','',connectionLoading?'disabled aria-busy="true"':''))+`<section class="studio-sheet"><div class="studio-sheet-body">${connectionError?'<p role="alert">'+esc(connectionError)+' 상태 새로고침을 눌러 다시 조회하세요.</p>':''}${connectionMessage?'<p role="status">'+esc(connectionMessage)+'</p>':''}${connectionSummary()}${connectionDetails('raw','연결 상태 원본','<pre class="code">'+esc(JSON.stringify({jev:status?.jev,connections:mindData?.connections},null,2))+'</pre>')}</div></section>`;
   }
   function renderAccounts(){
-    if(executionModeOf(currentRoute())==='live')return title('계좌·자금')+brokers.render();
+    if(executionModeOf(currentRoute())==='live')return title('계좌·자금','<a class="button" href="'+PAPER_HOME_ENTRY+'" data-studio-route data-broker-paper-home>모의 홈으로</a>')+brokers.render();
     const batch=eventPaperBatch.state(),head='<section class="studio-sheet" data-paper-budget aria-busy="'+batch.loading+'"><div class="studio-sheet-head"><h2>'+helpLabel('모의 예산','통화별 공용 예산에서 마인드에 자금을 배정합니다. 총자산은 미배정 현금과 마인드의 현금·보유 평가액을 합산합니다.')+'</h2>'+button(batch.loading?'조회 중…':batch.error?'다시 조회':'자금 새로고침','refresh','',batch.loading?'disabled':'')+'</div>';
     const readState=batch.loading||batch.error?'<div class="studio-sheet-body" data-paper-account-read><p role="'+(batch.error?'alert':'status')+'">'+esc(batch.error||'모의 예산과 배정 내역을 조회하는 중…')+'</p>'+(batch.data&&batch.readAt?'<p class="tiny muted">표시된 금액은 마지막 정상 조회 '+esc(when(new Date(batch.readAt).toISOString()))+' 기준입니다.</p>':'')+'</div>':'';
     if(!batch.data)return title('계좌·자금')+head+readState+'</section>';

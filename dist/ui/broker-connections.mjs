@@ -1,5 +1,6 @@
 import {helpLabel,readonlyTooltip} from './help-tooltip.mjs';
 import {renderDataTable} from './data-table.mjs';
+import {PAPER_HOME_ENTRY} from '../system/paper-decision-links.mjs';
 const names={toss:'토스증권',upbit:'업비트'};
 const urls={toss:'https://www.tossinvest.com/open-api/landing',upbit:'https://upbit.com/mypage/open_api_management'};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -29,7 +30,7 @@ function quoteAssetMarkup(account,provider){
 export function createBrokerConnections({request,redraw,open,close,toast,route,getDialogToken,now=()=>Date.now()}){
  let data=null,error='',loading=false,pending=false,pendingProvider='',pendingAction='',retryProvider='',readGeneration=0;
  function acceptSnapshot(provider,snapshot){if(snapshot?.provider!==provider||!Array.isArray(snapshot.accounts))return false;readGeneration++;loading=false;error='';retryProvider='';const previous=data?.connections?.find(c=>c.provider===provider);data={...data,connections:[...(data?.connections??[]).filter(c=>c.provider!==provider),{...previous,provider,snapshot,updatedAt:snapshot.asOf??previous?.updatedAt}]};return true;}
- async function load(){if(route().page!=='settings'||route().params.get('view')!=='accounts'||loading)return false;const generation=++readGeneration;loading=true;error='';retryProvider='';let loaded=false;try{const value=await request('/api/workspace/brokers');if(generation===readGeneration){data=value;loaded=true;}}catch(e){if(generation===readGeneration)error=e.message;}finally{if(generation===readGeneration)loading=false;redraw();}return loaded;}
+ async function load(){const current=route();if(current.page!=='settings'||current.params.get('view')!=='accounts'||current.params.get('executionMode')!=='live'||loading)return false;const generation=++readGeneration;loading=true;error='';retryProvider='';let loaded=false;try{const value=await request('/api/workspace/brokers');if(generation===readGeneration){data=value;loaded=true;}}catch(e){if(generation===readGeneration)error=e.message;}finally{if(generation===readGeneration)loading=false;redraw();}return loaded;}
 
  function render(){
   const sections=Object.entries(names).map(([provider,name])=>{const connection=data?.connections.find(c=>c.provider===provider),snapshot=connection?.snapshot;
@@ -39,21 +40,22 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
  }
  function connect(provider){
   const upbit=provider==='upbit',ready=data?.canConnect===true;
-  const issue=data?.network!=='READY'?'서버 허용 IP 준비 필요':data?.vault==='CONFIGURATION_REQUIRED'?'서버 키 보관 설정 필요':'서버 연결 설정 필요';
-  const ip=data?.egressIp?`<strong>${esc(data.egressIp)}</strong>`:'VIV 서버의 공인 IPv4';
-  const copyIp=data?.egressIp?button('서버 IP 복사','copy-ip',provider):'';
-  const networkHelp=data?.network!=='READY'?'<p>금융기관 허용 IP에 '+ip+'를 등록하세요. '+copyIp+'</p><p>자체 설치에서는 등록 후 VIV 폴더의 <code>.env</code>에 <code>BROKER_NETWORK_READY=true</code>를 설정하고 서버를 다시 시작하세요.</p><p><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#계좌-연결과-잔고-확인" target="_blank" rel="noopener noreferrer">서버 준비 방법 ↗</a></p>':'';
-  const vaultHelp=data?.vault==='CONFIGURATION_REQUIRED'?'<p>VIV 설치 때 생성한 <code>BROKER_VAULT_KEY</code> 설정을 서버에서 확인하세요.</p>':'';
-  const guideUrl=upbit?'https://docs.upbit.com/kr/docs/api-setup':'https://developers.tossinvest.com/';
-  const providerLinks=`<div class="actions"><a href="${urls[provider]}" target="_blank" rel="noopener">${names[provider]} API 관리 열기 ↗</a><a href="${guideUrl}" target="_blank" rel="noopener">발급 안내 ↗</a></div>`;
+  const networkBlocked=data?.network!=='READY',vaultBlocked=data?.vault==='CONFIGURATION_REQUIRED';
+  const issue=networkBlocked?'서버 허용 IP 준비 필요':vaultBlocked?'서버 키 보관 설정 필요':'서버 연결 설정 필요';
+  const ip=data?.egressIp?`<strong>${esc(data.egressIp)}</strong> ${button('서버 IP 복사','copy-ip',provider)}`:'VIV 서버가 거래소에 접속할 때 쓰는 공인 IPv4를 서버 관리자에게 확인하세요.';
+  const guideUrl=upbit?'https://docs.upbit.com/kr/docs/api-key':'https://developers.tossinvest.com/';
+  const providerLinks=`<div class="actions"><a href="${urls[provider]}" target="_blank" rel="noopener noreferrer">${names[provider]} API 관리 열기 ↗</a><a href="${guideUrl}" target="_blank" rel="noopener noreferrer">공식 발급 안내 ↗</a></div>`;
+  const permission=upbit?'업비트 PC 웹에서 <strong>자산조회</strong> 권한만 선택해 잔고 조회용 키를 발급하세요.':'토스증권 PC 웹의 설정 → Open API에서 Client ID와 Client Secret을 발급하세요.';
+  const guide=`<details class="spaced" data-broker-guide${ready?'':' open'}><summary>${names[provider]} 키 발급과 허용 IP</summary><ol class="spaced"><li>${permission}</li><li>${data?.egressIp?'금융기관 허용 IP에 서버 공인 IPv4 '+ip+'를 등록하세요.':ip}</li></ol>${providerLinks}</details>`;
+  const paperLink=`<a class="button" href="${PAPER_HOME_ENTRY}" data-studio-route data-broker-paper-home>모의 홈으로</a>`;
   const cancel='<button class="button" type="button" data-studio-action="close-dialog">취소</button>';
   if(!ready){
-   open(names[provider]+' 연결',`<div><p role="status"><strong>${issue}</strong></p>${networkHelp}${vaultHelp}${providerLinks}<p data-broker-error role="alert"></p><div class="form-actions">${cancel}${button('준비 상태 다시 확인','recheck',provider)}</div></div>`,'');
+   const serverGuide=networkBlocked||vaultBlocked?`<details class="spaced"><summary>VIV 서버 설정</summary>${networkBlocked?'<p>금융기관에 IP를 등록한 뒤 서버의 <code>.env</code>에 <code>BROKER_NETWORK_READY=true</code>를 설정하고 VIV를 다시 시작하세요.</p>':''}${vaultBlocked?'<p>VIV 설치 때 생성한 <code>BROKER_VAULT_KEY</code> 설정을 서버에서 확인하세요.</p>':''}<p><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#계좌-연결과-잔고-확인" target="_blank" rel="noopener noreferrer">서버 준비 방법 ↗</a></p></details>`:'';
+   open(names[provider]+' 연결',`<p role="status"><strong>${issue}</strong></p><p>모의 실습은 계좌 연결 없이 진행할 수 있습니다.</p>${guide}${serverGuide}<p data-broker-error role="alert"></p>`,paperLink+button('준비 상태 다시 확인','recheck',provider));
    return;
   }
   const fields=upbit?[['accessKey','Access Key'],['secretKey','Secret Key']]:[['clientId','Client ID'],['clientSecret','Client Secret']];
-  const guide=`<ol><li><strong>키 발급.</strong> ${upbit?'PC 웹의 업비트 Open API 관리에서 자산조회 권한으로 키를 발급하세요.':'토스증권 PC 웹의 설정 → Open API에서 Client ID와 Client Secret을 발급하세요.'}</li><li><strong>허용 IP.</strong> 금융기관 허용 IP에 ${ip}를 등록하세요. ${copyIp}</li><li><strong>연결 확인.</strong> 발급받은 키를 이 창에 입력하세요.</li></ol>`;
-  open(names[provider]+' 연결',`<form data-broker-form="${provider}" autocomplete="off"><div><p>이 연결은 계좌와 잔고를 조회합니다. 키는 서버에 암호화해 보관합니다.</p>${guide}${providerLinks}<div class="form-grid">${fields.map(([name,label])=>`<label class="field">${label}<input class="input" type="password" name="${name}" autocomplete="off" spellcheck="false" required minlength="10" maxlength="8000" /></label>`).join('')}</div><p data-broker-status role="status" aria-live="polite"></p><p data-broker-error role="alert"></p><div class="form-actions">${cancel}<button class="button primary" type="submit">연결하고 잔고 조회</button></div></div></form>`,'');
+  open(names[provider]+' 연결',`<form data-broker-form="${provider}" autocomplete="off"><p>연결하면 계좌와 잔고를 조회합니다. 키는 이 창에 입력하세요. 서버에 암호화해 보관합니다.</p>${guide}<div class="form-grid">${fields.map(([name,label])=>`<label class="field">${label}<input class="input" type="password" name="${name}" autocomplete="off" spellcheck="false" required minlength="10" maxlength="8000" /></label>`).join('')}</div><p data-broker-status role="status" aria-live="polite"></p><p data-broker-error role="alert"></p><div class="form-actions">${paperLink}${cancel}<button class="button primary" type="submit">연결하고 잔고 조회</button></div></form>`,'');
  }
  async function click(event){const node=event.target.closest?.('[data-broker-action]');if(!node||node.disabled)return;event.preventDefault();const action=node.dataset.brokerAction,provider=node.dataset.brokerProvider;if(action==='connect'&&!pending)return connect(provider);if(action==='copy-ip'&&data?.egressIp){
    try{await navigator.clipboard.writeText(data.egressIp);toast('서버 IP를 복사했습니다.');}catch{toast('화면의 서버 IP를 선택해 복사하세요.');}
@@ -64,7 +66,39 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
    finally{if(node.isConnected)node.disabled=false;}
    return;
   }if(action==='reload')return load();if(action==='refresh'&&!pending){pending=true;pendingProvider=provider;pendingAction='refresh';error='';retryProvider='';redraw();try{const value=await request('/api/workspace/brokers/refresh',{provider});if(!acceptSnapshot(provider,value?.snapshot))await load();}catch(e){error=e.message;retryProvider=provider;}finally{pending=false;pendingProvider='';pendingAction='';redraw();}}}
- async function submit(event){const form=event.target.closest?.('[data-broker-form]');if(!form)return;event.preventDefault();if(pending)return;const provider=form.dataset.brokerForm,token=getDialogToken?.(),sameDialog=()=>form.isConnected!==false&&(token===undefined||token===getDialogToken?.()),submit=form.querySelector('[type="submit"]'),errorNode=form.querySelector('[data-broker-error]'),status=form.querySelector('[data-broker-status]'),cancel=form.querySelector('[data-studio-action="close-dialog"]');pending=true;pendingProvider=provider;pendingAction='connect';submit.disabled=true;submit.textContent='연결 확인 중…';errorNode.textContent='';if(status)status.textContent='연결 요청을 보냈습니다. 닫아도 처리는 계속됩니다.';if(cancel)cancel.textContent='닫기';try{const values=Object.fromEntries(new FormData(form)),result=await request('/api/workspace/brokers/connect',{provider,...values});form.reset();const accepted=acceptSnapshot(provider,result?.snapshot);if(sameDialog())close();if(!accepted)await load();const verified=accepted||data?.connections?.some(c=>c.provider===provider&&c.snapshot);toast(names[provider]+(verified?' 계좌 연결 및 잔고 조회 완료.':' 연결 정보는 저장됐습니다. 계좌 화면에서 잔고를 다시 조회하세요.'));}catch(e){if(sameDialog())errorNode.textContent=e.message;else toast(names[provider]+' 연결 실패 · '+e.message);}finally{pending=false;pendingProvider='';pendingAction='';if(submit.isConnected){submit.disabled=false;submit.textContent='연결하고 잔고 조회';if(status)status.textContent='';if(cancel)cancel.textContent='취소';}redraw();}}
+ async function submit(event){
+  const form=event.target.closest?.('[data-broker-form]');if(!form)return;event.preventDefault();if(pending)return;
+  const provider=form.dataset.brokerForm,token=getDialogToken?.();
+  const sameDialog=()=>form.isConnected!==false&&(token===undefined||token===getDialogToken?.());
+  const submit=form.querySelector('[type="submit"]'),errorNode=form.querySelector('[data-broker-error]'),status=form.querySelector('[data-broker-status]'),cancel=form.querySelector('[data-studio-action="close-dialog"]');
+  const report=message=>{if(sameDialog())errorNode.textContent=message;else toast(names[provider]+' · '+message);};
+  pending=true;pendingProvider=provider;pendingAction='connect';submit.disabled=true;submit.textContent='연결 확인 중…';errorNode.textContent='';
+  status.textContent='연결 요청을 보냈습니다. 창을 닫거나 이동해도 확인은 계속됩니다.';cancel.textContent='닫기';
+  try{
+   const values=Object.fromEntries(new FormData(form)),result=await request('/api/workspace/brokers/connect',{provider,...values});
+   if(result?.ok===true&&result.snapshot?.mode==='READ_ONLY'&&Number.isFinite(Date.parse(result.snapshot.asOf))&&acceptSnapshot(provider,result.snapshot)){
+    form.reset();
+    if(sameDialog())close();
+    toast(names[provider]+' 계좌 연결 및 잔고 조회 완료.');
+   }else{
+    await load();
+    report('이번 연결 결과를 확인하지 못했습니다. 창을 닫고 계좌 카드의 저장 조회 시각을 확인하세요.');
+   }
+  }catch(e){
+   if(e.code==='UPBIT_IP_NOT_ALLOWED'||e.code==='UPBIT_ASSET_SCOPE_REQUIRED'){
+    if(sameDialog())form.querySelector('[data-broker-guide]').open=true;
+   }
+   if(e.serverResponse)report(e.message);
+   else{
+    await load();
+    report('응답이 끊겨 이번 연결 결과를 확인하지 못했습니다. 창을 닫고 계좌 카드의 저장 조회 시각을 확인하세요.');
+   }
+  }finally{
+   pending=false;pendingProvider='';pendingAction='';
+   if(sameDialog()){submit.disabled=false;submit.textContent='연결하고 잔고 조회';status.textContent='';cancel.textContent='취소';}
+   redraw();
+  }
+ }
 
  return {render,load,click,submit};
 }
