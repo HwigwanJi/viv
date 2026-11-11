@@ -2,7 +2,7 @@ import {paperBudgetFor} from '../dist/domain/paper-budget.mjs';
 
 export const VIV_TUTORIAL_ACTIONS=['pause','resume','complete'];
 
-export const VIV_INSTRUCTIONS='VIV는 Vibe Investment입니다. 처음 시작·설치 직후·튜토리얼 재개 요청에는 viv_onboarding을 조회하고 저장된 진행 상태에 따라 안내하세요. 숫자와 자연어를 모두 받으세요. 뉴스 조사와 전략 분석은 완료하면 save_market_research로 개인 라이브러리에 바로 저장하세요. 조회만 요청한 경우에는 읽기만 하세요. 결과 확인은 응답의 링크를 호스트의 인앱 브라우저에서 열거나 클릭 가능한 링크로 제공하세요.';
+export const VIV_INSTRUCTIONS='VIV는 Vibe Investment입니다. 처음 시작·설치 직후·튜토리얼 재개 요청에는 viv_onboarding을 조회하고 저장된 진행 상태에 따라 안내하세요. 숫자와 자연어를 모두 받으세요. 뉴스 조사와 전략 분석은 완료하면 save_market_research로 개인 라이브러리에 바로 저장하세요. 저장 영수증은 라이브러리 상태와 링크로 안내하세요. 검증·정책 반영·운용 완료는 각각 실제 결과를 확인한 경우에만 보고하세요. 조회만 요청한 경우에는 읽기만 하세요. 결과 확인은 응답의 링크를 호스트의 인앱 브라우저에서 열거나 클릭 가능한 링크로 제공하세요.';
 
 const lessons=[
   {number:1,title:'오늘의 코인 시장 주요 투자동향을 조사하고 수집해줘',tools:['read_mind_catalog','read_market_knowledge','save_market_research']},
@@ -20,11 +20,11 @@ export const VIV_PLAYBOOK=[
   'tutorial_offer일 때 “튜토리얼이 있습니다. 진행하실까요? 1 진행 / 2 건너뛰기”를 한 번 물으세요. 진행은 action:resume, 건너뛰기 또는 중단은 action:pause로 저장하세요. tutorial_lessons에서는 lessons의 남은 번호와 제목만 보여주세요. 원래 번호를 유지하고 자연어로 말한 과업도 연결하세요.',
   '자료 조사 과업은 호스트의 웹 검색·영상 자막 등 실제 접근 가능한 도구로 원문을 확인하고, VIV에서 현재 라이브러리·양식·전략 노드 메타데이터를 조회하세요. 원문 URL, 공개·조회 시각, 영상 시간대, 확인된 사실과 추론을 구분해 짧게 브리핑하세요. 링크나 접근 가능한 자막이 없으면 링크 또는 제공 가능한 원문을 요청하세요. 확인할 수 없는 거래나 수익은 추정했다고 표시하세요.',
   '저장 양식의 예제 값을 원문 정보로 바꾸세요. publication.publishedAt은 원문 공개 시각, publication.retrievedAt과 provenance.createdAt은 실제 수집·작성 시각입니다. availableAt은 수집과 작성이 끝난 시각 이후로 설정하세요.',
-  '1~3번 조사·분석 결과는 출처와 함께 save_market_research로 개인 라이브러리에 바로 저장하고, 영수증의 openUrl을 브리핑과 함께 제공하세요. 2~3번은 재현할 매매 규칙·검증 결과·가정을 문서에 담으세요. 사용자가 저장 없이 보기를 요청하면 저장하지 마세요.',
+  '1~3번 조사·분석 결과는 출처와 함께 save_market_research로 개인 라이브러리에 바로 저장하고, 영수증의 openUrl을 브리핑과 함께 제공하세요. 2~3번은 재현할 매매 규칙과 가정을 문서에 담으세요. 검증을 실행했다면 조건·결과를 기록하고, 실행 전이면 검증 상태를 명시하세요. 사용자가 저장 없이 보기를 요청하면 저장하지 마세요.',
   '4번은 read_investment_status로 조회하세요. 모의 배정이나 판단 기록이 비어 있으면 그 상태와 links.paperAccount를 안내하세요. 저장된 판단과 종목이 있는 경우에만 read_trading_context로 근거를 확인하세요.',
   '사용자에게 과업 결과를 실제로 제공한 뒤 action:complete와 lesson 번호를 보내세요. 1~3번은 저장 영수증의 documentId를 보내고 사용자가 자료 저장 없이 보기를 요청했다면 readOnly:true로 진행 상태만 기록합니다. 진행 상태 저장도 원하지 않으면 완료 기록을 남기지 마세요. 4번은 조회에 성공해 브리핑을 제공한 뒤 번호만 보냅니다. 실행 실패·자료 대기 상태는 완료 처리하지 마세요.',
   '응답 lessons의 남은 항목을 보여주고 0 또는 “여기까지”를 선택하면 action:pause로 중단을 저장하세요. 완료한 항목의 확인 링크는 tutorial.completed에 있습니다. 사용자가 결과를 다시 열어달라고 하면 해당 링크를 제공하세요.',
-  '설치 첫 대화에서 튜토리얼을 마치거나 건너뛴 경우 연결 안내는 한 번만 제공합니다. 복귀 대화에서는 사용자가 실계좌 연결을 요청했을 때만 안내하세요. “실제 투자를 하려면 거래소 API 키 연결이 필요해요. 1 지금 연결 / 2 나중에”라고 물으세요. 지금을 고르면 links.connections를 호스트의 인앱 브라우저에서 열거나 링크로 제공하세요. API 키 입력은 VIV 설정 화면에서만 하도록 안내하세요. 선택 자체는 운용 활성화나 주문 동의가 아닙니다.',
+  '설치 첫 대화에서 튜토리얼을 마치거나 건너뛴 경우 연결 안내는 한 번만 제공합니다. 복귀 대화에서는 사용자가 실계좌 연결을 요청했을 때만 안내하세요. “실제 투자를 하려면 거래소 API 키 연결이 필요해요. 1 지금 연결 / 2 나중에”라고 물으세요. 지금을 고르면 links.connections를 호스트의 인앱 브라우저에서 열거나 링크로 제공하세요. 키는 VIV의 실전 계좌·자금 화면에서만 입력하도록 안내하세요. 그 화면에서 금융기관을 선택하고 잔고 조회로 연결을 확인합니다.',
 ].join('\n');
 
 async function tutorialProgress(db,owner,args){
@@ -55,7 +55,7 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
     paperAccount:origin+'/#settings?view=accounts&executionMode=paper',
     knowledge:origin+'/#library?view=documents&executionMode=paper',
     strategies:origin+'/#library?view=quant&section=components&executionMode=paper',
-    connections:origin+'/#settings?view=connections&executionMode=live',
+    connections:origin+'/#settings?view=accounts&executionMode=live',
   };
   const existing=paperBudgetFor(workspace,'KRW');
   if(!existing){

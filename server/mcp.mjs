@@ -268,6 +268,7 @@ async function callMindTool(request,env,options,name,args){
     const result=await studioCall(request,env,options,path,{method:'POST',body:args});
     const knowledgeId=result.value.item?.id;
     if(result.ok&&operation!=='classify'&&knowledgeId)result.value.openUrl=new URL('/#library?'+new URLSearchParams({view:'documents',executionMode:'paper',knowledgeId}),request.url).href;
+    if(result.ok&&operation==='save'&&knowledgeId)result.value.effect={action:'LIBRARY_SAVE',scope:'PERSONAL_LIBRARY',mindUseChanged:false};
     return toolResult(result.value,!result.ok);
   }
   const path=name==='write_mind_document'?'/api/workspace/mind-documents':name==='classify_mind_document'?'/api/workspace/mind-documents/classify':'/api/workspace/minds/export?'+new URLSearchParams({mindId:args.mindId,format:args.format});

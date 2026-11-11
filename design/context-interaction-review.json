@@ -541,9 +541,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-09T15:42:19.549Z",
-      "reason": "075: 기관명·저장시각·잔고와 실패/재조회 근접성, 정확한 brokerAction/provider 초점·다른 과업 존중, 기존 연결/잔고 POST·보호 의미 보존. 전체 앱 키보드/닫기·격리 지연/실패/재조회·320px(303px) 44px 버튼·415자 원문 줄바꿈 관측. 기본 버튼/도움말/표/입력의 공용 문맥 유지.",
-      "signature": "bb4998ccd930e285740a8ee5297165ad8faeb0d13ca5e008bb384b6953245ec4",
+      "reviewedAt": "2026-11-11T14:01:53.180Z",
+      "reason": "격리 환경에서 서버 준비 단계, IP 복사, 키 입력, 권한 오류 복구, 잔고 조회를 검증했습니다.",
+      "signature": "023b6757f83a104f9c4d53ad33e0661f86b2adecbb02160f661fdc2e5bebdab9",
       "controls": [
         [
           "data-broker-action",
@@ -559,7 +559,7 @@
         ],
         [
           "element:a",
-          1
+          2
         ],
         [
           "element:button",
@@ -571,14 +571,14 @@
         ],
         [
           "helper:button(",
-          3
+          5
         ],
         [
           "helper:renderDataTable(",
           1
         ]
       ],
-      "sourceHash": "76146371d0b05e47189d29f6187843f53ae14e9debb72bd9c92faf6d4fbb0404",
+      "sourceHash": "1f4250fa479645f5465d592ca6534ebc9bcd9ff6f06e71a4a8fe58b44d739709",
       "customContainers": []
     },
     {
@@ -1589,9 +1589,9 @@
         "primitive",
         "navigation"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-11T11:12:37.020Z",
-      "reason": "자료 저장은 즉시 완료하고 보관 상태를 표시합니다. 읽기와 선택적 마인드 활용 검토 동선을 확인했습니다.",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-11T14:01:53.179Z",
+      "reason": "모바일 크기와 데스크톱에서 자료 저장 상태, 전송 기록, JEV 전송 안내, 실패 및 취소를 검증했습니다.",
       "signature": "90b448c9c7974a11f737555483bb6985a9abd96b5020dd073b4d45349c3037d5",
       "controls": [
         [
@@ -1671,7 +1671,7 @@
           1
         ]
       ],
-      "sourceHash": "aa7b16961f4b69178f759e5403bbcfac159476339e4f2ac212946f291fa1d5f6"
+      "sourceHash": "97637c2df3c021d037469d436832990d88e470ad190b9346e83deade4aba252e"
     },
     {
       "file": "dist/ui/mind-activity-resource.mjs",
@@ -3149,9 +3149,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T13:10:28.998Z",
-      "reason": "모바일 크기와 데스크톱에서 시작 프리셋 찾기, 입력 복원, 저장 재시도와 전략 재검토·발행을 실제 조작으로 확인했습니다.",
-      "signature": "9030bb562e492bc95825361289a77df4e5d14fffecfb3dc88494872ac30bc250",
+      "reviewedAt": "2026-11-11T14:01:53.184Z",
+      "reason": "서비스 연결과 튜토리얼에서 실제 API 키 입력 화면으로 이어지는 정상 경로를 대조했습니다.",
+      "signature": "4fb6b51657f839451e15fa14dbeb30db475c074a0cb7e812db896c498437dbc7",
       "controls": [
         [
           "data-auto-action",
@@ -3219,7 +3219,7 @@
         ],
         [
           "element:a",
-          19
+          20
         ],
         [
           "element:button",
@@ -3254,7 +3254,7 @@
           1
         ]
       ],
-      "sourceHash": "15441211659204af71861466d5139aec50963d494c87c60316e59b3a6f99d588",
+      "sourceHash": "0d904ea9267525d50c34cbb43d54419b7ea8d9690ea87d5eb8ece6c47ff5a04d",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

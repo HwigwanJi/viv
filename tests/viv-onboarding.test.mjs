@@ -24,7 +24,7 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(saved.isError,false,JSON.stringify(saved.structuredContent));
     assert.equal(saved.structuredContent.next,'tutorial_offer');
     assert.equal(saved.structuredContent.paperBudget.receipt.totalBudget,2000000);
-    assert.match(saved.structuredContent.links.connections,/#settings\?view=connections/);
+    assert.match(saved.structuredContent.links.connections,/#settings\?view=accounts&executionMode=live/);
     const repeated=await onboarding({interest:'both',amountKrw:4000000,idempotencyKey:'viv-2'});
     assert.deepEqual(repeated.structuredContent.paperBudget,{amountKrw:2000000,existing:true});
     assert.equal((await onboarding({interest:'stocks',amountKrw:1,idempotencyKey:'repeat-different-interest'})).structuredContent.interest,'both');
@@ -52,6 +52,7 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     const save={document:analysis,expectedRevision:existing.revision,idempotencyKey:'viv-analysis'};
     const result=await tool('save_market_research',save);
     assert.equal(result.item.status,'SAVED');
+    assert.deepEqual(result.effect,{action:'LIBRARY_SAVE',scope:'PERSONAL_LIBRARY',mindUseChanged:false});
     assert.match(result.openUrl,/knowledgeId=viv-analysis/);
     assert.equal((await tool('save_market_research',save)).item.id,result.item.id);
     const reloaded=await tool('read_market_knowledge',{documentId:analysis.id});

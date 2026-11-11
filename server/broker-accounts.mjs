@@ -7,11 +7,31 @@ const url64=bytes=>b64(bytes).replaceAll('+','-').replaceAll('/','_').replace(/=
 const numeric=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 const providerTimestamp=value=>{const ms=numeric(value);return ms!==null&&ms>0&&Number.isFinite(new Date(ms).getTime())?new Date(ms).toISOString():null;};
 const mask=value=>'••••'+String(value).slice(-4);
-async function vaultKey(env){check(typeof env.BROKER_VAULT_KEY==='string'&&env.BROKER_VAULT_KEY.length>=32,'VAULT_REQUIRED','계좌 연결 저장소를 준비하고 있습니다.',503);return crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',enc.encode(env.BROKER_VAULT_KEY)),{name:'AES-GCM'},false,['encrypt','decrypt']);}
+const vaultConfigured=env=>typeof env.BROKER_VAULT_KEY==='string'&&env.BROKER_VAULT_KEY.length>=32;
+async function vaultKey(env){check(vaultConfigured(env),'VAULT_REQUIRED','계좌 연결 저장소를 준비하고 있습니다.',503);return crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',enc.encode(env.BROKER_VAULT_KEY)),{name:'AES-GCM'},false,['encrypt','decrypt']);}
 export async function sealBrokerCredential(value,owner,provider,env){const iv=crypto.getRandomValues(new Uint8Array(12)),key=await vaultKey(env),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv,additionalData:enc.encode(owner+':'+provider)},key,enc.encode(JSON.stringify(value)));return {iv:b64(iv),cipher:b64(cipher)};}
 export async function openBrokerCredential(value,owner,provider,env){const key=await vaultKey(env);return JSON.parse(dec.decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:un64(value.iv),additionalData:enc.encode(owner+':'+provider)},key,un64(value.cipher))));}
 export async function upbitAccountToken(accessKey,secretKey){const head=url64(enc.encode(JSON.stringify({alg:'HS512',typ:'JWT'}))),body=url64(enc.encode(JSON.stringify({access_key:accessKey,nonce:crypto.randomUUID()}))),input=head+'.'+body,key=await crypto.subtle.importKey('raw',enc.encode(secretKey),{name:'HMAC',hash:'SHA-512'},false,['sign']);return input+'.'+url64(await crypto.subtle.sign('HMAC',key,enc.encode(input)));}
-async function providerJson(fetchImpl,url,options={}){let response;try{response=await fetchImpl(url,{...options,redirect:'error',signal:AbortSignal.timeout(20000)});}catch{throw Object.assign(new Error('금융기관 연결이 지연됩니다. 잠시 후 다시 조회하세요.'),{code:'BROKER_UNREACHABLE',status:502});}check(response.ok,'BROKER_HTTP_'+response.status,response.status===403?'금융기관에 등록한 허용 IP를 확인하세요.':response.status===401?'API 키와 조회 권한을 확인하세요.':response.status===429?'금융기관 조회 한도에 도달했습니다. 잠시 후 다시 조회하세요.':'금융기관 조회에 실패했습니다. 연결 상태를 확인하세요.',response.status===429?429:502);return response.json();}
+const upbitAuthIssues={
+ no_authorization_ip:['UPBIT_IP_NOT_ALLOWED','업비트 Open API 관리의 허용 IP에 VIV 서버의 공인 IPv4를 등록한 뒤 다시 조회하세요.'],
+ out_of_scope:['UPBIT_ASSET_SCOPE_REQUIRED','업비트 키에 자산조회 권한을 선택해 발급한 뒤 이 창에 입력하세요.'],
+ expired_access_key:['UPBIT_KEY_EXPIRED','업비트 Open API 관리에서 새 키를 발급해 입력하세요.'],
+ jwt_verification:['UPBIT_KEY_MISMATCH','같은 업비트 키에서 발급받은 Access Key와 Secret Key를 확인하세요.']
+};
+async function providerJson(fetchImpl,url,options={}){
+ let response;
+ try{response=await fetchImpl(url,{...options,redirect:'error',signal:AbortSignal.timeout(20000)});}
+ catch{throw Object.assign(new Error('금융기관 연결이 지연됩니다. 잠시 후 다시 조회하세요.'),{code:'BROKER_UNREACHABLE',status:502});}
+ if(!response.ok&&url==='https://api.upbit.com/v1/accounts'&&[401,403].includes(response.status)){
+  const name=(await response.json().catch(()=>null))?.error?.name;
+  const [code,message]=typeof name==='string'&&Object.hasOwn(upbitAuthIssues,name)
+    ?upbitAuthIssues[name]
+    :['UPBIT_AUTH_REQUIRED','업비트 키, 자산조회 권한과 서버의 허용 IP를 확인하세요.'];
+  check(false,code,message,502);
+ }
+ check(response.ok,'BROKER_HTTP_'+response.status,response.status===403?'금융기관에 등록한 허용 IP를 확인하세요.':response.status===401?'API 키와 조회 권한을 확인하세요.':response.status===429?'금융기관 조회 한도에 도달했습니다. 잠시 후 다시 조회하세요.':'금융기관 조회에 실패했습니다. 연결 상태를 확인하세요.',response.status===429?429:502);
+ return response.json();
+}
 async function tossAccessToken(credential,{fetchImpl,now}){
  if(!credential.accessToken||Date.parse(credential.expiresAt??0)<=Date.parse(now)){const auth=await providerJson(fetchImpl,'https://openapi.tossinvest.com/oauth2/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'client_credentials',client_id:credential.clientId,client_secret:credential.clientSecret}).toString()});check(typeof auth.access_token==='string'&&Number.isFinite(auth.expires_in),'BROKER_TOKEN_RESPONSE','토스증권 인증 응답을 확인하세요.',502);credential.accessToken=auth.access_token;credential.expiresAt=new Date(Date.parse(now)+Math.max(1,auth.expires_in-60)*1000).toISOString();}
  return credential.accessToken;
@@ -91,13 +111,14 @@ export async function handleBrokerAPI(request,env={},options={}){
  try{
   check(owner,'UNAUTHORIZED','로그인이 필요합니다.',401);check(!request.headers.get('origin')||request.headers.get('origin')===u.origin,'ORIGIN','앱에서 다시 연결하세요.',403);check(request.headers.get('sec-fetch-site')!=='cross-site','ORIGIN','앱에서 다시 연결하세요.',403);
   const db=env.DB;await initialize(db);const route=u.pathname.slice('/api/workspace/brokers'.length),now=new Date(options.now?.()??Date.now()).toISOString();
-  if(request.method==='GET'&&route===''){const rows=await db.prepare('SELECT provider,snapshot,updated_at FROM broker_connections WHERE owner_id=?').bind(owner).all();return json({ok:true,canConnect:!!env.BROKER_VAULT_KEY&&env.BROKER_NETWORK_READY==='true',network:env.BROKER_NETWORK_READY==='true'?'READY':'IP_CONFIGURATION_REQUIRED',execution:'READ_ONLY',egressIp:env.BROKER_EGRESS_IP??null,connections:rows.results.map(r=>({provider:r.provider,updatedAt:r.updated_at,snapshot:r.snapshot?JSON.parse(r.snapshot):null})),providers});}
+  if(request.method==='GET'&&route===''){const rows=await db.prepare('SELECT provider,snapshot,updated_at FROM broker_connections WHERE owner_id=?').bind(owner).all();return json({ok:true,canConnect:vaultConfigured(env)&&env.BROKER_NETWORK_READY==='true',vault:vaultConfigured(env)?'READY':'CONFIGURATION_REQUIRED',network:env.BROKER_NETWORK_READY==='true'?'READY':'IP_CONFIGURATION_REQUIRED',execution:'READ_ONLY',egressIp:env.BROKER_EGRESS_IP??null,connections:rows.results.map(r=>({provider:r.provider,updatedAt:r.updated_at,snapshot:r.snapshot?JSON.parse(r.snapshot):null})),providers});}
   check(request.method==='POST'&&['/connect','/refresh','/disconnect'].includes(route),'BROKER_ROUTE','계좌 연결 경로를 확인하세요.',404);
   const body=await readConnectionBody(request);check(providers.includes(body.provider),'BROKER_PROVIDER','금융기관을 선택하세요.');
   const token=crypto.randomUUID(),nowMs=Date.parse(now),locked=await db.prepare('INSERT INTO broker_connection_locks(owner_id,provider,token,expires_at) VALUES(?,?,?,?) ON CONFLICT(owner_id,provider) DO UPDATE SET token=excluded.token,expires_at=excluded.expires_at WHERE broker_connection_locks.expires_at<=? RETURNING token').bind(owner,body.provider,token,nowMs+1800000,nowMs).first();
   check(locked?.token===token,'BROKER_BUSY','계좌 조회가 진행 중입니다. 완료 후 다시 조회하세요.',409);lease={db,provider:body.provider,token};
   if(route==='/disconnect'){await db.prepare('DELETE FROM broker_connections WHERE owner_id=? AND provider=?').bind(owner,body.provider).run();return json({ok:true,disconnected:true});}
   check(env.BROKER_NETWORK_READY==='true','BROKER_NETWORK_REQUIRED','API 허용 IP와 서버 연결 경로를 먼저 설정하세요.',409);
+  check(vaultConfigured(env),'VAULT_REQUIRED','VIV 설치 때 생성한 서버 키 보관 설정을 확인한 뒤 다시 시도하세요.',503);
   let credential;if(route==='/connect'){
    credential=body.provider==='upbit'?{accessKey:body.accessKey,secretKey:body.secretKey}:{clientId:body.clientId,clientSecret:body.clientSecret};check(Object.values(credential).every(v=>typeof v==='string'&&v.length>=10&&v.length<=8000),'BROKER_CREDENTIAL','발급받은 키를 입력하세요.');
   }else{const row=await db.prepare('SELECT credential FROM broker_connections WHERE owner_id=? AND provider=?').bind(owner,body.provider).first();check(row,'BROKER_NOT_CONNECTED','계좌를 먼저 연결하세요.',404);credential=await openBrokerCredential(JSON.parse(row.credential),owner,body.provider,env);}
