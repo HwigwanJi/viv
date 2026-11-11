@@ -883,7 +883,7 @@ export function createStudioController(hooks={},options={}){
   }
   function renderSettings(){
     const jobs=list(workspace.scheduler?.jobs),deployments=list(workspace.deployments),view=currentRoute().params.get('view')||'connections';
-    if(view==='capabilities')return title('기능 목록','<a class="button small" href="https://github.com/HwigwanJi/viv#readme" target="_blank" rel="noopener noreferrer">VIV 사용 안내 ↗</a>'+button('새로고침','refresh'))+renderCapabilityCatalog({data:capabilityData,loading:capabilityLoading,error:capabilityError,openGroups:capabilityOpenGroups,query:capabilityQuery});
+    if(view==='capabilities')return title('기능 목록','<a class="button small" data-capability-guide href="https://github.com/HwigwanJi/viv#readme" target="_blank" rel="noopener noreferrer">VIV 사용 안내 ↗</a>'+button('새로고침','refresh'))+renderCapabilityCatalog({data:capabilityData,loading:capabilityLoading,error:capabilityError,openGroups:capabilityOpenGroups,query:capabilityQuery});
     if(view==='accounts')return renderAccounts();
     if(view==='automation'&&executionModeOf(currentRoute())==='live'){
       const state=liveActivity.state(),items=list(liveActivity.items());

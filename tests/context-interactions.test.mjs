@@ -5,6 +5,21 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {contextSourceFiles,inspectContextSource,inspectContextReview,inspectContextMatrix,checkContextInteractions} from '../scripts/check-context-interactions.mjs';
 import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
+import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS} from '../dist/ui/studio-controller.mjs';
+import {studioJumpItems,studioJumpMatches} from '../dist/ui/studio-shell.mjs';
+
+test('help queries find the capability catalog in the current viewing mode',()=>{
+ const route=parseStudioRoute('#settings?view=connections&executionMode=live');
+ const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+ for(const query of ['도움말','사용 안내','가이드']){
+  const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
+  assert.equal(matches.length,1);
+  const destination=parseStudioRoute(matches[0].href);
+  assert.equal(destination.page,'settings');
+  assert.equal(destination.params.get('view'),'capabilities');
+  assert.equal(destination.params.get('executionMode'),'live');
+ }
+});
 
 const entry=(file,source,extra={})=>({file,owners:['card'],review:'SOURCE_REVIEWED',reviewedAt:'2026-11-04',reason:'카드의 상태별 기존 작업을 공용 메뉴로 연결한다.',...inspectContextSource(source),...extra});
 test('Git checkout line endings leave the context review fingerprint stable',()=>{

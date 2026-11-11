@@ -170,6 +170,8 @@
   .vibe-shell .studio-content { @apply px-ui-6 pt-ui-6 pb-(--vibe-content-bottom); }
   .vibe-shell .studio-trading-content { @apply px-0 pt-ui-2; }
   .vibe-context { @apply px-ui-6; }
+  .studio-page-settings .vibe-context .studio-nav-group { @apply flex-wrap shrink; }
+  .studio-page-settings .vibe-context .studio-nav-group > a { @apply inline-flex items-center min-h-control-touch; }
   .vibe-shell .studio-mind-heading h1 { @apply text-ui-lg leading-ui-lg; }
   .vibe-shell .studio-mind-workspace { @apply mb-ui-6; }
   .vibe-shell .studio-mind-tabs { @apply gap-ui-6; }

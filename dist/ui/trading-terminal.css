@@ -4924,6 +4924,15 @@
   .vibe-context {
     padding-inline: var(--ds-space-6);
   }
+  .studio-page-settings .vibe-context .studio-nav-group {
+    flex-shrink: 1;
+    flex-wrap: wrap;
+  }
+  .studio-page-settings .vibe-context .studio-nav-group > a {
+    display: inline-flex;
+    min-height: var(--ds-control-height-touch);
+    align-items: center;
+  }
   .vibe-shell .studio-mind-heading h1 {
     font-size: var(--ds-font-size-lg);
     --tw-leading: var(--ds-leading-lg);

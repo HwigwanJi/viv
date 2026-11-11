@@ -61,8 +61,10 @@ function render(){
   if(document.querySelector('.viv-intro')&&studio.state().loading)return;
   if(document.querySelector('[data-hud-interacting]')&&document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash){hudRenderPending=true;return;}
   hudRenderPending=false;
-  const headingFocus=document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash&&document.activeElement?.matches?.('.studio-content h1[tabindex="-1"]');
-  const activeHud=document.activeElement?.closest?.('[data-mind-hud]'),sameHudRoute=document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash,hudFocus=sameHudRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:document.activeElement.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>document.activeElement.dataset[key]!==undefined)}:null;
+  const sameRoute=document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash;
+  const active=document.activeElement;
+  const retainedFocus=sameRoute&&['.studio-content h1[tabindex="-1"]','[data-capability-guide]'].find(selector=>active?.matches(selector));
+  const activeHud=active?.closest?.('[data-mind-hud]'),hudFocus=sameRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:active.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>active.dataset[key]!==undefined)}:null;
   if(hudFocus&&hudFocus.selector!=='[data-hud-viewport]'){const key=hudFocus.selector;hudFocus.selector=key?'[data-'+key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+'="'+CSS.escape(document.activeElement.dataset[key])+'"]':null;}
   const token=++renderGeneration,route=parseStudioRoute(location.hash),navigation=studio.navigation(route),railOnly=['home','minds'].includes(route.page);
   primaryLocations.set(route.page,'#'+route.page+(route.params.size?'?'+route.params:''));
@@ -81,7 +83,7 @@ function render(){
   $('.vibe-shell').dataset.chromeKey=chromeKey;
   mountShell({compactDefault:route.page==='trade'});
   refreshStudioJump();
-  queueMicrotask(()=>{if(token===renderGeneration){studio.mount($('#app'));entityMenu.mount($('#app'));if(hudFocus?.selector)document.querySelector('[data-hud-key="'+CSS.escape(hudFocus.key)+'"] '+hudFocus.selector)?.focus({preventScroll:true});if(headingFocus&&document.activeElement===document.body)document.querySelector('.studio-content h1[tabindex="-1"]')?.focus({preventScroll:true});routeFocus.flush();dialogFocus.afterRender();appNotifications.mount();routeMotion.enter($('.studio-content'),interfaceMotionKey(route));}});
+  queueMicrotask(()=>{if(token===renderGeneration){studio.mount($('#app'));entityMenu.mount($('#app'));if(hudFocus?.selector)document.querySelector('[data-hud-key="'+CSS.escape(hudFocus.key)+'"] '+hudFocus.selector)?.focus({preventScroll:true});if(retainedFocus&&document.activeElement===document.body)document.querySelector(retainedFocus)?.focus({preventScroll:true});routeFocus.flush();dialogFocus.afterRender();appNotifications.mount();routeMotion.enter($('.studio-content'),interfaceMotionKey(route));}});
 }
 
 let jumpEntriesKey='',jumpRetrying=false;
@@ -108,7 +110,24 @@ document.addEventListener('keydown',event=>{
   if(['ArrowDown','ArrowUp','Home','End'].includes(event.key)&&(!query||['ArrowDown','ArrowUp'].includes(event.key))){event.preventDefault();const current=items.find(item=>item.getAttribute('aria-selected')==='true'),next=items[jumpNavigationIndex(items.indexOf(current),event.key,items.length)];selectStudioJump($('#detail-dialog'),next);$('#detail-dialog [data-studio-jump-query]').focus({preventScroll:true});next?.scrollIntoView({block:'nearest'});}
 });
 document.addEventListener('click',event=>dialogFocus.rememberInteraction(event.target),true);
-document.addEventListener('click',event=>{if(studio.state().formSaving){event.preventDefault();event.stopImmediatePropagation();return;}const jump=event.target.closest('[data-studio-jump-item]');if(jump&&isPlainNavigationClick(event)){event.preventDefault();const href=jump.getAttribute('href');dialogLifecycleToken++;dialogNavigation.beforeRouteChange();navigateToHeading(href);return;}const nav=event.target.closest('[data-nav]');if(nav){if(!isPlainNavigationClick(event))return;event.preventDefault();navigatePrimary(nav.dataset.nav);return;}if(event.target.closest('[data-app-install]')){appInstall.install();return;}if(event.target.closest('[data-studio-route]'))closeSidebar();if(event.target.closest('[data-studio-action="close-dialog"]'))closeDialog();});
+document.addEventListener('click',event=>{
+  if(studio.state().formSaving){event.preventDefault();event.stopImmediatePropagation();return;}
+  const settingsLink=event.target.closest('.studio-page-settings .studio-task-nav a[data-studio-route]');
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item]');
+  if(destination&&isPlainNavigationClick(event)){
+    event.preventDefault();
+    dialogLifecycleToken++;
+    dialogNavigation.beforeRouteChange();
+    if(settingsLink)closeSidebar();
+    navigateToHeading(destination.getAttribute('href'));
+    return;
+  }
+  const nav=event.target.closest('[data-nav]');
+  if(nav){if(!isPlainNavigationClick(event))return;event.preventDefault();navigatePrimary(nav.dataset.nav);return;}
+  if(event.target.closest('[data-app-install]')){appInstall.install();return;}
+  if(event.target.closest('[data-studio-route]'))closeSidebar();
+  if(event.target.closest('[data-studio-action="close-dialog"]'))closeDialog();
+});
 $('#detail-dialog').addEventListener('close',()=>{formDrafts.capture();if(!$('#detail-dialog').open)document.documentElement.dataset.readerOpen='false';dialogNavigation.closed();});
 addEventListener('resize',()=>{const dialog=$('#detail-dialog');if(dialog.open&&dialog.dataset.presentation==='reader')setDialogPresentation(dialog,'reader');});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented&&$('#detail-dialog').open&&$('#detail-dialog').dataset.readerDocked==='true'){event.preventDefault();closeDialog();}});

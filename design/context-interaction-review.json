@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-09T22:18:49.871Z",
-      "reason": "088: 현재 목록 검색의 업무 경계. 기존 공용 studioRouteHash에서 화면 전환 시 이전 검색/필터 제거, 대상·모드·실험 변경 시 원래 cursor 제거. 명시 목적지 조건과 정식 returnTo 보존. 마인드 변경의 새 제목 초점을 기존 routeFocus에 연결. 새 메뉴/금융 명령 없음.",
+      "reviewedAt": "2026-11-11T15:27:27.845Z",
+      "reason": "설정 선택 후 제목, 사용 안내와 다음 Tab의 포커스가 목록 로딩 성공과 실패 모두에서 유지되는지 검증했습니다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "65e416bcc5e98e1fde9db34703bf3d6a427096773cf0914295fb373e836a914b",
+      "sourceHash": "2766b7e0204dd7b766c08aed472e2a5c5f223cf8bd4a61158ea43477f70c8165",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -3161,8 +3161,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T14:56:12.135Z",
-      "reason": "기능 목록의 사용 안내와 API 오류 중 접근, 키보드로 다시 불러오기를 확인했습니다.",
+      "reviewedAt": "2026-11-11T15:27:27.850Z",
+      "reason": "기능 목록의 사용 안내 링크가 읽기 요청의 응답 또는 오류로 다시 그려져도 키보드 포커스를 이어갑니다.",
       "signature": "4e6e63d98d1640bfc0030fa89028f9f58b654a0759ed2ac13ada0ca01f59c033",
       "controls": [
         [
@@ -3266,7 +3266,7 @@
           1
         ]
       ],
-      "sourceHash": "b5cebbbf5f2bdf3655d4aed7c2248915dafffd53cce3e73ad7b4a7a20eb326d9",
+      "sourceHash": "14ecc6188bc15b7ad565024747322559d81d6ea9be66f77229d5cd8cd106345f",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3281,8 +3281,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-09T10:15:32.297Z",
-      "reason": "020 최신 UI·UX: 공용 빠른 이동의 문맥별 그룹·검색·빈 결과 복구·조회 실패 재시도·늦은 목록 반영·닫기 및 목적지 제목 초점 확인. 금융 실행 액션 추가 없음. 064: 공용 화면 찾기에 전체 기록/시뮬레이션과 다른 마인드 기록을 정식 라우트로 연결. 이름/작업 분리 표시, 체결 검색 별칭, 오래된 검색/판단 유형 제거, native 링크/combobox/listbox/키보드 및 실패 복구 보존. 실제 운영 Enter·Esc·305px 결과 확인.",
+      "reviewedAt": "2026-11-11T15:27:27.851Z",
+      "reason": "도움말·사용 안내·가이드 검색과 320px 터치, 데스크톱 키보드 이동, 뒤로 가기의 기존 상태를 확인했습니다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3302,7 +3302,7 @@
           2
         ]
       ],
-      "sourceHash": "def75690a2496c89464371604c756c69f20d11d952cf2b390f021546e25c5ef5",
+      "sourceHash": "495b44b56fd52b6e662ac1e4f2057d5f13da40bf8cabbb699fb88278ac117446",
       "customContainers": []
     },
     {

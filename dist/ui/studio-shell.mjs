@@ -1,7 +1,7 @@
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const COLLECTION_TASKS = [['overview','마인드 목록'],['records','전체 기록'],['simulations','전체 시뮬레이션']];
-const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',simulations:'실험실 시뮬레이션'};
+const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',simulations:'실험실 시뮬레이션',capabilities:'도움말 사용 안내 가이드 문서'};
 
 const TASK_GROUPS = Object.freeze({
   library: [['자료', ['documents', 'quant']], ['운용 지식', ['experiences', 'review', 'memory']], ['가져오기', ['forms']]]
@@ -12,7 +12,7 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label,group:'전체 마인드',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,'minds',{profileId:'all',view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
   for(const mind of navigation.minds??[])if(mind.id!==navigation.selectedMindId)for(const [view,label]of [['operations','운용'],['records','기록']])entries.push({label:mind.name+' / '+label,taskLabel:mind.name,taskSuffix:label,group:'마인드',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,'minds',{profileId:mind.id,view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
   if(navigation.selectedMindId&&navigation.selectedMindId!=='all')for(const [view,label]of [['operations','운용'],['principles','전략'],['records','기록'],['knowledge','자료'],['simulations','실험실']])entries.push({label:navigation.scopeName+' / '+label,taskLabel:label,context:navigation.scopeName,group:'현재 마인드',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,'minds',{profileId:navigation.selectedMindId,view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
-  for(const [page,items]of [['library',library],['settings',settings]])for(const [view,label]of items)entries.push({label,group:page==='library'?'라이브러리':'설정',href:routeHash(route,page,{view,cursor:null})});
+  for(const [page,items]of [['library',library],['settings',settings]])for(const [view,label]of items)entries.push({label,group:page==='library'?'라이브러리':'설정',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,page,{view,cursor:null})});
   return entries;
 }
 
