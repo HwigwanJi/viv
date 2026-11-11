@@ -91,6 +91,7 @@ const select=(label,name,options,value,required=false)=>`<label class="field">${
 const table=(heads,rows,empty='기록이 없습니다.')=>rows.length?renderDataTable(heads,rows):typeof empty==='object'?renderWorkflowState(empty):`<div class="empty">${esc(empty)}</div>`;
 const TASK_DESCRIPTIONS={'계좌·자금':'연결 계좌의 잔고와 마인드에 배정한 자금을 확인합니다.','서비스 연결':'거래소와 AI 연결 상태를 관리합니다.','자동 운용':'실행 중인 마인드와 최근 운용 기록을 확인합니다.','데이터':'종목 목록과 입력 자료를 수집하고 저장 기록을 관리합니다.','기능 목록':'노드의 입출력과 액션별 호출 경로를 검색합니다.','가져오기 양식':'작성할 자료 종류를 선택하면 해당 양식이 열립니다.','투자 경험':'과거 판단과 후속 성과를 함께 확인합니다.','검토함':'검토를 기다리는 자료를 선택해 확인합니다.'};
 const title=(text,actions='')=>`<div class="studio-page-head"><h1 tabindex="-1">${esc(text)}</h1><div class="actions">${actions}</div></div>${TASK_DESCRIPTIONS[text]?`<p class="studio-task-description">${esc(TASK_DESCRIPTIONS[text])}</p>`:''}`;
+const CAPABILITY_GUIDE='<a class="button small" data-capability-guide href="https://github.com/HwigwanJi/viv#readme" target="_blank" rel="noopener noreferrer">VIV 사용 안내 ↗</a>';
 const recordTimeMarkup=record=>{if(record.kind==='fill')return esc(when(record.asOf));const completed=record.completedAt&&Number.isFinite(Date.parse(record.completedAt)),requested=record.requestAt&&Number.isFinite(Date.parse(record.requestAt)),engine=record.authority||record.jevCalled===false?'결정':'JEV';return '<time datetime="'+esc(record.asOf)+'">기준 봉 '+esc(when(record.asOf))+'</time><small class="studio-cell-secondary">'+(completed?engine+' 완료 '+esc(when(record.completedAt)):requested?engine+' 요청 '+esc(when(record.requestAt))+' · 완료 시각 미기록':engine+' 실행 시각 미기록')+'</small>';};
 const types=[['OBSERVED_FACT','관측 사실'],['HYPOTHESIS','가설'],['VALIDATED_HEURISTIC','검증된 경험칙'],['OPERATING_PROCEDURE','운영 절차']];
 const formNames={'mind-policy':'마인드 정책','trade-review':'거래 분석','market-context':'투자 자료','principle-evidence':'원칙 검증 근거','weight-proposal':'가중치 변경 제안'};
@@ -549,7 +550,12 @@ export function createStudioController(hooks={},options={}){
   }
   function render(routeValue=currentRoute()){
     route=routeValue;
-    if(!workspace)return `<section class="studio-loading"><h1>${loading?'워크스페이스를 불러오는 중…':'워크스페이스 연결'}</h1>${error?`<p role="alert">${esc(error)}</p>${button('다시 조회','refresh')}`:'<p>서버에 저장된 종목·마인드·투자 기록을 조회합니다.</p>'}</section>`;
+    if(!workspace){
+      const capabilityView=route.page==='settings'&&route.params.get('view')==='capabilities';
+      const workspaceHeading=loading?'워크스페이스를 불러오는 중…':'워크스페이스 연결';
+      const heading=capabilityView?title('기능 목록',CAPABILITY_GUIDE):`<h1>${workspaceHeading}</h1>`;
+      return `<section class="studio-loading">${heading}${error?`<p role="alert">${esc(error)}</p>${button('다시 조회','refresh')}`:'<p>서버에 저장된 종목·마인드·투자 기록을 조회합니다.</p>'}</section>`;
+    }
     const notice=error?`<div class="callout warning section" role="alert">${esc(error)} ${button('새로고침','refresh')}</div>`:'';
     return notice+({home:()=>home.render(),trade:()=>terminal.render({...model(),instrumentUniverse:terminalUniverseModel()}),minds:renderMinds,library:renderLibrary,settings:renderSettings}[routeValue.page]||(()=>terminal.render({...model(),instrumentUniverse:terminalUniverseModel()})))();
   }
@@ -883,7 +889,7 @@ export function createStudioController(hooks={},options={}){
   }
   function renderSettings(){
     const jobs=list(workspace.scheduler?.jobs),deployments=list(workspace.deployments),view=currentRoute().params.get('view')||'connections';
-    if(view==='capabilities')return title('기능 목록','<a class="button small" data-capability-guide href="https://github.com/HwigwanJi/viv#readme" target="_blank" rel="noopener noreferrer">VIV 사용 안내 ↗</a>'+button('새로고침','refresh'))+renderCapabilityCatalog({data:capabilityData,loading:capabilityLoading,error:capabilityError,openGroups:capabilityOpenGroups,query:capabilityQuery});
+    if(view==='capabilities')return title('기능 목록',CAPABILITY_GUIDE+button('새로고침','refresh'))+renderCapabilityCatalog({data:capabilityData,loading:capabilityLoading,error:capabilityError,openGroups:capabilityOpenGroups,query:capabilityQuery});
     if(view==='accounts')return renderAccounts();
     if(view==='automation'&&executionModeOf(currentRoute())==='live'){
       const state=liveActivity.state(),items=list(liveActivity.items());

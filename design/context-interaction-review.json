@@ -3161,8 +3161,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T15:27:27.850Z",
-      "reason": "기능 목록의 사용 안내 링크가 읽기 요청의 응답 또는 오류로 다시 그려져도 키보드 포커스를 이어갑니다.",
+      "reviewedAt": "2026-11-11T15:36:21.864Z",
+      "reason": "작업 공간 조회 실패 상태에서 사용 안내를 열고 다시 조회로 기능 목록을 복구했습니다.",
       "signature": "4e6e63d98d1640bfc0030fa89028f9f58b654a0759ed2ac13ada0ca01f59c033",
       "controls": [
         [
@@ -3266,7 +3266,7 @@
           1
         ]
       ],
-      "sourceHash": "14ecc6188bc15b7ad565024747322559d81d6ea9be66f77229d5cd8cd106345f",
+      "sourceHash": "7efff85bcfd9bc1a7e2489f6202caff604e4dc57db992106b6400163ede10ff2",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
