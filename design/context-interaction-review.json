@@ -3161,9 +3161,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T15:36:21.864Z",
-      "reason": "작업 공간 조회 실패 상태에서 사용 안내를 열고 다시 조회로 기능 목록을 복구했습니다.",
-      "signature": "4e6e63d98d1640bfc0030fa89028f9f58b654a0759ed2ac13ada0ca01f59c033",
+      "reviewedAt": "2026-11-11T16:12:38.548Z",
+      "reason": "모바일 모의 예산에서 첫 판단 진입, JEV 미설정 안내와 종목 복귀, 저장 원칙 펼치기, 상세 재조회와 데스크톱 키보드 기록 열기를 브라우저에서 확인했습니다.",
+      "signature": "512a82687923e5dc6121f60466ba8f5413e934bb7f474078b1f0266dbe8e371b",
       "controls": [
         [
           "data-auto-action",
@@ -3231,7 +3231,7 @@
         ],
         [
           "element:a",
-          21
+          23
         ],
         [
           "element:button",
@@ -3247,7 +3247,7 @@
         ],
         [
           "element:summary",
-          18
+          20
         ],
         [
           "element:textarea",
@@ -3266,7 +3266,7 @@
           1
         ]
       ],
-      "sourceHash": "7efff85bcfd9bc1a7e2489f6202caff604e4dc57db992106b6400163ede10ff2",
+      "sourceHash": "30b74468088e4da6cb08949100217228710ecf778096ea42f46474c84dffdc6c",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

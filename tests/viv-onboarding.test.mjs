@@ -25,6 +25,8 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(saved.structuredContent.next,'tutorial_offer');
     assert.equal(saved.structuredContent.paperBudget.receipt.totalBudget,2000000);
     assert.match(saved.structuredContent.links.connections,/#settings\?view=accounts&executionMode=live/);
+    assert.equal(new URL(saved.structuredContent.links.paperDecision).hash,'#trade?executionMode=paper');
+    assert.match(saved.structuredContent.playbook,/종목·마인드·시각과 일치하는 항목의 openUrl/);
     const repeated=await onboarding({interest:'both',amountKrw:4000000,idempotencyKey:'viv-2'});
     assert.deepEqual(repeated.structuredContent.paperBudget,{amountKrw:2000000,existing:true});
     assert.equal((await onboarding({interest:'stocks',amountKrw:1,idempotencyKey:'repeat-different-interest'})).structuredContent.interest,'both');
@@ -39,6 +41,8 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal((await onboarding({action:'resume'})).structuredContent.next,'tutorial_lessons');
     assert.deepEqual((await onboarding({})).structuredContent.lessons.map(item=>item.number),[1,2,3,4]);
     assert.equal((await onboarding({action:'complete',lesson:2})).isError,true);
+    assert.equal((await onboarding({action:'complete',lesson:4,decisionId:'unknown-run'})).structuredContent.code,'VIV_TUTORIAL_DECISION_REQUIRED');
+    assert.equal((await onboarding({action:'complete',lesson:2,decisionId:'unknown-run'})).isError,true);
     assert.equal((await onboarding({action:'complete',lesson:2,documentId:'missing-note'})).structuredContent.code,'VIV_TUTORIAL_RESULT_REQUIRED');
     const {marketKnowledge}=await tool('read_mind_catalog');
     const document={...marketKnowledge.form.example,title:'VIV 튜토리얼 검사 자료'};

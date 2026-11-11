@@ -1,3 +1,4 @@
+import {paperDecisionRecordHash} from '../dist/system/paper-decision-links.mjs';
 import {ONTOLOGY_VALIDATION_SCHEMA,validOntologyValidationInput,validateOntologyFacts} from '../dist/domain/strategy-ontology-validation.mjs';
 import {capabilityManifest} from '../dist/system/registry.mjs';
 import {HOURLY_LEARNING_ACTIONS,validHourlyLearningInput,hourlyLearningRequest} from '../dist/system/hourly-learning-contracts.mjs';
@@ -27,7 +28,7 @@ const learningSourceSchema={oneOf:[objectSchema({assetMode:{const:'UPBIT_EVENT_S
 const researchReferenceSchema=objectSchema({kind:{enum:['MARKET_KNOWLEDGE','MIND_DOCUMENT','EVENT_PAPER_RECORD','LIVE_AUTOMATION_EVENT']},id:identifierSchema,contentHash:hashSchema,subscriptionId:identifierSchema,activationId:identifierSchema},['kind','id','contentHash']);
 const learningResearchSchema=objectSchema({contractVersion:{const:'EXTERNAL_RESEARCH_PROTOCOL_V1'},hypothesis:{type:'string',minLength:1,maxLength:6000},cutoffAt:{type:'string',format:'date-time'},sourceManifestHash:hashSchema,references:{type:'array',minItems:1,maxItems:32,items:researchReferenceSchema}},['contractVersion','hypothesis','cutoffAt','sourceManifestHash','references']);
 const schemas={
-  viv_onboarding:objectSchema({interest:{enum:['stocks','crypto','both']},amountKrw:{type:'integer',minimum:1,maximum:1e12},idempotencyKey:identifierSchema,action:{enum:VIV_TUTORIAL_ACTIONS},lesson:{type:'integer',minimum:1,maximum:4},documentId:identifierSchema,readOnly:{const:true}}),
+  viv_onboarding:objectSchema({interest:{enum:['stocks','crypto','both']},amountKrw:{type:'integer',minimum:1,maximum:1e12},idempotencyKey:identifierSchema,action:{enum:VIV_TUTORIAL_ACTIONS},lesson:{type:'integer',minimum:1,maximum:4},documentId:identifierSchema,decisionId:identifierSchema,readOnly:{const:true}}),
   validate_strategy_ontology:ONTOLOGY_VALIDATION_SCHEMA,
   read_strategy_ontology:objectSchema(),
  ...Object.fromEntries(HOURLY_LEARNING_ACTIONS.map(a=>[a.mcp_tool,a.inputSchema])),
@@ -115,7 +116,7 @@ function validArguments(name,args){
     if(args.action==='pause'||args.action==='resume')return count===1;
     if(args.action==='complete'){
       if(!Number.isInteger(args.lesson)||args.lesson<1||args.lesson>4)return false;
-      return args.lesson===4?count===2:count===3&&(id(args.documentId)||args.readOnly===true);
+      return args.lesson===4?count===2||count===3&&id(args.decisionId):count===3&&(id(args.documentId)||args.readOnly===true);
     }
     return count===0||count===3&&['stocks','crypto','both'].includes(args.interest)&&Number.isSafeInteger(args.amountKrw)&&args.amountKrw>0&&args.amountKrw<=1e12&&id(args.idempotencyKey);
   }
@@ -314,6 +315,11 @@ export async function handleMcp(request,env,options={}){
       const result=await handler(new Request(new URL(name==='run_due_paper_jobs'?'/api/workspace/jobs/run':'/api/workspace',request.url),{method:name==='run_due_paper_jobs'?'POST':'GET',headers:{'oai-authenticated-user-id':owner,...(name==='run_due_paper_jobs'?{'Content-Type':'application/json'}:{})},...(name==='run_due_paper_jobs'?{body:JSON.stringify({maxJobs:args.maxJobs??3})}:{})}),env,name==='run_due_paper_jobs'?{...options,[MIND_MCP_DELIVERY]:true}:options);
       const value=await result.json(),now=new Date(typeof options.now==='function'?options.now():options.now??Date.now()).toISOString();
       const output=name==='read_investment_status'&&result.ok?buildInvestmentStatus(value,{now}):name==='run_due_paper_jobs'&&result.ok?{ok:true,report:value.report}:value;
+      if(name==='read_investment_status'&&result.ok){
+        output.recentDecisions=output.recentDecisions.map(row=>row.sourceKind==='mind-run'
+          ?{...row,openUrl:new URL(paperDecisionRecordHash(row.id),new URL(request.url).origin).href}
+          :row);
+      }
       return reply(toolResult(output,!result.ok||output?.ok===false));
     }catch(error){return reply(toolResult({ok:false,code:error instanceof InvestmentReadError?error.code:'INVESTMENT_STATUS_READ_FAILED',message:error instanceof InvestmentReadError?error.message:'현재 사용자 상태를 조회하지 못했습니다. 저장 원본과 연결을 확인하세요.'},true));}
   }
