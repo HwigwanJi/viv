@@ -7,6 +7,21 @@ import {contextSourceFiles,inspectContextSource,inspectContextReview,inspectCont
 import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
 import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS} from '../dist/ui/studio-controller.mjs';
 import {studioJumpItems,studioJumpMatches} from '../dist/ui/studio-shell.mjs';
+import {terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
+
+test('paper decision previews separate the outcome from model response measures',()=>{
+ const view={model:'jev-1.0.0',action:'hold',profileName:'추세형',confidence:1,probabilities:{buy:0,hold:1,sell:0},outcome:'NO_ORDER_REQUIRED',reasons:[]};
+ const preview=terminalTooltipContent([view]);
+ assert.match(preview,/추가 주문 없음/);
+ assert.doesNotMatch(preview,/100\.00%/);
+ const measures=terminalModelMeasures(view);
+ assert.match(measures,/<summary>모델 응답 지표<\/summary>/);
+ assert.match(measures,/행동 선택에 대한 모델 출력/);
+ assert.match(measures,/모델 자체 확신도<\/dt><dd>100\.00%/);
+ assert.match(measures,/매수 0\.00% · 유지 100\.00% · 매도 0\.00%/);
+ assert.equal(terminalModelMeasures({...view,authority:'STRATEGY_GRAPH',decisionMethod:{measureKind:'VOTE'}}),'');
+ assert.equal(terminalModelMeasures({...view,model:null}),'');
+});
 
 test('help queries find the capability catalog in the current viewing mode',()=>{
  const route=parseStudioRoute('#settings?view=connections&executionMode=live');

@@ -3187,9 +3187,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T21:04:11.058Z",
-      "reason": "시세 수집 준비에서 확정 봉 자료를 먼저 표시하고 원래 트레이딩의 종목·마인드·주기로 복귀한다.",
-      "signature": "c877d39c57b24c8871fb62c9729c758081038b60afa24483cc9993156eeeb93c",
+      "reviewedAt": "2026-11-11T21:38:37.117Z",
+      "reason": "저장된 모의 판단과 연결된 체결 수를 먼저 표시하고 후속 관측의 조회·검토·저장 행동을 구분한다.",
+      "signature": "e5f0e5ba3cce05b08d10040d1585290abd70bbc20ccfd6f068c06b3688babb1f",
       "controls": [
         [
           "data-auto-action",
@@ -3281,7 +3281,7 @@
         ],
         [
           "helper:button(",
-          175
+          176
         ],
         [
           "helper:renderActionMenu(",
@@ -3292,7 +3292,7 @@
           1
         ]
       ],
-      "sourceHash": "5fce06a4022a431176579471533d943db6b174c35e0feeb2f613a5e21cdff283",
+      "sourceHash": "d65c54289692a6aa0697fa0c9944510831af18aec488cd198cd436b948a0353f",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3383,9 +3383,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T16:42:30.553Z",
-      "reason": "JEV 외부 전송·비용 안내, 인증 거절 복구와 증거 조회, 키 없는 실습 링크를 모바일과 키보드에서 확인했습니다.",
-      "signature": "640d7856a9f5937d88c79b59cfceacc995cf100df049a0e215f7924e180af471",
+      "reviewedAt": "2026-11-11T21:38:37.118Z",
+      "reason": "결정 미리보기는 행동과 결과를 표시하고 모델 수치는 설명과 함께 펼쳐 확인한다.",
+      "signature": "a1dd9ae1335bff6ea81099fe978c300d14f7573d12d0c63f81aba04f9a60d8e1",
       "controls": [
         [
           "data-terminal-action",
@@ -3461,7 +3461,7 @@
         ],
         [
           "element:summary",
-          3
+          4
         ],
         [
           "element:table",
@@ -3472,7 +3472,7 @@
           39
         ]
       ],
-      "sourceHash": "78d107171af5143bad1046d8dcf83342f70dd22c2c2da73a6d4f6480c30d457e",
+      "sourceHash": "c00e33e9a7efc27b0a83fd049ea03117be4a5993bcfe980dd62b9fc52188de33",
       "customContainers": []
     },
     {
