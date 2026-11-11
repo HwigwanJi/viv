@@ -2647,9 +2647,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T16:42:30.554Z",
-      "reason": "키 없는 과거 시세 실습에서 실행 방식을 고정하고 결과를 새 브라우저로 다시 열었습니다. 일반 백테스트의 기존 실행 방식 선택도 확인했습니다.",
-      "signature": "4da984df7258f1dfbdebe0f5b6fb9652e20fb4b71a171f791535278e7d4270f5",
+      "reviewedAt": "2026-11-11T16:47:11.503Z",
+      "reason": "키 없는 실습의 고정 방식을 읽기용으로 표시하고, 선택 직후 오류 해제 및 실제 무키 실행·일반 방식 선택을 모바일 Chrome에서 확인했습니다.",
+      "signature": "b3621d2fe18b1e6a5d245652bc148f95f248f16a6dab6750d6528386b81a4b94",
       "controls": [
         [
           "data-simulation-action",
@@ -2685,7 +2685,7 @@
         ],
         [
           "element:input",
-          4
+          5
         ],
         [
           "element:select",
@@ -2708,7 +2708,7 @@
           2
         ]
       ],
-      "sourceHash": "2108d93318efc101293dde4ec753030e33f7cb747c7561a4c8bcc0ccb7dd6cc1"
+      "sourceHash": "d9ddcad39fe0bd080df6d10f0006d6bee22629e679792da4a2a0b4852a5fcad0"
     },
     {
       "file": "dist/ui/simulation-pre-provider-recovery.mjs",
