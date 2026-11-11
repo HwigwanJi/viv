@@ -1121,9 +1121,9 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T18:42:09.661Z",
-      "reason": "모의 홈의 주 행동에서 첫 실습을 열고 저장된 실험을 재개한다. 모바일·데스크톱에서 동일 결과로 돌아갔다.",
-      "signature": "89a0ccaaa5b5ed0a7efab50af227df271e3f27ccfc308f4c52822c35cb1f6cfb",
+      "reviewedAt": "2026-11-11T23:03:47.078Z",
+      "reason": "모의 홈에서 최근 완료 실험과 전체 시뮬레이션 진입을 데스크톱·모바일에서 확인했다.",
+      "signature": "702d5ac2be0d2b3682cd4c305d7c5ff59a854d29fae9325eb8f7b78003ab81e8",
       "controls": [
         [
           "data-home-action",
@@ -1207,10 +1207,10 @@
         ],
         [
           "helper:routeLink(",
-          18
+          19
         ]
       ],
-      "sourceHash": "4a9f467a9423af470c1b95fee0e5248fd35f20e1a9d60b8f41f310249633f592",
+      "sourceHash": "6124060cc471ccfecb22da47b0d763f9846ca670c777122ff40baa52cded545b",
       "customContainers": []
     },
     {
@@ -2672,8 +2672,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T21:10:31.506Z",
-      "reason": "완료된 기준 퀀트 결과의 모의 판단 링크와 모의 자금·AI 키 준비 조건을 연결한다.",
+      "reviewedAt": "2026-11-11T23:05:03.630Z",
+      "reason": "비교 펼침과 보고서·원본을 같은 실험에서 읽고, 기존 실험 목록의 검색·필터·선택 행으로 복귀했다.",
       "signature": "4a6a7acd965b4e834735f7a54f75cb313758841d36fd791a441ccf0891ee6a0f",
       "controls": [
         [
@@ -2733,7 +2733,7 @@
           2
         ]
       ],
-      "sourceHash": "e43cfcef94ab065fffedeadb75d696e3663f620be3442afcd4a2daf94e7e18fa",
+      "sourceHash": "6a5f28f970d6201677a8e3ca63a7951847b57c57c81e3511d6f5154f68b943a7",
       "customContainers": []
     },
     {

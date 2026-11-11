@@ -30,6 +30,7 @@ test('paper home links to saved decisions and latest completed experiments indep
   assert.equal(performance.latestPaperExperiment.simulationId,'simulation-latest');
   assert.equal(performance.experimentBest.simulationId,'simulation-winner');
   const paper=renderHomeShowcase({performance},{params:new URLSearchParams()});
+  assert.match(paper,/href="#[^"]*profileId=all[^"]*view=simulations[^"]*"[^>]*>전체 시뮬레이션/);
   assert.match(paper,/search=mind-run-saved[^"]*"[^>]*>[^]*?최근 모의 판단/);
   assert.match(paper,/simulationId=simulation-latest[^"]*"[^>]*>[^]*?최근 완료 실험/);
   const empty=renderHomeShowcase({performance:null},{params:new URLSearchParams()});
@@ -38,6 +39,7 @@ test('paper home links to saved decisions and latest completed experiments indep
   const live=buildHomePerformance({workspace,executionMode:'live',asOf});
   assert.equal(Object.hasOwn(live,'latestPaperDecision'),false);
   assert.doesNotMatch(renderHomeShowcase({performance:live},{params:new URLSearchParams('executionMode=live')}),/home-paper-results/);
+  assert.doesNotMatch(renderHomeShowcase({performance:live},{params:new URLSearchParams('executionMode=live')}),/>전체 시뮬레이션/);
 });
 
 test('returning to paper home reloads completed experiments at the same workspace revision',async()=>{
