@@ -10,5 +10,5 @@ test('APK uses canonical private app and notification shortcut without adding fi
  assert.throws(()=>androidAppConfig(web,'http://app.test',fingerprint),/HTTPS/);assert.throws(()=>androidAppConfig({...web,start_url:'https://other.test/'},origin,fingerprint),/SAME_ORIGIN/);assert.throws(()=>androidAssetLinks(c,'invalid'),/CERTIFICATE/);
 });
 test('existing installation page offers the signed APK while retaining web installation',()=>{
- const html=fs.readFileSync('dist/install.html','utf8');assert.match(html,/href="\.\/downloads\/chungji-1\.0\.0\.apk" download/);assert.match(html,/data-app-install/);assert.match(html,/Tailscale/);
+ const html=fs.readFileSync('dist/install.html','utf8');assert.match(html,/href="\.\/downloads\/viv-1\.0\.1\.apk" download/);assert.match(html,/data-app-install/);assert.match(html,/Tailscale/);
 });

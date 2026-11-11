@@ -1,9 +1,9 @@
 {
   "id": "/",
-  "name": "청지 · Vibe investing",
-  "short_name": "청지",
+  "name": "VIV",
+  "short_name": "VIV",
   "lang": "ko",
-  "start_url": "/#minds?profileId=all&executionMode=live&view=overview",
+  "start_url": "/#minds?profileId=all&executionMode=paper&view=overview",
   "scope": "/",
   "display": "standalone",
   "background_color": "#101214",

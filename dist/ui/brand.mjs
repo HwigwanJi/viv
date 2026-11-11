@@ -1,4 +1,4 @@
-export const APP_BRAND=Object.freeze({name:'청지 · Vibe investing',shortName:'청지',descriptor:'Vibe investing',initials:'CJ',downloadPrefix:'chung-ji'});
+export const APP_BRAND=Object.freeze({name:'VIV',shortName:'VIV',descriptor:'Vibe Investment',initials:'V',downloadPrefix:'viv'});
 export const investmentFilename=name=>`${APP_BRAND.downloadPrefix}-${name}`;
 const esc=value=>value.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 export function investmentBrandMarkup({href='#home'}={}){return `<a class="brand" href="${esc(href)}" data-nav="home" aria-label="${esc(APP_BRAND.name)}" title="${esc(APP_BRAND.name)}"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 7 9 17 15 7M13 17l8-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="brand-name">${esc(APP_BRAND.shortName)}<small>${APP_BRAND.descriptor}</small></div></a>`;}

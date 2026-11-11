@@ -18,7 +18,7 @@ export function createEventDecisionGraph({timeframe='1m',params={},instrumentId=
  add('INPUT','decision-market','확정 가격 경로와 체결 흐름',{...micro,metricId:'DECISION_CONTEXT'});
  add('INPUT','decision-position','현재 포지션과 최근 체결',{kind:'POSITION',instrumentId:'execution:current',metricId:'TRADE_HISTORY',required:true,maxAgeMs:3000});
  const instructions=[
-  '컨텍스트1: 너는 청지 코인 스캘핑 마인드모델의 AI 판단 부분이다. 퀀트의 고정 조건이 놓치는 기회와 취약점을 현재 가격과 수급의 흐름에서 찾아 수익 기회를 판단한다.',
+  '컨텍스트1: 너는 VIV 코인 스캘핑 마인드모델의 AI 판단 부분이다. 퀀트의 고정 조건이 놓치는 기회와 취약점을 현재 가격과 수급의 흐름에서 찾아 수익 기회를 판단한다.',
   `컨텍스트2: ${quantContext}살필 취약점은 고정 청산 시점, 상승 중 보유 종료, 매매 반복 비용이다. 과거 사례와 현재 흐름을 연결해 대응할 기회를 찾는다.`,
   '페르소나: 너는 스캘핑 전문가다. 연결된 확정 분봉, 관측 체결 흐름, 호가 지표, 비용과 현재 포지션을 근거로 지금 승부를 걸 타이밍인가, 걸어볼 만한가를 판단한다.',
  ];
@@ -50,7 +50,7 @@ export function createEventDecisionGraph({timeframe='1m',params={},instrumentId=
  if(selectionInstrumentIds.length){
   if(instrumentId!==null||selectionInstrumentIds.length<2||selectionInstrumentIds.length>20||new Set(selectionInstrumentIds).size!==selectionInstrumentIds.length)throw new TypeError('AI 종목 선택에는 서로 다른 후보 2~20개를 연결하세요.');
   const rank=graph.nodes.find(n=>n.id==='universe-rank');rank.config.terms=[2,6,20].map(lookback=>({metric:'MOMENTUM',lookback,weight:1}));
-  add('JEV_QUESTION','ai-selection','AI 종목 비교와 현금 선택',{provider:'JEV',reuseWindowMs:0,question:{schemaVersion:1,contractVersion:JEV_QUESTION_CONTRACT,id:'ai-selection',type:'choice',instructions:['컨텍스트1: 너는 청지 코인 스캘핑 마인드모델의 종목 선택 AI다. 퀀트 순위를 출발점으로 지금 승부를 검토할 종목을 찾는다.','컨텍스트2: 퀀트 순위는 2봉·6봉·20봉 모멘텀의 평균이다. 연결된 후보의 모멘텀, 변동성과 거래대금을 비교해 상승의 연속성과 추격 부담을 해석한다.','페르소나: 너는 스캘핑 전문가다. 현재 연결된 후보 중 가장 승부를 걸어볼 만한 종목 하나 또는 현금을 선택한다.'],candidates:[...selectionInstrumentIds.map(id=>({id,label:id,description:'이 종목의 기회를 우선 검토한다.'})),{id:'CASH',label:'현금',description:'현금을 유지하고 다음 기회를 기다린다.'}]}});
+  add('JEV_QUESTION','ai-selection','AI 종목 비교와 현금 선택',{provider:'JEV',reuseWindowMs:0,question:{schemaVersion:1,contractVersion:JEV_QUESTION_CONTRACT,id:'ai-selection',type:'choice',instructions:['컨텍스트1: 너는 VIV 코인 스캘핑 마인드모델의 종목 선택 AI다. 퀀트 순위를 출발점으로 지금 승부를 검토할 종목을 찾는다.','컨텍스트2: 퀀트 순위는 2봉·6봉·20봉 모멘텀의 평균이다. 연결된 후보의 모멘텀, 변동성과 거래대금을 비교해 상승의 연속성과 추격 부담을 해석한다.','페르소나: 너는 스캘핑 전문가다. 현재 연결된 후보 중 가장 승부를 걸어볼 만한 종목 하나 또는 현금을 선택한다.'],candidates:[...selectionInstrumentIds.map(id=>({id,label:id,description:'이 종목의 기회를 우선 검토한다.'})),{id:'CASH',label:'현금',description:'현금을 유지하고 다음 기회를 기다린다.'}]}});
   edge('universe-rank','ai-selection','rank','context');edge('ai-selection','universe-select','value','choice');
   edge('universe-rank','ai-holding','rank','context');
   if(surge){const q=graph.nodes.find(n=>n.id==='ai-selection').config.question;q.instructions=surgeMindInstructions('SELECTION','연결된 후보의 2봉·6봉·20봉 모멘텀, 변동성과 거래대금을 비교한다.');q.candidates=q.candidates.map(c=>({...c,description:c.id==='CASH'?'현재 후보보다 현금의 기회가 우세하다.':`이 종목을 선택하고 목표 비중 ${entry.buyTargetWeight}까지 진입한다.`}));replace('spread-filter','true','entry');}

@@ -3,6 +3,7 @@
 [CmdletBinding()]
 param(
     [switch]$Mobile,
+    [switch]$CodexMcp,
     [switch]$StartOnly,
     [ValidateRange(1024, 65535)][int]$Port = 4317
 )
@@ -144,10 +145,12 @@ try {
         $null = Test-App $mobileUrl
     }
     $ready = $true
+    if ($CodexMcp) { & (Join-Path $PSScriptRoot 'install-viv-mcp.ps1') -Port $Port }
     [ordered]@{
         serverPid = $server.Id
         desktopUrl = $localUrl
         mobileInstallUrl = if ($mobileUrl) { "$mobileUrl/install.html" } else { $null }
+        mcpUrl = "$localUrl/mcp"
         liveRunner = 'disabled'
         aiKey = if ($status.jev.configured) { 'configured-unverified' } else { 'not-configured' }
     } | ConvertTo-Json

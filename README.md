@@ -1,9 +1,9 @@
-# Chung & Ji Investment — Windows self-host
+# VIV · Vibe Investment
 
-[독립 설치 및 Tailscale 모바일 연결](docs/agents/operations/self-host.md)
+[독립 설치 및 Tailscale 모바일 연결](docs/agents/operations/self-host.md) · [VIV MCP 플레이북](docs/agents/operations/viv-mcp-playbook.md)
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -Mobile
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -Mobile -CodexMcp
 ```
 
 Requires Node.js 24 and npm. For a local-only installation, omit `-Mobile`.

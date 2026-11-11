@@ -1,10 +1,10 @@
-# 청지 Android APK
+# VIV Android APK
 
-기존 청지 HTTPS 앱을 여는 Google Trusted Web Activity 패키지다. 브라우저의 보안 갱신과 기존 알림함·Web Push·승인 화면을 함께 사용한다.
+기존 VIV HTTPS 앱을 여는 Google Trusted Web Activity 패키지다. 브라우저의 보안 갱신과 기존 알림함·Web Push·승인 화면을 함께 사용한다.
 
-- 패키지: `kr.chungji.investment`, 버전 `1.0.0`, Android 7 이상
+- 패키지: `kr.chungji.investment`, 버전 `1.0.1`, Android 7 이상
 - 앱 주소: `.runtime/mobile-access.json`의 기존 비공개 HTTPS 주소
-- APK 빌드를 게시한 경우 다운로드는 `/downloads/chungji-1.0.0.apk`다. 휴대폰 설치 안내는 `/install.html`에서 연다.
+- APK 빌드를 게시한 경우 다운로드는 `/downloads/viv-1.0.1.apk`다. 휴대폰 설치 안내는 `/install.html`에서 연다.
 - 휴대폰에서 Tailscale과 Chrome을 준비하고 알림을 한 번 허용한다. PC 앱 서버도 켜져 있어야 한다.
 - 승인 대기 알림의 `승인` 버튼은 기존 운용 승인 API를 한 번 호출해 확정한다. 알림 본문·`내용 보기`·바로가기는 해당 `notice` 화면을 연다. 서버의 알림 코드는 앱을 다시 열 때 갱신되므로 이 변경에 APK 재설치는 필요 없다.
 

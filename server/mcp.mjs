@@ -12,6 +12,7 @@ import {CLUTCH_DEFAULTS,CLUTCH_PARAMETER_SCHEMA,validateClutchParameters} from '
 import {compileStrategyGraph} from '../dist/domain/strategy-graph.mjs';
 import {assertStrategyLearningResearchInput,strategyLearningResearchProtocol} from './strategy-learning-research.mjs';
 import {MARKET_TIMEFRAME_MS} from '../dist/domain/instruments.mjs';
+import {VIV_INSTRUCTIONS,VIV_PLAYBOOK,vivOnboarding} from './viv-onboarding.mjs';
 const identifierSchema={type:'string',minLength:1,maxLength:200,pattern:'^[a-zA-Z0-9][a-zA-Z0-9_.:@-]{0,199}$'};
 const revisionSchema={type:'integer',minimum:0,maximum:Number.MAX_SAFE_INTEGER};
 const objectSchema=(properties={},required=[])=>({type:'object',properties,...(required.length?{required}:{}),additionalProperties:false});
@@ -26,6 +27,7 @@ const learningSourceSchema={oneOf:[objectSchema({assetMode:{const:'UPBIT_EVENT_S
 const researchReferenceSchema=objectSchema({kind:{enum:['MARKET_KNOWLEDGE','MIND_DOCUMENT','EVENT_PAPER_RECORD','LIVE_AUTOMATION_EVENT']},id:identifierSchema,contentHash:hashSchema,subscriptionId:identifierSchema,activationId:identifierSchema},['kind','id','contentHash']);
 const learningResearchSchema=objectSchema({contractVersion:{const:'EXTERNAL_RESEARCH_PROTOCOL_V1'},hypothesis:{type:'string',minLength:1,maxLength:6000},cutoffAt:{type:'string',format:'date-time'},sourceManifestHash:hashSchema,references:{type:'array',minItems:1,maxItems:32,items:researchReferenceSchema}},['contractVersion','hypothesis','cutoffAt','sourceManifestHash','references']);
 const schemas={
+  viv_onboarding:objectSchema({interest:{enum:['stocks','crypto','both']},amountKrw:{type:'integer',minimum:1,maximum:1e12},idempotencyKey:identifierSchema}),
   validate_strategy_ontology:ONTOLOGY_VALIDATION_SCHEMA,
   read_strategy_ontology:objectSchema(),
  ...Object.fromEntries(HOURLY_LEARNING_ACTIONS.map(a=>[a.mcp_tool,a.inputSchema])),
@@ -61,6 +63,7 @@ const schemas={
   read_mind_manifest:objectSchema({mindId:identifierSchema,format:{type:'string',enum:['json','yaml']}},['mindId','format']),
 };
 const descriptions={
+  viv_onboarding:'VIV 첫 시작 안내와 기존 모의 원화 예산을 조회합니다. 인수 없이 시작하고, 사용자가 분야와 금액을 선택하면 세 인수를 함께 보내 최초 공용 모의 예산만 생성합니다. 튜토리얼 목록과 인앱 확인 링크를 반환합니다.',
   validate_strategy_ontology:'종목·계좌·자료·판단의 명시한 객체와 관계를 공용 온톨로지로 검사합니다. 관계 종류·개수·종목/계좌 일치·시점·자료 계보 순환을 검사하고 오류 대상과 경로를 반환합니다. complete가 false면 제공한 사실만 검사합니다. 주문·설정·저장을 수행하지 않습니다.',
   read_strategy_ontology:'노드 편집기와 API의 같은 온톨로지를 조회합니다. 종목·계좌·자료·판단·주문 관계, 역할 코호트, 포트 자료형·실제 연결 지원 상태와 공용 기능 계약을 반환합니다. 운용이나 설정을 변경하지 않습니다.',
  ...Object.fromEntries(HOURLY_LEARNING_ACTIONS.map(a=>[a.mcp_tool,a.description])),
@@ -105,6 +108,7 @@ function validArguments(name,args){
   const automation=automationTool(name);if(automation)return validAutomationInput(automation,args)&&safeDocument(args);
   if(!plain(args)||!Object.hasOwn(schemas,name)||Object.keys(args).some(key=>!Object.hasOwn(schemas[name].properties,key)))return false;
   if((schemas[name].required??[]).some(key=>!Object.hasOwn(args,key)))return false;
+  if(name==='viv_onboarding')return Object.keys(args).length===0||Object.keys(args).length===3&&['stocks','crypto','both'].includes(args.interest)&&Number.isSafeInteger(args.amountKrw)&&args.amountKrw>0&&args.amountKrw<=1e12&&id(args.idempotencyKey);
   if(name==='read_event_paper'){
     const view=args.view??'status';if(!['status','records'].includes(view))return false;
     if(view==='status'&&(!id(args.profileId)||Object.hasOwn(args,'subscriptionId')||Object.hasOwn(args,'limit'))||view==='records'&&(!id(args.subscriptionId)||Object.hasOwn(args,'profileId')||args.limit!==undefined&&(!Number.isInteger(args.limit)||args.limit<1||args.limit>100)))return false;
@@ -217,7 +221,12 @@ async function callMindTool(request,env,options,name,args){
     const path='/api/workspace/quant-strategies'+(strategyVersionId?(format?'/export':'/item')+'?'+new URLSearchParams({id:strategyVersionId,...(format?{format}:{})}):'?'+new URLSearchParams(filters));
     const result=await studioCall(request,env,options,path);return toolResult(result.value,!result.ok);
   }
-  if(name==='draft_quant_strategy'){const result=await studioCall(request,env,options,'/api/workspace/quant-strategies/draft',{method:'POST',body:args});return toolResult(result.value,!result.ok);}
+  if(name==='draft_quant_strategy'){
+    const result=await studioCall(request,env,options,'/api/workspace/quant-strategies/draft',{method:'POST',body:args});
+    const name=result.value.item?.name;
+    if(result.ok&&name)result.value.openUrl=new URL('/#library?'+new URLSearchParams({view:'quant',section:'components',executionMode:'paper',status:'DRAFT',search:name}),request.url).href;
+    return toolResult(result.value,!result.ok);
+  }
   if(name==='draft_mind_policy'){const result=await studioCall(request,env,options,'/api/workspace/mind-documents/policy-draft',{method:'POST',body:args});return toolResult(result.value,!result.ok);}
   if(name==='read_mind_catalog'){
     const [catalog,forms]=await Promise.all([studioCall(request,env,options,'/api/workspace/minds'),studioCall(request,env,options,'/api/workspace/mind-forms')]);
@@ -242,7 +251,13 @@ async function callMindTool(request,env,options,name,args){
   if(name==='classify_mind_document'){
     const lookup=await studioCall(request,env,options,'/api/workspace/market-knowledge/item?'+new URLSearchParams({id:args.documentId}));shared=lookup.ok;if(!lookup.ok&&lookup.value.code!=='KNOWLEDGE_NOT_FOUND')return toolResult(lookup.value,true);
   }
-  if(shared){const path='/api/workspace/market-knowledge/'+(['classify_market_knowledge','classify_mind_document'].includes(name)?'classify':'write');const result=await studioCall(request,env,options,path,{method:'POST',body:args});return toolResult(result.value,!result.ok);}
+  if(shared){
+    const path='/api/workspace/market-knowledge/'+(['classify_market_knowledge','classify_mind_document'].includes(name)?'classify':'write');
+    const result=await studioCall(request,env,options,path,{method:'POST',body:args});
+    const knowledgeId=result.value.item?.id;
+    if(result.ok&&path.endsWith('/write')&&knowledgeId)result.value.openUrl=new URL('/#library?'+new URLSearchParams({view:'documents',executionMode:'paper',knowledgeId}),request.url).href;
+    return toolResult(result.value,!result.ok);
+  }
   const path=name==='write_mind_document'?'/api/workspace/mind-documents':name==='classify_mind_document'?'/api/workspace/mind-documents/classify':'/api/workspace/minds/export?'+new URLSearchParams({mindId:args.mindId,format:args.format});
   const result=await studioCall(request,env,options,path,name==='read_mind_manifest'?{}:{method:'POST',body:args});return toolResult(result.value,!result.ok);
 }
@@ -257,6 +272,14 @@ export async function handleMcp(request,env,options={}){
   }catch{return json({error:'Invalid JSON'},400);}
   if(!input||typeof input!=='object'||Array.isArray(input)||input.jsonrpc!=='2.0'||typeof input.method!=='string')return json({jsonrpc:'2.0',id:null,error:{code:-32600,message:'Invalid request'}},400);
   const id=input.id??null,reply=result=>json({jsonrpc:'2.0',id,result});
+  if(input.method==='initialize'){
+    const versions=['2025-11-25','2025-06-18','2025-03-26','2024-11-05'];
+    return reply({protocolVersion:versions.includes(input.params?.protocolVersion)?input.params.protocolVersion:versions[0],capabilities:{tools:{},prompts:{}},serverInfo:{name:'viv',title:'VIV · Vibe Investment',version:'1.0.0'},instructions:VIV_INSTRUCTIONS});
+  }
+  if(input.method.startsWith('notifications/')&&!Object.hasOwn(input,'id'))return new Response(null,{status:202});
+  if(input.method==='ping')return reply({});
+  if(input.method==='prompts/list')return reply({prompts:[{name:'viv_start',title:'VIV 시작하기',description:'모의계좌를 준비하고 선택형 튜토리얼을 진행합니다.'}]});
+  if(input.method==='prompts/get'&&input.params?.name==='viv_start')return reply({description:'VIV 시작하기',messages:[{role:'user',content:{type:'text',text:VIV_PLAYBOOK}}]});
   if(input.method==='server/discover')return reply({supportedVersions:['2026-07-28'],capabilities:{tools:{}}});
   if(input.method==='tools/list')return reply({tools:Object.entries(schemas).map(([name,inputSchema])=>({name,inputSchema,description:descriptions[name],annotations:automationTool(name)?{readOnlyHint:automationTool(name).api.method==='GET',destructiveHint:['automation.trading.activate','automation.trading.resume','automation.trading.strategy.update'].includes(automationTool(name).id),idempotentHint:automationTool(name).idempotent,openWorldHint:['automation.trading.prepare','automation.trading.activate','automation.trading.resume','automation.trading.strategy.update'].includes(automationTool(name).id)}:{readOnlyHint:readTools.has(name),destructiveHint:['activate_automated_trading','configure_hourly_model_learning'].includes(name),idempotentHint:!['run_due_paper_jobs','prepare_automated_trading','activate_automated_trading','configure_hourly_model_learning'].includes(name),openWorldHint:['prepare_automated_trading','activate_automated_trading','prepare_event_paper','step_strategy_learning','run_due_paper_jobs','read_trading_context','classify_mind_document','classify_market_knowledge'].includes(name)}}))});
   if(input.method==='tools/call'){
@@ -264,6 +287,12 @@ export async function handleMcp(request,env,options={}){
     if(!Object.hasOwn(schemas,name)||!owner||!validArguments(name,args))return reply(toolResult({ok:false,code:'INVALID_TOOL_ARGUMENTS',message:'로그인과 요청 항목을 확인하세요.'},true));
     if(name==='read_strategy_ontology')return reply(toolResult({ok:true,manifest:capabilityManifest()}));
     if(name==='validate_strategy_ontology')return reply(toolResult({ok:true,report:validateOntologyFacts(args)}));
+    if(name==='viv_onboarding'){
+      try{
+        const result=await vivOnboarding(args,{origin:new URL(request.url).origin,call:(path,init)=>studioCall(request,env,options,path,init)});
+        return reply(toolResult({...result.value,playbook:VIV_PLAYBOOK},!result.ok));
+      }catch{return reply(toolResult({ok:false,code:'VIV_ONBOARDING_FAILED',message:'모의계좌를 확인하지 못했습니다. 연결을 확인한 뒤 다시 시도하세요.'},true));}
+    }
     if(!['read_investment_status','run_due_paper_jobs'].includes(name)){
       try{return reply(await callMindTool(request,env,options,name,args));}catch{return reply(toolResult({ok:false,code:'MIND_TOOL_FAILED',message:'분석 도구 실행을 완료하지 못했습니다. 앱의 연결 상태와 문서 형식을 확인하세요.'},true));}
     }

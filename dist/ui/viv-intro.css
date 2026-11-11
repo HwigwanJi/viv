@@ -1,0 +1,62 @@
+.viv-intro {
+  min-height: 100dvh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: clamp(1rem, 4vh, 2rem);
+  overflow: hidden;
+  isolation: isolate;
+  background: radial-gradient(ellipse at 50% 36%, #232945, #10111a 58%, #0a0b10);
+  color: #f4f4ff;
+  text-align: center;
+  font-family: "Instrument Sans", system-ui, sans-serif;
+}
+.viv-intro-orbit {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(12rem, 49vmin, 26rem);
+  aspect-ratio: 1;
+}
+.viv-intro-orbit i {
+  position: absolute;
+  inset: 7%;
+  border: 1px solid #d3f66a;
+  border-radius: 50%;
+  transform: rotate(-37deg) scaleY(.42);
+  box-shadow: inset 0 0 24px #d3f66a30, 0 0 30px #d3f66a38;
+  animation: viv-orbit 6s cubic-bezier(.52,.1,.44,.94) infinite;
+}
+.viv-intro-orbit i:nth-child(2) {
+  border-color: #ac9bff;
+  animation-delay: -2s;
+}
+.viv-intro-orbit i:nth-child(3) {
+  border-color: #e9e4ff;
+  animation-delay: -4s;
+}
+.viv-intro-orbit strong {
+  z-index: 1;
+  font-weight: 860;
+  font-size: clamp(5rem, 23vmin, 12rem);
+  letter-spacing: -.1em;
+  line-height: 1;
+  padding-inline-end: .1em;
+  text-shadow: 0 0 36px #10111a;
+}
+.viv-intro p {
+  margin: 0;
+  color: #dbf986;
+  font-size: clamp(.85rem, 3vmin, 1.25rem);
+  letter-spacing: .085em;
+}
+.viv-intro-status { color: #c0bfd2; font-size: .75rem; }
+@keyframes viv-orbit {
+  0%, 100% { transform: rotate(-37deg) scaleY(.42); opacity: .42; }
+  50% { transform: rotate(143deg) scaleY(.77); opacity: .9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .viv-intro-orbit i { animation: none; }
+  .viv-intro-orbit i:nth-child(2) { transform: rotate(38deg) scaleY(.57); }
+  .viv-intro-orbit i:nth-child(3) { transform: rotate(90deg) scaleY(.8); }
+}

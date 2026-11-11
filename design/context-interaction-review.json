@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "77af015146d76eabc979adbf9bdbc7e54e8c3036199c24d9dadf9408a97e862f",
+      "sourceHash": "65e416bcc5e98e1fde9db34703bf3d6a427096773cf0914295fb373e836a914b",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -64,7 +64,7 @@
           1
         ]
       ],
-      "sourceHash": "c3e73a0b443fd69df02b8bd9a899a1b77261fbd38e952900554ac0f9210d0126"
+      "sourceHash": "92296be9267666476dbdaa4168288720ed765da165c4056e3ff17bed14d639af"
     },
     {
       "file": "dist/install.html",
@@ -94,7 +94,7 @@
           1
         ]
       ],
-      "sourceHash": "95cbbd6d8276f9ed748cef3afa90e1aa892ae0bbfe7c9560c5e1feb97cc4e442"
+      "sourceHash": "cefaf80619b5b1b483a1d0505b1891094ce5d3c5a8fb5ab5dfa96c73ed298fd7"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -188,7 +188,7 @@
       "reason": "알림 원문·현재 처리 상태와 연결한 동일 명령을 재사용한다. 완료 삭제/진행 중 비활성/휴지통 복원을 공용 서버 규칙과 대조한다.",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "1d35ded6754d20076c351fed6b356d13d56fe655395490119bfb60992aa25797"
+      "sourceHash": "2b771e38737e88d72339cbe604d8ccb8643571ba078d9b6ab6f450859bf77e10"
     },
     {
       "file": "dist/research/regime-minute-forward-20261023/index.html",
@@ -273,7 +273,7 @@
       "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "270516407e1eed49bc658fd7f557d66ee9b7cac49f0dba6d2350405d592e5045"
+      "sourceHash": "dfb67830bfe33ccf475d36a71938b99ae3c9c5cda89901646aeaa075c6d9a2e0"
     },
     {
       "file": "dist/strategy-view.mjs",
@@ -343,7 +343,7 @@
           2
         ]
       ],
-      "sourceHash": "0f64205c43488f3379daf600646414d7cba91ab8dbe67ce76e275bc42dc54596"
+      "sourceHash": "d1bf7c1866e1e3697209d03abbdc5ee44c55639a942ef0e55bed65b739002553"
     },
     {
       "file": "dist/ui/app-notifications.mjs",
@@ -356,7 +356,7 @@
       "reviewedAt": "2026-11-10T13:44:49.618Z",
       "reason": "118: 알림 변경 ack와 후속 GET 실패 분리. 오래된 읽음/삭제/복원/승인 동작 방지·복사/내용/닫기 유지. 기존 재조회 버튼으로 복구하고 상세 읽지 않음 선택 보존. 알림함/요청/휴지통/개별 상세/원본 상태 보호와 메뉴 호출부 검토.",
       "signature": "adcf96ec6c68661b79152111486d952681bc41b1d59f8e27b3c150eeed8b124e",
-      "sourceHash": "235fc385c459107e504481735dd7c3ab0bf55473423efd29e79da53830cedfdb",
+      "sourceHash": "693c36235e81df9433b39fb4240368cb0f9e8f28dc7a34d19b6eafc421868189",
       "matrix": "design/context-action-matrix.json",
       "controls": [
         [
@@ -524,7 +524,7 @@
           1
         ]
       ],
-      "sourceHash": "2305dd4b2940c27baccd90a5cec677dc5830d57fe04a73a6359cea5d21dde3bc"
+      "sourceHash": "648582809e3ce146ac505b7915c038ba05ca6949ce667fb3055729c19bd51b64"
     },
     {
       "file": "dist/ui/broker-connections.mjs",
@@ -1336,7 +1336,7 @@
           1
         ]
       ],
-      "sourceHash": "b00cd4d042b597532db21b2d8318ee60cef33b58e9870a57d17cb02963f7b910"
+      "sourceHash": "b756b2b88e43e6fb89a6ee31565e7cf41c09f5d11783e6b9eae2997b62aff304"
     },
     {
       "file": "dist/ui/interface-motion.mjs",
@@ -3115,7 +3115,7 @@
           1
         ]
       ],
-      "sourceHash": "232ed859cda9fd3411c80413ca48d8810d44bbd56bb211daca5b5f75e5fed1dd"
+      "sourceHash": "0dba305aa49571c1215daea594a2a1ff82260ac5a9de9e3685b08c0130d2069f"
     },
     {
       "file": "dist/ui/strategy-ui-samples.mjs",
@@ -3668,7 +3668,7 @@
         ]
       ],
       "signature": "f0da04e992781fa3170a596a30e9363b1839417c7e1c9b194875884c93fbb107",
-      "sourceHash": "c693e041f69443e893125c137017b0cf82972f691611ce6f1626b46825d89229",
+      "sourceHash": "2455a366b338229bc6aa4162601e7bb1584fbc02af2b9fd814a55775b0b80414",
       "review": "BROWSER_VERIFIED",
       "reviewedAt": "2026-11-08T23:41:37.517Z",
       "reason": "운영 서버의 실제 운용 더보기→운용보고서→보고서 새 창, 알림함→정정 보고서→보고서 새 창, CSV 실제 다운로드, 1280px/390px 화면, 표·12개 항목과 PDF를 대조했다. 증거 artifacts/cji-brokerage-report-20261108/browser-verification.json 및 report-*.png, app-report-*.png."

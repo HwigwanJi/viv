@@ -4,14 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="">
-  <meta name="description" content="청지. 나의 마인드, 판단과 실행이 연결되는 바이브 투자 작업실.">
-  <meta name="application-name" content="청지 · Vibe investing">
-  <meta name="apple-mobile-web-app-title" content="청지">
+  <meta name="description" content="VIV. 나의 마인드, 판단과 실행이 연결되는 투자 작업실.">
+  <meta name="application-name" content="VIV">
+  <meta name="apple-mobile-web-app-title" content="VIV">
   <link rel="manifest" href="./manifest.json">
   <link rel="apple-touch-icon" href="./app-icon-192.png">
-  <title>청지 | Vibe investing</title>
+  <title>VIV</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <script src="./ui/theme-init.js"></script>
+  <link rel="stylesheet" href="./ui/viv-intro.css">
   <link rel="stylesheet" href="./ui/tailwind.css">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./ui/console.css">
@@ -24,7 +25,16 @@
   <link rel="stylesheet" href="./ui/strategy-graph-editor.css">
 </head>
 <body>
-  <div id="app"><p class="loading">불러오는 중입니다.</p></div>
+  <div id="app">
+    <div class="viv-intro" role="status">
+      <div class="viv-intro-orbit" aria-hidden="true">
+        <i></i><i></i><i></i>
+        <strong>viv</strong>
+      </div>
+      <p>good vibe, good investment</p>
+      <span class="viv-intro-status">VIV 불러오는 중</span>
+    </div>
+  </div>
   <div id="toast" role="status" aria-live="polite"></div>
   <dialog id="detail-dialog" aria-labelledby="dialog-title"></dialog>
   <script type="module" src="./app.mjs"></script>

@@ -97,7 +97,7 @@ export async function handleAppNotificationsAPI(request,env,options={}){
    await stmt(db,'DELETE FROM app_push_subscriptions WHERE owner_id=? AND id=?',owner,body.subscriptionId).run();return json({ok:true});
   }
   if(url.pathname==='/api/app-notifications/test'){
-   const item=await publishAppNotification({db,owner,notification:{id:'test-'+randomUUID(),title:'청지 알림 연결 확인',body:'이 알림을 누르면 청지 앱의 같은 요청 화면이 열립니다.',status:'INFO',createdAt:new Date().toISOString()}});return json({ok:true,item});
+   const item=await publishAppNotification({db,owner,notification:{id:'test-'+randomUUID(),title:'VIV 알림 연결 확인',body:'이 알림을 누르면 VIV 앱의 같은 요청 화면이 열립니다.',status:'INFO',createdAt:new Date().toISOString()}});return json({ok:true,item});
   }
   return json({ok:false,code:'NOT_FOUND'},404);
  }catch(error){return json({ok:false,code:error.code??'NOTIFICATION_INPUT',message:error.code?error.message:'알림 요청 형식과 연결 상태를 확인하세요.'},error.status??400);}
@@ -112,7 +112,7 @@ export function createAppPushDispatcher({db,keys,subject,send,now=()=>new Date()
   for(const r of rows){
    if(stopped)break;const n=JSON.parse(r.body),args=[r.owner_id,r.subscription_id,r.id];if(await stmt(db,'SELECT notification_id FROM app_notification_approvals WHERE owner_id=? AND notification_id=?',r.owner_id,r.id).first())continue;let status='SENT',nextAt=now();
    if(n.status==='APPROVAL_READY'&&(await currentNotification(db,r.owner_id,n,now())).status!=='APPROVAL_READY'){await stmt(db,"INSERT OR REPLACE INTO app_push_deliveries(owner_id,subscription_id,notification_id,status,attempts,next_at) VALUES(?,?,?,'OBSOLETE',?,?)",...args,r.attempts,now()).run();continue;}
-   try{await send(JSON.parse(r.subscription_body),JSON.stringify({title:n.status==='APPROVAL_READY'?n.title:'청지 · 확인할 요청이 있습니다',body:n.status==='APPROVAL_READY'?n.body:'앱에서 대상과 변경 내용을 확인하세요.',id:n.id,url:n.href,approvalReady:n.status==='APPROVAL_READY'}),{TTL:86400,timeout:10000,urgency:'normal',vapidDetails:{subject,publicKey:keys.publicKey,privateKey:keys.privateKey}});}
+   try{await send(JSON.parse(r.subscription_body),JSON.stringify({title:n.status==='APPROVAL_READY'?n.title:'VIV · 확인할 요청이 있습니다',body:n.status==='APPROVAL_READY'?n.body:'앱에서 대상과 변경 내용을 확인하세요.',id:n.id,url:n.href,approvalReady:n.status==='APPROVAL_READY'}),{TTL:86400,timeout:10000,urgency:'normal',vapidDetails:{subject,publicKey:keys.publicKey,privateKey:keys.privateKey}});}
    catch(e){if([404,410].includes(e.statusCode)){status='EXPIRED';await stmt(db,'DELETE FROM app_push_subscriptions WHERE owner_id=? AND id=?',r.owner_id,r.subscription_id).run();}else{status='RETRY';nextAt=new Date(Date.parse(now())+Math.min(3600000,30000*2**Math.min(r.attempts,7))).toISOString();lastError={at:now(),code:e.statusCode??'PUSH_DELIVERY'};}}
    await stmt(db,'INSERT INTO app_push_deliveries(owner_id,subscription_id,notification_id,status,attempts,next_at) VALUES(?,?,?,?,?,?) ON CONFLICT(owner_id,subscription_id,notification_id) DO UPDATE SET status=excluded.status,attempts=excluded.attempts,next_at=excluded.next_at',...args,status,r.attempts+1,nextAt).run();
   }

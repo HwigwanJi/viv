@@ -35,7 +35,7 @@ const routeFocus=createStudioRouteFocus({getHash:()=>location.hash,find:selector
 function navigateToHeading(href){routeFocus.request(href,'.studio-content h1[tabindex="-1"]');if(location.hash===href)routeFocus.flush();else location.hash=href;}
 const dialogNavigation=createStudioDialogNavigation({getDialog:()=>$('#detail-dialog'),cleanup:cleanupStrategyEditor,restore:restoreDialogFocus});
 const studio=createStudioController({render,open:openDialog,openStrategyEditor,close:closeDialog,getDialogToken,toast,navigate,download,getRoute:()=>parseStudioRoute(location.hash)});
-const appInstall=createAppInstall({window,navigator,open:openDialog,onError:toast,onInstalled:()=>toast('청지 앱을 설치했습니다.')});
+const appInstall=createAppInstall({window,navigator,open:openDialog,onError:toast,onInstalled:()=>toast('VIV 앱을 설치했습니다.')});
 const appNotifications=createAppNotifications({window,navigator,open:openDialog,getDialogToken,onError:toast,openDocument:id=>studio.openDocument(id)});
 
 function toast(message){const node=$('#toast');node.textContent=message;node.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('show'),5000);}
@@ -58,6 +58,7 @@ function navigatePrimary(page){dialogLifecycleToken++;dialogNavigation.beforeRou
 let hudRenderPending=false;
 document.addEventListener('mind-hud-settled',()=>{if(hudRenderPending&&!document.querySelector('[data-hud-interacting]')){hudRenderPending=false;render();}});
 function render(){
+  if(document.querySelector('.viv-intro')&&studio.state().loading)return;
   if(document.querySelector('[data-hud-interacting]')&&document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash){hudRenderPending=true;return;}
   hudRenderPending=false;
   const headingFocus=document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash&&document.activeElement?.matches?.('.studio-content h1[tabindex="-1"]');
@@ -116,4 +117,4 @@ $('#detail-dialog').addEventListener('cancel',event=>{if(studio.state().formSavi
 document.addEventListener('keydown',event=>{if(event.key==='/'&&!event.metaKey&&!event.ctrlKey&&!event.isComposing&&!event.target.closest('input,textarea,select,[contenteditable="true"]')&&!$('#detail-dialog').open){event.preventDefault();const hash=studioRouteHash(parseStudioRoute(location.hash),'trade');routeFocus.request(hash,'[data-terminal-search]');navigate('trade');queueMicrotask(()=>{studio.terminal.focusInstrumentSearch();routeFocus.flush();});}});
 window.addEventListener('hashchange',()=>{dialogLifecycleToken++;dialogNavigation.beforeRouteChange();routeFocus.routeChanged(location.hash);render();studio.routeChanged(parseStudioRoute(location.hash));appNotifications.routeChanged();});
 const initial=parseStudioRoute(location.hash);if(location.hash!=='#'+initial.page+(initial.params.size?'?'+initial.params:''))history.replaceState(null,'','#'+initial.page+(initial.params.size?'?'+initial.params:''));
-render();studio.start();appNotifications.start();
+studio.start();render();appNotifications.start();
