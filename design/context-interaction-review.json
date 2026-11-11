@@ -561,9 +561,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T20:36:52.058Z",
-      "reason": "금융기관 카드에서 서버 준비 상태를 안내한다. 발급 후 서버 준비·재확인과 키 입력을 같은 창에서 연결한다.",
-      "signature": "121d9c26eaaf90f634c8de282ab3c5bfed1b7e8954beb5e75e08162149cc56dc",
+      "reviewedAt": "2026-11-11T22:35:21.254Z",
+      "reason": "서버 준비 재확인과 재시작 후 같은 창 복구를 검증했다. 오류를 모바일의 보이는 영역에 표시하고 금융기관 안내 옆에 VIV 오류 해결 문서를 연결한다.",
+      "signature": "4404165fc5306c12c7befa8619f3dbde5c0930da888add503e8269f2d57bec76",
       "controls": [
         [
           "data-broker-action",
@@ -579,7 +579,7 @@
         ],
         [
           "element:a",
-          4
+          5
         ],
         [
           "element:button",
@@ -602,7 +602,7 @@
           1
         ]
       ],
-      "sourceHash": "3ec54396edb7f35befafd06b673d7fb56428aebe1885cfd6cd8844ed63bce56b",
+      "sourceHash": "5dbd1f02a0109c1917e1ab5b83883484fd76a77fd9ff6a9b3a5f38973cc30036",
       "customContainers": []
     },
     {

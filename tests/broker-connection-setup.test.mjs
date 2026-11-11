@@ -87,3 +87,29 @@ test('a previously saved snapshot cannot confirm a new connection request',async
   assert.equal(closed,1);
   assert.deepEqual(toasts,['업비트 계좌 연결 및 잔고 조회 완료.']);
 });
+
+test('checking broker readiness recovers from a VIV server restart without sending credentials',async()=>{
+  const calls=[];
+  let failure=new TypeError('Failed to fetch');
+  const connections=createBrokerConnections({
+    request:async(path,body)=>{
+      calls.push({path,body});
+      if(failure)throw failure;
+      return {connections:[],canConnect:false,network:'IP_CONFIGURATION_REQUIRED',vault:'READY'};
+    },
+    route:()=>({page:'settings',params:new URLSearchParams({view:'accounts',executionMode:'live'})}),
+    redraw:()=>{},
+  });
+  assert.equal(await connections.load(),false);
+  assert.match(connections.render(),/VIV PC 주소가 열린 뒤 다시 확인하세요/);
+
+  failure=Object.assign(new Error('로그인이 필요합니다.'),{serverResponse:true});
+  assert.equal(await connections.load(),false);
+  assert.match(connections.render(),/로그인이 필요합니다/);
+
+  failure=null;
+  assert.equal(await connections.load(),true);
+  assert.match(connections.render(),/연결 준비 보기/);
+  assert.doesNotMatch(connections.render(),/서버의 응답을 확인하지 못했습니다/);
+  assert.deepEqual(calls,Array.from({length:3},()=>({path:'/api/workspace/brokers',body:undefined})));
+});
