@@ -42,7 +42,7 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
   const issue=data?.network!=='READY'?'서버 허용 IP 준비 필요':data?.vault==='CONFIGURATION_REQUIRED'?'서버 키 보관 설정 필요':'서버 연결 설정 필요';
   const ip=data?.egressIp?`<strong>${esc(data.egressIp)}</strong>`:'VIV 서버의 공인 IPv4';
   const copyIp=data?.egressIp?button('서버 IP 복사','copy-ip',provider):'';
-  const networkHelp=data?.network!=='READY'?'<p>금융기관 허용 IP에 '+ip+'를 등록하세요. '+copyIp+'</p><p>자체 설치에서는 등록 후 VIV 폴더의 <code>.env</code>에 <code>BROKER_NETWORK_READY=true</code>를 설정하고 서버를 다시 시작하세요.</p>':'';
+  const networkHelp=data?.network!=='READY'?'<p>금융기관 허용 IP에 '+ip+'를 등록하세요. '+copyIp+'</p><p>자체 설치에서는 등록 후 VIV 폴더의 <code>.env</code>에 <code>BROKER_NETWORK_READY=true</code>를 설정하고 서버를 다시 시작하세요.</p><p><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#계좌-연결과-잔고-확인" target="_blank" rel="noopener noreferrer">서버 준비 방법 ↗</a></p>':'';
   const vaultHelp=data?.vault==='CONFIGURATION_REQUIRED'?'<p>VIV 설치 때 생성한 <code>BROKER_VAULT_KEY</code> 설정을 서버에서 확인하세요.</p>':'';
   const guideUrl=upbit?'https://docs.upbit.com/kr/docs/api-setup':'https://developers.tossinvest.com/';
   const providerLinks=`<div class="actions"><a href="${urls[provider]}" target="_blank" rel="noopener">${names[provider]} API 관리 열기 ↗</a><a href="${guideUrl}" target="_blank" rel="noopener">발급 안내 ↗</a></div>`;

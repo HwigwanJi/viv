@@ -549,9 +549,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T14:01:53.180Z",
-      "reason": "격리 환경에서 서버 준비 단계, IP 복사, 키 입력, 권한 오류 복구, 잔고 조회를 검증했습니다.",
-      "signature": "023b6757f83a104f9c4d53ad33e0661f86b2adecbb02160f661fdc2e5bebdab9",
+      "reviewedAt": "2026-11-11T14:56:12.130Z",
+      "reason": "320px에서 서버 준비가 필요한 상태, 문서 바로가기와 닫기 동작을 확인했습니다.",
+      "signature": "1df915ce12599ad22b02645b63e39e32d69c61cadddccfa511e136639396c350",
       "controls": [
         [
           "data-broker-action",
@@ -567,7 +567,7 @@
         ],
         [
           "element:a",
-          2
+          3
         ],
         [
           "element:button",
@@ -586,7 +586,7 @@
           1
         ]
       ],
-      "sourceHash": "1f4250fa479645f5465d592ca6534ebc9bcd9ff6f06e71a4a8fe58b44d739709",
+      "sourceHash": "42a2cc038d1bef8ef1e84566b29458af5c2ffd3fa8444b636cc9590f24c2185a",
       "customContainers": []
     },
     {
@@ -3161,9 +3161,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T14:01:53.184Z",
-      "reason": "서비스 연결과 튜토리얼에서 실제 API 키 입력 화면으로 이어지는 정상 경로를 대조했습니다.",
-      "signature": "4fb6b51657f839451e15fa14dbeb30db475c074a0cb7e812db896c498437dbc7",
+      "reviewedAt": "2026-11-11T14:56:12.135Z",
+      "reason": "기능 목록의 사용 안내와 API 오류 중 접근, 키보드로 다시 불러오기를 확인했습니다.",
+      "signature": "4e6e63d98d1640bfc0030fa89028f9f58b654a0759ed2ac13ada0ca01f59c033",
       "controls": [
         [
           "data-auto-action",
@@ -3231,7 +3231,7 @@
         ],
         [
           "element:a",
-          20
+          21
         ],
         [
           "element:button",
@@ -3266,7 +3266,7 @@
           1
         ]
       ],
-      "sourceHash": "0d904ea9267525d50c34cbb43d54419b7ea8d9690ea87d5eb8ece6c47ff5a04d",
+      "sourceHash": "b5cebbbf5f2bdf3655d4aed7c2248915dafffd53cce3e73ad7b4a7a20eb326d9",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
