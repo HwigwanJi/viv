@@ -57,7 +57,7 @@ VIV의 MCP 등록만 제거하려면 Codex에서 `codex mcp remove viv`, Claude 
 | 필요한 기능 | 설치 후 설정 |
 | --- | --- |
 | 앱·퀀트 편집·연구 | 자체 SQLite를 사용한다. 설치 자체에는 공급자 키가 필요 없다. |
-| AI/JEV | checkout의 로컬 `.env`에 자신의 `TYPESAFE_API_KEY`를 넣고 재시작한다. 설치 결과의 `configured-unverified`는 값이 설정됐다는 뜻이다. 유효성은 사용자가 시작한 실제 AI 과업 결과로 확인한다. |
+| AI/JEV | VIV 폴더의 `.env`에 자신의 `TYPESAFE_API_KEY`를 넣고 재시작합니다. Windows 설치 결과의 `aiKey: configured-unverified`는 설정값을 읽었다는 뜻입니다. 키의 유효성은 사용자가 시작한 AI 과업의 결과로 확인합니다. |
 | 업비트·토스증권 계좌 | [계좌 연결과 잔고 확인](#계좌-연결과-잔고-확인)을 따릅니다. |
 | KIS 읽기 시세 | 사용하는 경우 자신의 `KIS_APP_KEY`, `KIS_APP_SECRET`, `KIS_ACCESS_TOKEN`을 로컬 환경에 설정한다. |
 
