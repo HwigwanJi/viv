@@ -12,6 +12,6 @@ export function mindDocumentImpact(doc,{profileName='대상 마인드',currentPo
   'market-knowledge':['공용 참고 자료','공용 투자 자료 → 연결한 마인드의 자료 입력','분류와 출처를 검토해 공용 자료로 발행합니다. 사용 정책이 연결된 마인드의 다음 자료 수집에서 선택될 수 있습니다.']
  };
  const [purpose,destination,effect]=effects[kind]??['검토 자료',profileName+' · 자료함','원문과 적용 경로를 확인한 뒤 발행합니다.'];
- const changed=[];if(policy&&currentPolicy){const previous=currentPolicy.data??{},next=doc.data??{};for(const [key,label]of [['strategyPlan','노드 구성'],['profileSettings','투자 범위·기본 설정'],['externalKnowledge','외부 자료 연결'],['principles','투자 원칙'],['strategySettings','판단 설정']])if(JSON.stringify(previous[key])!==JSON.stringify(next[key]))changed.push(label);}
+ const changed=[];if(policy&&currentPolicy){const previous=currentPolicy.data??{},next=doc.data??{};for(const [key,label]of [['strategyPlan','노드 구성'],['universe','투자 범위'],['profileSettings','기본 설정'],['externalKnowledge','외부 자료 연결'],['principles','투자 원칙'],['strategySettings','판단 설정']])if(JSON.stringify(previous[key])!==JSON.stringify(next[key]))changed.push(label);}
  return {kindLabel:kinds[kind]??'검토 자료',purpose,destination,effect,action:policy?'변경 검토':weight?'검증 결과 검토':'자료 검토',sourceLabel:sourceTypes[source.type]??source.type??'출처 미기록',sourceId:source.id??null,sourceUri:source.uri??null,version:policy?doc.data?.version:null,currentVersion:currentPolicy?.data?.version??null,changes:changed};
 }

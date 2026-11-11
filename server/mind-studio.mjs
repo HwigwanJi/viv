@@ -23,7 +23,7 @@ import marketKnowledgeSchema from '../design/mind-forms/market-knowledge.schema.
 import {assertMarketKnowledgeDocument,parseMarketKnowledgeDocument,serializeMarketKnowledgeDocument,marketKnowledgeHash,marketKnowledgeExample,buildKnowledgeClassificationQuestions,knowledgeClassification,priorKnowledgeDigest,selectMarketKnowledge,KNOWLEDGE_CHOICES,KNOWLEDGE_SOURCE_TYPES,disabledExternalKnowledge} from '../dist/domain/market-knowledge.mjs';
 import {queryMarketKnowledge,knowledgeItem,verifyKnowledgeVersion,verifyKnowledgePins,marketKnowledgeUsage} from './market-knowledge.mjs';
 import { WorkspaceRepository, RepositoryError, MIND_COLLECTIONS, readOperationalWorkspace } from './repository.mjs';
-import { createWorkspace, hashInputPackage, validateWorkspace } from '../dist/domain/workspace.mjs';
+import { createWorkspace, dispatchWorkspaceAction, hashInputPackage, validateWorkspace } from '../dist/domain/workspace.mjs';
 import {researchSha256} from '../dist/domain/research.mjs';
 import { importKnowledge } from '../dist/knowledge.mjs';
 import { listInstruments, getInstrument } from '../dist/domain/instruments.mjs';
@@ -382,11 +382,24 @@ export async function handleMindStudioAPI(request,env={},options={}){
       if(!collected.cached){check(!next.universeSourceSnapshots.some(s=>s.id===entry.id),'UNIVERSE_SOURCE_EXISTS','저장한 자료입니다. 목록을 새로고침하세요.',409);next.universeSourceSnapshots.push(entry);}result={cached:!!collected.cached,source:{id:entry.id,kind:entry.kind,importedAt:entry.importedAt,...(entry.kind==='TOSS_STOCK_CATALOG_SNAPSHOT'?{count:entry.snapshot.count,markets:entry.snapshot.markets.map(m=>({market:m.market,count:m.count})),asOf:entry.snapshot.asOf}:{}),...(entry.kind==='SECTOR_SNAPSHOT'?{sectorCount:entry.snapshot.sectors.length,rankingCount:entry.snapshot.rankings?.length??0,membershipCount:entry.snapshot.stockMemberships.length}:{} )},revision:w.revision+1};
     }else if(path==='/api/workspace/mind-documents/policy-draft'){
       const knowledgeInput=Object.hasOwn(body,'externalKnowledge'),strategyInput=Object.hasOwn(body,'strategyPlanDraft'),universeInput=Object.hasOwn(body,'universeDraft'),starterInput=Object.hasOwn(body,'starterId'),templateInput=Object.hasOwn(body,'strategyTemplate');
-      check(Object.keys(body).every(k=>['mindId','externalKnowledge','strategyPlanDraft','universeDraft','starterId','strategyTemplate','sourceManifestId','expectedSourceManifestHash','expectedRevision','idempotencyKey'].includes(k))&&[knowledgeInput,strategyInput,universeInput,starterInput,templateInput].filter(Boolean).length===1,'POLICY_DRAFT_INPUT','자료 연결·전략·투자 범위 중 하나를 선택해 정책 초안을 작성하세요.');
-      const latest=findManifest(w,body.mindId,now,owner),current=Object.hasOwn(body,'sourceManifestId')?w.mindManifests.find(m=>m.id===body.sourceManifestId&&m.scope.profileId===body.mindId&&m.availableAt<=now):latest;
+      check(Object.keys(body).every(k=>['mindId','newMind','externalKnowledge','strategyPlanDraft','universeDraft','starterId','strategyTemplate','sourceManifestId','expectedSourceManifestHash','expectedRevision','idempotencyKey'].includes(k))&&[knowledgeInput,strategyInput,universeInput,starterInput,templateInput].filter(Boolean).length===1,'POLICY_DRAFT_INPUT','자료 연결·전략·투자 범위 중 하나를 선택해 정책 초안을 작성하세요.');
+      const creating=Object.hasOwn(body,'newMind');
+      const starter=starterInput?PAPER_MIND_STARTERS.find(p=>p.id===body.starterId):null;
+      if(starterInput)check(starter,'STRATEGY_STARTER_REQUIRED','시작 전략을 선택하세요.');
+      let mindId=body.mindId;
+      if(creating){
+        check(starter&&body.newMind&&typeof body.newMind==='object'&&!Array.isArray(body.newMind)&&Object.keys(body.newMind).every(key=>['name','settings'].includes(key))&&['mindId','sourceManifestId','expectedSourceManifestHash'].every(key=>!Object.hasOwn(body,key)),'POLICY_DRAFT_INPUT','새 마인드 설정과 시작 전략을 확인하세요.');
+        const created=dispatchWorkspaceAction(next,{type:'profile.create',payload:body.newMind,expectedRevision:w.revision,idempotencyKey:body.idempotencyKey},{now});
+        // The studio commit records one receipt for both the profile and its policy.
+        created.workspace.commandReceipts=next.commandReceipts;
+        Object.assign(next,created.workspace);
+        mindId=created.result.profile.id;
+      }
+      const latest=findManifest(creating?next:w,mindId,now,owner),current=Object.hasOwn(body,'sourceManifestId')?w.mindManifests.find(m=>m.id===body.sourceManifestId&&m.scope.profileId===mindId&&m.availableAt<=now):latest;
       check(current&&(!Object.hasOwn(body,'sourceManifestId')||(strategyInput||templateInput)&&Object.hasOwn(body,'expectedSourceManifestHash')),'POLICY_SOURCE_CHANGED','편집할 발행 전략 원본과 해시를 확인하세요.',409);const document=clone(current);
       if(Object.hasOwn(body,'expectedSourceManifestHash'))check(typeof body.expectedSourceManifestHash==='string'&&/^[a-f0-9]{64}$/.test(body.expectedSourceManifestHash)&&mindDocumentHash(current)===body.expectedSourceManifestHash,'POLICY_SOURCE_CHANGED','학습을 시작한 정책과 현재 발행 버전을 대조하세요.',409);
-      const policies=[...w.mindManifests,...w.mindDocuments.map(d=>d.document)].filter(d=>d.kind==='mind-policy'&&d.scope.profileId===body.mindId),maximumVersion=Math.max(current.data.version,...policies.map(d=>d.data.version));
+      if(creating)next.mindManifests.push(clone(latest));
+      const policies=[...w.mindManifests,...w.mindDocuments.map(d=>d.document)].filter(d=>d.kind==='mind-policy'&&d.scope.profileId===mindId),maximumVersion=Math.max(current.data.version,...policies.map(d=>d.data.version));
       check(Number.isSafeInteger(maximumVersion)&&maximumVersion<Math.min(Number.MAX_SAFE_INTEGER,1e15-1),'MANIFEST_VERSION_LIMIT','정책 버전의 안전한 증가 범위를 확인하세요.',409);
       document.id=uniqueId('draft');document.asOf=now;document.availableAt=now;document.source={type:'user',id:owner,uri:null};
       document.provenance={...document.provenance,createdAt:now,authorId:owner,recordRefs:[...new Set([...document.provenance.recordRefs,current.id])],classification:null};
@@ -395,15 +408,14 @@ export async function handleMindStudioAPI(request,env={},options={}){
         const pin=body.strategyTemplate;check(pin&&Object.keys(pin).every(k=>['manifestId','manifestHash'].includes(k)),'POLICY_TEMPLATE','교체할 모델 원본을 확인하세요.');
         const template=w.mindManifests.find(m=>m.id===pin.manifestId&&m.availableAt<=now&&m.data.strategyPlan?.status==='APPROVED'&&m.data.strategyPlan.approval.enabled);
         check(template&&mindDocumentHash(template)===pin.manifestHash&&w.investmentProfiles.some(p=>p.id===template.scope.profileId&&p.status!=='ARCHIVED'),'POLICY_TEMPLATE_CHANGED','교체할 모델의 발행 버전과 해시를 확인하세요.');
-        const version=document.data.version;document.data=clone(template.data);document.data.version=version;document.scope={...clone(template.scope),profileId:body.mindId};document.title=template.title;document.principleRefs=[...template.principleRefs];
+        const version=document.data.version;document.data=clone(template.data);document.data.version=version;document.scope={...clone(template.scope),profileId:mindId};document.title=template.title;document.principleRefs=[...template.principleRefs];
         for(const principle of document.data.principles){const old=current.data.principles.find(p=>p.id===principle.id);if(old&&principle.version<=old.version&&hashInputPackage({title:old.title,text:old.text,kind:old.kind,bounds:old.bounds})!==hashInputPackage({title:principle.title,text:principle.text,kind:principle.kind,bounds:principle.bounds}))principle.version=old.version+1;}
-        const planId=current.data.strategyPlan?.planId??'strategy-'+body.mindId,versions=policies.map(p=>p.data.strategyPlan).filter(p=>p?.planId===planId).map(p=>Number(/^v([1-9]\d*)$/.exec(p.planVersionId)?.[1]??0)),max=Math.max(0,...versions);
+        const planId=current.data.strategyPlan?.planId??'strategy-'+mindId,versions=policies.map(p=>p.data.strategyPlan).filter(p=>p?.planId===planId).map(p=>Number(/^v([1-9]\d*)$/.exec(p.planVersionId)?.[1]??0)),max=Math.max(0,...versions);
         check(Number.isSafeInteger(max)&&max<Math.min(Number.MAX_SAFE_INTEGER,1e15-1),'STRATEGY_PLAN_VERSION_LIMIT','전략 버전의 증가 범위를 확인하세요.');
         document.data.strategyPlan=draftMindStrategyPlan({...document.data.strategyPlan,planId,planVersionId:'v'+(max+1)});
         document.provenance.recordRefs=[...new Set([...document.provenance.recordRefs,template.id])];document.provenance.contentHashes=[...new Set([...document.provenance.contentHashes,mindDocumentHash(template),mindDocumentHash(current)])];
       }else if(starterInput){
-        const starter=PAPER_MIND_STARTERS.find(p=>p.id===body.starterId);check(starter,'STRATEGY_STARTER_REQUIRED','시작 전략을 선택하세요.');
-        const graph=createPaperMindPresetGraph(starter.id),plan=createMindStrategyPlan({planId:'strategy-'+body.mindId,planVersionId:'v'+document.data.version,enabled:true,strategyMaxExposure:1});
+        const graph=createPaperMindPresetGraph(starter.id),plan=createMindStrategyPlan({planId:'strategy-'+mindId,planVersionId:'v'+document.data.version,enabled:true,strategyMaxExposure:1});
         document.data.strategyPlan=strategyPlanWithGraph(plan,graph);if(document.data.strategyPlan.scope.instrumentId)document.data.strategyPlan.scope.instrumentPolicy='UNIVERSE_CURRENT';
         document.data.universe={mode:starter.universe.length>1?'allowlist':'single',instrumentIds:[...starter.universe],selection:{method:'strategy',maxPositions:starter.maxPositions,minQuoteVolume:0,minHistoryBars:starter.minHistoryBars??32,rebalance:starter.timeframe==='1h'?'1h-close':'4h-close',rebalanceEveryBars:starter.rebalanceEveryBars,exitUnselected:true}};
         document.scope.instrumentIds=[...starter.universe];document.data.profileSettings.horizon=starter.timeframe??'4h';document.data.trigger.interval=starter.timeframe??'4h';

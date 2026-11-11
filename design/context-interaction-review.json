@@ -3149,9 +3149,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T11:58:33.050Z",
-      "reason": "초기 응답 지연과 모듈 실패를 모바일 브라우저에서 재현하고 재시도 후 정상 진입을 확인했습니다.",
-      "signature": "e990d4dd848734dda3779f4ef461762e6b1b0b2fa9ea1392d75e2610ae0c6031",
+      "reviewedAt": "2026-11-11T13:10:28.998Z",
+      "reason": "모바일 크기와 데스크톱에서 시작 프리셋 찾기, 입력 복원, 저장 재시도와 전략 재검토·발행을 실제 조작으로 확인했습니다.",
+      "signature": "9030bb562e492bc95825361289a77df4e5d14fffecfb3dc88494872ac30bc250",
       "controls": [
         [
           "data-auto-action",
@@ -3231,7 +3231,7 @@
         ],
         [
           "element:select",
-          10
+          11
         ],
         [
           "element:summary",
@@ -3254,7 +3254,7 @@
           1
         ]
       ],
-      "sourceHash": "4e60b342373a601c781ca4ae8ea717bc5222b2ddbc4a4baf2d5700d96cb390e0",
+      "sourceHash": "15441211659204af71861466d5139aec50963d494c87c60316e59b3a6f99d588",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
