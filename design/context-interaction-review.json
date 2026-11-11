@@ -2672,8 +2672,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T21:04:11.057Z",
-      "reason": "완료된 기준 퀀트 실험의 성과 화면에 같은 마인드의 현재 시세 모의 판단 진입점을 연결한다.",
+      "reviewedAt": "2026-11-11T21:10:31.506Z",
+      "reason": "완료된 기준 퀀트 결과의 모의 판단 링크와 모의 자금·AI 키 준비 조건을 연결한다.",
       "signature": "4a6a7acd965b4e834735f7a54f75cb313758841d36fd791a441ccf0891ee6a0f",
       "controls": [
         [
@@ -2733,7 +2733,7 @@
           2
         ]
       ],
-      "sourceHash": "4d38bd85715cb0fb1983ab7fe9b116f1ef25ed33eba36fb42eecadd68ee76bdd",
+      "sourceHash": "e43cfcef94ab065fffedeadb75d696e3663f620be3442afcd4a2daf94e7e18fa",
       "customContainers": []
     },
     {
