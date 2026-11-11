@@ -64,7 +64,7 @@
           1
         ]
       ],
-      "sourceHash": "92296be9267666476dbdaa4168288720ed765da165c4056e3ff17bed14d639af"
+      "sourceHash": "71edbd7f7adbe570b35c529f95abddbd5b536aab43d7e48265477e37e8e4b491"
     },
     {
       "file": "dist/install.html",
@@ -94,7 +94,7 @@
           1
         ]
       ],
-      "sourceHash": "cefaf80619b5b1b483a1d0505b1891094ce5d3c5a8fb5ab5dfa96c73ed298fd7"
+      "sourceHash": "ae5f81e87532ddd2e04b996be0f31f84d7c003dd3763002f06a2784834bd2079"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -188,7 +188,7 @@
       "reason": "알림 원문·현재 처리 상태와 연결한 동일 명령을 재사용한다. 완료 삭제/진행 중 비활성/휴지통 복원을 공용 서버 규칙과 대조한다.",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "2b771e38737e88d72339cbe604d8ccb8643571ba078d9b6ab6f450859bf77e10"
+      "sourceHash": "4351f5dd71470ad56206a55543dd1377ad738cfebffa12de44c4e1260a2237c6"
     },
     {
       "file": "dist/research/regime-minute-forward-20261023/index.html",

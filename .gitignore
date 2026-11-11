@@ -18,6 +18,7 @@ dist/downloads/*.idsig
 dist/.well-known/assetlinks.json
 /android/*
 !/android/README.md
+!/android/viv-splash.png
 output/
 tmp/
 docs/agents/**/user-quotes.txt

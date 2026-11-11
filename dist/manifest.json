@@ -6,17 +6,17 @@
   "start_url": "/#minds?profileId=all&executionMode=paper&view=overview",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#101214",
-  "theme_color": "#101214",
+  "background_color": "#10111a",
+  "theme_color": "#10111a",
   "icons": [
     {
-      "src": "/app-icon-192.png",
+      "src": "/viv-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/app-icon-512.png",
+      "src": "/viv-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -29,7 +29,7 @@
       "url": "/#minds?profileId=all&executionMode=live&view=overview&notice=inbox",
       "icons": [
         {
-          "src": "/app-icon-192.png",
+          "src": "/viv-icon-192.png",
           "sizes": "192x192",
           "type": "image/png",
           "purpose": "any maskable"
