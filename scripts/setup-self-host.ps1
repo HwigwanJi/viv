@@ -47,9 +47,11 @@ function Read-Serve {
     if ($serve.AllowFunnel.PSObject.Properties | Where-Object Value -eq $true) {
         throw 'Public Funnel is enabled on this device. Use a private Tailscale host for VIV.'
     }
-    $existing = $serve.Web.PSObject.Properties["${hostname}:443"].Value.Handlers.PSObject.Properties['/'].Value
+    $web = if ($serve.Web) { $serve.Web.PSObject.Properties["${hostname}:443"].Value }
+    $existing = if ($web.Handlers) { $web.Handlers.PSObject.Properties['/'].Value }
     if ($existing -and ([string]$existing.Proxy).TrimEnd('/') -ne $localUrl) { throw 'Tailscale HTTPS already serves another application.' }
-    if ($serve.TCP.PSObject.Properties['443'].Value -and !$serve.TCP.PSObject.Properties['443'].Value.HTTPS) {
+    $tcp = if ($serve.TCP) { $serve.TCP.PSObject.Properties['443'].Value }
+    if ($tcp -and !$tcp.HTTPS) {
         throw 'Tailscale port 443 already has a different handler.'
     }
     return $existing
