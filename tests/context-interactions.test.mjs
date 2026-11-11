@@ -21,6 +21,22 @@ test('help queries find the capability catalog in the current viewing mode',()=>
  }
 });
 
+test('API key searches open real account setup while paper accounts keep their own destination',()=>{
+ const route=parseStudioRoute('#home?executionMode=paper');
+ const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+ const search=query=>entries.filter(item=>studioJumpMatches([item.label,item.keywords].filter(Boolean).join(' '),query));
+ for(const query of ['API 키','업비트 API키','토스증권 연결']){
+  const matches=search(query);
+  assert.equal(matches.length,1);
+  const destination=parseStudioRoute(matches[0].href);
+  assert.equal(destination.page,'settings');
+  assert.equal(destination.params.get('view'),'accounts');
+  assert.equal(destination.params.get('executionMode'),'live');
+ }
+ const [paper]=search('모의 계좌');
+ assert.equal(parseStudioRoute(paper.href).params.get('executionMode'),'paper');
+});
+
 const entry=(file,source,extra={})=>({file,owners:['card'],review:'SOURCE_REVIEWED',reviewedAt:'2026-11-04',reason:'카드의 상태별 기존 작업을 공용 메뉴로 연결한다.',...inspectContextSource(source),...extra});
 test('Git checkout line endings leave the context review fingerprint stable',()=>{
  const source='<button>열기</button>\n';

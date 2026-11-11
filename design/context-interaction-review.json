@@ -561,9 +561,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T19:08:12.985Z",
-      "reason": "계좌 연결 창의 발급·허용 IP·모의 복귀와 요청의 성공·실패 상태를 검토했다.",
-      "signature": "067ef7da22fc85367a24395d09db5e46b0337529b0e07e35b984ef9ec8ebd08c",
+      "reviewedAt": "2026-11-11T20:36:52.058Z",
+      "reason": "금융기관 카드에서 서버 준비 상태를 안내한다. 발급 후 서버 준비·재확인과 키 입력을 같은 창에서 연결한다.",
+      "signature": "121d9c26eaaf90f634c8de282ab3c5bfed1b7e8954beb5e75e08162149cc56dc",
       "controls": [
         [
           "data-broker-action",
@@ -591,7 +591,7 @@
         ],
         [
           "element:summary",
-          2
+          1
         ],
         [
           "helper:button(",
@@ -602,7 +602,7 @@
           1
         ]
       ],
-      "sourceHash": "7a2596aca0570b8f7f36ec825d63317bfec9e57c64537cf74b10cb131b5940fc",
+      "sourceHash": "3ec54396edb7f35befafd06b673d7fb56428aebe1885cfd6cd8844ed63bce56b",
       "customContainers": []
     },
     {
@@ -3306,8 +3306,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T18:10:37.205Z",
-      "reason": "모의 화면 찾기에서 모의 판단, 백테스트를 기존 기록과 실험 목록에 연결한다.",
+      "reviewedAt": "2026-11-11T20:36:52.059Z",
+      "reason": "화면 찾기에서 모의 계좌와 실계좌 API 키 등록을 구분하고 실계좌의 읽기 전용 연결 화면으로 이동한다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3327,7 +3327,7 @@
           2
         ]
       ],
-      "sourceHash": "7eb35bfac04e82699a0743666edd65580b2d4b475c19a43208b24d58a9820e96",
+      "sourceHash": "8fa65adf9a0c1f31ca7365c2356ed74ff587c8942c3a4bb67c772fbb5263e607",
       "customContainers": []
     },
     {
