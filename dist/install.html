@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#2F4F8C">
+  <meta name="theme-color" content="#10111a">
   <meta name="description" content="VIV 앱을 휴대폰 홈 화면에 설치합니다.">
   <meta name="apple-mobile-web-app-title" content="VIV">
   <link rel="manifest" href="./manifest.json">
@@ -20,13 +20,17 @@
     <section class="studio-sheet spaced">
       <div class="studio-sheet-head"><h1>VIV 앱 설치</h1></div>
       <div class="studio-sheet-body">
-        <p>휴대폰 홈 화면에서 마인드와 투자 기록을 바로 확인하세요.</p>
-        <p>휴대폰의 Tailscale을 켜고 Android는 Chrome, iPhone은 Safari에서 접속하세요.</p>
-        <p><button class="button primary" data-app-install>웹앱으로 설치</button></p>
-        <p data-apk-download hidden><a class="button" href="./downloads/viv-1.0.2.apk" download>APK 다운로드 · Android</a></p>
-        <p data-install-browser></p>
+        <div data-install-guide>
+          <p>VIV 서버를 켜 두고 휴대폰을 같은 Tailscale 네트워크에 연결하세요.</p>
+          <p data-install-steps>iPhone은 Safari의 공유 메뉴에서, Android는 Chrome의 더보기 메뉴에서 홈 화면에 추가하세요.</p>
+          <p data-install-browser></p>
+          <p><button class="button primary" type="button" data-app-install data-app-install-native hidden>웹앱으로 설치</button></p>
+          <p><button class="button" type="button" data-install-copy hidden>설치 주소 복사</button></p>
+          <div data-install-address hidden><label class="field">설치 주소<input type="url" readonly></label></div>
+          <p data-apk-download hidden><a class="button" href="./downloads/viv-1.0.2.apk" download>APK 다운로드 · Android</a></p>
+        </div>
         <p data-install-status role="status" aria-live="polite"></p>
-        <p><a class="button" href="/#minds?profileId=all&amp;executionMode=paper&amp;view=overview">VIV 열기</a></p>
+        <p><a class="button" data-install-open href="/#minds?profileId=all&amp;executionMode=paper&amp;view=overview">VIV 열기</a></p>
       </div>
     </section>
   </main>

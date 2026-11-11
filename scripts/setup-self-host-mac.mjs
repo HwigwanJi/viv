@@ -39,6 +39,13 @@ async function verifyApp(base, setupId) {
   if (status.storage !== 'server' || status.runners?.disabled !== true || status.runners?.live?.running !== false) {
     throw new Error('The server did not report an isolated setup session.');
   }
+  const manifestResponse = await request(base + '/manifest.json');
+  if (!manifestResponse.ok) throw new Error('VIV install manifest unavailable: /manifest.json. Restore this checkout’s install files and retry on port ' + port + '.');
+  const manifest = await manifestResponse.json().catch(() => null);
+  if (manifest?.display !== 'standalone' || manifest.scope !== '/' || !manifest.icons?.length) throw new Error('Mobile manifest verification failed.');
+  for (const route of ['/install.html', ...manifest.icons.map(icon => icon.src)]) {
+    if (!(await request(base + route)).ok) throw new Error('VIV install asset unavailable: ' + route + '. Restore this checkout’s install files and retry on port ' + port + '.');
+  }
 }
 
 async function verifyMcp() {
@@ -114,6 +121,7 @@ async function connectMobile(setupId) {
     }
     return proxy === origin;
   };
+  const serve = ['serve', '--bg', '--https=443', '--set-path=/', origin];
   const existing = inspect();
   const alreadyConfigured = existsSync(mobileConfig);
   if (JSON.parse(initializeFile(mobileConfig, JSON.stringify({origin: mobileOrigin}))).origin !== mobileOrigin) {
@@ -122,17 +130,20 @@ async function connectMobile(setupId) {
   let routeAdded = false;
   try {
     if (!existing) {
-      if (tail(['serve', '--bg', origin], {show: true, timeout: 45000}).status !== 0) {
+      if (tail(serve, {show: true, timeout: 45000}).status !== 0) {
         throw new Error('Tailscale Serve failed. Check MagicDNS and HTTPS in your tailnet.');
       }
       routeAdded = true;
     }
     if (!inspect()) throw new Error('Tailscale Serve did not report the VIV route.');
     await verifyApp(mobileOrigin, setupId);
-    if (!(await request(mobileOrigin + '/install.html')).ok) throw new Error('The VIV mobile install page is unavailable.');
     return mobileOrigin + '/install.html';
   } catch (error) {
-    if (routeAdded) tail(['serve', '--https=443', origin, 'off'], {timeout: 10000});
+    if (routeAdded) {
+      try {
+        if (inspect() && tail([...serve, 'off'], {timeout: 10000}).status !== 0) throw new Error('Could not remove VIV Serve route.');
+      } catch { console.warn('Review the private route with tailscale serve status.'); }
+    }
     if (!alreadyConfigured) unlinkSync(mobileConfig);
     throw error;
   }
@@ -188,8 +199,12 @@ if (target === 'mobile') {
   catch (error) { mobileError = error.message; }
 }
 console.log(JSON.stringify({
-  serverPid, desktopUrl: origin, mcpUrl, mcpStatus, mcpError,
+  serverPid, desktopUrl: origin, desktopStatus: serverPid ? 'started' : 'reused', mcpUrl, mcpStatus, mcpError,
+  mcpRetryCommand: mcpError ? ['bash scripts/install-viv-mac.sh --target pc --client', client, '--port', port].join(' ') : null,
+  onboardingPrompt: mcpStatus === 'registered' ? 'VIV 시작하기' : null,
   onboardingTool: mcpStatus === 'registered' ? 'viv_onboarding' : null,
-  mobileInstallUrl, mobileError, mobileStatus: mobileError ? 'needs-action' : mobileInstallUrl ? 'phone-install-pending' : 'not-requested',
+  mobileInstallUrl, mobileError,
+  mobileRetryCommand: mobileError ? ['bash scripts/install-viv-mac.sh --target mobile --client', client, '--port', port].join(' ') : null,
+  mobileStatus: mobileError ? 'needs-action' : mobileInstallUrl ? 'phone-install-pending' : 'not-requested',
   liveRunner: 'disabled',
 }));

@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 [CmdletBinding()]
 param([ValidateRange(1024,65535)][int]$Port=4317,[switch]$ProbeOnly,[ValidateSet('Codex','Claude','Manual')][string]$Client='Codex')
 $ErrorActionPreference='Stop'
@@ -34,7 +34,7 @@ if($Client -eq 'Claude'){
     if($details -notmatch '(?m)^\s*Status:[^\p{L}\r\n]*Connected[ \t]*\r?$'){
         throw 'Claude Code could not connect to VIV MCP. Check claude mcp get viv and rerun.'
     }
-    [ordered]@{name='viv';url=$url;status='registered';startMessage='VIV start'} | ConvertTo-Json
+    [ordered]@{name='viv';url=$url;status='registered';startMessage='VIV 시작하기'} | ConvertTo-Json
     return
 }
 $codex=(Get-Command codex.exe -ErrorAction SilentlyContinue).Source
@@ -52,4 +52,4 @@ if($existing){
 }
 $verified=& $codex mcp get viv --json
 if($LASTEXITCODE -ne 0 -or ($verified | ConvertFrom-Json).transport.url -ne $url){throw 'Could not verify the saved VIV MCP configuration.'}
-[ordered]@{name='viv';url=$url;status='registered';startMessage='VIV start'} | ConvertTo-Json
+[ordered]@{name='viv';url=$url;status='registered';startMessage='VIV 시작하기'} | ConvertTo-Json

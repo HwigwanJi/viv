@@ -30,10 +30,12 @@ function Test-App([string]$BaseUrl) {
     if ($status.storage -ne 'server' -or $status.runners.disabled -ne $true -or $status.runners.live.running -ne $false) {
         throw 'The server did not report an isolated setup session.'
     }
-    $manifest = Invoke-RestMethod "$BaseUrl/manifest.json" -TimeoutSec 5 -MaximumRedirection 0
-    if ($manifest.display -ne 'standalone' -or $manifest.scope -ne '/') { throw 'Mobile manifest verification failed.' }
+    try { $manifest = Invoke-RestMethod "$BaseUrl/manifest.json" -TimeoutSec 5 -MaximumRedirection 0 }
+    catch { throw "VIV install manifest unavailable: /manifest.json. Restore this checkout's install files and retry on port $Port." }
+    if ($manifest.display -ne 'standalone' -or $manifest.scope -ne '/' -or !$manifest.icons) { throw 'Mobile manifest verification failed.' }
     foreach ($route in @('/install.html') + @($manifest.icons.src)) {
-        $null = Invoke-WebRequest "$BaseUrl$route" -UseBasicParsing -TimeoutSec 5 -MaximumRedirection 0
+        try { $null = Invoke-WebRequest "$BaseUrl$route" -UseBasicParsing -TimeoutSec 5 -MaximumRedirection 0 }
+        catch { throw "VIV install asset unavailable: $route. Restore this checkout's install files and retry on port $Port." }
     }
     return $status
 }
@@ -76,8 +78,7 @@ try {
     $status = $null
     $listener = New-Object System.Net.Sockets.TcpListener([Net.IPAddress]::Loopback, $Port)
     try { $listener.Start() } catch {
-        try { $status = Test-App $localUrl }
-        catch { throw "Local port $Port belongs to another service. Choose another port with -Port." }
+        $status = Test-App $localUrl
     } finally { $listener.Stop() }
 
     if (!$StartOnly -and !$status) {
@@ -165,7 +166,7 @@ try {
                 } finally { $stream.Dispose() }
             }
             if (!$existingRoute) {
-                & $tailscale serve --bg $localUrl | Out-Host
+                & $tailscale serve --bg --https=443 --set-path=/ $localUrl | Out-Host
                 if ($LASTEXITCODE -ne 0) { throw 'Tailscale Serve failed. Enable HTTPS in the tailnet settings if requested.' }
                 $configuredRoute = $true
             }
@@ -174,7 +175,7 @@ try {
         } catch {
             $mobileError = $_.Exception.Message
             if ($configuredRoute) {
-                try { if (Read-Serve) { & $tailscale serve --https=443 off | Out-Null } }
+                try { if (Read-Serve) { & $tailscale serve --bg --https=443 --set-path=/ $localUrl off | Out-Null; if ($LASTEXITCODE -ne 0) { throw 'Could not remove VIV Serve route.' } } }
                 catch { Write-Warning 'Review the private route with tailscale serve status.' }
             }
             if ($configCreated) { Remove-Item -LiteralPath $mobileConfig -ErrorAction Continue }
@@ -184,13 +185,17 @@ try {
     [ordered]@{
         serverPid = $serverPid
         desktopUrl = $localUrl
+        desktopStatus = if ($serverPid) { 'started' } else { 'reused' }
         mobileInstallUrl = if ($mobileUrl) { "$mobileUrl/install.html" } else { $null }
         mobileStatus = if ($mobileError) { 'needs-action' } elseif ($mobileUrl) { 'phone-install-pending' } else { 'not-requested' }
         mobileError = $mobileError
+        mobileRetryCommand = if ($mobileError) { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv.ps1 -Target PCMobile -Client $Client -Port $Port" } else { $null }
         existingMobileConfig = Test-Path -LiteralPath $mobileConfig
         mcpUrl = "$localUrl/mcp"
         mcpStatus = if ($mcpRegistration) { $mcpRegistration.status } else { 'needs-action' }
         mcpError = $mcpError
+        mcpRetryCommand = if ($mcpError) { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv-mcp.ps1 -Client $Client -Port $Port" } else { $null }
+        onboardingPrompt = if ($mcpRegistration.status -eq 'registered') { $mcpRegistration.startMessage } else { $null }
         onboardingTool = if ($mcpRegistration.status -eq 'registered') { 'viv_onboarding' } else { $null }
         liveRunner = 'disabled'
         aiKey = if ($status.jev.configured) { 'configured-unverified' } else { 'not-configured' }
@@ -198,7 +203,7 @@ try {
 } finally {
     if (!$ready) {
         if ($configuredRoute) {
-            try { if (Read-Serve) { & $tailscale serve --https=443 off | Out-Null } }
+            try { if (Read-Serve) { & $tailscale serve --bg --https=443 --set-path=/ $localUrl off | Out-Null; if ($LASTEXITCODE -ne 0) { throw 'Could not remove VIV Serve route.' } } }
             catch { Write-Warning 'Review the failed route with tailscale serve status.' }
         }
         if ($server -and !$server.HasExited) { Stop-Process -InputObject $server }

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {validateMobileOrigin,previewRequestOrigin} from '../scripts/preview-origin.mjs';
 import {handleAPI} from '../server/api.mjs';
-import {createAppInstall,chromeInstallLink} from '../dist/ui/app-install.mjs';
+import {createAppInstall,chromeInstallLink,installPlatform,manualInstallGuide} from '../dist/ui/app-install.mjs';
 import {versionAssetBundle} from '../scripts/asset-versioning.mjs';
 
 const origin='https://chungji-test.example-tailnet.ts.net';
@@ -28,10 +28,10 @@ test('private same-origin requests reach the existing handler while foreign Orig
   }
 });
 
-function installFixture({standalone=false,apple=false}={}){
+function installFixture({standalone=false,apple=false,pathname='/'}={}){
   const events=new Map(),button={},nativeButton={dataset:{appInstallNative:''}},dialogs=[],errors=[],notices=[];
-  const window={location:{href:origin+'/?private=value#mind'},matchMedia:()=>({matches:standalone}),document:{querySelectorAll:()=>[button,nativeButton]},addEventListener:(key,handler)=>events.set(key,handler)};
-  const app=createAppInstall({window,navigator:{userAgent:apple?'iPhone':'Android'},open:(...args)=>dialogs.push(args),onError:value=>errors.push(value),onInstalled:()=>notices.push('installed')});
+  const window={location:{href:origin+pathname+'?private=value#mind',pathname},matchMedia:()=>({matches:standalone}),document:{querySelectorAll:()=>[button,nativeButton]},addEventListener:(key,handler)=>events.set(key,handler)};
+  const app=createAppInstall({window,navigator:{userAgent:apple?'iPhone':'Android'},open:(...args)=>dialogs.push(args),onError:value=>errors.push(value),onInstalled:()=>notices.push('installed'),onDismissed:()=>notices.push('dismissed')});
   return {app,events,button,nativeButton,dialogs,errors,notices};
 }
 test('native installation uses the user gesture once, blocks duplicate clicks, and removes the installed action',async()=>{
@@ -51,10 +51,24 @@ test('a delayed native prompt becomes actionable inside the already open help di
   const f=installFixture();await f.app.install();assert.match(f.dialogs[0][2],/data-app-install-native/);assert.equal(f.nativeButton.hidden,true);let called=false;
   f.events.get('beforeinstallprompt')({preventDefault(){},prompt:async()=>called=true,userChoice:Promise.resolve({outcome:'accepted'})});assert.equal(f.nativeButton.hidden,false);await f.app.install();assert.equal(called,true);assert.equal(f.nativeButton.hidden,true);
 });
-test('the direct install page has a visible install action and Android Chrome links preserve only this origin',async()=>{
+test('the install page waits for a native prompt and Android Chrome links preserve only this origin',async()=>{
   const link=chromeInstallLink(origin+'/?private=secret#position');assert.match(link,/^intent:\/\/chungji-test\.example-tailnet\.ts\.net\/install\.html#Intent;scheme=https;package=com\.android\.chrome;/);assert.doesNotMatch(link,/secret|position/);
   for(const href of ['http://example.test','javascript:alert(1)','https://user:password@example.test']){try{assert.equal(chromeInstallLink(href),null);}catch(error){assert(error instanceof TypeError);}}
-  const page=await readFile('dist/install.html','utf8');assert.match(page,/<button[^>]+data-app-install>웹앱으로 설치<\/button>/);assert.match(page,/rel="manifest"/);assert.match(page,/install-page\.mjs/);
+  const page=await readFile('dist/install.html','utf8');assert.match(page,/<button[^>]+data-app-install-native hidden>웹앱으로 설치<\/button>/);assert.match(page,/rel="manifest"/);assert.match(page,/install-page\.mjs/);
+});
+
+test('manual install uses the device menu, avoids a loop on the install page and recovers after dismissal',async()=>{
+  const ipad={userAgent:'Macintosh AppleWebKit',platform:'MacIntel',maxTouchPoints:5};
+  assert.equal(installPlatform(ipad),'apple');
+  assert.match(manualInstallGuide(ipad),/웹 앱으로 열기/);
+  assert.equal(installPlatform({userAgent:'Desktop',platform:'MacIntel',maxTouchPoints:0}),'desktop');
+  const f=installFixture({apple:true,pathname:'/install.html'});
+  await f.app.install();
+  assert.doesNotMatch(f.dialogs[0][1],/href="\/install.html"/);
+  f.events.get('beforeinstallprompt')({preventDefault(){},prompt:async()=>{},userChoice:Promise.resolve({outcome:'dismissed'})});
+  await f.app.install();
+  assert.deepEqual(f.notices,['dismissed']);
+  assert.equal(f.nativeButton.hidden,true);
 });
 
 test('manifest launches the shared app with correctly sized PNG icons and the embedded build preserves binary bytes',async()=>{

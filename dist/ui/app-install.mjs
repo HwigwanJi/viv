@@ -7,7 +7,19 @@ export function chromeInstallLink(href){
   return 'intent://'+url.host+url.pathname+'#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url='+encodeURIComponent(url.href)+';end';
 }
 
-export function createAppInstall({window,navigator,open,onError=()=>{},onInstalled=()=>{}}) {
+export function installPlatform(navigator){
+  if(/iPhone|iPad|iPod/.test(navigator.userAgent)||navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)return 'apple';
+  return /Android/.test(navigator.userAgent)?'android':'desktop';
+}
+
+export function manualInstallGuide(navigator){
+  const platform=installPlatform(navigator);
+  if(platform==='apple')return 'Safari에서 <strong>공유 → 홈 화면에 추가</strong>를 누르세요. <strong>웹 앱으로 열기</strong>가 보이면 켜고 추가하세요.';
+  if(platform==='android')return 'Chrome의 <strong>더보기 → 설치</strong> 또는 <strong>홈 화면에 추가</strong>를 선택하세요.';
+  return 'PC 브라우저의 앱 설치 메뉴를 확인하세요. 휴대폰은 설치 결과에 나온 비공개 HTTPS 주소를 Safari나 Chrome에서 여세요.';
+}
+
+export function createAppInstall({window,navigator,open,onError=()=>{},onInstalled=()=>{},onDismissed=()=>{}}) {
   let pending=null,busy=false,completed=false;
   const installed=()=>completed||window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
   const sync=()=>window.document.querySelectorAll('[data-app-install]').forEach(button=>{button.hidden=installed()||button.dataset?.appInstallNative!==undefined&&!pending;button.disabled=busy;});
@@ -16,14 +28,15 @@ export function createAppInstall({window,navigator,open,onError=()=>{},onInstall
   async function install(){
     if(busy||installed())return;
     if(!pending){
-      const apple=/iPhone|iPad|iPod/.test(navigator.userAgent),steps=apple?'Safari의 공유 메뉴에서 <strong>홈 화면에 추가</strong>를 선택하세요.':'Chrome 또는 삼성 인터넷의 메뉴에서 <strong>앱 설치</strong> 또는 <strong>홈 화면에 추가</strong>를 선택하세요.';
-      const chrome=/Android/.test(navigator.userAgent)?chromeInstallLink(window.location?.href):null;
-      open('VIV 앱 설치','<p>'+steps+'</p>'+(chrome?'<p>채팅 앱에서 열었다면 Chrome으로 이동하세요.</p><p><a class="button primary" href="'+esc(chrome)+'">Chrome에서 열기</a></p>':'')+'<p><a href="/install.html">VIV 설치 페이지 열기</a></p><p>외부에서는 휴대폰 Tailscale을 연결하고, 서버 노트북을 켜 두세요.</p>','<button class="button primary" data-app-install data-app-install-native hidden>VIV 앱 설치</button>');
+      const steps=manualInstallGuide(navigator);
+      const chrome=installPlatform(navigator)==='android'?chromeInstallLink(window.location?.href):null;
+      const pageLink=window.location?.pathname==='/install.html'?'':'<p><a href="/install.html">휴대폰 설치 안내</a></p>';
+      open('VIV 앱 설치','<p>'+steps+'</p>'+(chrome?'<p>채팅 앱에서 열었다면 Chrome으로 이동하세요.</p><p><a class="button primary" href="'+esc(chrome)+'">Chrome에서 열기</a></p>':'')+pageLink+'<p>휴대폰과 VIV 서버를 같은 Tailscale 네트워크에 연결하세요.</p>','<button class="button primary" data-app-install data-app-install-native hidden>VIV 앱 설치</button>');
       sync();
       return;
     }
     const prompt=pending;pending=null;busy=true;sync();
-    try{await prompt.prompt();await prompt.userChoice;}catch(error){onError(error.message);}finally{busy=false;sync();}
+    try{await prompt.prompt();if((await prompt.userChoice)?.outcome==='dismissed')onDismissed();}catch(error){onError(error.message);}finally{busy=false;sync();}
   }
   return {button:()=>installed()?'':'<button class="shell-control" data-app-install aria-label="VIV 앱 설치" title="VIV 앱 설치"'+(busy?' disabled':'')+'>'+installIcon+'</button>',install};
 }

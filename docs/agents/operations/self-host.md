@@ -14,10 +14,10 @@
    ```
 
 3. 모바일을 선택한 경우에만 Tailscale을 준비한다. PC에서 사용자가 자기 계정으로 로그인하고, 필요한 경우 자기 tailnet에서 MagicDNS와 HTTPS 인증서를 활성화한다. 인증서를 발급하면 장치의 전체 도메인 이름이 공개 인증서 로그에 남을 수 있다. 앱 접근은 tailnet 규칙을 따른다. 다른 앱이 사용하는 경로나 공개 Funnel 설정이 있으면 PC 앱과 MCP를 쓸 수 있게 두고 모바일에 필요한 조치를 알려준다. VIV는 비공개 주소의 접속을 단일 소유자 세션으로 처리하므로 tailnet에서 접근 가능한 장치와 사용자 범위를 확인한다. [Tailscale HTTPS 안내](https://tailscale.com/docs/how-to/set-up-https-certificates)
-4. 같은 tailnet에 로그인한 휴대폰에서 결과의 `mobileInstallUrl`을 연다. Android는 Chrome에서 **웹앱으로 설치**, iPhone은 Safari의 **공유 → 홈 화면에 추가**를 사용한다. 설치한 아이콘에서 VIV를 열고 PC와 같은 작업 공간이 표시되는지 확인한다. 설치 스크립트가 검사한 HTTPS와 휴대폰에서 확인한 결과를 각각 남긴다.
+4. 같은 tailnet에 로그인한 휴대폰에서 결과의 `mobileInstallUrl`을 연다. Android는 Chrome에서 **웹앱으로 설치**, iPhone은 Safari의 **공유 → 홈 화면에 추가**를 사용한다. **웹 앱으로 열기**가 보이면 켠다. 설치한 아이콘에서 VIV를 열고 PC와 같은 작업 공간이 표시되는지 확인한다. 설치 스크립트가 검사한 HTTPS와 휴대폰에서 확인한 결과를 각각 남긴다.
 5. 모바일 로그인이나 MCP 등록 후속 조치가 필요하면 같은 환경과 포트로 설치 명령을 다시 실행한다. 가동 중인 같은 checkout의 서버는 재사용한다. PC 재시작 후에 빌드를 생략하고 다시 실행할 때는 `scripts/setup-self-host.ps1 -StartOnly`에 기존 포트와 필요한 `-Mobile`과 `-Client Codex` 또는 `-Client Claude`를 전달한다. 오류 로그는 checkout의 `.runtime/self-host.stderr.log`에 있다.
 
-결과에는 PC 앱 주소와 MCP 등록 상태가 나온다. 모바일 HTTPS 검증을 통과하면 휴대폰 설치 주소와 `phone-install-pending`이 나온다. 실제 휴대폰 설치 완료는 사용자가 홈 화면에서 VIV를 연 뒤 확인한다. 실행 중인 Windows PC가 앱 서버다. 최초 설치는 자동 주문 실행기가 꺼진 상태에서 시작한다.
+결과에는 PC 앱 주소, 서버가 새로 시작했는지 또는 재사용됐는지, MCP 등록 상태가 나온다. 등록을 확인하면 `onboardingPrompt`에 첫 대화 문구가 표시된다. MCP 또는 모바일 준비가 중단되면 해당 `mcpRetryCommand` 또는 `mobileRetryCommand`로 이어간다. 모바일 HTTPS 검증을 통과하면 휴대폰 설치 주소와 `phone-install-pending`이 나온다. 실제 휴대폰 설치 완료는 사용자가 홈 화면에서 VIV를 연 뒤 확인한다. 실행 중인 Windows PC가 앱 서버다. 최초 설치는 자동 주문 실행기가 꺼진 상태에서 시작한다.
 
 VIV를 중지하거나 키 입력을 반영하기 위해 다시 시작할 때는 최초 실행 결과의 `serverPid`가 이 checkout의 VIV 서버인지 확인하고 종료한다. VIV 연결만 제거하려면 Codex에서 `codex mcp remove viv`, Claude Code에서 `claude mcp remove viv --scope user`를 실행한다.
 
