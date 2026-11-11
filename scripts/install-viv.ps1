@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param(
     [ValidateSet('PC','PCMobile')][string]$Target,
-    [ValidateSet('Codex','Manual')][string]$Client = 'Codex',
+    [ValidateSet('Codex','Claude','Manual')][string]$Client = 'Codex',
     [ValidateRange(1024,65535)][int]$Port = 4317
 )
 
@@ -38,5 +38,5 @@ if (!(Test-VivNode)) {
     if (!(Test-VivNode)) { throw '새 PowerShell에서 VIV 설치 명령을 다시 실행하세요.' }
 }
 
-$result = & (Join-Path $PSScriptRoot 'setup-self-host.ps1') -Port $Port -Mobile:($Target -eq 'PCMobile') -CodexMcp:($Client -eq 'Codex')
+$result = & (Join-Path $PSScriptRoot 'setup-self-host.ps1') -Port $Port -Mobile:($Target -eq 'PCMobile') -Client $Client
 $result

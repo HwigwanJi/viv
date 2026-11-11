@@ -4,11 +4,13 @@
 param(
     [switch]$Mobile,
     [switch]$CodexMcp,
+    [ValidateSet('Codex','Claude','Manual')][string]$Client = 'Manual',
     [switch]$StartOnly,
     [ValidateRange(1024, 65535)][int]$Port = 4317
 )
 
 $ErrorActionPreference = 'Stop'
+if ($CodexMcp -and !$PSBoundParameters.ContainsKey('Client')) { $Client = 'Codex' }
 if ($Port -eq 4905) { throw 'Port 4905 is reserved for the managed trading host.' }
 $project = Split-Path -Parent $PSScriptRoot
 $localUrl = "http://127.0.0.1:$Port"
@@ -123,7 +125,7 @@ try {
 
     $ready = $true
     try {
-        $mcpRegistration = & (Join-Path $PSScriptRoot 'install-viv-mcp.ps1') -Port $Port -ProbeOnly:(!$CodexMcp) | ConvertFrom-Json
+        $mcpRegistration = & (Join-Path $PSScriptRoot 'install-viv-mcp.ps1') -Port $Port -Client $Client | ConvertFrom-Json
     } catch { $mcpError = $_.Exception.Message }
     if ($Mobile) {
         try {

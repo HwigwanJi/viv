@@ -12,11 +12,13 @@
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv-mcp.ps1
 ```
 
-새 PC에서 앱과 Codex를 같이 준비하려면 [원샷 설치](self-host.md)를 실행합니다. 다른 AI 클라이언트에서는 `-Client Manual`로 실행하고 클라이언트가 지원하는 방식으로 연결합니다. MCP 주소의 기본값은 `http://127.0.0.1:4317/mcp`입니다. 다른 포트를 쓴 경우 같은 `-Port`를 전달합니다. 루프백 주소는 AI 클라이언트와 VIV 서버가 같은 기기에서 실행될 때 쓸 수 있습니다.
+새 PC에서는 [원샷 설치](self-host.md)를 실행합니다. Claude Code는 설치 스크립트 또는 위 MCP 스크립트에 `-Client Claude`를 붙입니다. Claude Code의 사용자 범위에서 HTTP 연결을 확인합니다. 다른 AI 클라이언트에서는 `-Client Manual`로 실행하고 클라이언트가 지원하는 방식으로 연결합니다. MCP 주소의 기본값은 `http://127.0.0.1:4317/mcp`입니다. 다른 포트를 쓴 경우 같은 `-Port`를 전달합니다. 루프백 주소는 AI 클라이언트와 VIV 서버가 같은 기기에서 실행될 때 쓸 수 있습니다.
 
 1. `initialize`에서 `viv`, `tools/list`에서 `viv_onboarding`을 확인합니다.
 2. MCP를 현재 대화에서 쓸 수 있으면 `viv_onboarding`을 호출해 바로 시작합니다. 연결을 다시 읽어야 하는 클라이언트에서는 새 AI 대화에 **VIV 시작하기**를 입력하거나 MCP 프롬프트 메뉴에서 **VIV 시작하기**를 선택합니다.
 3. 링크를 열 수 있는 AI 앱에서는 VIV의 결과를 인앱 브라우저에 띄웁니다. 앱이 인앱 브라우저를 제공하지 않으면 같은 결과 링크를 누를 수 있게 표시합니다. 휴대폰에서 보려면 같은 tailnet에서 서버의 비공개 HTTPS 주소를 엽니다.
+
+이 연결은 Claude Code가 실행 중인 PC의 VIV를 사용합니다. Claude 웹·모바일의 원격 커넥터는 Anthropic 서버에서 연결하므로 PC의 루프백 주소를 사용할 수 없습니다. [Claude Code MCP](https://code.claude.com/docs/en/mcp) · [Claude 원격 커넥터](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp)
 
 ## 첫 대화의 순서
 
