@@ -27,19 +27,31 @@ jobs:
           set -euo pipefail
           printf '0\n' | bash scripts/install-viv-mac.sh
           test ! -e .runtime
+          if bash scripts/install-viv-mac.sh --resume; then
+            echo "Resume unexpectedly worked before installation" >&2
+            exit 1
+          fi
           if bash scripts/install-viv-mac.sh --mobile-only; then
             echo "Mobile recovery unexpectedly worked before installation" >&2
             exit 1
           fi
           test ! -e .runtime
           mac_path=/usr/bin:/bin:/usr/sbin:/sbin
-          receipt=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --target pc --client manual)
+          port=4389
+          receipt=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --target pc --client manual --port "$port")
           node -e 'const r=JSON.parse(process.argv[1]); if(!r.serverPid || r.mcpStatus!=="endpoint-ready" || r.liveRunner!=="disabled") throw Error(JSON.stringify(r))' "$receipt"
           pid=$(node -p 'JSON.parse(process.argv[1]).serverPid' "$receipt")
           trap 'kill "$pid" 2>/dev/null || true' EXIT
           rerun=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --target pc --client manual)
-          node -e 'const r=JSON.parse(process.argv[1]); if(r.serverPid!==null || r.mcpStatus!=="endpoint-ready") throw Error(JSON.stringify(r))' "$rerun"
-          curl -fsS http://127.0.0.1:4317/mcp -H 'Content-Type: application/json' \
+          node -e 'const [r,installed]=process.argv.slice(1).map(JSON.parse); if(r.serverPid!==null || r.mcpStatus!=="endpoint-ready" || r.desktopUrl!==installed.desktopUrl) throw Error(JSON.stringify(r))' "$rerun" "$receipt"
+          kill "$pid"
+          for attempt in {1..25}; do
+            if ! curl -fsS "http://127.0.0.1:$port/" -o /dev/null 2>/dev/null; then break; fi
+            sleep 0.2
+          done
+          resumed=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --resume)
+          pid=$(node -e 'const [r,installed]=process.argv.slice(1).map(JSON.parse); if(!r.serverPid || r.mcpStatus!=="endpoint-ready" || r.desktopUrl!==installed.desktopUrl) throw Error(JSON.stringify(r)); console.log(r.serverPid)' "$resumed" "$receipt")
+          curl -fsS "http://127.0.0.1:$port/mcp" -H 'Content-Type: application/json' \
             --data '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"viv_onboarding","arguments":{}}}' |
             node -e 'let s=""; process.stdin.on("data",b=>s+=b).on("end",()=>{const r=JSON.parse(s).result; if(r.isError || r.structuredContent.next!=="ask_interest_and_budget") throw Error("Fresh onboarding failed")})'
           node_bin=( "$PWD"/.runtime/node-v24*-darwin-*/bin )

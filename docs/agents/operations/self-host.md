@@ -25,7 +25,7 @@ Codex 외의 AI 클라이언트나 앱을 설치한 뒤 MCP만 연결하는 방�
 
 저장소를 복제한 뒤 `bash scripts/install-viv-mac.sh`를 실행합니다. 에이전트는 환경을 먼저 물어보고 `--target pc` 또는 `--target mobile`을 전달합니다. 기본 MCP 클라이언트는 Codex입니다. Claude Code는 `--client claude`, 기타 클라이언트는 `--client manual`을 사용합니다.
 
-설치 스크립트는 필요한 경우 Apple Silicon 또는 Intel용 Node.js 24를 받아 해시를 검증한 뒤 VIV 폴더 안에 설치합니다. Mac 재시작 뒤에는 같은 명령을 다시 실행합니다. 서버 오류는 `.runtime/self-host.log`에서 확인합니다.
+설치 스크립트는 필요한 경우 Apple Silicon 또는 Intel용 Node.js 24를 받아 해시를 검증한 뒤 VIV 폴더 안에 설치합니다. Mac을 재시작했다면 [서버 다시 시작](#서버-다시-시작)을 따르세요. 서버 오류는 `.runtime/self-host.log`에서 확인합니다.
 
 모바일을 선택하면 기존 Tailscale을 사용하거나 Homebrew를 통해 설치합니다. macOS VPN 승인과 Tailscale 로그인은 사용자가 진행합니다. Homebrew가 없는 Mac에서 Tailscale이 필요하면 공식 앱을 설치한 뒤 `mobileRetryCommand`를 실행합니다. 비공개 HTTPS 연결이 확인되면 `mobileInstallUrl`을 같은 tailnet에 로그인한 휴대폰에서 엽니다. [Tailscale Mac 설치](https://tailscale.com/docs/install/mac)
 
@@ -36,17 +36,18 @@ Windows와 Mac 모두 터미널에 앱·MCP·모바일 상태를 표시합니다
 | 결과 | 다음 행동 |
 | --- | --- |
 | `desktopStatus: started` 또는 `reused` | `desktopUrl`을 열어 VIV 화면을 확인하세요. `started`는 새 서버를 시작한 경우이고 `reused`는 실행 중인 서버를 그대로 쓰는 경우입니다. |
+| `restartCommand` | 앱 주소가 열리지 않을 때 기존 VIV 폴더에서 이 명령을 실행하세요. |
 | `mcpStatus: registered` | AI 대화에 `onboardingPrompt`에 표시된 **VIV 시작하기**를 입력하세요. [첫 모의 실습](viv-mcp-playbook.md#첫-모의-실습)으로 이어갑니다. |
 | `mcpStatus: not-requested` | 모바일 복구만 실행했습니다. AI를 연결하려면 [MCP만 복구하기](#mcp만-복구하기)를 따르세요. |
-| `mcpStatus: endpoint-ready` | VIV의 MCP 서버가 응답합니다. 수동 연결을 선택했다면 AI 클라이언트에 `mcpUrl`을 등록하세요. |
+| `mcpStatus: endpoint-ready` | VIV의 MCP 서버가 응답합니다. 기존에 연결한 AI에서 **VIV 시작하기**를 입력해 확인하세요. 첫 수동 연결이라면 AI 클라이언트에 `mcpUrl`을 등록하세요. |
 | `mobileStatus: phone-install-pending` | PC에서 비공개 HTTPS 주소를 검증했습니다. `desktopInstallUrl`에서도 설치 주소를 확인하고 복사할 수 있습니다. 휴대폰에서 `mobileInstallUrl`을 열고 홈 화면 아이콘에서 VIV가 열리는지 확인하세요. |
-| `mobileStatus: not-requested` | PC 전용으로 설치했습니다. `desktopUrl`을 사용하세요. 나중에 PC의 설치 페이지에서 **이 PC에서 다시 실행할 명령**을 열고 VIV 폴더에서 실행하세요. 그다음 **연결 다시 확인**을 누르세요. |
+| `mobileStatus: not-requested` | 이번 실행에서 모바일 설정을 진행하지 않았습니다. 이전에 연결한 휴대폰에서는 기존 VIV 아이콘을 열어 확인하세요. 새 연결이나 복구는 [모바일만 복구하기](#모바일만-복구하기)를 따르세요. |
 | `mobileStatus: needs-action` | `mobileError`를 확인하고 `mobileRetryCommand`를 실행하세요. [모바일만 복구하기](#모바일만-복구하기) |
 | `mcpStatus: needs-action` | `mcpError`를 확인하고 `mcpRetryCommand`를 실행하세요. PC 앱은 `desktopUrl`에서 열 수 있습니다. [MCP만 복구하기](#mcp만-복구하기) |
 
 ## 연결 복구
 
-이미 설치한 **VIV 폴더**에서 실행하세요. 아래 예제는 기본 포트 `4317`을 사용합니다. 다른 포트로 설치했다면 기존 PC 브라우저 주소의 포트로 바꾸세요. 가동 중인 같은 설치의 서버와 저장된 실험을 재사용합니다.
+이미 설치한 **VIV 폴더**에서 실행하세요. 서버가 저장한 포트를 사용합니다. 포트를 저장하기 전 버전으로 설치했다면 PC의 기존 VIV 주소에서 포트를 확인한 뒤 [서버 다시 시작](#서버-다시-시작)의 기존 설치 안내를 먼저 따르세요.
 
 ### 모바일만 복구하기
 
@@ -55,13 +56,13 @@ PC에서 Tailscale 로그인이나 VPN 승인을 마친 뒤 `mobileRetryCommand`
 **Windows**
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -MobileOnly -Port 4317
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -MobileOnly
 ```
 
 **Mac**
 
 ```bash
-bash scripts/install-viv-mac.sh --mobile-only --port 4317
+bash scripts/install-viv-mac.sh --mobile-only
 ```
 
 `mobileStatus`가 `phone-install-pending`이면 같은 Tailscale 네트워크의 휴대폰에서 `mobileInstallUrl`을 여세요. PC 설치 화면에서는 **연결 다시 확인**을 누르면 주소가 표시됩니다.
@@ -73,26 +74,36 @@ bash scripts/install-viv-mac.sh --mobile-only --port 4317
 **Windows**
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv-mcp.ps1 -Client Codex -Port 4317
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -StartOnly -Client Codex
 ```
 
 **Mac**
 
 ```bash
-bash scripts/install-viv-mac.sh --target pc --client codex --port 4317
+bash scripts/install-viv-mac.sh --target pc --client codex
 ```
 
 Claude Code는 Windows에서 `-Client Claude`, Mac에서 `--client claude`를 사용하세요. `registered`가 나오면 AI의 새 대화에 **VIV 시작하기**를 입력하세요. 수동 연결은 기존 PC 주소 끝에 `/mcp`를 붙여 클라이언트에 등록합니다. [MCP와 첫 대화](viv-mcp-playbook.md#연결)
 
 ## 서버 다시 시작
 
-VIV 서버는 설치한 컴퓨터에서 실행됩니다. `.env`를 바꾼 경우 VIV 서버를 종료하고 같은 설치 옵션과 포트로 다시 시작해야 새 값이 적용됩니다. 최초 실행 결과의 `serverPid`를 확인하세요. 재실행 결과가 `reused`이면 `serverPid`는 비어 있습니다. 최초 PID가 없으면 Windows의 `Get-NetTCPConnection -LocalPort 4317 -State Listen` 또는 Mac의 `lsof -nP -iTCP:4317 -sTCP:LISTEN`으로 설치 포트의 프로세스를 찾을 수 있습니다. 종료 전에 그 프로세스가 이 VIV 폴더에서 실행한 서버인지 확인하세요.
+기존 앱 주소가 열리지 않으면 **설치했던 VIV 폴더**에서 다음 명령을 실행한 뒤 터미널의 **VIV PC** 주소를 여세요. 저장한 포트와 기록을 그대로 사용합니다.
 
-서버를 종료한 뒤 Windows에서는 VIV 폴더에서 아래 명령을 실행하세요. 다른 클라이언트나 포트를 사용했다면 `-Client`와 `-Port`에 기존 값을 넣고, 모바일도 사용 중이면 `-Mobile`을 추가하세요. Mac에서는 기존 `bash scripts/install-viv-mac.sh` 명령을 다시 실행하세요.
+**Windows**
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -StartOnly -Client Codex
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv.ps1 -Resume
 ```
+
+**Mac**
+
+```bash
+bash scripts/install-viv-mac.sh --resume
+```
+
+기존 AI에서 **VIV 시작하기**를 입력하거나 휴대폰의 기존 VIV 아이콘을 여세요. 열리지 않는 연결만 [복구](#연결-복구)하세요. `.env`를 수정했다면 현재 VIV 서버를 먼저 종료한 뒤 위 명령을 실행해야 변경 사항이 적용됩니다. `serverPid`가 비어 있다면 **VIV PC** 주소의 포트로 Windows `Get-NetTCPConnection -LocalPort <포트> -State Listen` 또는 Mac `lsof -nP -iTCP:<포트> -sTCP:LISTEN`에서 확인할 수 있습니다. 종료 전에 해당 프로세스가 이 폴더의 VIV인지 확인하세요.
+
+포트를 저장하기 전 버전에서 설치했다면, 원래 VIV 폴더에서 기존 PC 주소의 포트를 한 번 전달하세요. Windows에서는 `setup-self-host.ps1 -StartOnly -Client Manual -Port <포트>`, Mac에서는 `bash scripts/install-viv-mac.sh --target pc --client manual --port <포트>`를 실행합니다. 이후 위 재실행 명령을 사용하세요.
 
 VIV의 MCP 등록만 제거하려면 Codex에서 `codex mcp remove viv`, Claude Code에서 `claude mcp remove viv --scope user`를 실행하세요.
 

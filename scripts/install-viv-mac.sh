@@ -10,7 +10,13 @@ fi
 target=
 recovery=
 client=codex
-port=4317
+port=
+if [[ "$#" -eq 1 && "$1" == --resume ]]; then
+  target=pc
+  client=manual
+  recovery=resume
+  shift
+fi
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --mobile-only) recovery=mobile-only; shift ;;
@@ -21,6 +27,7 @@ while [[ $# -gt 0 ]]; do
         --client) client="$2" ;;
         --port) port="$2" ;;
       esac
+      [[ -n "$2" ]] || { printf 'Missing value for %s\n' "$1" >&2; exit 2; }
       shift 2 ;;
     *) printf 'Unknown argument: %s\n' "$1" >&2; exit 2 ;;
   esac
@@ -48,9 +55,13 @@ if [[ -z "$target" ]]; then
 fi
 case "$target" in pc|mobile) ;; *) printf '%s\n' 'Use --target pc or mobile.' >&2; exit 2 ;; esac
 case "$client" in codex|claude|manual) ;; *) printf '%s\n' 'Use --client codex, claude, or manual.' >&2; exit 2 ;; esac
-if [[ ! "$port" =~ ^[1-9][0-9]{3,4}$ ]] || (( port < 1024 || port > 65535 || port == 4905 )); then
+if [[ -n "$port" ]] && { [[ ! "$port" =~ ^[1-9][0-9]{3,4}$ ]] || (( port < 1024 || port > 65535 || port == 4905 )); }; then
   printf '%s\n' 'Choose a port from 1024 to 65535, excluding 4905.' >&2
   exit 2
+fi
+if [[ "$recovery" == resume && ( ! -f .runtime/self-host-port || ! -f .runtime/self-host-id || ! -f .runtime/self-host.sqlite ) ]]; then
+  printf '%s\n' 'Run the installer once from the original VIV folder with its original port before using --resume. See the server restart guide in README.md.' >&2
+  exit 1
 fi
 
 node_ready() {

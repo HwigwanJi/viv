@@ -7,15 +7,14 @@ param(
     [ValidateSet('Codex','Claude','Manual')][string]$Client = 'Manual',
     [switch]$StartOnly,
     [switch]$MobileOnly,
+    [switch]$Resume,
     [ValidateRange(1024, 65535)][int]$Port = 4317
 )
 
 $ErrorActionPreference = 'Stop'
 if ($CodexMcp -and !$PSBoundParameters.ContainsKey('Client')) { $Client = 'Codex' }
 if ($MobileOnly) { $Mobile = $true; $StartOnly = $true }
-if ($Port -eq 4905) { throw 'Port 4905 is reserved for the managed trading host.' }
 $project = Split-Path -Parent $PSScriptRoot
-$localUrl = "http://127.0.0.1:$Port"
 $server = $null
 $serverPid = $null
 $configuredRoute = $false
@@ -64,12 +63,35 @@ try {
     foreach ($file in @('.runtime/server-host-config.json', '.runtime/server-host-state.json', '.runtime/investment.sqlite')) {
         if (Test-Path -LiteralPath $file) { throw 'Use a separate checkout for self-host setup. An existing server was detected.' }
     }
+    $runtime = Join-Path $project '.runtime'
+    $idFile = Join-Path $runtime 'self-host-id'
+    $database = Join-Path $runtime 'self-host.sqlite'
+    $portFile = Join-Path $runtime 'self-host-port'
+    if ($Resume) {
+        if (!(Test-Path -LiteralPath $portFile) -or !(Test-Path -LiteralPath $idFile) -or !(Test-Path -LiteralPath $database)) {
+            throw 'Run the installer once from the original VIV folder with its original port before using -Resume. See the server restart guide in README.md.'
+        }
+        $Mobile = $false
+        $MobileOnly = $false
+        $StartOnly = $true
+        $Client = 'Manual'
+    }
+    if (Test-Path -LiteralPath $portFile) {
+        $storedPort = (Get-Content -LiteralPath $portFile -Raw).Trim()
+        if ($storedPort -notmatch '^[1-9][0-9]{3,4}$' -or [int]$storedPort -lt 1024 -or [int]$storedPort -gt 65535 -or [int]$storedPort -eq 4905) {
+            throw 'The saved VIV port is invalid. Check .runtime/self-host-port in the original VIV folder.'
+        }
+        if ($PSBoundParameters.ContainsKey('Port') -and $Port -ne [int]$storedPort) {
+            throw "This VIV folder already uses port $storedPort. Omit -Port to use it. Use a separate checkout for another port."
+        }
+        $Port = [int]$storedPort
+    }
+    if ($Port -eq 4905) { throw 'Port 4905 is reserved for the managed trading host.' }
+    $localUrl = "http://127.0.0.1:$Port"
     $node = (Get-Command node.exe).Source
     & $node --disable-warning=ExperimentalWarning -e "require('node:sqlite'); if (Number(process.versions.node.split('.')[0]) < 24) process.exit(1)"
     if ($LASTEXITCODE -ne 0) { throw 'Install Node.js 24 LTS with npm and retry.' }
-    $runtime = Join-Path $project '.runtime'
-    $idFile = Join-Path $runtime 'self-host-id'
-    if ($MobileOnly -and (!(Test-Path -LiteralPath $idFile) -or !(Test-Path -LiteralPath (Join-Path $runtime 'self-host.sqlite')))) {
+    if ($MobileOnly -and (!(Test-Path -LiteralPath $idFile) -or !(Test-Path -LiteralPath $database))) {
         throw 'Complete the PC installation in this folder before running mobile recovery.'
     }
     $null = New-Item -ItemType Directory -Path $runtime -Force
@@ -97,7 +119,7 @@ try {
     }
 
     if (!(Test-Path -LiteralPath '.env')) {
-        if (Test-Path -LiteralPath (Join-Path $runtime 'self-host.sqlite')) {
+        if (Test-Path -LiteralPath $database) {
             throw 'Restore the original .env for this checkout before restarting.'
         }
         & $node -e "const {writeFileSync}=require('node:fs'); const {randomBytes}=require('node:crypto'); writeFileSync('.env', 'BROKER_VAULT_KEY='+randomBytes(32).toString('hex')+'\n', {flag:'wx',mode:0o600})"
@@ -113,7 +135,7 @@ try {
         $savedSetupId = $env:VIV_SELF_HOST_ID
         try {
             $env:KEYNES_PREVIEW_PORT = "$Port"
-            $env:KEYNES_PREVIEW_DB = Join-Path $runtime 'self-host.sqlite'
+            $env:KEYNES_PREVIEW_DB = $database
             $env:VIV_SELF_HOST_ID = $setupId
             $server = Start-Process -FilePath $node -ArgumentList $arguments -WorkingDirectory $project -WindowStyle Hidden -PassThru `
                 -RedirectStandardOutput (Join-Path $runtime 'self-host.stdout.log') -RedirectStandardError (Join-Path $runtime 'self-host.stderr.log')
@@ -131,6 +153,16 @@ try {
         $serverPid = $server.Id
     }
 
+    if (!(Test-Path -LiteralPath $portFile)) {
+        $stream = [IO.File]::Open($portFile, 'CreateNew', 'Write')
+        try {
+            $bytes = [Text.Encoding]::ASCII.GetBytes("$Port`n")
+            $stream.Write($bytes, 0, $bytes.Length)
+        } finally { $stream.Dispose() }
+    }
+    if ((Get-Content -LiteralPath $portFile -Raw).Trim() -cne "$Port") {
+        throw 'Another process set a different VIV port in this folder. Use the original installation port.'
+    }
     $ready = $true
     Write-Host "VIV PC: $localUrl"
     if (!$MobileOnly) {
@@ -197,6 +229,7 @@ try {
         desktopUrl = $localUrl
         desktopInstallUrl = "$localUrl/install.html"
         desktopStatus = if ($serverPid) { 'started' } else { 'reused' }
+        restartCommand = 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv.ps1 -Resume'
         mobileInstallUrl = if ($mobileUrl) { "$mobileUrl/install.html" } else { $null }
         mobileStatus = if ($mobileError) { 'needs-action' } elseif ($mobileUrl) { 'phone-install-pending' } else { 'not-requested' }
         mobileError = $mobileError

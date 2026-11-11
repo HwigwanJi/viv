@@ -3,10 +3,18 @@
 param(
     [ValidateSet('PC','PCMobile')][string]$Target,
     [ValidateSet('Codex','Claude','Manual')][string]$Client = 'Codex',
-    [ValidateRange(1024,65535)][int]$Port = 4317
+    [ValidateRange(1024,65535)][int]$Port,
+    [switch]$Resume
 )
 
 $ErrorActionPreference = 'Stop'
+if ($Resume) {
+    if ($PSBoundParameters.ContainsKey('Port') -or $PSBoundParameters.ContainsKey('Target') -or $PSBoundParameters.ContainsKey('Client')) {
+        throw 'Use -Resume by itself to reopen this VIV installation.'
+    }
+    & (Join-Path $PSScriptRoot 'setup-self-host.ps1') -Resume
+    return
+}
 if (!$Target) {
     Write-Host 'VIV를 어느 환경에서 사용하실 건가요?'
     Write-Host '1. PC'
@@ -38,5 +46,7 @@ if (!(Test-VivNode)) {
     if (!(Test-VivNode)) { throw '새 PowerShell에서 VIV 설치 명령을 다시 실행하세요.' }
 }
 
-$result = & (Join-Path $PSScriptRoot 'setup-self-host.ps1') -Port $Port -Mobile:($Target -eq 'PCMobile') -Client $Client
+$options = @{ Mobile = ($Target -eq 'PCMobile'); Client = $Client }
+if ($PSBoundParameters.ContainsKey('Port')) { $options.Port = $Port }
+$result = & (Join-Path $PSScriptRoot 'setup-self-host.ps1') @options
 $result

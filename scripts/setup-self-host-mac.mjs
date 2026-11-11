@@ -5,17 +5,29 @@ import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {validateMobileOrigin,privateMobileRouteStatus} from './preview-origin.mjs';
 
-const [target, client, port, recovery = ''] = process.argv.slice(2);
+const [target, client, requestedPort = '', recovery = ''] = process.argv.slice(2);
 const mobileOnly = recovery === 'mobile-only';
+const resume = recovery === 'resume';
+const database = path.resolve('.runtime/self-host.sqlite');
+const portFile = '.runtime/self-host-port';
+const mobileConfig = '.runtime/mobile-access.json';
 if (!['pc', 'mobile'].includes(target) || !['codex', 'claude', 'manual'].includes(client)
-    || recovery && (!mobileOnly || target !== 'mobile')
-    || !/^\d{4,5}$/.test(port ?? '') || Number(port) < 1024 || Number(port) > 65535 || Number(port) === 4905) {
+    || recovery && !(mobileOnly && target === 'mobile' || resume && target === 'pc' && client === 'manual' && !requestedPort)) {
   throw new Error('Invalid VIV installation options.');
+}
+const savedPort = existsSync(portFile) ? readFileSync(portFile, 'utf8').trim() : null;
+if (resume && (savedPort === null || !existsSync('.runtime/self-host-id') || !existsSync(database))) {
+  throw new Error('Run the installer once from the original VIV folder with its original port before using --resume.');
+}
+const port = savedPort ?? (requestedPort || '4317');
+if (!/^[1-9]\d{3,4}$/.test(port) || Number(port) < 1024 || Number(port) > 65535 || Number(port) === 4905) {
+  throw new Error(savedPort === null ? 'Invalid VIV port.' : 'The saved VIV port is invalid. Check .runtime/self-host-port in the original VIV folder.');
+}
+if (savedPort !== null && requestedPort && requestedPort !== port) {
+  throw new Error(`This VIV folder already uses port ${port}. Omit --port to use it. Use a separate checkout for another port.`);
 }
 const origin = 'http://127.0.0.1:' + port;
 const mcpUrl = origin + '/mcp';
-const database = path.resolve('.runtime/self-host.sqlite');
-const mobileConfig = '.runtime/mobile-access.json';
 
 function initializeFile(file, value) {
   try {
@@ -47,6 +59,13 @@ async function verifyApp(base, setupId) {
   if (manifest?.display !== 'standalone' || manifest.scope !== '/' || !manifest.icons?.length) throw new Error('Mobile manifest verification failed.');
   for (const route of ['/install.html', ...manifest.icons.map(icon => icon.src)]) {
     if (!(await request(base + route)).ok) throw new Error('VIV install asset unavailable: ' + route + '. Restore this checkout’s install files and retry on port ' + port + '.');
+  }
+}
+
+async function confirmInstallation(setupId) {
+  await verifyApp(origin, setupId);
+  if (initializeFile(portFile, port + '\n') !== port) {
+    throw new Error('Another process set a different VIV port in this folder. Use the original installation port.');
   }
 }
 
@@ -160,7 +179,7 @@ const running = await request(origin + '/').catch(error => {
   return null;
 });
 if (!running) {
-  if (!mobileOnly) {
+  if (!mobileOnly && !resume) {
     for (const args of [['ci', '--no-audit', '--no-fund'], ['run', 'build:local']]) {
       if (command('npm', args, {show: true}).status !== 0) throw new Error('VIV dependency installation or build failed.');
     }
@@ -177,7 +196,7 @@ if (!running) {
     for (let attempt = 0; attempt < 60 && server.exitCode === null; attempt++) {
       const response = await request(origin + '/').catch(() => null);
       if (response) {
-        await verifyApp(origin, setupId);
+        await confirmInstallation(setupId);
         ready = true;
         break;
       }
@@ -190,7 +209,7 @@ if (!running) {
     server.kill();
     throw error;
   }
-} else await verifyApp(origin, setupId);
+} else await confirmInstallation(setupId);
 
 console.error('VIV PC: ' + origin);
 let mcpStatus = mobileOnly ? 'not-requested' : 'needs-action', mcpError = null, mobileInstallUrl = null, mobileError = null;
@@ -206,6 +225,7 @@ if (target === 'mobile') {
 }
 console.log(JSON.stringify({
   serverPid, desktopUrl: origin, desktopInstallUrl: origin + '/install.html', desktopStatus: serverPid ? 'started' : 'reused', mcpUrl, mcpStatus, mcpError,
+  restartCommand: 'bash scripts/install-viv-mac.sh --resume',
   mcpRetryCommand: mcpError ? ['bash scripts/install-viv-mac.sh --target pc --client', client, '--port', port].join(' ') : null,
   onboardingPrompt: mcpStatus === 'registered' ? 'VIV 시작하기' : null,
   onboardingTool: mcpStatus === 'registered' ? 'viv_onboarding' : null,
