@@ -38,7 +38,10 @@ jobs:
           export PATH="${node_bin[0]}:$PATH"
           clients="$RUNNER_TEMP/viv-mcp-clients"
           npm install --prefix "$clients" --ignore-scripts --no-audit --no-fund @openai/codex@0.167.1 @anthropic-ai/claude-code@2.1.322
+          node "$clients/node_modules/@anthropic-ai/claude-code/install.cjs"
           export PATH="$clients/node_modules/.bin:$PATH"
+          codex --version
+          claude --version
           export CLAUDE_CONFIG_DIR="$RUNNER_TEMP/viv-claude-settings"
           mkdir -p "$CLAUDE_CONFIG_DIR"
           for client in codex claude; do
