@@ -81,21 +81,25 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T14:30:01.505Z",
-      "reason": "Windows 데스크톱, iPhone, iPad, Android 뷰에서 설치와 웹에서 열기 경로를 확인했습니다.",
-      "signature": "0021b72c4121f25bea62bbf24a9822a18ce9b5e6065e674379dc20b9293943fb",
+      "reviewedAt": "2026-11-11T17:10:16.634Z",
+      "reason": "PC 설치 주소, 수동 복사, 재확인·복구 명령과 iPhone·Android 크기 안내를 실제 Chrome에서 확인했습니다.",
+      "signature": "536f3b5dc68871994bb241c618f394076d550f47b3d6f818fe2035da99bf4d8e",
       "controls": [
         [
           "data-install-open",
           1
         ],
         [
+          "data-install-retry-command",
+          1
+        ],
+        [
           "element:a",
-          2
+          3
         ],
         [
           "element:button",
-          2
+          3
         ],
         [
           "element:dialog",
@@ -104,9 +108,13 @@
         [
           "element:input",
           1
+        ],
+        [
+          "element:summary",
+          1
         ]
       ],
-      "sourceHash": "cc2a711ac9b0cb1942e61e45fac53e473854fd8d78cb67813b9e8ae36d08b19f"
+      "sourceHash": "d79af14afd0e7c9b82c1692f6506faf07ccba045fe7baac42dafd4cb10035821"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -342,8 +350,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T14:30:01.506Z",
-      "reason": "기기별 설치 도움말과 설치 창의 닫기 동작을 확인했습니다.",
+      "reviewedAt": "2026-11-11T17:10:16.636Z",
+      "reason": "PC 웹앱 설치 안내와 휴대폰 연결 안내의 역할을 구분하고 기존 설치 이벤트 회귀를 확인했습니다.",
       "signature": "855a8476991a7abdd75d32f972c945ac64b1f17bb09135167fc4a52e8509389e",
       "controls": [
         [
@@ -355,7 +363,7 @@
           2
         ]
       ],
-      "sourceHash": "6e56f5ee2f2b5d5be3e1d7e00248262f5cdb8f361a1e5bb2be0b0bd3bd04a8b9"
+      "sourceHash": "25799bb282203243ea29dd8a17d6caefb19727a8757e852c2af80494496bf830"
     },
     {
       "file": "dist/ui/app-notifications.mjs",
@@ -1335,12 +1343,16 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T14:30:01.507Z",
-      "reason": "클립보드 실패 복구와 iPhone 홈 화면에서 앱 직접 열기를 확인했습니다.",
-      "signature": "64891af90e09faebc5bf17b2cb0589b999427a9a2f47a93c066586fd40ef9d08",
+      "reviewedAt": "2026-11-11T17:11:46.024Z",
+      "reason": "미설정, 공개·다른 인스턴스 차단, 구버전 응답 실패, 주소 복구, 키보드·수동 복사를 Chrome에서 확인했습니다.",
+      "signature": "6c093771c4103d9aa26c6f74efff7d142819813e46d54f9a73545ba277b520bc",
       "controls": [
         [
           "data-install-open",
+          1
+        ],
+        [
+          "data-install-retry-command",
           1
         ],
         [
@@ -1352,7 +1364,7 @@
           1
         ]
       ],
-      "sourceHash": "0e55f03d6a4d3b5d55d9182d27f25f8776b7c428caf8cee7e0b9a105b26d7e02"
+      "sourceHash": "2913195facc22e667cc151edb2e3686e8b1561b80f5506c5ce43db3cecadb095"
     },
     {
       "file": "dist/ui/interface-motion.mjs",
@@ -3161,9 +3173,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T16:42:30.549Z",
-      "reason": "모의 예산과 JEV 설정에서 키 없는 실습으로 이어지고, 401·403 기록 조회와 같은 종목 복귀를 Chrome에서 확인했습니다.",
-      "signature": "d78aa36a218f2072b42ec78accc7a9058d7571f3e8a208e0cb140117b667cd96",
+      "reviewedAt": "2026-11-11T17:10:16.639Z",
+      "reason": "서비스 연결의 휴대폰 설치 링크에서 전용 페이지로 가고 모바일에서 같은 모의 예산을 재조회했습니다.",
+      "signature": "67f817aa124b1ba84cd65964dd41d243ca99060c9c93dac50e8e6bc600906a71",
       "controls": [
         [
           "data-auto-action",
@@ -3231,7 +3243,7 @@
         ],
         [
           "element:a",
-          26
+          27
         ],
         [
           "element:button",
@@ -3266,7 +3278,7 @@
           1
         ]
       ],
-      "sourceHash": "f42c1e1b57c9f3d29321ca59d372d3594c4a87e28e50815d3ce684557b28d3b4",
+      "sourceHash": "9b33adf9c6129a18ecf50ae98eed15c97b45b0b69ef1899f85b728498d5490fc",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

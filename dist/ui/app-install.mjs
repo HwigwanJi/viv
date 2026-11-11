@@ -16,7 +16,7 @@ export function manualInstallGuide(navigator){
   const platform=installPlatform(navigator);
   if(platform==='apple')return 'Safari에서 <strong>공유 → 홈 화면에 추가</strong>를 누르세요. <strong>웹 앱으로 열기</strong>가 보이면 켜고 추가하세요.';
   if(platform==='android')return 'Chrome의 <strong>더보기 → 설치</strong> 또는 <strong>홈 화면에 추가</strong>를 선택하세요.';
-  return 'PC 브라우저의 앱 설치 메뉴를 확인하세요. 휴대폰은 설치 결과에 나온 비공개 HTTPS 주소를 Safari나 Chrome에서 여세요.';
+  return 'PC에 웹앱으로 설치하려면 브라우저의 앱 설치 메뉴를 확인하세요.';
 }
 
 export function createAppInstall({window,navigator,open,onError=()=>{},onInstalled=()=>{},onDismissed=()=>{}}) {

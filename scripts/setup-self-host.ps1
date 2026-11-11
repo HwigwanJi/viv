@@ -187,6 +187,7 @@ try {
     [ordered]@{
         serverPid = $serverPid
         desktopUrl = $localUrl
+        desktopInstallUrl = "$localUrl/install.html"
         desktopStatus = if ($serverPid) { 'started' } else { 'reused' }
         mobileInstallUrl = if ($mobileUrl) { "$mobileUrl/install.html" } else { $null }
         mobileStatus = if ($mobileError) { 'needs-action' } elseif ($mobileUrl) { 'phone-install-pending' } else { 'not-requested' }

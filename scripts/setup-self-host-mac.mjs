@@ -3,7 +3,7 @@ import {randomBytes} from 'node:crypto';
 import {closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
-import {validateMobileOrigin} from './preview-origin.mjs';
+import {validateMobileOrigin,privateMobileRouteStatus} from './preview-origin.mjs';
 
 const [target, client, port] = process.argv.slice(2);
 if (!['pc', 'mobile'].includes(target) || !['codex', 'claude', 'manual'].includes(client)
@@ -112,14 +112,10 @@ async function connectMobile(setupId) {
   const inspect = () => {
     const result = tail(['serve', 'status', '--json'], {timeout: 10000});
     if (result.status !== 0) throw new Error('Could not read Tailscale Serve configuration.');
-    const config = JSON.parse(result.stdout);
-    if (Object.values(config.AllowFunnel ?? {}).some(Boolean)) throw new Error('Public Funnel is enabled on this Tailscale device.');
-    const handlers = config.Web?.[host + ':443']?.Handlers ?? {};
-    const proxy = handlers['/']?.Proxy?.replace(/\/$/, '');
-    if ((handlers['/'] && proxy !== origin) || (config.TCP?.['443'] && !config.TCP['443'].HTTPS)) {
-      throw new Error('Another service already uses the Tailscale HTTPS route.');
-    }
-    return proxy === origin;
+    const route = privateMobileRouteStatus(JSON.parse(result.stdout), mobileOrigin, origin);
+    if (route === 'public') throw new Error('Public Funnel is enabled on this Tailscale device.');
+    if (route === 'conflict') throw new Error('Another service already uses the Tailscale HTTPS route.');
+    return route === 'ready';
   };
   const serve = ['serve', '--bg', '--https=443', '--set-path=/', origin];
   const existing = inspect();
@@ -199,7 +195,7 @@ if (target === 'mobile') {
   catch (error) { mobileError = error.message; }
 }
 console.log(JSON.stringify({
-  serverPid, desktopUrl: origin, desktopStatus: serverPid ? 'started' : 'reused', mcpUrl, mcpStatus, mcpError,
+  serverPid, desktopUrl: origin, desktopInstallUrl: origin + '/install.html', desktopStatus: serverPid ? 'started' : 'reused', mcpUrl, mcpStatus, mcpError,
   mcpRetryCommand: mcpError ? ['bash scripts/install-viv-mac.sh --target pc --client', client, '--port', port].join(' ') : null,
   onboardingPrompt: mcpStatus === 'registered' ? 'VIV 시작하기' : null,
   onboardingTool: mcpStatus === 'registered' ? 'viv_onboarding' : null,

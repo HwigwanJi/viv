@@ -21,12 +21,25 @@
       <div class="studio-sheet-head"><h1>VIV 앱 설치</h1></div>
       <div class="studio-sheet-body">
         <div data-install-guide>
-          <p>VIV 서버를 켜 두고 휴대폰을 같은 Tailscale 네트워크에 연결하세요.</p>
           <p data-install-steps>iPhone은 Safari의 공유 메뉴에서, Android는 Chrome의 더보기 메뉴에서 홈 화면에 추가하세요.</p>
           <p data-install-browser></p>
           <p><button class="button primary" type="button" data-app-install data-app-install-native hidden>웹앱으로 설치</button></p>
-          <p><button class="button" type="button" data-install-copy hidden>설치 주소 복사</button></p>
-          <div data-install-address hidden><label class="field">설치 주소<input type="url" readonly></label></div>
+          <section class="spaced" data-install-handoff hidden>
+            <h2 data-install-connection-title>휴대폰 연결</h2>
+            <p data-install-connection role="status" aria-live="polite"></p>
+            <p data-install-handoff-help hidden>VIV 서버를 켜 두고 휴대폰을 같은 Tailscale 네트워크에 연결한 뒤 이 주소를 여세요.</p>
+            <div data-install-address hidden><label class="field">휴대폰 설치 주소<input type="url" readonly></label></div>
+            <details class="spaced" data-install-retry-command hidden>
+              <summary>이 PC에서 다시 실행할 명령</summary>
+              <p>VIV 설치 폴더에서 실행하세요.</p>
+              <code class="wrap-anywhere"></code>
+            </details>
+            <div class="actions spaced">
+              <button class="button" type="button" data-install-copy hidden>설치 주소 복사</button>
+              <button class="button" type="button" data-install-recheck hidden>연결 다시 확인</button>
+              <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md" data-install-setup hidden>모바일 연결 설정 안내</a>
+            </div>
+          </section>
           <p data-apk-download hidden><a class="button" href="./downloads/viv-1.0.2.apk" download>APK 다운로드 · Android</a></p>
         </div>
         <p data-install-status role="status" aria-live="polite"></p>

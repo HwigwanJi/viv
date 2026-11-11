@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {validateMobileOrigin,previewRequestOrigin} from '../scripts/preview-origin.mjs';
+import {validateMobileOrigin,privateMobileRouteStatus,verifyMobileInstallAddress,previewRequestOrigin} from '../scripts/preview-origin.mjs';
 import {handleAPI} from '../server/api.mjs';
 import {createAppInstall,chromeInstallLink,installPlatform,manualInstallGuide} from '../dist/ui/app-install.mjs';
 import {versionAssetBundle} from '../scripts/asset-versioning.mjs';
@@ -17,6 +17,38 @@ test('only the configured private HTTPS host and loopback proxy qualify; arbitra
   assert.throws(()=>previewRequestOrigin(incoming(new URL(origin).host,'192.168.1.10'),4905,origin));
   const attacker=incoming('attacker.test');attacker.headers['x-forwarded-host']=new URL(origin).host;attacker.headers['x-forwarded-proto']='https';
   assert.throws(()=>previewRequestOrigin(attacker,4905,origin));
+});
+
+test('desktop and Mac setup recognize only the expected private Serve route',()=>{
+  const local='http://127.0.0.1:4317',host=new URL(origin).host+':443';
+  const config={Web:{[host]:{Handlers:{'/':{Proxy:local+'/'}}}},TCP:{443:{HTTPS:true}}};
+  assert.equal(privateMobileRouteStatus(config,origin,local),'ready');
+  assert.equal(privateMobileRouteStatus({...config,AllowFunnel:{[host]:true}},origin,local),'public');
+  assert.equal(privateMobileRouteStatus(config,origin,'http://127.0.0.1:1234'),'conflict');
+  assert.equal(privateMobileRouteStatus({TCP:{443:{TCPForward:'127.0.0.1:4317'}}},origin,local),'conflict');
+  assert.equal(privateMobileRouteStatus({},origin,local),'missing');
+});
+
+test('desktop handoff exposes an HTTPS address only after matching its installation',async()=>{
+  const identity='expected-setup';
+  const verify=async (url,options)=>{
+    assert.equal(url,origin+'/install.html');
+    assert.equal(options.method,'HEAD');
+    assert.equal(options.redirect,'error');
+    return new Response(null,{headers:{'X-VIV-Setup':identity}});
+  };
+  assert.deepEqual(await verifyMobileInstallAddress(origin,identity,verify),{status:'ready',url:origin+'/install.html'});
+  for(const upstream of [
+    async()=>new Response(null,{headers:{'X-VIV-Setup':'another-setup'}}),
+    async()=>new Response(null,{status:404,headers:{'X-VIV-Setup':identity}}),
+    async()=>{throw Error('network');},
+  ])assert.deepEqual(await verifyMobileInstallAddress(origin,identity,upstream),{status:'unreachable'});
+  for(const url of ['https://other.test','',null]){
+    let fetched=false;
+    const result=await verifyMobileInstallAddress(url,identity,async()=>{fetched=true;});
+    assert.deepEqual(result,{status:'unreachable'});
+    assert.equal(fetched,false);
+  }
 });
 
 test('private same-origin requests reach the existing handler while foreign Origin and cross-site headers fail',async()=>{
