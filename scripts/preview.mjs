@@ -18,8 +18,11 @@ import {validateMobileOrigin,previewRequestOrigin} from './preview-origin.mjs';
 import {readServerHostConfig} from './server-host.mjs';
 import {createBrokerageReportRunner} from '../server/brokerage-reports.mjs';
 import {readAutomationBook} from '../server/automated-trading.mjs';
+const selfHostId=process.env.VIV_SELF_HOST_ID;
 let mobileOrigin=null;
-try{mobileOrigin=validateMobileOrigin(JSON.parse(await readFile('.runtime/mobile-access.json','utf8')).origin);}catch(error){if(error.code!=='ENOENT')throw error;}
+if(!selfHostId){
+  try{mobileOrigin=validateMobileOrigin(JSON.parse(await readFile('.runtime/mobile-access.json','utf8')).origin);}catch(error){if(error.code!=='ENOENT')throw error;}
+}
 const localDatabase=await openLocalDatabase(process.env.KEYNES_PREVIEW_DB?path.resolve(process.env.KEYNES_PREVIEW_DB):undefined);
 const previewPort=Number(process.env.KEYNES_PREVIEW_PORT||4317);
 const env={BROKER_VAULT_KEY:process.env.BROKER_VAULT_KEY,BROKER_NETWORK_READY:process.env.BROKER_NETWORK_READY,BROKER_EGRESS_IP:process.env.BROKER_EGRESS_IP,TYPESAFE_API_KEY:process.env.TYPESAFE_API_KEY,KIS_APP_KEY:process.env.KIS_APP_KEY,KIS_APP_SECRET:process.env.KIS_APP_SECRET,KIS_ACCESS_TOKEN:process.env.KIS_ACCESS_TOKEN,MARKET_DATA_PROVIDER:process.env.MARKET_DATA_PROVIDER,COMPARISON_MEMBERS_PER_RUN:process.env.COMPARISON_MEMBERS_PER_RUN,DB:localDatabase.db};
@@ -50,7 +53,14 @@ const root = path.resolve('dist');
 const types = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.apk':'application/vnd.android.package-archive'};
 const server = http.createServer(async (req,res)=>{
   try {
-    let requestOrigin;try{requestOrigin=previewRequestOrigin(req,previewPort,mobileOrigin);}catch{res.writeHead(403);res.end('Unrecognized app host');return;}
+    let requestOrigin;
+    try{
+      const origin=selfHostId&&req.headers.host?.endsWith('.ts.net')
+        ? validateMobileOrigin(JSON.parse(await readFile('.runtime/mobile-access.json','utf8')).origin)
+        : mobileOrigin;
+      requestOrigin=previewRequestOrigin(req,previewPort,origin);
+    }catch{res.writeHead(403);res.end('Unrecognized app host');return;}
+    if(selfHostId)res.setHeader('X-VIV-Setup',selfHostId);
     if (new URL(req.url,'http://127.0.0.1:4317').pathname.startsWith('/api/')||new URL(req.url,'http://127.0.0.1:4317').pathname==='/mcp') {
       const chunks=[];let bytes=0;
       for await (const chunk of req) { bytes+=chunk.length;if(bytes>220000){res.writeHead(413);res.end('Input too large');return;}chunks.push(chunk); }

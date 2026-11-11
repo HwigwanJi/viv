@@ -2,22 +2,22 @@
 
 에이전트에게 다음과 같이 요청할 수 있다.
 
-> 이 VIV 저장소를 새 폴더에 받아 Windows에 설치해 줘. 내 Tailscale과 AI 앱에 연결하고 휴대폰 설치 주소를 알려줘. VIV MCP까지 연결되면 VIV 시작하기로 진행해 줘.
+> 이 저장소의 VIV를 Windows에 원샷으로 설치해 줘. 사용할 환경을 먼저 물어보고, 내 선택에 맞춰 앱·서버·MCP를 설치하고 확인해 줘.
 
 ## Windows 서버와 휴대폰
 
-1. Git 저장소를 새 폴더에 clone하고 Node.js 24 LTS와 npm을 설치한다. Windows에서 Node 설치 후 새 PowerShell을 열고 저장소 루트로 이동한다.
-2. 아래 명령을 실행한다. 잠금 파일의 의존성을 설치하고 로컬 서버용 빌드를 실행한다. 이 checkout의 `.runtime/self-host.sqlite`에 새 데이터를 저장한다. 로컬 앱만 먼저 확인하려면 `-Mobile`을 생략한다.
+1. 에이전트는 **“VIV를 어느 환경에서 사용하실 건가요? 1. PC / 2. PC와 모바일 둘 다 / 0. 취소”**라고 한 번 묻는다. 사용자 메시지에 환경이 명확하면 그 선택을 바로 사용한다. 번호와 자연어를 모두 받아들이고 취소하면 설치를 시작하지 않는다.
+2. 접근 가능한 Git 저장소를 새 Windows 폴더에 clone한다. 아래 명령을 실행하면 선택 메뉴가 나온다. 에이전트는 답을 받은 뒤 `-Target PC` 또는 `-Target PCMobile`을 전달한다. Windows의 Node.js 24 이상과 npm을 확인하고, 필요하면 WinGet으로 Node.js LTS를 설치한다. 잠금 파일로 앱을 빌드하고 이 checkout의 `.runtime/self-host.sqlite`에서 서버를 실행한다. Codex에서 진행할 때는 MCP를 등록하고, 다른 AI 앱에서는 `-Client Manual`로 실행해 해당 클라이언트에 지원되는 연결 방법을 사용한다.
 
    ```powershell
-   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -Mobile -CodexMcp
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv.ps1
    ```
 
-3. Tailscale이 없으면 설치한다. PC에서 사용자가 자기 계정으로 로그인하고, 필요한 경우 자기 tailnet에서 MagicDNS와 HTTPS 인증서를 활성화한다. VIV 로컬 서버는 루프백에서만 수신한다. 스크립트는 Tailscale Serve의 비공개 HTTPS 경로를 확인하고, 이미 다른 앱이 사용 중인 경로나 공개 Funnel 설정을 발견하면 중단한다. VIV는 해당 비공개 주소의 접속을 단일 소유자 세션으로 처리하므로, tailnet 접근 규칙에서 이 서버를 사용할 장치나 사용자 범위를 확인한다.
+3. 모바일을 선택한 경우에만 Tailscale을 준비한다. PC에서 사용자가 자기 계정으로 로그인하고, 필요한 경우 자기 tailnet에서 MagicDNS와 HTTPS 인증서를 활성화한다. VIV 서버는 루프백에서 수신한다. 다른 앱이 사용하는 경로나 공개 Funnel 설정이 있으면 PC 앱과 MCP를 쓸 수 있게 두고 모바일에 필요한 조치를 알려준다. VIV는 비공개 주소의 접속을 단일 소유자 세션으로 처리하므로 tailnet에서 접근 가능한 장치와 사용자 범위를 확인한다.
 4. 같은 tailnet에 로그인한 휴대폰에서 결과의 `mobileInstallUrl`을 연다. Android는 Chrome에서 **웹앱으로 설치**, iPhone은 Safari의 **공유 → 홈 화면에 추가**를 사용한다. 설치한 아이콘에서 VIV를 열고 PC와 같은 작업 공간이 표시되는지 확인한다. 설치 스크립트가 검사한 HTTPS와 휴대폰에서 확인한 결과를 각각 남긴다.
-5. PC 재시작이나 키 수정 뒤에는 해당 설치의 서버 프로세스를 종료한 상태에서 같은 명령에 `-StartOnly`를 추가한다. 포트 충돌 시 `-Port`로 변경할 수 있다. 이미 모바일 연결을 만든 설치의 포트를 바꾸려면 먼저 그 설치가 만든 Serve 경로를 확인해 제거한다. 오류 로그는 checkout의 `.runtime/self-host.stderr.log`에 있다.
+5. 모바일 로그인이나 MCP 등록 후속 조치가 필요하면 같은 환경과 포트로 설치 명령을 다시 실행한다. 가동 중인 같은 checkout의 서버는 재사용한다. PC 재시작 후에 빌드를 생략하고 다시 실행할 때는 `scripts/setup-self-host.ps1 -StartOnly`에 기존 포트와 필요한 `-Mobile`·`-CodexMcp`를 전달한다. 오류 로그는 checkout의 `.runtime/self-host.stderr.log`에 있다.
 
-명령 성공 시 로컬 앱, 서버 DB와 실행기 상태, 모바일 설치 페이지, 앱 매니페스트와 아이콘이 확인된다. `-Mobile` 사용 시 비공개 HTTPS에서도 같은 검사를 한다. 실행 중인 Windows PC가 앱 서버다. 최초 설치는 자동 주문 실행기가 꺼진 상태에서 시작한다.
+결과에는 PC 앱 주소와 MCP 등록 상태가 나온다. 모바일 HTTPS 검증을 통과하면 휴대폰 설치 주소와 `phone-install-pending`이 나온다. 실제 휴대폰 설치 완료는 사용자가 홈 화면에서 VIV를 연 뒤 확인한다. 실행 중인 Windows PC가 앱 서버다. 최초 설치는 자동 주문 실행기가 꺼진 상태에서 시작한다.
 
 Codex 외의 AI 클라이언트나 앱을 설치한 뒤 MCP만 연결하는 방법은 [VIV MCP 플레이북](viv-mcp-playbook.md)을 따릅니다.
 
