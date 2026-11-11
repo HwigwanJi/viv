@@ -103,7 +103,17 @@ bash scripts/install-viv-mac.sh --resume
 
 기존 AI에서 **VIV 시작하기**를 입력하거나 휴대폰의 기존 VIV 아이콘을 여세요. 열리지 않는 연결만 [복구](#연결-복구)하세요. `.env`를 수정했다면 현재 VIV 서버를 먼저 종료한 뒤 위 명령을 실행해야 변경 사항이 적용됩니다. `serverPid`가 비어 있다면 **VIV PC** 주소의 포트로 Windows `Get-NetTCPConnection -LocalPort <포트> -State Listen` 또는 Mac `lsof -nP -iTCP:<포트> -sTCP:LISTEN`에서 확인할 수 있습니다. 종료 전에 해당 프로세스가 이 폴더의 VIV인지 확인하세요.
 
-포트를 저장하기 전 버전에서 설치했다면, 원래 VIV 폴더에서 기존 PC 주소의 포트를 한 번 전달하세요. Windows에서는 `setup-self-host.ps1 -StartOnly -Client Manual -Port <포트>`, Mac에서는 `bash scripts/install-viv-mac.sh --target pc --client manual --port <포트>`를 실행합니다. 이후 위 재실행 명령을 사용하세요.
+포트를 저장하기 전 버전에서 설치했다면 원래 VIV 폴더에서 `git pull --ff-only`로 업데이트한 뒤 기존 PC 주소의 포트를 한 번 전달하세요. 아래 `4317`을 기존 주소의 포트로 바꿔 실행합니다.
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -StartOnly -Client Manual -Port 4317
+```
+
+```bash
+bash scripts/install-viv-mac.sh --target pc --client manual --port 4317
+```
+
+이후 위 재실행 명령을 사용하세요. 주소가 다른 설치나 서비스에 속한다는 오류가 나오면 기존 VIV 주소와 포트를 점유한 프로그램을 확인하세요. 해당 프로그램에서 포트를 해제한 뒤 같은 명령을 다시 실행하세요.
 
 VIV의 MCP 등록만 제거하려면 Codex에서 `codex mcp remove viv`, Claude Code에서 `claude mcp remove viv --scope user`를 실행하세요.
 
