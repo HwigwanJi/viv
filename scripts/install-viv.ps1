@@ -10,7 +10,7 @@ $ErrorActionPreference = 'Stop'
 if (!$Target) {
     Write-Host 'VIV를 어느 환경에서 사용하실 건가요?'
     Write-Host '1. PC'
-    Write-Host '2. PC와 모바일 둘 다'
+    Write-Host '2. PC와 모바일 둘 다 (Tailscale 로그인 필요)'
     Write-Host '0. 취소'
     switch ((Read-Host '번호').Trim()) {
         '1' { $Target = 'PC' }

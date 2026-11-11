@@ -16,9 +16,13 @@ if($ProbeOnly){
 }
 $codex=(Get-Command codex.exe -ErrorAction SilentlyContinue).Source
 if(!$codex){throw 'Codex CLI is unavailable. Register this MCP URL in your AI client.'}
-$registered=& $codex mcp get viv --json 2>$null
-if($LASTEXITCODE -eq 0){
-    if(($registered | ConvertFrom-Json).transport.url -ne $url){throw 'A different MCP server is already registered as viv.'}
+$registered=& $codex mcp list --json
+if($LASTEXITCODE -ne 0){throw 'Could not read the Codex MCP configuration.'}
+$entries=$registered | Out-String | ConvertFrom-Json
+$existing=$entries | Where-Object name -eq 'viv'
+if($existing){
+    if($existing.transport.url -ne $url){throw 'A different MCP server is already registered as viv.'}
+    if($existing.enabled -eq $false){throw 'VIV MCP is disabled in Codex. Enable it there and rerun this command.'}
 }else{
     & $codex mcp add viv --url $url | Out-Host
     if($LASTEXITCODE -ne 0){throw 'Could not register VIV MCP.'}

@@ -80,9 +80,9 @@ try {
 
     if (!$StartOnly -and !$status) {
         $npm = (Get-Command npm.cmd).Source
-        & $npm ci --no-audit --no-fund
+        & $npm ci --no-audit --no-fund | Out-Host
         if ($LASTEXITCODE -ne 0) { throw 'Locked dependency installation failed.' }
-        & $npm run build:local
+        & $npm run build:local | Out-Host
         if ($LASTEXITCODE -ne 0) { throw 'Application build failed.' }
     }
 
@@ -163,7 +163,7 @@ try {
                 } finally { $stream.Dispose() }
             }
             if (!$existingRoute) {
-                & $tailscale serve --bg --yes $localUrl | Out-Host
+                & $tailscale serve --bg $localUrl | Out-Host
                 if ($LASTEXITCODE -ne 0) { throw 'Tailscale Serve failed. Enable HTTPS in the tailnet settings if requested.' }
                 $configuredRoute = $true
             }
@@ -189,9 +189,10 @@ try {
         mcpUrl = "$localUrl/mcp"
         mcpStatus = if ($mcpRegistration) { $mcpRegistration.status } else { 'needs-action' }
         mcpError = $mcpError
+        onboardingTool = if ($mcpRegistration.status -eq 'registered') { 'viv_onboarding' } else { $null }
         liveRunner = 'disabled'
         aiKey = if ($status.jev.configured) { 'configured-unverified' } else { 'not-configured' }
-    } | ConvertTo-Json
+    } | ConvertTo-Json -Compress
 } finally {
     if (!$ready) {
         if ($configuredRoute) {
