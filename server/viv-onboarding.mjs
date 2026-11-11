@@ -1,5 +1,5 @@
 import {paperBudgetFor} from '../dist/domain/paper-budget.mjs';
-import {PAPER_DECISION_ENTRY,paperDecisionRecordHash} from '../dist/system/paper-decision-links.mjs';
+import {PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../dist/system/paper-decision-links.mjs';
 
 export const VIV_TUTORIAL_ACTIONS=['pause','resume','complete'];
 
@@ -22,7 +22,7 @@ export const VIV_PLAYBOOK=[
   '자료 조사 과업은 호스트의 웹 검색·영상 자막 등 실제 접근 가능한 도구로 원문을 확인하고, VIV에서 현재 라이브러리·양식·전략 노드 메타데이터를 조회하세요. 원문 URL, 공개·조회 시각, 영상 시간대, 확인된 사실과 추론을 구분해 짧게 브리핑하세요. 링크나 접근 가능한 자막이 없으면 링크 또는 제공 가능한 원문을 요청하세요. 확인할 수 없는 거래나 수익은 추정했다고 표시하세요.',
   '저장 양식의 예제 값을 원문 정보로 바꾸세요. publication.publishedAt은 원문 공개 시각, publication.retrievedAt과 provenance.createdAt은 실제 수집·작성 시각입니다. availableAt은 수집과 작성이 끝난 시각 이후로 설정하세요.',
   '1~3번 조사·분석 결과는 출처와 함께 save_market_research로 개인 라이브러리에 바로 저장하고, 영수증의 openUrl을 브리핑과 함께 제공하세요. 2~3번은 재현할 매매 규칙과 가정을 문서에 담으세요. 검증을 실행했다면 조건·결과를 기록하고, 실행 전이면 검증 상태를 명시하세요. 사용자가 저장 없이 보기를 요청하면 저장하지 마세요.',
-  '4번은 read_investment_status로 시작하세요. 새 판단을 연습하려면 links.paperDecision을 열고, 사용자가 원하는 종목과 마인드를 고른 뒤 화면에 표시되는 준비 작업을 함께 진행하세요. 통화 예산이나 배정이 필요하면 화면의 모의 자금 설정을 사용하세요. JEV 연결이 표시되면 AI 판단에 필요한 연결임을 설명하세요. 실계좌 연결은 이 과업에 필요하지 않습니다.',
+  '4번은 read_investment_status로 시작하세요. 새 판단을 연습하려면 links.paperDecision을 열고, 사용자가 원하는 종목과 마인드를 고른 뒤 화면에 표시되는 준비 작업을 함께 진행하세요. 통화 예산이나 배정이 필요하면 화면의 모의 자금 설정을 사용하세요. AI 판단에 JEV 키가 없거나 사용자가 연결을 원하지 않으면 links.paperPractice를 안내하세요. 이 경로는 보관한 BTC 시세의 기준 퀀트 실습입니다. 마인드를 선택하면 기준 퀀트 전략으로 실행할 수 있습니다. 결과는 백테스트이며 첫 모의 판단 저장과 구분하세요. 실계좌 연결은 두 과업에 필요하지 않습니다.',
   '사용자가 종목 화면에서 결정 실행을 선택하면 앱에 저장된 결정 상세가 열립니다. read_investment_status를 다시 조회하고, 방금 실행한 종목·마인드·시각과 일치하는 항목의 openUrl을 안내하세요. 근거는 read_trading_context에서 확인하세요. 사용자가 브리핑만 요청하면 기존 기록만 조회하세요.',
   '사용자에게 과업 결과를 실제로 제공한 뒤 action:complete와 lesson 번호를 보내세요. 1~3번은 저장 영수증의 documentId를 보내고 사용자가 자료 저장 없이 보기를 요청했다면 readOnly:true로 진행 상태만 기록합니다. 진행 상태 저장도 원하지 않으면 완료 기록을 남기지 마세요. 4번은 사용자가 실행한 판단의 저장 기록과 근거를 확인한 뒤 decisionId를 함께 보냅니다. 사용자가 브리핑만 원했다면 그 브리핑을 제공한 뒤 번호만 보냅니다. 실행 실패·자료 대기 상태는 완료 처리하지 마세요.',
   '응답 lessons의 남은 항목을 보여주고 0 또는 “여기까지”를 선택하면 action:pause로 중단을 저장하세요. 완료한 항목의 확인 링크는 tutorial.completed에 있습니다. 사용자가 결과를 다시 열어달라고 하면 해당 링크를 제공하세요.',
@@ -56,6 +56,7 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
   const links={
     paperAccount:origin+'/#settings?view=accounts&executionMode=paper',
     paperDecision:new URL(PAPER_DECISION_ENTRY,origin).href,
+    paperPractice:new URL(PAPER_PRACTICE_ENTRY,origin).href,
     knowledge:origin+'/#library?view=documents&executionMode=paper',
     strategies:origin+'/#library?view=quant&section=components&executionMode=paper',
     connections:origin+'/#settings?view=accounts&executionMode=live',

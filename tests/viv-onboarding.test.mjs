@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {handleMcp} from '../server/mcp.mjs';
+import {terminalErrorRecovery} from '../server/terminal-readiness.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
 
 test('VIV MCP negotiates, guides first use, creates a paper budget and preserves it on replay',async()=>{
@@ -26,6 +27,7 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(saved.structuredContent.paperBudget.receipt.totalBudget,2000000);
     assert.match(saved.structuredContent.links.connections,/#settings\?view=accounts&executionMode=live/);
     assert.equal(new URL(saved.structuredContent.links.paperDecision).hash,'#trade?executionMode=paper');
+    assert.equal(new URL(saved.structuredContent.links.paperPractice).hash,'#minds?profileId=all&view=simulations&executionMode=paper&setup=new&practice=quant');
     assert.match(saved.structuredContent.playbook,/종목·마인드·시각과 일치하는 항목의 openUrl/);
     const repeated=await onboarding({interest:'both',amountKrw:4000000,idempotencyKey:'viv-2'});
     assert.deepEqual(repeated.structuredContent.paperBudget,{amountKrw:2000000,existing:true});
@@ -96,4 +98,20 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(quant.entry.status,'DRAFT');
     assert.match(quant.openUrl,/#library\?view=quant&section=components/);
   }finally{local.close();}
+});
+
+test('explicit JEV access rejection opens key recovery and unknown outcomes keep the evidence action',()=>{
+  for(const [code,httpStatus] of [['MIND_JEV_HTTP',401],['JEV_QUESTION_HTTP',403]]){
+    const result=terminalErrorRecovery({code,provider:{httpStatus,requestId:'test'}});
+    assert.equal(result.category,'JEV_AUTH');
+    assert.equal(result.action.action,'connections');
+    assert.equal(result.action.retryPolicy,'AFTER_CORRECTION');
+    assert.equal(result.requestId,'test');
+  }
+  const unknown=terminalErrorRecovery({code:'MIND_JEV_NETWORK',provider:{httpStatus:null}});
+  assert.equal(unknown.action.retryPolicy,'INSPECT_EXISTING_ATTEMPT');
+  const providerError=terminalErrorRecovery({code:'MIND_JEV_HTTP',provider:{httpStatus:502}});
+  assert.equal(providerError.action.action,'records');
+  const marketAuth=terminalErrorRecovery({code:'MARKET_UNAVAILABLE',diagnostic:{httpStatus:401}});
+  assert.equal(marketAuth.category,'CONNECTION');
 });

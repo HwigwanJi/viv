@@ -2,7 +2,7 @@
 
 VIV는 투자 전략을 구성하고 모의 예산으로 검토하는 앱입니다. Codex나 Claude Code를 연결하면 대화에서 모의계좌를 만들고, 판단과 조사 결과를 앱에서 열어볼 수 있습니다. 설치와 첫 모의 브리핑에는 금융기관·JEV API 키가 필요 없습니다.
 
-[설치 결과 확인](docs/agents/operations/self-host.md#설치-결과-읽기) · [첫 모의 브리핑](docs/agents/operations/viv-mcp-playbook.md#첫-모의-브리핑) · [계좌 연결과 잔고 확인](docs/agents/operations/self-host.md#계좌-연결과-잔고-확인)
+[설치 결과 확인](docs/agents/operations/self-host.md#설치-결과-읽기) · [첫 모의 실습](docs/agents/operations/viv-mcp-playbook.md#첫-모의-실습) · [계좌 연결과 잔고 확인](docs/agents/operations/self-host.md#계좌-연결과-잔고-확인)
 
 ## Windows에서 Git으로 설치
 

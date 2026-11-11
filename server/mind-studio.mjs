@@ -610,7 +610,7 @@ export async function handleMindStudioAPI(request,env={},options={}){
             const failureNext=clone(w),eventId=uniqueId('event'),httpStatus=Number.isInteger(error.status)&&error.status>=400&&error.status<600?error.status:400;
             failureNext.activityEvents.push({id:eventId,eventType:'MIND_PROVIDER_FAILED',resourceType:'mind-studio',resourceId:body.mindId,occurredAt:at,actorId:owner,status:'failed',payload:{path,mindId:body.mindId,manifestId:manifest.id,instrumentId:body.instrumentId??null,requestKey:body.idempotencyKey,providerFailure}});
             const recovery=terminalErrorRecovery(error,{instrumentId:body.instrumentId??null,timeframe:body.timeframe??null,now:at});recovery.action.params={...recovery.action.params,eventId,profileId:body.mindId};
-            const failed={ok:false,code:error.code??'MIND_JEV_FAILED',message:error.message,httpStatus,providerFailureEventId:eventId,recovery};
+            const failed={ok:false,code:error.code??'MIND_JEV_FAILED',message:recovery.category==='JEV_AUTH'?recovery.message:error.message,httpStatus,providerFailureEventId:eventId,recovery};
             const persisted=await commit(repo,owner,w,failureNext,body,path,failed,at,fingerprint,{resourceId,token,nowMs:Date.parse(at)});
             return json(persisted,httpStatus);
           }

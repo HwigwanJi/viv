@@ -39,6 +39,10 @@ export function terminalErrorRecovery(error={}, {instrumentId=null,timeframe=nul
  if(code==='MIND_ARCHIVED')return issue(code,'ARCHIVED','보관한 마인드입니다.',action('archive','보관함에서 복구','#minds?profileId=all&mindStatus=archived',{...params,profileId}),409,extra);
  if(currentCaptureCodes.has(code))return issue(code,'DATA_REQUIRED','최신 시세가 필요합니다.',action('data','시세 수집','#settings?view=data',params),503,extra);
  if(code==='UNSUPPORTED_TIMEFRAME'||code==='CANONICAL_TIMEFRAME_UNAVAILABLE')return issue(code,'PARAMETER','지원하는 차트 주기를 선택하세요.',action('timeframe','지원 주기 선택',null,params),400,extra);
+ if(['MIND_JEV_HTTP','JEV_QUESTION_HTTP'].includes(code)&&[401,403].includes(error.provider?.httpStatus)){
+  const message=error.provider.httpStatus===401?'JEV에서 키를 거절했습니다. 서버에 등록한 키를 확인하세요.':'JEV가 요청을 허용하지 않았습니다. TypeSafe 계정의 접근 권한과 서버에 등록한 키를 확인하세요.';
+  return issue(code,'JEV_AUTH',message,action('connections','JEV 키 확인','#settings?view=connections',params),error.provider.httpStatus,extra);
+ }
  if(['CONNECT_REQUIRED','PROVIDER_CONNECTION_REQUIRED','JEV_CONNECTION_REQUIRED'].includes(code)||diagnostic.httpStatus===401||diagnostic.httpStatus===403)return issue(code,'CONNECTION',code==='JEV_CONNECTION_REQUIRED'?'JEV 연결이 필요합니다.':instrumentId?.startsWith('equity:')?'주식 시세 연결이 필요합니다.':'시세 연결이 필요합니다.',action('connections','연결 설정','#settings?view=connections',params),503,extra);
  const nextEligibleAt=retryTime(diagnostic.retryAfter,now);
  if(diagnostic.httpStatus===429)return issue(code,'RATE_LIMIT','시세 제공처의 호출 대기 시간입니다.',action(nextEligibleAt?'wait':'refresh',nextEligibleAt?'다음 조회 대기':'다시 조회',null,params,'READ_ONLY_RETRY',nextEligibleAt),429,{...extra,nextEligibleAt});
@@ -62,7 +66,7 @@ export function buildTerminalReadiness({workspace={},manifest=null,instrument,ma
  if(!manifest)add('MIND_REQUIRED','SELECTION','결정을 실행할 마인드를 선택하세요.',action('choose-mind','마인드 선택'));
  const account=list(workspace.mindPositions).find(a=>a.kind==='PAPER_ACCOUNT'&&a.profileId===profileId&&a.quoteCurrency===instrument?.quoteCurrency)??null;
  const accountState={status:account?'READY':'REQUIRED',accountId:account?.id??null,quoteCurrency:instrument?.quoteCurrency??null,availableCurrencies:[...new Set(list(workspace.mindPositions).filter(a=>a.kind==='PAPER_ACCOUNT'&&a.profileId===profileId).map(a=>a.quoteCurrency))]};
- let identity=null;
+ let identity=null,requiresJev=null;
  if(manifest){
   if(expectedPolicyHash&&expectedPolicyHash!==mindDocumentHash(manifest))add('TERMINAL_POLICY_CHANGED','VIEW_CHANGED','마인드 설정이 갱신되었습니다. 현재 설정을 확인하세요.',action('refresh','현재 설정 확인',null,params,'READ_ONLY_RETRY'));
   if(expectedMarketAsOf&&market?.status==='READY'&&expectedMarketAsOf!==market.bars?.at(-1)?.closeTime)add('TERMINAL_MARKET_CHANGED','VIEW_CHANGED','새 봉이 확정되었습니다. 최신 차트를 확인하세요.',action('refresh','최신 차트 확인',null,params,'READ_ONLY_RETRY'));
@@ -99,11 +103,11 @@ export function buildTerminalReadiness({workspace={},manifest=null,instrument,ma
   if(nextEligibleMs!==null&&Date.parse(now)<nextEligibleMs){const at=new Date(nextEligibleMs).toISOString();add('MIND_COOLDOWN','COOLDOWN','다음 결정 시각을 기다리고 있습니다.',action('wait','다음 결정 대기',null,params,'AFTER_WAIT',at),429,{nextEligibleAt:at});}
   const duplicate=!executionKey&&identity?list(workspace.mindRuns).find(r=>r.executionKey===identity.key):null;
   if(duplicate)add('CANDLE_ALREADY_EVALUATED','EXISTING_RESULT','현재 봉의 결정이 저장되어 있습니다.',action('records','저장된 결정 보기',null,{runId:duplicate.id,profileId}),409,{runId:duplicate.id});
-  const needsJev=plan?.graph?.schemaVersion===2&&isMindStrategyPlanActive(plan,now)?graphRequiresJev(plan.graph):true;
-  if(needsJev&&(typeof env.TYPESAFE_API_KEY!=='string'||!env.TYPESAFE_API_KEY.trim()))add('JEV_CONNECTION_REQUIRED','CONNECTION','JEV 연결을 설정하세요.',action('connections','연결 설정','#settings?view=connections'),503);
+  requiresJev=plan?.graph?.schemaVersion===2&&isMindStrategyPlanActive(plan,now)?graphRequiresJev(plan.graph):true;
+  if(requiresJev&&(typeof env.TYPESAFE_API_KEY!=='string'||!env.TYPESAFE_API_KEY.trim()))add('JEV_CONNECTION_REQUIRED','CONNECTION','JEV 연결을 설정하세요.',action('connections','연결 설정','#settings?view=connections'),503);
  }
  const first=blockers[0]??null,canRun=Boolean(manifest&&market?.status==='READY'&&!first);
- return {schemaVersion:1,checkedAt:now,phase,purpose:executionMode==='paper'?'FORWARD_PAPER':executionMode==='live'?'LIVE_READ_ONLY':'DECISION_RESEARCH',marketRecovery,executionReadiness:{status:canRun?'READY':first?'ACTION_REQUIRED':'NOT_CHECKED',canRun,blockers,primaryAction:first?.action??(canRun?action('run','결정 실행',null,{...params,profileId},'EXPLICIT_NEW_DECISION'):null),account:accountState,policy:manifest?{id:manifest.id,version:manifest.data.version,hash:mindDocumentHash(manifest)}:null}};
+ return {schemaVersion:1,checkedAt:now,phase,purpose:executionMode==='paper'?'FORWARD_PAPER':executionMode==='live'?'LIVE_READ_ONLY':'DECISION_RESEARCH',marketRecovery,executionReadiness:{status:canRun?'READY':first?'ACTION_REQUIRED':'NOT_CHECKED',canRun,requiresJev,blockers,primaryAction:first?.action??(canRun?action('run','결정 실행',null,{...params,profileId},'EXPLICIT_NEW_DECISION'):null),account:accountState,policy:manifest?{id:manifest.id,version:manifest.data.version,hash:mindDocumentHash(manifest)}:null}};
 }
 
 export function assertTerminalExecutionReady(options){

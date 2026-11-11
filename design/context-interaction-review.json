@@ -2647,8 +2647,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-10T15:23:11.415Z",
-      "reason": "121: 비교 결과의 전략 이름을 원래 보고서 진입점으로 통합하고 반복 결과 보기 버튼 제거. 기존 href와 동일한 canonical 목적지·현재 마인드/모드/필터 보존·수정 클릭의 브라우저 기본 동작·A/B 구분·조회 실패 복구·원래 이름/편집 행동 초점 복귀와 자동 렌더 보존 검토. 금융 원장/평가 범위와 노드 편집·실행 승인 경계 유지.",
+      "reviewedAt": "2026-11-11T16:42:30.554Z",
+      "reason": "키 없는 과거 시세 실습에서 실행 방식을 고정하고 결과를 새 브라우저로 다시 열었습니다. 일반 백테스트의 기존 실행 방식 선택도 확인했습니다.",
       "signature": "4da984df7258f1dfbdebe0f5b6fb9652e20fb4b71a171f791535278e7d4270f5",
       "controls": [
         [
@@ -2708,7 +2708,7 @@
           2
         ]
       ],
-      "sourceHash": "9a466379a06e13020d3c31c652937a671a9843af1f4f9b5f73f93a37fcabf55f"
+      "sourceHash": "2108d93318efc101293dde4ec753030e33f7cb747c7561a4c8bcc0ccb7dd6cc1"
     },
     {
       "file": "dist/ui/simulation-pre-provider-recovery.mjs",
@@ -3161,9 +3161,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T16:12:38.548Z",
-      "reason": "모바일 모의 예산에서 첫 판단 진입, JEV 미설정 안내와 종목 복귀, 저장 원칙 펼치기, 상세 재조회와 데스크톱 키보드 기록 열기를 브라우저에서 확인했습니다.",
-      "signature": "512a82687923e5dc6121f60466ba8f5413e934bb7f474078b1f0266dbe8e371b",
+      "reviewedAt": "2026-11-11T16:42:30.549Z",
+      "reason": "모의 예산과 JEV 설정에서 키 없는 실습으로 이어지고, 401·403 기록 조회와 같은 종목 복귀를 Chrome에서 확인했습니다.",
+      "signature": "d78aa36a218f2072b42ec78accc7a9058d7571f3e8a208e0cb140117b667cd96",
       "controls": [
         [
           "data-auto-action",
@@ -3231,7 +3231,7 @@
         ],
         [
           "element:a",
-          23
+          26
         ],
         [
           "element:button",
@@ -3266,7 +3266,7 @@
           1
         ]
       ],
-      "sourceHash": "30b74468088e4da6cb08949100217228710ecf778096ea42f46474c84dffdc6c",
+      "sourceHash": "f42c1e1b57c9f3d29321ca59d372d3594c4a87e28e50815d3ce684557b28d3b4",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3357,9 +3357,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-10T00:54:40.825Z",
-      "reason": "093: 空 표 머리글/이동 불가 페이지 바·로컬 관심 출처 중복을 숨기고 결과와 유효한 이동/외부 출처를 보존. 페이지 읽기 완료 뒤 같은 문맥의 유효한 이동 또는 검색/오류 재시도로 초점 연결. 기존 주문·설정·관심 변경 검증 보존.",
-      "signature": "f18aacf942cff74e20177fe708a058ed6a0cad9f87325711ba1d86a6d197bd0e",
+      "reviewedAt": "2026-11-11T16:42:30.553Z",
+      "reason": "JEV 외부 전송·비용 안내, 인증 거절 복구와 증거 조회, 키 없는 실습 링크를 모바일과 키보드에서 확인했습니다.",
+      "signature": "640d7856a9f5937d88c79b59cfceacc995cf100df049a0e215f7924e180af471",
       "controls": [
         [
           "data-terminal-action",
@@ -3419,7 +3419,7 @@
         ],
         [
           "element:a",
-          1
+          2
         ],
         [
           "element:button",
@@ -3443,10 +3443,10 @@
         ],
         [
           "helper:button(",
-          38
+          39
         ]
       ],
-      "sourceHash": "351d563192c5b56029499a6ce719968e2b2ca93e082151420521c6eef58f692c",
+      "sourceHash": "78d107171af5143bad1046d8dcf83342f70dd22c2c2da73a6d4f6480c30d457e",
       "customContainers": []
     },
     {
