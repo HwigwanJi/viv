@@ -21,5 +21,6 @@ dist/.well-known/assetlinks.json
 !/android/viv-splash.png
 output/
 tmp/
+/tools/module-syntax/target/
 docs/agents/**/user-quotes.txt
 docs/migration/user-migration-request.txt

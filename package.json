@@ -8,6 +8,7 @@
     "dev:css": "node scripts/build-styles.mjs --watch",
     "test": "node --test tests/*.test.mjs",
     "check": "node scripts/check.mjs && node scripts/check-mind-companion-ui.mjs && node scripts/check-design-tokens.mjs",
+    "check:rust": "node scripts/check.mjs --rust",
     "check:mind-companion": "node scripts/check-mind-companion-ui.mjs",
     "paper:watch": "node --env-file-if-exists=.env scripts/preview.mjs --paper-runner",
     "build": "npm run build:local",
