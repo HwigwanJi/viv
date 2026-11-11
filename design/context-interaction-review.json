@@ -2672,9 +2672,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T23:36:37.695Z",
-      "reason": "비용 수정 중 조건 조회를 보존하고 실패 때 동일 조건을 GET으로 다시 확인했다. 저장한 조건 아래 실행 버튼에서 기존 실습을 완료했다.",
-      "signature": "a2ad1a1f768f86f29400d1d137872dcee707bb8bfdddb82cb43ef94c33daf6ee",
+      "reviewedAt": "2026-11-11T23:40:28.418Z",
+      "reason": "저장한 조건 탭과 실행 버튼의 순서를 확인했다. 조건 재조회가 성공하면 같은 입력을 보존하고 키보드 초점을 저장으로 이어간다.",
+      "signature": "b20f35ce9a15c3dfc832a943510e5e8840931dfa3f2bce9d927a20c35aa2bb7b",
       "controls": [
         [
           "data-simulation-action",
@@ -2691,6 +2691,14 @@
         [
           "data-simulation-action=\"detail-tab\"",
           4
+        ],
+        [
+          "data-simulation-action=\"edit-period\"",
+          1
+        ],
+        [
+          "data-simulation-action=\"preflight-retry\"",
+          1
         ],
         [
           "data-simulation-action=\"setup-step\"",
@@ -2733,7 +2741,7 @@
           2
         ]
       ],
-      "sourceHash": "cd4d01fe6ff7b4cb096c04f11d298f82e6be58dd1c1af6c510a9f8f85eade778",
+      "sourceHash": "5dd6557e9d650e8767f7720d6b43e7731e545fd1053bc9bbba6a82a560d7752d",
       "customContainers": []
     },
     {

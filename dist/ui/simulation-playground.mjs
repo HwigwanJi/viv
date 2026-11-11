@@ -293,7 +293,8 @@ export function createSimulationPlayground(hooks={},options={}){
   }
   function detailView(s){
     const active=tab(),stopped=s.status==='ACTION_REQUIRED',canRun=isOpen(s)&&!commandBusy&&!running&&!modelUnavailable(s);
-    const reviewing=active==='overview'&&!running&&['CREATED','READY'].includes(s.status)&&s.config.mode==='MECHANICAL'&&!s.progress?.processed;
+    const prepared=!running&&['CREATED','READY'].includes(s.status)&&s.config.mode==='MECHANICAL'&&!s.progress?.processed;
+    const reviewing=active==='overview'&&prepared;
     const primary=!running&&active==='overview'&&s.status==='COMPLETED'&&(modelUnavailable(s)||modelPartial(s))?'':running?button(stopRequested?'현재 요청 마치는 중…':'중지','pause',s.id,stopRequested?'disabled':'','primary'):s.status==='COMPLETED'?button('이 조건으로 다시 검증','repeat',s.id,'','primary'):button(s.status==='CREATED'||s.status==='READY'?'실행':'이어서 실행','run',s.id,canRun?'':'disabled','primary');
     const secondary=(s.status!=='COMPLETED'?button('이 조건으로 다시 검증','repeat',s.id,running?'disabled':''):'')+(s.lineage?.sourceSimulationId?button('원본 실험','open',s.lineage.sourceSimulationId):'')+button('새로고침','refresh','',running?'disabled':'')+(!stopped&&s.lastError&&Number.isSafeInteger(s.attempt?.sequence)?button(rowLoadingId?'원본 조회 중…':'호출 원문','attempt-detail',String(s.attempt.sequence),rowLoadingId?'disabled aria-busy="true"':''):'');
     const comparison=current().params.get('comparisonA')&&current().params.get('comparisonB');
@@ -302,7 +303,7 @@ export function createSimulationPlayground(hooks={},options={}){
     const practiceHref=active==='overview'&&s.status==='COMPLETED'&&s.config.mode==='MECHANICAL'&&current().params.get('executionMode')!=='live'&&minds().some(m=>m.id===s.config.mindId)
       ?hooks.href?.('trade',{profileId:s.config.mindId,instrumentId:'crypto:okx:BTC-USDT',timeframe:'4h',mode:'live',executionMode:'paper',comparisonId:null}):null;
     const nextPractice=practiceHref?'<div class="actions spaced"><a class="button small" href="'+esc(practiceHref)+'" data-studio-route>현재 시세로 모의 판단 시작</a><span class="tiny muted">발행 정책을 현재 확정 봉에 적용합니다. 모의 자금이 필요하며 정책에 따라 AI 키가 필요합니다.</span></div>':'';
-    return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls)+(s.status==='COMPLETED'?'<span class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+(s.manifest?.data?.version?' · 정책 v'+esc(s.manifest.data.version):'')+'</span><span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
+    return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls)+(s.status==='COMPLETED'?'<span class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+(s.manifest?.data?.version?' · 정책 v'+esc(s.manifest.data.version):'')+'</span><span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(id==='overview'&&prepared?'저장한 조건':label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
   }
   function runStatus(s){
     if(s.status!=='ACTION_REQUIRED')return `<div class="simulation-run-status" role="status" aria-live="polite"><strong>${running?'실행 중':s.status==='RUNNING'?'이어서 실행 가능':statusLabel(s.status)}</strong><span>${esc(commandStatus)}</span>${s.lastError?'<span class="error-text">'+esc(s.lastError.message||s.lastError.code)+'</span>':''}</div>`;
@@ -484,7 +485,14 @@ export function createSimulationPlayground(hooks={},options={}){
     if(action==='learning-new'){leaveEditor();return navigate({lab:'learn',learningId:null,simulationId:null});}
     if(action==='lab-new'){leaveEditor();return navigate({lab:'compare',a:null,b:null,simulationId:null});}
     if(action==='setup-step')return await moveSetupStep(id);
-    if(action==='preflight-retry'&&editor&&!previewLoading)return await previewPeriod();
+    if(action==='preflight-retry'&&editor&&!previewLoading){
+      const generation=editorGeneration;
+      await previewPeriod();
+      if(editor&&generation===editorGeneration&&setupStep()==='review'&&document.activeElement===document.body){
+        root?.querySelector('[data-simulation-action="preflight-retry"], [data-simulation-action="edit-period"], [data-simulation-form="create"] button[type="submit"]:not(:disabled)')?.focus();
+      }
+      return;
+    }
     if(action==='new'){if(eventMind(scope()))return lab.beginNew({mindId:scope()});feedbackScope=currentFeedbackScope();if(!capabilities?.source)capabilities=await hooks.request(BASE+'/capabilities?'+new URLSearchParams({mindId:scope()}));editorGeneration++;editor=true;draft=newDraft();periodMode='custom';repeatOriginal=null;preview=null;commandError='';redraw();return await previewPeriod();}
     if(action==='repeat'){const saved=simulation();if(!saved||saved.id!==id||running)return;if(simulationMarketScope(saved).eventStream)return navigate({profileId:saved.config.mindId,lab:'compare',a:saved.experiment?.baselineId??saved.id,b:saved.experiment?.role==='VARIANT'?saved.id:null,simulationId:null,labView:'conditions',setup:null,setupStep:null});const c=saved.config;editorGeneration++;editor=true;draft={...newDraft(),...c,name:(saved.name||c.name).slice(0,100)+' · 재검증',originalName:saved.name||c.name,generatedName:null,startAt:simulationLocalTime(c.startAt),endAt:simulationLocalTime(c.endAt),sourceSimulationId:saved.id,benchmarkPresetId:c.benchmarkSelection?.presetId||'custom',optInJev:false};repeatOriginal=structuredClone(draft);periodMode=draft.benchmarkPresetId==='custom'?'custom':'preset';preview=null;commandError='';redraw();return await previewPeriod();}
     if(action==='repeat-restore'){if(!draft?.sourceSimulationId||!repeatOriginal)return;draft=structuredClone(repeatOriginal);periodMode=draft.benchmarkPresetId==='custom'?'custom':'preset';benchmarkFull=false;return await previewPeriod();}

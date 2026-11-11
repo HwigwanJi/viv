@@ -26,6 +26,7 @@ test('saved keyless practice shows its inputs before the only execute button',as
   });
   await app.load();
   const html=app.render();
+  assert.match(html,/aria-current="page"[^>]*>저장한 조건/);
   assert.match(html,/저장한 실행 조건[^]*13,579\.00 USDT[^]*13\.0bp[^]*2\.0bp[^]*AI 호출[^]*0회[^]*data-simulation-action="run"/);
   assert.equal([...html.matchAll(/data-simulation-action="run"/g)].length,1);
   assert.doesNotMatch(html,/data-simulation-equity/);
