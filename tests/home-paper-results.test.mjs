@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildHomePerformance} from '../server/home-performance.mjs';
-import {renderHomeShowcase} from '../dist/ui/home-showcase.mjs';
+import {createHomeShowcase,renderHomeShowcase} from '../dist/ui/home-showcase.mjs';
 import {hashInputPackage} from '../dist/domain/workspace.mjs';
 
 test('paper home links to saved decisions and latest completed experiments independently of rankings',()=>{
@@ -34,4 +34,26 @@ test('paper home links to saved decisions and latest completed experiments indep
   const live=buildHomePerformance({workspace,executionMode:'live',asOf});
   assert.equal(Object.hasOwn(live,'latestPaperDecision'),false);
   assert.doesNotMatch(renderHomeShowcase({performance:live},{params:new URLSearchParams('executionMode=live')}),/home-paper-results/);
+});
+
+test('returning to paper home reloads completed experiments at the same workspace revision',async()=>{
+  let page='home';
+  const reads=[];
+  const home=createHomeShowcase({
+    getRoute:()=>({page,params:new URLSearchParams('executionMode=paper')}),
+    getWorkspace:()=>({revision:1}),
+    request:async path=>{
+      if(path.includes('home-performance?'))reads.push(new URL(path,'http://localhost').searchParams);
+      return {performance:{},revision:1};
+    },
+  });
+  await home.load();
+  await home.load();
+  assert.equal(reads.length,1);
+  page='minds';
+  await home.load();
+  page='home';
+  await home.load();
+  assert.equal(reads.length,2);
+  assert.equal(reads[1].has('refreshValuations'),false);
 });

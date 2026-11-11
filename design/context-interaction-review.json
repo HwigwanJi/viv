@@ -1112,9 +1112,9 @@
         "navigation",
         "primitive"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-11T18:07:21.148Z",
-      "reason": "모의 홈의 최근 판단과 완료 실험에 읽기 전용 원본 링크를 연결하고 기존 성과·운용 조작을 유지한다.",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-11T18:10:37.204Z",
+      "reason": "모의 홈에서 같은 판단·완료 실험을 열고, 모의 홈으로 돌아오면 저장 결과를 다시 조회한다. 기존 성과·운용 조작은 유지한다.",
       "signature": "6cad4f5950ac46fa917eee3d716f9532c731a5e55cee22c527664bb4d5235969",
       "controls": [
         [
@@ -1202,7 +1202,7 @@
           17
         ]
       ],
-      "sourceHash": "a4f88b1e870ca241567255d8732b663c84ce32ca2f5ac46494670cce063ee650",
+      "sourceHash": "1039ad7a7ec5bfb71e7ff7190fd578abc06650d8fe62a1a3952fee7d97cc1a5a",
       "customContainers": []
     },
     {
@@ -3293,8 +3293,8 @@
         "navigation",
         "readonly"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-11T18:07:21.149Z",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-11T18:10:37.205Z",
       "reason": "모의 화면 찾기에서 모의 판단, 백테스트를 기존 기록과 실험 목록에 연결한다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [

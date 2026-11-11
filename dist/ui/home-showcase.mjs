@@ -141,7 +141,15 @@ export function createHomeShowcase({request,mutate,getRoute,render,navigate,open
  const active=()=>getRoute().page==='home';
  const redraw=()=>{if(active())render?.();};
  async function load({force=false}={}){
-  if(!active())return;const mode=modeOf(getRoute()),nextKey=mode,revision=getWorkspace()?.revision;
+  if(!active()){
+   if(key==='paper'){
+    // Simulation completion is stored independently of the workspace revision.
+    lastRevision=null;
+    if(pending){generation++;pending=null;}
+   }
+   return;
+  }
+  const mode=modeOf(getRoute()),nextKey=mode,revision=getWorkspace()?.revision;
   if(!force&&key===nextKey&&state.performance&&lastRevision===revision)return;
   if(pending&&key===nextKey)return pending;
   const token=++generation,commandToken=commandGeneration;if(key!==nextKey){state={...state,performance:null,market:null};index=0;}key=nextKey;state={...state,loading:true,marketReadPending:true,error:''};redraw();
