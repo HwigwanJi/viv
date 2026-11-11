@@ -333,10 +333,10 @@ export function createSimulationPlayground(hooks={},options={}){
       (paid?row('호출 횟수 상한','<span data-simulation-budget>'+number(Number(d.maxJevCalls),0)+'회 상한 · 요율 연결 대기</span>'):'')+
       row('적용 기준',jevmode?(manifest?(pinned?'원본 실험 정책 ':'현재 발행 정책 '):'')+esc(policy):'기준 퀀트 전략'+(manifest?' · '+(pinned?'원본 정책':capabilities?.policySource==='WORKSPACE_BASELINE'?'기본 정책':'정책')+' v'+esc(manifest.version):''),temporal)+
       [...list(preflight.reasons),...list(capabilities?.blockedReasons)].filter((r,i,all)=>all.findIndex(v=>v.code===r.code&&v.message===r.message)===i).map(r=>'<p class="tiny error-text">'+esc(r.message||r.code)+'</p>').join(''):
-      commandError?'실행 조건을 확인하지 못했습니다.':'기간을 정하면 자료 범위와 실행 조건을 확인합니다.';
+      d.mindId?'실행 조건을 확인하지 못했습니다.':'기간을 정하면 자료 범위와 실행 조건을 확인합니다.';
     let readyAt=null;try{readyAt=simulationReadyStart(preflight,d.mode,simulationUtcTime(d.startAt),simulationUtcTime(d.endAt));}catch{}
     const recovery=!previewLoading&&preflight&&(preflight.ok===false||readyAt)?'<div class="simulation-recovery-actions">'+button('기간 변경','edit-period')+(readyAt?button('첫 판단 시점부터 검증','ready-period')+helpTooltip('평가 구간 조정',when(readyAt)+'부터 종료 시점까지 새로 확인합니다. 모델 파라미터와 비용은 유지합니다.',{id:'simulation-ready-period-help'}):'')+'</div>':'';
-    const retry=!previewLoading&&!preview&&commandError?button('실행 조건 다시 확인','preflight-retry'):'';
+    const retry=!previewLoading&&!preview&&d.mindId?button('실행 조건 다시 확인','preflight-retry'):'';
     return '<div class="simulation-preflight" data-simulation-preflight role="status" aria-live="polite"><div class="simulation-preflight-heading"><strong>실행 전 확인</strong><span>'+esc(modeLabel(d.mode))+'</span></div>'+content+recovery+retry+periodGapView(source)+'<details class="spaced" data-simulation-disclosure="source"'+(disclosures.source?' open':'')+'><summary>자료 보유 범위</summary>'+row('가격 자료',esc([source.venue,source.symbol].filter(Boolean).join(' · ')||'자료 확인 필요'))+row('보관 기간',esc(when(source.startAt))+' ~ '+esc(when(source.endAt)))+'</details></div>';
   }
   function editorView(){

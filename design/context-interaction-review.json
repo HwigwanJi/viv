@@ -2672,8 +2672,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T23:40:28.418Z",
-      "reason": "저장한 조건 탭과 실행 버튼의 순서를 확인했다. 조건 재조회가 성공하면 같은 입력을 보존하고 키보드 초점을 저장으로 이어간다.",
+      "reviewedAt": "2026-11-11T23:43:46.773Z",
+      "reason": "이전 단계에서 조건 조회가 실패해도 검토 단계에서 같은 조건을 다시 확인한다. 키보드 초점과 저장한 조건의 실행 순서를 확인했다.",
       "signature": "b20f35ce9a15c3dfc832a943510e5e8840931dfa3f2bce9d927a20c35aa2bb7b",
       "controls": [
         [
@@ -2741,7 +2741,7 @@
           2
         ]
       ],
-      "sourceHash": "5dd6557e9d650e8767f7720d6b43e7731e545fd1053bc9bbba6a82a560d7752d",
+      "sourceHash": "b083ec0c01837dbb322bc63f4961df31c82871f5a7efbfe724c4f40066b7a1bc",
       "customContainers": []
     },
     {
