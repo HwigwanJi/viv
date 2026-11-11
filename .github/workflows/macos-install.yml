@@ -33,3 +33,15 @@ jobs:
           curl -fsS http://127.0.0.1:4317/mcp -H 'Content-Type: application/json' \
             --data '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"viv_onboarding","arguments":{}}}' |
             node -e 'let s=""; process.stdin.on("data",b=>s+=b).on("end",()=>{const r=JSON.parse(s).result; if(r.isError || r.structuredContent.next!=="ask_interest_and_budget") throw Error("Fresh onboarding failed")})'
+          node_bin=( "$PWD"/.runtime/node-v24*-darwin-*/bin )
+          test -x "${node_bin[0]}/node"
+          export PATH="${node_bin[0]}:$PATH"
+          clients="$RUNNER_TEMP/viv-mcp-clients"
+          npm install --prefix "$clients" --ignore-scripts --no-audit --no-fund @openai/codex@0.167.1 @anthropic-ai/claude-code@2.1.322
+          export PATH="$clients/node_modules/.bin:$PATH"
+          export CLAUDE_CONFIG_DIR="$RUNNER_TEMP/viv-claude-settings"
+          mkdir -p "$CLAUDE_CONFIG_DIR"
+          for client in codex claude; do
+            registered=$(bash scripts/install-viv-mac.sh --target pc --client "$client")
+            node -e 'const r=JSON.parse(process.argv[1]); if(r.mcpStatus!=="registered" || r.onboardingTool!=="viv_onboarding") throw Error(JSON.stringify(r))' "$registered"
+          done
