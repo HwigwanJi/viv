@@ -321,7 +321,9 @@
       "sources": [
         "dist/app.mjs",
         "dist/ui/cursor-navigation.mjs",
-        "dist/ui/action-menu.mjs"
+        "dist/ui/action-menu.mjs",
+        "dist/index.html",
+        "dist/ui/viv-startup.js"
       ]
     },
     {

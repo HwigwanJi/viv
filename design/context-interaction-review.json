@@ -54,17 +54,21 @@
         "navigation",
         "readonly"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-04",
-      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
-      "signature": "a460ada50d340fe369257218a90c594e678d4d2d25a5ca7f45b6d6200fd1eff6",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-11T11:58:33.043Z",
+      "reason": "초기 응답 지연과 모듈 실패를 모바일 브라우저에서 재현하고 재시도 후 정상 진입을 확인했습니다.",
+      "signature": "1eb14d305d971b6c5f37ea50403a13aeea3ad3b27d616d4aae8782132446acb4",
       "controls": [
+        [
+          "element:button",
+          1
+        ],
         [
           "element:dialog",
           1
         ]
       ],
-      "sourceHash": "71edbd7f7adbe570b35c529f95abddbd5b536aab43d7e48265477e37e8e4b491"
+      "sourceHash": "3cfb9d4e490dc5485f041c958e65020e0c87d87b3fc3975767401f29896c820b"
     },
     {
       "file": "dist/install.html",
@@ -3145,8 +3149,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-10T14:10:52.060Z",
-      "reason": "119: 모의 예산의 실제 금액/설정 상태와 미설정 통화 설정을 구분하고 배정 행동을 마인드별 자금에 배치. 최초 원장 미조회/실패와 직전 정상 자료 구분, 기존 GET 새로고침으로 복구. 실전 분기·배정/회수/예산 입력·API·개별 운용 링크/원문 수치 보존. 공용 클릭/폼/문맥 호출부와 키보드 동선 검토.",
+      "reviewedAt": "2026-11-11T11:58:33.050Z",
+      "reason": "초기 응답 지연과 모듈 실패를 모바일 브라우저에서 재현하고 재시도 후 정상 진입을 확인했습니다.",
       "signature": "e990d4dd848734dda3779f4ef461762e6b1b0b2fa9ea1392d75e2610ae0c6031",
       "controls": [
         [
@@ -3250,7 +3254,7 @@
           1
         ]
       ],
-      "sourceHash": "1d1e7050fcd9a4f70362a93d39b8c33294814410fcf8f29de628f5795e2ef24a",
+      "sourceHash": "4e60b342373a601c781ca4ae8ea717bc5222b2ddbc4a4baf2d5700d96cb390e0",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3717,6 +3721,18 @@
       "review": "BROWSER_VERIFIED",
       "reviewedAt": "2026-11-08T18:36:05.754Z",
       "reason": "033: 실제 체결 금액/수량의 평균 가격·금액·수수료 표시, native 개별체결 details/응답형 공용 표, 누락/미체결 분리. 주문 생성/승인 액션 추가 없음. 공용 입력/링크/기존 객체 메뉴 보존."
+    },
+    {
+      "file": "dist/ui/viv-startup.js",
+      "owners": [
+        "primitive"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-11T11:58:33.050Z",
+      "reason": "초기 응답 지연과 모듈 실패를 모바일 브라우저에서 재현하고 재시도 후 정상 진입을 확인했습니다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "b242aa558756283004e8aeb00d8231673b3230951345f14bc53438c1c43b86fd"
     }
   ],
   "actionMatrix": "design/context-action-matrix.json",

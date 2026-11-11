@@ -26,18 +26,24 @@
 </head>
 <body>
   <div id="app">
-    <div class="viv-intro" role="status">
+    <div class="viv-intro">
       <div class="viv-intro-orbit" aria-hidden="true">
         <i></i><i></i><i></i>
         <strong>viv</strong>
       </div>
       <p>good vibe, good investment</p>
-      <span class="viv-intro-status">VIV 불러오는 중</span>
+      <span class="viv-intro-status" role="status">VIV 불러오는 중</span>
+      <div data-viv-boot-failure hidden>
+        <p role="alert">VIV를 시작하지 못했습니다.</p>
+        <button type="button" class="button spaced">다시 열기</button>
+      </div>
+      <noscript>VIV를 열려면 브라우저에서 JavaScript를 켜세요.</noscript>
     </div>
   </div>
   <div id="toast" role="status" aria-live="polite"></div>
   <dialog id="detail-dialog" aria-labelledby="dialog-title"></dialog>
-  <script type="module" src="./app.mjs"></script>
+  <script src="./ui/viv-startup.js"></script>
+  <script type="module" src="./app.mjs" id="viv-app-entry"></script>
   <script type="module" src="./ui/shell.mjs"></script>
 </body>
 </html>
