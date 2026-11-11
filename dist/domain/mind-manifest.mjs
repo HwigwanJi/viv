@@ -2,7 +2,7 @@ import {strategyGraphHash} from './strategy-graph.mjs';
 import { validExternalKnowledgePolicy } from './external-knowledge-policy.mjs';
 import { hashInputPackage } from './workspace.mjs';
 import { parseDocument, stringify as stringifyYaml, isAlias } from '../vendor/yaml.mjs';
-import { getInstrument } from './instruments.mjs';
+import { getInstrument, listInstruments } from './instruments.mjs';
 import { validatePaperPolicy } from '../trading/runtime.mjs';
 import {assertMindStrategyPlan} from './mind-strategy-plan.mjs';
 import {resolveMindInvestmentScope} from './universe-policy.mjs';
@@ -187,6 +187,14 @@ export function exportMindPolicy(workspace, profileId, options = {}) {
     data: { name: profile.name, version: profileVersion.version, versionRefs: { profileVersionId: profileVersion.id, strategyVersionId: strategy.id, riskPresetVersionId: preset.id, memoryVersionId: memory.id }, profileSettings: clone(p), strategySettings: clone(strategy.settings), riskPreset: clone(preset.settings), approvedMemory: clone(memory.items), principles, universe: { mode: instrumentIds.length === 1 ? 'single' : 'allowlist', instrumentIds, selection: { method: 'fixed', maxPositions: instrumentIds.length, minQuoteVolume: 0, minHistoryBars: 64, rebalance: 'manual' } }, inputs: [{ id: 'price-ohlcv', status: 'connected', required: true, sourceRefs: [] }, { id: 'approved-memory', status: 'approved-context', required: false, sourceRefs: [memory.id] }, { id: 'macro', status: 'unavailable', required: false, sourceRefs: [] }, { id: 'news', status: 'unavailable', required: false, sourceRefs: [] }], trigger: { event: 'closed-candle', interval: '4h', settleDelayMs: 15000, cooldownMs: 15000 }, weightPolicy: { method: 'bounded-shrinkage-v1', approval: 'version-review', maxStep: .1, minIndependentSamples: 3, version: 1 } },
   };
   assertMindDocument(doc); return doc;
+}
+
+export function workspaceBaselineMindPolicy(workspace, profile) {
+  const created = workspace.profileVersions.find(v => v.id === profile.currentVersionId)?.createdAt ?? workspace.createdAt;
+  const policy = exportMindPolicy(workspace, profile.id, {now:created, actorId:'workspace-owner', instrumentIds:listInstruments().map(i=>i.id)});
+  policy.id = 'manifest-'+profile.id+'-baseline-v'+policy.data.version;
+  policy.data.universe.selection = {method:'jev',maxPositions:3,minQuoteVolume:0,minHistoryBars:32,rebalance:'manual'};
+  return assertMindDocument(policy);
 }
 
 export function buildMindClassificationQuestions(doc) {

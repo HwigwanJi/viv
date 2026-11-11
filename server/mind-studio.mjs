@@ -27,7 +27,7 @@ import { createWorkspace, dispatchWorkspaceAction, hashInputPackage, validateWor
 import {researchSha256} from '../dist/domain/research.mjs';
 import { importKnowledge } from '../dist/knowledge.mjs';
 import { listInstruments, getInstrument } from '../dist/domain/instruments.mjs';
-import { parseMindDocument, assertMindDocument, serializeMindDocument, exportMindPolicy, mindDocumentHash, attachMindClassification } from '../dist/domain/mind-manifest.mjs';
+import { parseMindDocument, assertMindDocument, serializeMindDocument, exportMindPolicy, workspaceBaselineMindPolicy, mindDocumentHash, attachMindClassification } from '../dist/domain/mind-manifest.mjs';
 import { proposePrincipleWeight, approveWeightProposal } from '../dist/domain/learning-assessment.mjs';
 import {buildAutomaticEvaluation,assertAutomaticEvaluationSource} from '../dist/domain/learning-cohort-assessment.mjs';
 import {draftMindStrategyPlan,approveMindStrategyPlan,strategyPlanHash,createMindStrategyPlan,strategyPlanWithGraph,isMindStrategyPlanActive} from '../dist/domain/mind-strategy-plan.mjs';
@@ -101,14 +101,8 @@ async function readBody(request){
 function baseManifests(w,now,owner){
   return w.investmentProfiles.map(p=>{
     const saved=list(w.mindManifests).filter(m=>m.scope.profileId===p.id&&m.availableAt<=now).sort((a,b)=>a.data.version-b.data.version||a.availableAt.localeCompare(b.availableAt)).at(-1);
-    if(saved)return saved;
-    // This is the new runtime's explicit migration snapshot. The legacy engine
-    // retains its pinned versions and single-instrument accounting.
-    const created=w.profileVersions.find(v=>v.id===p.currentVersionId)?.createdAt??w.createdAt;
-    const doc=exportMindPolicy(w,p.id,{now:created,actorId:'workspace-owner',instrumentIds:listInstruments().map(i=>i.id)});
-    doc.id='manifest-'+p.id+'-baseline-v'+doc.data.version;
-    doc.data.universe.selection={method:'jev',maxPositions:3,minQuoteVolume:0,minHistoryBars:32,rebalance:'manual'};
-    return assertMindDocument(doc);
+    // The legacy engine retains its pinned versions and single-instrument accounting.
+    return saved??workspaceBaselineMindPolicy(w,p);
   });
 }
 function findManifest(w,mindId,now,owner){const m=baseManifests(w,now,owner).find(m=>m.scope.profileId===mindId);check(m,'MIND_NOT_FOUND','마인드를 선택하세요.',404);return m;}

@@ -206,13 +206,23 @@ export async function readHomePerformance({repository,db,ownerId,executionMode='
   if(!workspace)throw new RepositoryError('WORKSPACE_NOT_FOUND','작업 공간을 확인하세요.',404);
   let valuations=[],periodValuations=null;
   if(executionMode==='paper'&&refreshValuations){const scopes=[...new Set(list(workspace.mindPositions).filter(a=>a.kind==='PAPER_ACCOUNT').map(a=>a.quoteCurrency))];[valuations,periodValuations]=await Promise.all([Promise.all(scopes.map(quoteCurrency=>buildMindValuation(workspace,{profileId:'all',quoteCurrency},{now:time,quoteLoader,fetchImpl}))),buildHomePeriodPerformance(workspace,{now:time,fetchImpl,env,marketLoader:periodMarketLoader})]);}
-  let brokerConnections=[],simulationHighlights=[],simulationBestCandidates=[],liveActivities=[],paperActivities=[];let activityAsOf=time();
+  let brokerConnections=[],simulationHighlights=[],simulationBestCandidates=[],liveActivities=[],paperActivities=[],pendingPaperPractice=null;let activityAsOf=time();
   if(db){
     if(executionMode==='live')try{liveActivities=await readLiveAutomationActivity({db,owner:ownerId,asOf:activityAsOf,currentRuntime:typeof env?.EVENT_AUTOMATION_STATUS==='function'?env.EVENT_AUTOMATION_STATUS():null});}catch(error){if(error.code==='LIVE_ACTIVITY_UPDATING')throw new RepositoryError(error.code,error.message,409);throw error;}
     if(executionMode==='paper')paperActivities=(await readEventPaperActivity({db,owner:ownerId,asOf:activityAsOf})).items;
     const tables=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('broker_connections','simulation_reports','workspace_heads')").bind().all()).results.map(r=>r.name);
     if(executionMode==='live'&&tables.includes('broker_connections'))brokerConnections=(await db.prepare('SELECT provider,snapshot,updated_at FROM broker_connections WHERE owner_id=?').bind(ownerId).all()).results.map(r=>({provider:r.provider,updatedAt:r.updated_at,snapshot:r.snapshot?JSON.parse(r.snapshot):null}));
     if(tables.includes('simulation_reports'))simulationHighlights=(await db.prepare("SELECT json_extract(payload,'$.report') AS report FROM simulation_reports WHERE owner_id=? AND json_extract(payload,'$.status')='COMPLETED' AND json_extract(payload,'$.archivedAt') IS NULL ORDER BY json_extract(payload,'$.report.completedAt') DESC,id DESC LIMIT 6").bind(ownerId).all()).results.map(r=>({report:r.report?JSON.parse(r.report):null})).filter(r=>r.report);
+    if(executionMode==='paper'&&!simulationHighlights.some(entry=>completedReport(entry,activityAsOf,workspace))&&tables.includes('simulation_reports')){
+      const activeMindIds=list(workspace.investmentProfiles).filter(p=>p.status!=='ARCHIVED').map(p=>p.id);
+      pendingPaperPractice=await db.prepare(`SELECT id AS simulationId, json_extract(payload,'$.config.mindId') AS profileId,
+        json_extract(payload,'$.config.name') AS name FROM simulation_reports WHERE owner_id=?
+        AND json_extract(payload,'$.config.mode')='MECHANICAL'
+        AND json_extract(payload,'$.status') IN ('CREATED','READY','PAUSED','RUNNING')
+        AND json_extract(payload,'$.config.mindId') IN (SELECT value FROM json_each(?))
+        AND json_extract(payload,'$.archivedAt') IS NULL AND json_extract(payload,'$.experiment') IS NULL
+        ORDER BY updated_at DESC,id DESC LIMIT 1`).bind(ownerId,JSON.stringify(activeMindIds)).first();
+    }
     const selectedProfiles=new Set();
     if(tables.includes('simulation_reports'))for(let offset=0;;offset+=20){
       const rows=(await db.prepare("SELECT json_extract(payload,'$.report') AS report FROM simulation_reports WHERE owner_id=? AND json_extract(payload,'$.status')='COMPLETED' AND json_extract(payload,'$.archivedAt') IS NULL AND json_type(payload,'$.report.metrics.totalReturn') IN ('real','integer') AND json_extract(payload,'$.report.coverage.warmupFrames')=0 AND json_extract(payload,'$.report.coverage.readyFrames')=json_extract(payload,'$.report.coverage.totalDecisionFrames') AND json_extract(payload,'$.report.metrics.tradeCount')>0 ORDER BY json_extract(payload,'$.report.metrics.totalReturn') DESC,json_extract(payload,'$.report.completedAt') DESC,id LIMIT 20 OFFSET ?").bind(ownerId,offset).all()).results;
@@ -231,6 +241,7 @@ export async function readHomePerformance({repository,db,ownerId,executionMode='
    const accounts=list(workspace.mindPositions).filter(a=>a.kind==='PAPER_ACCOUNT'&&a.profileId===card.profileId);
    if(accounts.length!==1)continue;const account=accounts[0],valuation=card.currencies.find(c=>c.currency===account.quoteCurrency);card.investorMetrics=projectPaperInvestorPerformance(account,valuation,{asOf:activityAsOf});
   }
+  if(pendingPaperPractice)performance.pendingPaperPractice=pendingPaperPractice;
   if(includeInvestorMetrics)performance.investorMetricsIncluded=true;
   return {ok:true,revision:workspace.revision,performance};
 }

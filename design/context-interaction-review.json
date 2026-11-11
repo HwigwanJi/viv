@@ -1113,9 +1113,9 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T18:10:37.204Z",
-      "reason": "모의 홈에서 같은 판단·완료 실험을 열고, 모의 홈으로 돌아오면 저장 결과를 다시 조회한다. 기존 성과·운용 조작은 유지한다.",
-      "signature": "6cad4f5950ac46fa917eee3d716f9532c731a5e55cee22c527664bb4d5235969",
+      "reviewedAt": "2026-11-11T18:42:09.661Z",
+      "reason": "모의 홈의 주 행동에서 첫 실습을 열고 저장된 실험을 재개한다. 모바일·데스크톱에서 동일 결과로 돌아갔다.",
+      "signature": "89a0ccaaa5b5ed0a7efab50af227df271e3f27ccfc308f4c52822c35cb1f6cfb",
       "controls": [
         [
           "data-home-action",
@@ -1199,10 +1199,10 @@
         ],
         [
           "helper:routeLink(",
-          17
+          18
         ]
       ],
-      "sourceHash": "1039ad7a7ec5bfb71e7ff7190fd578abc06650d8fe62a1a3952fee7d97cc1a5a",
+      "sourceHash": "4a9f467a9423af470c1b95fee0e5248fd35f20e1a9d60b8f41f310249633f592",
       "customContainers": []
     },
     {
@@ -2660,8 +2660,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T16:47:11.503Z",
-      "reason": "키 없는 실습의 고정 방식을 읽기용으로 표시하고, 선택 직후 오류 해제 및 실제 무키 실행·일반 방식 선택을 모바일 Chrome에서 확인했습니다.",
+      "reviewedAt": "2026-11-11T18:42:09.663Z",
+      "reason": "무키 백테스트에서 기본 정책, 저장과 재개, 판단 근거를 실제 조작으로 확인했다.",
       "signature": "b3621d2fe18b1e6a5d245652bc148f95f248f16a6dab6750d6528386b81a4b94",
       "controls": [
         [
@@ -2721,7 +2721,7 @@
           2
         ]
       ],
-      "sourceHash": "d9ddcad39fe0bd080df6d10f0006d6bee22629e679792da4a2a0b4852a5fcad0"
+      "sourceHash": "aebf838742d0fb000ffa8191b98890c50c91922684299f3cea946adfaf70b3d0"
     },
     {
       "file": "dist/ui/simulation-pre-provider-recovery.mjs",
