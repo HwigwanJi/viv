@@ -4,6 +4,8 @@
 
 > 이 저장소의 VIV를 Windows에 원샷으로 설치해 줘. 사용할 환경을 먼저 물어보고, 내 선택에 맞춰 앱·서버·MCP를 설치하고 확인해 줘.
 
+**VIV PC** 주소가 나오면 앱을 먼저 열 수 있습니다. 모바일이나 MCP는 필요할 때 같은 폴더에서 이어서 설정하세요. [연결 복구](#연결-복구) · [첫 모의 실습](viv-mcp-playbook.md#첫-모의-실습)
+
 ## Windows 서버와 휴대폰
 
 1. 에이전트는 **“VIV를 어느 환경에서 사용하실 건가요? 1. PC / 2. PC와 모바일 둘 다 / 0. 취소”**라고 한 번 묻는다. 사용자 메시지에 환경이 명확하면 그 선택을 바로 사용한다. 번호와 자연어를 모두 받아들이고 취소하면 설치를 시작하지 않는다.
@@ -15,7 +17,7 @@
 
 3. 모바일을 선택한 경우에만 Tailscale을 준비한다. PC에서 사용자가 자기 계정으로 로그인하고, 필요한 경우 자기 tailnet에서 MagicDNS와 HTTPS 인증서를 활성화한다. 인증서를 발급하면 장치의 전체 도메인 이름이 공개 인증서 로그에 남을 수 있다. 앱 접근은 tailnet 규칙을 따른다. 다른 앱이 사용하는 경로나 공개 Funnel 설정이 있으면 PC 앱과 MCP를 쓸 수 있게 두고 모바일에 필요한 조치를 알려준다. VIV는 비공개 주소의 접속을 단일 소유자 세션으로 처리하므로 tailnet에서 접근 가능한 장치와 사용자 범위를 확인한다. [Tailscale HTTPS 안내](https://tailscale.com/docs/how-to/set-up-https-certificates)
 4. 같은 tailnet에 로그인한 휴대폰에서 결과의 `mobileInstallUrl`을 연다. 주소가 필요하면 PC의 **설정 → 서비스 연결 → 휴대폰 연결·설치**에서 다시 확인하거나 복사한다. Android에서는 **웹앱으로 설치** 버튼이 보이면 누른다. 버튼이 없으면 Chrome의 **더보기 → 설치** 또는 **홈 화면에 추가**를 사용한다. iPhone은 Safari의 **공유 → 홈 화면에 추가**를 사용하고 **웹 앱으로 열기**가 보이면 켠다. 홈 화면 아이콘에서 VIV를 열어 PC와 같은 작업 공간인지 확인한다.
-5. PC 주소가 표시되면 앱을 먼저 열 수 있다. 모바일 로그인이나 MCP 등록 후속 조치가 필요하면 결과에 표시된 해당 단계의 명령을 같은 설치 폴더에서 실행한다. 가동 중인 같은 checkout의 서버는 재사용한다. PC 재시작 후에 빌드를 생략하고 다시 실행할 때는 `scripts/setup-self-host.ps1 -StartOnly`에 기존 포트와 필요한 `-Mobile`과 `-Client Codex` 또는 `-Client Claude`를 전달한다. 오류 로그는 checkout의 `.runtime/self-host.stderr.log`에 있다.
+5. 선택한 연결에 후속 조치가 필요하면 [연결 복구](#연결-복구)에서 해당 단계만 실행하세요. 서버가 꺼져 있으면 [서버 다시 시작](#서버-다시-시작)을 확인하세요. 오류 로그는 VIV 폴더의 `.runtime/self-host.stderr.log`에 있습니다.
 
 Codex 외의 AI 클라이언트나 앱을 설치한 뒤 MCP만 연결하는 방법은 [VIV MCP 플레이북](viv-mcp-playbook.md)을 따릅니다.
 
@@ -35,11 +37,52 @@ Windows와 Mac 모두 터미널에 앱·MCP·모바일 상태를 표시합니다
 | --- | --- |
 | `desktopStatus: started` 또는 `reused` | `desktopUrl`을 열어 VIV 화면을 확인하세요. `started`는 새 서버를 시작한 경우이고 `reused`는 실행 중인 서버를 그대로 쓰는 경우입니다. |
 | `mcpStatus: registered` | AI 대화에 `onboardingPrompt`에 표시된 **VIV 시작하기**를 입력하세요. [첫 모의 실습](viv-mcp-playbook.md#첫-모의-실습)으로 이어갑니다. |
-| `mcpStatus: not-requested` | 모바일 복구만 실행했습니다. AI 연결은 이전 설치에서 받은 `mcpRetryCommand`로 이어갈 수 있습니다. |
+| `mcpStatus: not-requested` | 모바일 복구만 실행했습니다. AI를 연결하려면 [MCP만 복구하기](#mcp만-복구하기)를 따르세요. |
 | `mcpStatus: endpoint-ready` | VIV의 MCP 서버가 응답합니다. 수동 연결을 선택했다면 AI 클라이언트에 `mcpUrl`을 등록하세요. |
 | `mobileStatus: phone-install-pending` | PC에서 비공개 HTTPS 주소를 검증했습니다. `desktopInstallUrl`에서도 설치 주소를 확인하고 복사할 수 있습니다. 휴대폰에서 `mobileInstallUrl`을 열고 홈 화면 아이콘에서 VIV가 열리는지 확인하세요. |
 | `mobileStatus: not-requested` | PC 전용으로 설치했습니다. `desktopUrl`을 사용하세요. 나중에 PC의 설치 페이지에서 **이 PC에서 다시 실행할 명령**을 열고 VIV 폴더에서 실행하세요. 그다음 **연결 다시 확인**을 누르세요. |
-| `needs-action` | 해당 단계의 `mcpError` 또는 `mobileError`를 확인한 뒤 `mcpRetryCommand` 또는 `mobileRetryCommand`로 이어가세요. 모바일 복구 명령은 설치 화면에서도 복사할 수 있습니다. PC 앱은 `desktopUrl`에서 열 수 있습니다. |
+| `mobileStatus: needs-action` | `mobileError`를 확인하고 `mobileRetryCommand`를 실행하세요. [모바일만 복구하기](#모바일만-복구하기) |
+| `mcpStatus: needs-action` | `mcpError`를 확인하고 `mcpRetryCommand`를 실행하세요. PC 앱은 `desktopUrl`에서 열 수 있습니다. [MCP만 복구하기](#mcp만-복구하기) |
+
+## 연결 복구
+
+이미 설치한 **VIV 폴더**에서 실행하세요. 아래 예제는 기본 포트 `4317`을 사용합니다. 다른 포트로 설치했다면 기존 PC 브라우저 주소의 포트로 바꾸세요. 가동 중인 같은 설치의 서버와 저장된 실험을 재사용합니다.
+
+### 모바일만 복구하기
+
+PC에서 Tailscale 로그인이나 VPN 승인을 마친 뒤 `mobileRetryCommand`를 실행하세요. 설치 결과가 없다면 PC의 **휴대폰 연결·설치** 화면에서 **이 PC에서 다시 실행할 명령 → 복구 명령 복사**를 누르거나 아래 명령을 사용하세요.
+
+**Windows**
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -MobileOnly -Port 4317
+```
+
+**Mac**
+
+```bash
+bash scripts/install-viv-mac.sh --mobile-only --port 4317
+```
+
+`mobileStatus`가 `phone-install-pending`이면 같은 Tailscale 네트워크의 휴대폰에서 `mobileInstallUrl`을 여세요. PC 설치 화면에서는 **연결 다시 확인**을 누르면 주소가 표시됩니다.
+
+### MCP만 복구하기
+
+먼저 기존 PC 주소에서 VIV가 열리는지 확인하세요. `mcpRetryCommand`가 있으면 실행하세요. 이전 결과를 찾을 수 없다면 VIV 폴더에서 다음 Codex 예제를 사용하세요.
+
+**Windows**
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv-mcp.ps1 -Client Codex -Port 4317
+```
+
+**Mac**
+
+```bash
+bash scripts/install-viv-mac.sh --target pc --client codex --port 4317
+```
+
+Claude Code는 Windows에서 `-Client Claude`, Mac에서 `--client claude`를 사용하세요. `registered`가 나오면 AI의 새 대화에 **VIV 시작하기**를 입력하세요. 수동 연결은 기존 PC 주소 끝에 `/mcp`를 붙여 클라이언트에 등록합니다. [MCP와 첫 대화](viv-mcp-playbook.md#연결)
 
 ## 서버 다시 시작
 

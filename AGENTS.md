@@ -7,5 +7,5 @@
    - Windows는 `scripts/install-viv.ps1`에 `-Target PC` 또는 `-Target PCMobile`을 전달합니다. Claude Code는 `-Client Claude`를 추가합니다.
    - Mac은 `bash scripts/install-viv-mac.sh`에 `--target pc` 또는 `--target mobile`을 전달합니다. Claude Code는 `--client claude`를 추가합니다.
    - 기본 MCP 클라이언트는 Codex입니다. 그 외 클라이언트는 각 스크립트의 `Manual` 옵션을 사용해 해당 클라이언트의 방식으로 연결합니다.
-3. 설치 결과의 앱 주소, 서버, MCP 연결 상태를 확인합니다. 모바일을 선택한 경우 결과의 휴대폰 설치 주소를 안내하고 실제 기기에서 확인합니다.
-4. MCP 연결이 확인되면 `viv_onboarding`을 호출해 튜토리얼을 시작합니다. 클라이언트가 설치한 MCP를 새 대화에서만 읽을 수 있다면 **VIV 시작하기**로 이어갑니다.
+3. **VIV PC** 주소가 출력되면 앱을 바로 열 수 있게 안내합니다. 설치 결과에서 서버, MCP, 모바일 상태를 각각 확인합니다. 선택한 연결에 후속 조치가 필요하면 [연결 복구](docs/agents/operations/self-host.md#연결-복구)의 해당 단계만 안내합니다. 모바일 주소가 확인되면 실제 기기에서 여는 방법을 안내합니다.
+4. MCP 연결이 확인되면 `viv_onboarding`을 호출해 튜토리얼을 시작합니다. 클라이언트가 설치한 MCP를 새 대화에서만 읽을 수 있다면 **VIV 시작하기**로 이어갑니다. PC 앱만 열린 경우에는 [첫 모의 실습](docs/agents/operations/viv-mcp-playbook.md#첫-모의-실습)을 바로 시작할 수 있습니다.

@@ -1,8 +1,8 @@
 # VIV · Vibe Investment
 
-VIV는 투자 전략을 구성하고 모의 예산으로 검토하는 앱입니다. Codex나 Claude Code를 연결하면 대화에서 모의계좌를 만들고, 판단과 조사 결과를 앱에서 열어볼 수 있습니다. 설치와 첫 모의 브리핑에는 금융기관·JEV API 키가 필요 없습니다.
+VIV는 투자 전략을 구성하고 모의 예산으로 검토하는 앱입니다. Codex나 Claude Code를 연결하면 대화에서 모의계좌를 만들고, 판단과 조사 결과를 앱에서 열어볼 수 있습니다. 설치하고 보관한 BTC 시세로 첫 백테스트를 실행하기까지 금융기관·JEV API 키가 필요 없습니다.
 
-[설치 결과 확인](docs/agents/operations/self-host.md#설치-결과-읽기) · [첫 모의 실습](docs/agents/operations/viv-mcp-playbook.md#첫-모의-실습) · [계좌 연결과 잔고 확인](docs/agents/operations/self-host.md#계좌-연결과-잔고-확인)
+[PC 앱을 먼저 열기](#pc-앱을-먼저-열기) · [연결 복구](docs/agents/operations/self-host.md#연결-복구) · [첫 모의 실습](docs/agents/operations/viv-mcp-playbook.md#첫-모의-실습) · [계좌 연결과 잔고 확인](docs/agents/operations/self-host.md#계좌-연결과-잔고-확인)
 
 ## Windows에서 Git으로 설치
 
@@ -12,7 +12,7 @@ Git이 설치된 PowerShell에서 아래 한 줄을 실행하세요. 공개 저�
 git clone https://github.com/HwigwanJi/viv.git viv; if ($LASTEXITCODE -eq 0) { powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\viv\scripts\install-viv.ps1 }
 ```
 
-PC 또는 PC와 모바일을 선택하면 설치 스크립트가 Node.js·npm을 확인하고, 로컬 앱 서버를 실행해 Codex MCP를 연결합니다. Claude Code에서는 `-Client Claude`를, 다른 AI 클라이언트에서는 `-Client Manual`을 추가하세요. 이미 받은 checkout은 그 폴더의 `scripts/install-viv.ps1`로 다시 실행합니다.
+PC 또는 PC와 모바일을 선택하면 설치 스크립트가 Node.js·npm을 확인하고, 로컬 앱 서버를 실행해 Codex MCP를 연결합니다. Claude Code에서는 `-Client Claude`를, 다른 AI 클라이언트에서는 `-Client Manual`을 추가하세요. 이미 복제했다면 VIV 폴더에서 `scripts/install-viv.ps1`을 실행하세요.
 
 ## Mac에서 Git으로 설치
 
@@ -32,13 +32,19 @@ Claude Code가 설치된 Windows에서 아래 한 줄을 실행합니다. 이미
 git clone https://github.com/HwigwanJi/viv.git viv; if ($LASTEXITCODE -eq 0) { powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\viv\scripts\install-viv.ps1 -Client Claude }
 ```
 
-설치 결과의 `desktopUrl`을 열어 VIV 화면을 확인하세요. `mcpStatus`가 `registered`면 Codex 또는 Claude Code에 **VIV 시작하기**를 입력하세요. 현재 대화에 도구가 보이지 않으면 새 대화에서 입력하세요.
+## PC 앱을 먼저 열기
+
+터미널에 **VIV PC** 주소가 나오면 브라우저에서 엽니다. 설치 화면을 열었다면 **VIV 열기**를 누르세요. 모의 홈에서 **첫 백테스트 실습**을 고르면 앱에서 바로 연습할 수 있습니다. [첫 모의 실습](docs/agents/operations/viv-mcp-playbook.md#첫-모의-실습)
+
+모바일이나 AI 연결이 지연되면 설치 결과의 해당 복구 명령을 사용하세요. 결과를 다시 볼 수 없어도 VIV 폴더에서 단계별 명령을 실행할 수 있습니다. [연결 복구](docs/agents/operations/self-host.md#연결-복구)
+
+`mcpStatus`가 `registered`면 Codex 또는 Claude Code에 **VIV 시작하기**를 입력하세요. 현재 대화에 도구가 보이지 않으면 새 대화에서 입력하세요.
 
 ## AI 에이전트로 설치
 
 > https://github.com/HwigwanJi/viv 의 VIV를 이 컴퓨터에 설치해 줘. Windows인지 Mac인지 확인하고, 컴퓨터에서만 쓸지 모바일도 쓸지 먼저 물어봐. 저장소의 AGENTS.md에 따라 앱·서버·MCP를 연결한 뒤 VIV 튜토리얼을 시작해 줘.
 
-[모바일 연결과 API 키 설정](docs/agents/operations/self-host.md) · [MCP와 튜토리얼](docs/agents/operations/viv-mcp-playbook.md)
+[설치와 API 키 설정](docs/agents/operations/self-host.md) · [MCP와 튜토리얼](docs/agents/operations/viv-mcp-playbook.md)
 
 ## 앱에서 할 수 있는 일
 
