@@ -410,7 +410,7 @@ export function createStudioController(hooks={},options={}){
     onSelectMind:id=>hooks.navigate?.('trade',{profileId:id}),onTimeframe:timeframe=>hooks.navigate?.('trade',{timeframe}),
     onScope:value=>hooks.navigate?.('trade',{mode:value==='live'?'live':'replay',comparisonId:['live','replay'].includes(value)?null:value}),onRefresh:()=>refresh(),onDecision:openTerminalDecision,
     onConnections:openTerminalConnections,
-    onData:()=>hooks.navigate?.('settings',{view:'data'}),
+    onData:openTerminalData,
     onRecovery:recoverTerminal,
     onProfile:id=>hooks.navigate?.('minds',{profileId:id||'all',view:'operations'}),onKnowledge:openKnowledge,
     onImport:()=>openDocumentEditor(),onExport:id=>openExport(id),onTab:view=>hooks.navigate?.('trade',{tab:view}),
@@ -899,7 +899,11 @@ export function createStudioController(hooks={},options={}){
       const state=liveActivity.state(),items=list(liveActivity.items());
       return title('자동 운용',button('새로고침','companion-refresh'))+(state.error?'<p role="alert">'+esc(state.error)+'</p>':!state.data?'<p class="empty" role="status">운용 상태를 불러오는 중…</p>':!items.length?'<section class="studio-sheet"><div class="studio-sheet-body"><p>운용할 마인드를 선택하세요.</p><a class="button primary" href="'+esc(studioRouteHash(currentRoute(),'minds',{profileId:'all',view:'overview',executionMode:'live'}))+'" data-studio-route>마인드 보기</a></div></section>':items.map(item=>'<section class="studio-sheet spaced" aria-label="'+esc(profileName(item.profileId)+' 자동 운용')+'"><div class="studio-sheet-head"><h2>'+esc(profileName(item.profileId))+'</h2></div>'+renderMindActivityHero(item,{idPrefix:'automation-'+item.activationId,avatarConfig:readMindAppearance(workspace,item.profileId).config,controls:'<a class="button primary" href="'+esc(studioRouteHash(currentRoute(),'minds',{profileId:item.profileId,view:'operations',executionMode:'live'}))+'" data-studio-route>운용 관리</a>'})+'</section>').join(''));
     }
-    if(view==='data')return title('데이터',button('상태 새로고침','capture-status','',captureLoading||sectorCatalogLoading||captureCollecting||sectorCollecting||upbitCollecting?'disabled':''))+renderSectorSources()+renderCaptureStatus()+'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>'+helpLabel('저장 기록','현재 워크스페이스의 기록을 JSON 파일로 내려받습니다.')+'</h2></div><div class="studio-sheet-body">'+row('저장 위치','개인 워크스페이스 서버')+row('내보내기 범위','마인드·결정·모의 계좌·경험·학습 자료의 저장 원본')+'</div><div class="studio-data-actions actions">'+button('서버 기록 내보내기','export-workspace')+'</div></section>'+(executionModeOf(currentRoute())==='paper'?'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>투자 기록 초기화</h2>'+button('삭제 범위 확인','workspace-reset','','','danger')+'</div><div class="studio-sheet-body">'+helpLabel('마인드와 투자 기록 삭제','마인드·모의 계좌·거래·실험·학습 기록을 영구 삭제합니다. 연결 설정과 공용 시세·라이브러리는 이어서 사용합니다.')+'</div></section>':'');
+    if(view==='data'){
+      const returnTo=currentRoute().params.get('returnTo'),captureFirst=returnTo&&parseStudioRoute(returnTo).page==='trade';
+      const sources=renderSectorSources(),capture=renderCaptureStatus();
+      return title('데이터',button('상태 새로고침','capture-status','',captureLoading||sectorCatalogLoading||captureCollecting||sectorCollecting||upbitCollecting?'disabled':''))+(captureFirst?capture+sources:sources+capture)+'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>'+helpLabel('저장 기록','현재 워크스페이스의 기록을 JSON 파일로 내려받습니다.')+'</h2></div><div class="studio-sheet-body">'+row('저장 위치','개인 워크스페이스 서버')+row('내보내기 범위','마인드·결정·모의 계좌·경험·학습 자료의 저장 원본')+'</div><div class="studio-data-actions actions">'+button('서버 기록 내보내기','export-workspace')+'</div></section>'+(executionModeOf(currentRoute())==='paper'?'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>투자 기록 초기화</h2>'+button('삭제 범위 확인','workspace-reset','','','danger')+'</div><div class="studio-sheet-body">'+helpLabel('마인드와 투자 기록 삭제','마인드·모의 계좌·거래·실험·학습 기록을 영구 삭제합니다. 연결 설정과 공용 시세·라이브러리는 이어서 사용합니다.')+'</div></section>':'');
+    }
     if(view==='automation')return title('자동 운용',button('예약 작업 확인','jobs-run','',busy?'disabled':''))+renderEventPaperAutomation()+renderAutomationSubscriptions()+'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>이전 운용 기록</h2><span class="tiny muted">계좌·정책·거래 원본 보관</span></div>'+table(['운용','마인드','유형','기록 기준',''],deployments.map(d=>[esc(d.name),esc(profileName(d.investmentProfileId)),esc(d.experimentType==='FORWARD_PAPER'?'이전 모의 운용':'과거 실험'),esc(when(d.updatedAt)),button('기록 보기','deployment',d.id)]),'보관한 이전 운용이 없습니다.')+'</section>';
     return title('서비스 연결',button(connectionLoading?'상태 조회 중…':'상태 새로고침','connections','',connectionLoading?'disabled aria-busy="true"':''))+`<section class="studio-sheet"><div class="studio-sheet-body">${connectionError?'<p role="alert">'+esc(connectionError)+' 상태 새로고침을 눌러 다시 조회하세요.</p>':''}${connectionMessage?'<p role="status">'+esc(connectionMessage)+'</p>':''}${connectionSummary()}${connectionDetails('raw','연결 상태 원본','<pre class="code">'+esc(JSON.stringify({jev:status?.jev,connections:mindData?.connections},null,2))+'</pre>')}</div></section>`;
   }
@@ -1339,13 +1343,16 @@ export function createStudioController(hooks={},options={}){
     if(reviewKey){terminalFailure=null;invalidateTerminal();}
     return hooks.navigate?.('settings',{view:'connections',jevReview:reviewKey?'1':null,returnTo:studioRouteHash(origin,'trade',{returnTo:null})});
   }
+  function openTerminalData(){
+    return hooks.navigate?.('settings',{view:'data',returnTo:studioRouteHash(currentRoute(),'trade',{returnTo:null})});
+  }
   async function recoverTerminal(recovery){
     const {profileId,instrument}=selectedIdentity(),params=recovery?.params||{};
     switch(recovery?.action){
       case 'choose-mind': {const picker=root?.querySelector('[data-terminal-mind]');picker?.focus();try{picker?.showPicker?.();}catch{}return;}
       case 'account': return openAccountForm({mindId:profileId,quoteCurrency:instrument.quoteCurrency});
       case 'connections': return openTerminalConnections({reviewKey:Boolean(params.eventId)});
-      case 'data': return hooks.navigate?.('settings',{view:'data'});
+      case 'data': return openTerminalData();
       case 'profile': return hooks.navigate?.('minds',{profileId,view:'operations'});
       case 'archive': return hooks.navigate?.('minds',{profileId:'all',mindStatus:'archived'});
       case 'knowledge': return hooks.navigate?.('minds',{profileId,view:'knowledge'});

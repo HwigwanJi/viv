@@ -2672,9 +2672,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T18:42:09.663Z",
-      "reason": "무키 백테스트에서 기본 정책, 저장과 재개, 판단 근거를 실제 조작으로 확인했다.",
-      "signature": "b3621d2fe18b1e6a5d245652bc148f95f248f16a6dab6750d6528386b81a4b94",
+      "reviewedAt": "2026-11-11T21:04:11.057Z",
+      "reason": "완료된 기준 퀀트 실험의 성과 화면에 같은 마인드의 현재 시세 모의 판단 진입점을 연결한다.",
+      "signature": "4a6a7acd965b4e834735f7a54f75cb313758841d36fd791a441ccf0891ee6a0f",
       "controls": [
         [
           "data-simulation-action",
@@ -2702,7 +2702,7 @@
         ],
         [
           "element:a",
-          1
+          2
         ],
         [
           "element:button",
@@ -2733,7 +2733,8 @@
           2
         ]
       ],
-      "sourceHash": "aebf838742d0fb000ffa8191b98890c50c91922684299f3cea946adfaf70b3d0"
+      "sourceHash": "4d38bd85715cb0fb1983ab7fe9b116f1ef25ed33eba36fb42eecadd68ee76bdd",
+      "customContainers": []
     },
     {
       "file": "dist/ui/simulation-pre-provider-recovery.mjs",
@@ -3186,8 +3187,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T19:08:12.988Z",
-      "reason": "실전 계좌 화면의 모의 홈 링크를 기존 화면 이동과 연결했다.",
+      "reviewedAt": "2026-11-11T21:04:11.058Z",
+      "reason": "시세 수집 준비에서 확정 봉 자료를 먼저 표시하고 원래 트레이딩의 종목·마인드·주기로 복귀한다.",
       "signature": "c877d39c57b24c8871fb62c9729c758081038b60afa24483cc9993156eeeb93c",
       "controls": [
         [
@@ -3291,7 +3292,7 @@
           1
         ]
       ],
-      "sourceHash": "d3d7eccf0ccbca3d74339b2bebf209ead6a2bbc361d182ab02a1285c3e1f6c0f",
+      "sourceHash": "5fce06a4022a431176579471533d943db6b174c35e0feeb2f613a5e21cdff283",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
