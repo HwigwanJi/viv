@@ -1,0 +1,44 @@
+{
+  "status": "FAILED",
+  "pid": 3908,
+  "at": "2026-10-23T01:07:01.666Z",
+  "startAt": "2026-10-23T00:03:00.000Z",
+  "endAt": "2026-10-23T06:03:00.000Z",
+  "protocolHash": "b01b166a57c81368b154950e2b3e3f4f16d6abf3bf1b5f1f7c3d5c8e536fb7e4",
+  "calls": {
+    "count": 65,
+    "input": 918029,
+    "output": 3313,
+    "costKrw": 51.07404767934001
+  },
+  "publicRequests": 35,
+  "stream": {
+    "contractVersion": "upbit-scalp-capture-v1",
+    "startedAt": "2026-10-23T01:02:59.650Z",
+    "markets": [
+      "KRW-AXIS",
+      "KRW-XRP",
+      "KRW-BTC",
+      "KRW-IRYS",
+      "KRW-ETH",
+      "KRW-DOOD",
+      "KRW-GTC",
+      "KRW-HP"
+    ],
+    "tradeEvents": 3733,
+    "bookEvents": 9130,
+    "duplicates": 0,
+    "invalidEvents": 0,
+    "bytes": 28083544,
+    "reconnects": 0,
+    "connections": 1,
+    "gaps": [],
+    "status": "STOPPED",
+    "stopReason": "RESEARCH_ERROR",
+    "completedAt": "2026-10-23T01:07:01.561Z"
+  },
+  "code": "EVENT_BOOK_INCREMENT",
+  "message": "호가의 가격 단위를 확인하세요.",
+  "liveOrders": 0,
+  "liveStrategyChanges": 0
+}

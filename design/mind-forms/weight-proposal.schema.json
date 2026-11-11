@@ -1,0 +1,350 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keynes-investment-lab.local/schemas/mind-forms/v1/weight-proposal",
+  "title": "가중치 변경 제안",
+  "description": "비율은 0.01=1%, 시각은 UTC ISO. 교차 필드·시점·범위·프로토타입·사용 권한은 서버 도메인 검증을 함께 적용한다.",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+    },
+    "kind": {
+      "const": "weight-proposal"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "user",
+            "mcp-llm",
+            "system-export",
+            "market-provider"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "^https://"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "uri"
+      ],
+      "additionalProperties": false
+    },
+    "asOf": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "availableAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "instrumentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+          },
+          "maxItems": 500,
+          "uniqueItems": true
+        },
+        "experimentId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "profileId",
+        "instrumentIds",
+        "experimentId"
+      ],
+      "additionalProperties": false
+    },
+    "principleRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200,
+        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+      },
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "recordRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "contentHashes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "maxItems": 200
+        },
+        "classification": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                },
+                "answeredAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "choices": {
+                  "type": "object",
+                  "properties": {
+                    "knowledgeType": {
+                      "enum": [
+                        "OBSERVED_FACT",
+                        "HYPOTHESIS",
+                        "VALIDATED_HEURISTIC",
+                        "OPERATING_PROCEDURE"
+                      ]
+                    },
+                    "evidenceDirection": {
+                      "enum": [
+                        "supporting",
+                        "contradicting",
+                        "mixed",
+                        "unresolved"
+                      ]
+                    },
+                    "marketRegime": {
+                      "enum": [
+                        "trending_up",
+                        "trending_down",
+                        "range",
+                        "volatile",
+                        "unknown"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "knowledgeType",
+                    "evidenceDirection",
+                    "marketRegime"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "object",
+                  "properties": {
+                    "knowledgeType": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "evidenceDirection": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "marketRegime": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "knowledgeType",
+                    "evidenceDirection",
+                    "marketRegime"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "model",
+                "requestId",
+                "answeredAt",
+                "choices",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "createdAt",
+        "authorId",
+        "recordRefs",
+        "contentHashes",
+        "classification"
+      ],
+      "additionalProperties": false
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "principleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "principleVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "previousWeight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "proposedWeight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "methodVersion": {
+          "const": "bounded-shrinkage-v1"
+        },
+        "status": {
+          "enum": [
+            "REVIEW_REQUIRED",
+            "INSUFFICIENT_EVIDENCE",
+            "CORE_FIXED"
+          ]
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+          },
+          "maxItems": 2000,
+          "uniqueItems": true
+        },
+        "assessment": {
+          "type": "object"
+        },
+        "baseManifestHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "nextVersion": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 2001
+        }
+      },
+      "required": [
+        "principleId",
+        "principleVersion",
+        "previousWeight",
+        "proposedWeight",
+        "methodVersion",
+        "status",
+        "evidenceIds",
+        "assessment",
+        "baseManifestHash",
+        "nextVersion"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "kind",
+    "title",
+    "source",
+    "asOf",
+    "availableAt",
+    "scope",
+    "principleRefs",
+    "provenance",
+    "data"
+  ],
+  "additionalProperties": false
+}

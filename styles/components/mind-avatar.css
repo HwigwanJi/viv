@@ -1,0 +1,38 @@
+@reference '../theme.css';
+
+.mind-avatar { @apply inline-flex flex-none pointer-events-none; --companion-display-size:var(--companion-size-card); @apply w-(--companion-display-size); @apply h-(--companion-display-size); contain:layout style; }
+.mind-avatar[data-size="compact"] { --companion-display-size:var(--companion-size-compact); }
+.mind-avatar[data-size="small"] { --companion-display-size:var(--companion-size-small); }
+.mind-avatar[data-size="preview"] { --companion-display-size:var(--companion-size-preview); }
+.mind-avatar[data-size="large"] { --companion-display-size:var(--companion-size-large); }
+.mind-avatar[data-palette="blue"] { --companion-body-light:var(--companion-blue-light); --companion-body-base:var(--companion-blue-base); --companion-body-shade:var(--companion-blue-shade); }
+.mind-avatar[data-palette="amber"] { --companion-body-light:var(--companion-amber-light); --companion-body-base:var(--companion-amber-base); --companion-body-shade:var(--companion-amber-shade); }
+.mind-avatar[data-palette="violet"] { --companion-body-light:var(--companion-violet-light); --companion-body-base:var(--companion-violet-base); --companion-body-shade:var(--companion-violet-shade); }
+.mind-avatar[data-palette="sage"] { --companion-body-light:var(--companion-sage-light); --companion-body-base:var(--companion-sage-base); --companion-body-shade:var(--companion-sage-shade); }
+.mind-avatar svg { @apply block size-full overflow-visible; }
+.mind-companion-customize svg { @apply shrink-0; @apply w-(--ds-icon-size-sm); @apply h-(--ds-icon-size-sm); stroke-width:var(--ds-icon-stroke); }
+.mind-avatar-body { transform-origin:var(--companion-body-origin); animation:mind-avatar-breathe var(--companion-breathe-duration) var(--companion-motion-ease) infinite; }
+.mind-avatar-eyes { transform-box:fill-box; transform-origin:center; animation:mind-avatar-blink var(--companion-blink-duration) linear infinite; }
+.mind-avatar-sleep-eyes { @apply hidden; }
+.mind-avatar[data-phase="sleep"] .mind-avatar-body { transform:var(--companion-sleep-rest); animation:mind-avatar-sleep var(--companion-sleep-duration) var(--companion-motion-ease) infinite; }
+.mind-avatar[data-phase="sleep"] .mind-avatar-eyes,.mind-avatar[data-phase="sleep"] .mind-avatar-glasses { @apply hidden; }
+.mind-avatar[data-phase="sleep"] .mind-avatar-sleep-eyes { @apply block; }
+.mind-avatar[data-phase="observing"] .mind-avatar-face { animation:mind-avatar-look var(--companion-look-duration) var(--companion-motion-ease) infinite; }
+.mind-avatar[data-phase="investing"] .mind-avatar-body { animation:mind-avatar-work var(--companion-work-duration) var(--companion-motion-ease) infinite; }
+.mind-avatar[data-phase="clutch"] .mind-avatar-body { animation:mind-avatar-focus var(--companion-focus-duration) var(--companion-motion-ease) infinite; }
+.mind-avatar[data-phase="clutch"] .mind-avatar-face { transform:var(--companion-focus-face); }
+.mind-avatar[data-phase="attention"] .mind-avatar-body { transform:var(--companion-attention-body); animation:none; }
+.mind-avatar[data-phase="attention"] .mind-avatar-mouth { transform:var(--companion-attention-mouth); }
+.mind-avatar[data-eyes="sleepy"] .mind-avatar-eyes { @apply hidden; }
+.mind-avatar[data-eyes="sleepy"] .mind-avatar-sleep-eyes { @apply block; }
+.mind-avatar[data-motion="off"],.mind-avatar[data-motion="off"] * { animation:none!important; transition:none!important; }
+.mind-companion-card[data-phase="clutch"] { background-image:var(--companion-clutch-gradient); background-size:var(--companion-clutch-background-size); background-position:var(--companion-clutch-position-start); animation:mind-clutch-wash var(--companion-wash-duration) var(--companion-motion-ease) infinite; }
+.mind-companion-card[data-motion="off"],.mind-companion-card:has(.mind-avatar[data-motion="off"]) { animation:none!important; background-position:var(--companion-clutch-position-still); }
+@keyframes mind-clutch-wash { 0%,100% { background-position:var(--companion-clutch-position-start); } 50% { background-position:var(--companion-clutch-position-end); } }
+@keyframes mind-avatar-breathe { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:var(--companion-breathe-peak); } }
+@keyframes mind-avatar-blink { 0%,40%,44%,100% { transform:scaleY(1); } 42% { transform:scaleY(var(--companion-blink-closed)); } }
+@keyframes mind-avatar-sleep { 0%,100% { transform:var(--companion-sleep-rest); } 50% { transform:var(--companion-sleep-peak); } }
+@keyframes mind-avatar-look { 0%,20%,100% { transform:translateX(0); } 35%,55% { transform:var(--companion-look-right); } 70%,85% { transform:var(--companion-look-left); } }
+@keyframes mind-avatar-work { 0%,100% { transform:var(--companion-work-rest); } 50% { transform:var(--companion-work-peak); } }
+@keyframes mind-avatar-focus { 0%,100% { transform:var(--companion-focus-rest); } 50% { transform:var(--companion-focus-peak); } }
+@media (prefers-reduced-motion:reduce) { .mind-avatar,.mind-avatar *,.mind-companion-card[data-phase="clutch"] { animation:none!important; transition:none!important; } .mind-companion-card[data-phase="clutch"] { background-position:var(--companion-clutch-position-still); } }

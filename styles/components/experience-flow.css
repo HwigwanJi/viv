@@ -1,0 +1,49 @@
+@reference '../theme.css';
+
+/* The target stays in the workspace header; each row belongs to that scope. */
+.simulation-collection[data-simulation-scope=mind] .simulation-list-mind { @apply hidden; }
+.simulation-collection .simulation-list-table { @apply min-w-(--ui-table-min); }
+.simulation-collection .simulation-list-name { @apply min-w-(--ui-column-name); @apply w-(--ui-column-detail); }
+.simulation-collection .simulation-list-window { @apply min-w-(--ui-column-name); }
+.simulation-collection .simulation-list-status { @apply min-w-(--ui-column-compact); }
+.simulation-collection .simulation-list-title { @apply rounded-none border-0 bg-transparent p-0 font-ui-medium text-foreground shadow-none; }
+.simulation-collection .simulation-list-title:hover { @apply text-accent underline; }
+.simulation-collection .simulation-list-title:focus-visible { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.simulation-collection .simulation-list-actions { @apply min-w-control-lg; }
+.simulation-collection .simulation-list-table td { @apply py-ui-6; }
+
+.simulation-setup-workspace { @apply min-w-0; }
+.simulation-setup-workspace > form { @apply grid min-w-0 items-start gap-ui-7; grid-template-columns:minmax(0,1fr) var(--ui-panel-narrow); }
+.simulation-setup-main, .simulation-setup-review { @apply min-w-0 overflow-hidden rounded-ui-lg; }
+.simulation-setup-review { @apply sticky; top:var(--ds-space-6); }
+.simulation-setup-workspace .simulation-setup-review .simulation-preflight { @apply grid-cols-1 px-ui-6 py-ui-6; }
+.simulation-setup-review .simulation-preflight-heading { @apply items-start; }
+.simulation-setup-review .simulation-preflight > .detail-row { @apply text-ui-sm leading-ui-sm; }
+.simulation-setup-review .simulation-preflight > .detail-row > strong { @apply text-ui-sm; }
+.simulation-setup-review .form-actions { @apply flex-col items-stretch px-ui-6 py-ui-6; }
+.simulation-setup-review .form-actions .button { @apply w-full; }
+.simulation-setup-review .simulation-paid-controls { @apply grid-cols-1 px-ui-6; }
+.simulation-setup-main .simulation-advanced-options { @apply border-b-0; }
+.simulation-setup-workspace .simulation-section-heading h2 { @apply text-ui-md leading-ui-md; }
+.simulation-setup-workspace .simulation-target-fields { @apply grid-cols-1; }
+
+.simulation-report-workspace { @apply relative min-w-0; }
+.simulation-report-workspace .studio-page-head { @apply mb-ui-3; }
+.simulation-complete-status { @apply inline-flex rounded-ui-sm bg-canvas px-ui-3 py-ui-1 text-ui-xs leading-ui-xs font-ui-medium text-secondary; }
+.simulation-report-workspace .simulation-execution-identity { @apply gap-ui-3 py-ui-4; }
+.simulation-report-workspace .simulation-execution-identity strong { @apply text-ui-sm leading-ui-sm; }
+.simulation-report-workspace .simulation-model-readiness:not(.unavailable) { @apply mb-ui-3 rounded-none border-0 bg-transparent px-0 py-ui-2; }
+.simulation-report-workspace .simulation-benchmark-kpis { @apply m-0 py-ui-6; }
+.simulation-report-workspace .simulation-conditions { @apply mt-ui-6; }
+.simulation-report-workspace .simulation-chart-meta { @apply px-ui-6; }
+
+@variant max-lg {
+  .simulation-setup-workspace > form { @apply grid-cols-1; }
+  .simulation-setup-review { @apply static; }
+  .simulation-setup-workspace .simulation-target-fields { @apply grid-cols-2; }
+}
+@variant max-md {
+  .simulation-setup-workspace .simulation-target-fields { @apply grid-cols-1; }
+  .simulation-setup-workspace > form { @apply gap-ui-5; }
+  .simulation-report-workspace .simulation-execution-identity > div { @apply gap-y-ui-2; }
+}

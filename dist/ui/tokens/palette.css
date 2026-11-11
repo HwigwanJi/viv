@@ -1,0 +1,153 @@
+/*
+ * Keynes Warm Paper v2 (잉크와 종이) 원색 - 명세 design/theme-v2.md §2.2 · §3.1.
+ * 여기에는 hex 만 둔다. contrast.mjs 는 hex 만 풀고 첫 블록과 다크 블록만 읽는다.
+ * 화면은 이 이름을 직접 쓰지 않는다 - semantic.css 의 --ds-* 를 거친다.
+ */
+:root {
+  /* paper - 따뜻한 중립 */
+  --kw-paper-0: #FFFFFF;
+  --kw-paper-50: #F8F8FA;
+  --kw-paper-100: #F2F2F5;
+  --kw-paper-150: #F0F0F3;
+  --kw-paper-200: #E9E9EE;
+  --kw-paper-250: #EDF1F5;
+  --kw-paper-275: #F5F7FA;
+  --kw-paper-300: #E4E4E9;
+  --kw-paper-350: #E2E8F0;
+  --kw-paper-400: #DDE3EB;
+  --kw-paper-450: #D5D5DD;
+  --kw-paper-500: #C2CBD6;
+  --kw-paper-600: #8894A3;
+  --kw-paper-700: #697586;
+  --kw-paper-750: #586474;
+  --kw-paper-800: #52525B;
+  --kw-paper-850: #3F3F46;
+  --kw-paper-900: #27272A;
+  --kw-paper-950: #18181B;
+  --kw-paper-inverse: #2A2621;
+  --kw-paper-inverse-text: #F6F2EA;
+  --kw-stone-75: #ECE8E0;
+  --kw-stone-200: #E0DACE;
+  /* ink - 강조 */
+  --kw-ink-50: #E9EEF7;
+  --kw-ink-100: #E3E9F4;
+  --kw-ink-200: #C8D4E9;
+  --kw-ink-500: #3A5FA8;
+  --kw-ink-600: #2F4F8C;
+  --kw-ink-650: #2C4C8A;
+  --kw-ink-700: #284479;
+  --kw-ink-800: #213A68;
+  /* 상태 */
+  --kw-forest-50: #EBF3EC;
+  --kw-forest-75: #E4EEE6;
+  --kw-forest-200: #C5DDC9;
+  --kw-forest-500: #3C8456;
+  --kw-forest-700: #2F6B45;
+  --kw-ochre-50: #FAF0D2;
+  --kw-ochre-75: #F4EAD5;
+  --kw-ochre-200: #E8D294;
+  --kw-ochre-500: #A67A06;
+  --kw-ochre-700: #7D5700;
+  --kw-brick-50: #FBEAE7;
+  --kw-brick-75: #F5E4DD;
+  --kw-brick-100: #F7DEDA;
+  --kw-brick-200: #EEC3BC;
+  --kw-brick-500: #C6443A;
+  --kw-brick-600: #B03E33;
+  --kw-brick-700: #A5352C;
+  --kw-brick-750: #9A352B;
+  --kw-brick-800: #862E25;
+  --kw-teal-50: #E6F1F2;
+  --kw-teal-75: #E1EEEF;
+  --kw-teal-200: #BCD9DC;
+  --kw-teal-500: #2C7F8C;
+  --kw-teal-700: #1D5F6B;
+  --kw-plum-50: #F3EDF6;
+  --kw-plum-75: #EEE6F2;
+  --kw-plum-200: #DDCDE6;
+  --kw-plum-500: #8A60A8;
+  --kw-plum-550: #8A5A9E;
+  --kw-plum-700: #6B4887;
+  /* 차트 계열 */
+  --kw-clay-500: #C0703A;
+  --kw-mustard-500: #9E7D14;
+  --kw-rose-500: #B04A55;
+  --kw-white: #FFFFFF;
+}
+
+[data-theme="dark"] {
+  /* night - 등불 아래의 어둠. 가까운 층일수록 밝다 */
+  --kw-night-0: #131210;
+  --kw-night-50: #161513;
+  --kw-night-100: #1A1917;
+  --kw-night-150: #21201D;
+  --kw-night-200: #221F1C;
+  --kw-night-250: #262420;
+  --kw-night-300: #282623;
+  --kw-night-350: #2A2723;
+  --kw-night-375: #2E2B27;
+  --kw-night-450: #302D28;
+  --kw-night-500: #312F2C;
+  --kw-night-525: #3A362F;
+  --kw-night-550: #403C35;
+  --kw-night-600: #5F594F;
+  --kw-night-700: #7C7569;
+  --kw-night-725: #847D70;
+  --kw-night-750: #9C9588;
+  --kw-night-800: #A9A294;
+  --kw-night-825: #B3AC9F;
+  --kw-night-900: #D8D2C7;
+  --kw-night-950: #ECE7DE;
+  --kw-night-inverse: #EDE8DF;
+  --kw-night-inverse-text: #1F1C18;
+  /* ink */
+  --kw-inkd-soft: #232E45;
+  --kw-inkd-tint: #243049;
+  --kw-inkd-border: #33415E;
+  --kw-inkd-fill: #4A6CB4;
+  --kw-inkd-hover: #4163AA;
+  --kw-inkd-pressed: #3A5A9D;
+  --kw-inkd-mark: #7896D6;
+  --kw-inkd-series: #7F9FE0;
+  --kw-inkd-focus: #8AA8E6;
+  --kw-inkd-link: #98B3EA;
+  --kw-inkd-text: #9DB7EC;
+  /* 상태 */
+  --kw-forestd-bg: #1D2B22;
+  --kw-forestd-tint: #1F3025;
+  --kw-forestd-border: #2F4A37;
+  --kw-forestd-mark: #5DAE77;
+  --kw-forestd-series: #6DBA86;
+  --kw-forestd-text: #86C79A;
+  --kw-ochred-bg: #2E2618;
+  --kw-ochred-tint: #332A19;
+  --kw-ochred-border: #4E3F22;
+  --kw-ochred-mark: #D29E3E;
+  --kw-ochred-series: #D9B84E;
+  --kw-ochred-text: #E3B868;
+  --kw-brickd-bg: #33201D;
+  --kw-brickd-tint: #3A2420;
+  --kw-brickd-hover: #3B2622;
+  --kw-brickd-border: #56312B;
+  --kw-brickd-mark: #D9695B;
+  --kw-brickd-fill: #B6483C;
+  --kw-brickd-fill-hover: #A33F34;
+  --kw-brickd-fill-pressed: #8F372D;
+  --kw-brickd-text: #EE9A8E;
+  --kw-teald-bg: #172A2E;
+  --kw-teald-tint: #1A2E31;
+  --kw-teald-border: #274549;
+  --kw-teald-mark: #56AFBB;
+  --kw-teald-text: #8DCBD3;
+  --kw-plumd-bg: #2A2130;
+  --kw-plumd-tint: #2E2436;
+  --kw-plumd-border: #463752;
+  --kw-plumd-mark: #A882C4;
+  --kw-plumd-series: #B893CB;
+  --kw-plumd-text: #CDAEE3;
+  --kw-stoned-tint: #2C2925;
+  --kw-clayd-series: #DE9362;
+  --kw-rosed-series: #E07E88;
+  --kw-white: #FFFFFF;
+}
+

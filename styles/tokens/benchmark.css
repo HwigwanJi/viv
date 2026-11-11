@@ -1,0 +1,34 @@
+:root {
+  --benchmark-stage-height: 10rem;
+  --benchmark-stage-focused-height: 8rem;
+  --benchmark-grid-step: 2.5rem;
+  --benchmark-grid-line-width: 1px;
+  --benchmark-grid-background: repeating-linear-gradient(to top, transparent 0, transparent var(--benchmark-grid-step), var(--ds-border-subtle) var(--benchmark-grid-step), var(--ds-border-subtle) calc(var(--benchmark-grid-step) + var(--benchmark-grid-line-width)));
+  --benchmark-line-width: 2;
+  --benchmark-price-color: var(--ds-series-1);
+  --benchmark-area-color: color-mix(in srgb, var(--benchmark-price-color) 9%, transparent);
+  --benchmark-selection-color: color-mix(in srgb, var(--benchmark-price-color) 8%, transparent);
+  --benchmark-preset-color: color-mix(in srgb, var(--benchmark-price-color) 8%, var(--ds-bg-raised));
+  --benchmark-dim-color: color-mix(in srgb, var(--ds-bg-raised) 72%, transparent);
+  --benchmark-selection-ring: 0 0 0 1px var(--benchmark-price-color);
+  --benchmark-handle-width: var(--ds-icon-size-sm);
+  --benchmark-handle-grip-width: var(--ds-space-4);
+  --benchmark-handle-grip-height: var(--ds-control-height-lg);
+  --benchmark-handle-offset: -50%;
+  --benchmark-handle-layer: 2;
+  --benchmark-disabled-opacity: 0.5;
+  --benchmark-paid-control-width: 10rem;
+  --benchmark-chart-height: 20rem;
+  --benchmark-chart-line-width: 2;
+  --benchmark-chart-equity: var(--ds-series-1);
+  --benchmark-chart-hold: var(--ds-series-2);
+  --benchmark-chart-dca: var(--ds-series-3);
+  --simulation-list-min-width: 68rem;
+  --simulation-list-title-max-width: 16rem;
+  --simulation-list-title-min-width: 12rem;
+  --simulation-list-mind-width: 9rem;
+  --simulation-list-period-width: 14rem;
+  --simulation-list-status-width: 8rem;
+  --simulation-list-numeric-width: 6rem;
+  --simulation-list-action-width: 4rem;
+}

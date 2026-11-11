@@ -1,0 +1,1443 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keynes-investment-lab.local/schemas/mind-forms/v1/mind-policy",
+  "title": "마인드 정책",
+  "description": "비율은 0.01=1%, 시각은 UTC ISO. 교차 필드·시점·범위·프로토타입·사용 권한은 서버 도메인 검증을 함께 적용한다.",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+    },
+    "kind": {
+      "const": "mind-policy"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "user",
+            "mcp-llm",
+            "system-export",
+            "market-provider"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "^https://"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "uri"
+      ],
+      "additionalProperties": false
+    },
+    "asOf": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "availableAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "instrumentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+          },
+          "maxItems": 500,
+          "uniqueItems": true
+        },
+        "experimentId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "profileId",
+        "instrumentIds",
+        "experimentId"
+      ],
+      "additionalProperties": false
+    },
+    "principleRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200,
+        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+      },
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "recordRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "contentHashes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "maxItems": 200
+        },
+        "classification": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                },
+                "answeredAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "choices": {
+                  "type": "object",
+                  "properties": {
+                    "knowledgeType": {
+                      "enum": [
+                        "OBSERVED_FACT",
+                        "HYPOTHESIS",
+                        "VALIDATED_HEURISTIC",
+                        "OPERATING_PROCEDURE"
+                      ]
+                    },
+                    "evidenceDirection": {
+                      "enum": [
+                        "supporting",
+                        "contradicting",
+                        "mixed",
+                        "unresolved"
+                      ]
+                    },
+                    "marketRegime": {
+                      "enum": [
+                        "trending_up",
+                        "trending_down",
+                        "range",
+                        "volatile",
+                        "unknown"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "knowledgeType",
+                    "evidenceDirection",
+                    "marketRegime"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "object",
+                  "properties": {
+                    "knowledgeType": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "evidenceDirection": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "marketRegime": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "knowledgeType",
+                    "evidenceDirection",
+                    "marketRegime"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "model",
+                "requestId",
+                "answeredAt",
+                "choices",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "createdAt",
+        "authorId",
+        "recordRefs",
+        "contentHashes",
+        "classification"
+      ],
+      "additionalProperties": false
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "versionRefs": {
+          "type": "object",
+          "properties": {
+            "profileVersionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+            },
+            "strategyVersionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+            },
+            "riskPresetVersionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+            },
+            "memoryVersionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+            }
+          },
+          "required": [
+            "profileVersionId",
+            "strategyVersionId",
+            "riskPresetVersionId",
+            "memoryVersionId"
+          ],
+          "additionalProperties": false
+        },
+        "profileSettings": {
+          "type": "object",
+          "properties": {
+            "philosophy": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 12000
+            },
+            "style": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            },
+            "horizon": {
+              "enum": [
+                "4h",
+                "1d",
+                "multi-day",
+                "1m",
+                "3m",
+                "5m"
+              ]
+            },
+            "evidencePreferences": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240
+              },
+              "maxItems": 12
+            },
+            "discipline": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 12000
+            },
+            "learningPolicy": {
+              "const": "user-approved"
+            }
+          },
+          "required": [
+            "philosophy",
+            "style",
+            "horizon",
+            "evidencePreferences",
+            "discipline",
+            "learningPolicy"
+          ],
+          "additionalProperties": false
+        },
+        "strategySettings": {
+          "type": "object"
+        },
+        "riskPreset": {
+          "type": "object",
+          "properties": {
+            "normalBuyWeight": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "clutchBuyWeight": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "sellWeight": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "maxExposure": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "maxOrderWeight": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "dailyLossLimit": {
+              "type": "number",
+              "exclusiveMinimum": 0,
+              "maximum": 1
+            },
+            "minNotional": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "maxFeeBps": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "maxSlippageBps": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000
+            }
+          },
+          "required": [
+            "normalBuyWeight",
+            "clutchBuyWeight",
+            "sellWeight",
+            "maxExposure",
+            "maxOrderWeight",
+            "dailyLossLimit",
+            "minNotional",
+            "maxFeeBps",
+            "maxSlippageBps"
+          ],
+          "additionalProperties": false
+        },
+        "approvedMemory": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "maxItems": 2000
+        },
+        "principles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+              },
+              "version": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2000
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 240
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 12000
+              },
+              "kind": {
+                "enum": [
+                  "core",
+                  "evidence"
+                ]
+              },
+              "weight": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "bounds": {
+                "type": "object",
+                "properties": {
+                  "min": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "max": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": [
+                  "min",
+                  "max"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "title",
+              "text",
+              "kind",
+              "weight",
+              "bounds"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100,
+          "minItems": 1
+        },
+        "universe": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "single",
+                "allowlist",
+                "screened"
+              ]
+            },
+            "instrumentIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+              },
+              "maxItems": 500,
+              "uniqueItems": true,
+              "minItems": 1
+            },
+            "selection": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "enum": [
+                    "fixed",
+                    "liquidity",
+                    "jev",
+                    "strategy"
+                  ]
+                },
+                "maxPositions": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 500
+                },
+                "minQuoteVolume": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100000000000000
+                },
+                "minHistoryBars": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000
+                },
+                "rebalance": {
+                  "enum": [
+                    "manual",
+                    "1m-close",
+                    "1h-close",
+                    "4h-close",
+                    "1d-close"
+                  ]
+                },
+                "rebalanceEveryBars": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 180
+                },
+                "exitUnselected": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "method",
+                "maxPositions",
+                "minQuoteVolume",
+                "minHistoryBars",
+                "rebalance"
+              ],
+              "additionalProperties": false
+            },
+            "scopePolicy": {
+              "$ref": "#/$defs/universeScopePolicy"
+            },
+            "resolution": {
+              "$ref": "#/$defs/universeScopeResolution"
+            }
+          },
+          "required": [
+            "mode",
+            "instrumentIds",
+            "selection"
+          ],
+          "additionalProperties": false,
+          "dependentRequired": {
+            "scopePolicy": [
+              "resolution"
+            ],
+            "resolution": [
+              "scopePolicy"
+            ]
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+              },
+              "status": {
+                "enum": [
+                  "connected",
+                  "approved-context",
+                  "unavailable"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "sourceRefs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                },
+                "maxItems": 100,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "id",
+              "status",
+              "required",
+              "sourceRefs"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 30
+        },
+        "trigger": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "enum": [
+                "closed-candle",
+                "manual"
+              ]
+            },
+            "interval": {
+              "enum": [
+                "1m",
+                "3m",
+                "5m", "1h",
+                "4h",
+                "1d"
+              ]
+            },
+            "settleDelayMs": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 300000
+            },
+            "cooldownMs": {
+              "type": "integer",
+              "minimum": 15000,
+              "maximum": 3600000
+            }
+          },
+          "required": [
+            "event",
+            "interval",
+            "settleDelayMs",
+            "cooldownMs"
+          ],
+          "additionalProperties": false
+        },
+        "weightPolicy": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "const": "bounded-shrinkage-v1"
+            },
+            "approval": {
+              "const": "version-review"
+            },
+            "maxStep": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.1
+            },
+            "minIndependentSamples": {
+              "type": "integer",
+              "minimum": 3,
+              "maximum": 2000
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000
+            }
+          },
+          "required": [
+            "method",
+            "approval",
+            "maxStep",
+            "minIndependentSamples",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "externalKnowledge": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "mode": {
+              "enum": [
+                "pinned",
+                "subscribed"
+              ]
+            },
+            "documentPins": {
+              "type": "array",
+              "maxItems": 100,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200,
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                  },
+                  "version": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "contentHash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "required": [
+                  "id",
+                  "version",
+                  "contentHash"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "sourceTypes": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "news",
+                  "macro-release",
+                  "investor-letter",
+                  "investor-disclosure",
+                  "research",
+                  "other"
+                ]
+              },
+              "maxItems": 100,
+              "uniqueItems": true
+            },
+            "authorIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200,
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+              },
+              "maxItems": 100,
+              "uniqueItems": true
+            },
+            "levels": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "macro",
+                  "micro",
+                  "mixed",
+                  "uncertain"
+                ]
+              },
+              "maxItems": 100,
+              "uniqueItems": true
+            },
+            "horizons": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "short_term",
+                  "long_term",
+                  "mixed",
+                  "uncertain"
+                ]
+              },
+              "maxItems": 100,
+              "uniqueItems": true
+            },
+            "maxAgeHours": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 87600
+            },
+            "maxItems": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "approval": {
+              "const": "APPROVED_ONLY"
+            }
+          },
+          "required": [
+            "enabled",
+            "mode",
+            "documentPins",
+            "sourceTypes",
+            "authorIds",
+            "levels",
+            "horizons",
+            "maxAgeHours",
+            "maxItems",
+            "approval"
+          ],
+          "additionalProperties": false
+        },
+        "strategyPlan": {
+          "$ref": "strategy-plan.schema.json"
+        },
+        "learningProvenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "contractVersion": {
+              "const": "STRATEGY_LEARNING_POLICY_PROVENANCE_V1"
+            },
+            "learningSessionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "planHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "proposalHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "adoptionHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "candidateGraphHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "adoptedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "evidenceClass": {
+              "const": "RETROSPECTIVE_DEVELOPMENT"
+            },
+            "forwardValidation": {
+              "const": "REQUIRED"
+            },
+            "graphRelationship": {
+              "enum": [
+                "ADOPTED_CANDIDATE",
+                "USER_EDITED_DERIVATIVE"
+              ]
+            }
+          },
+          "required": [
+            "contractVersion",
+            "learningSessionId",
+            "planHash",
+            "proposalHash",
+            "adoptionHash",
+            "candidateGraphHash",
+            "adoptedAt",
+            "evidenceClass",
+            "forwardValidation",
+            "graphRelationship"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "versionRefs",
+        "profileSettings",
+        "strategySettings",
+        "riskPreset",
+        "approvedMemory",
+        "principles",
+        "universe",
+        "inputs",
+        "trigger",
+        "weightPolicy"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "kind",
+    "title",
+    "source",
+    "asOf",
+    "availableAt",
+    "scope",
+    "principleRefs",
+    "provenance",
+    "data"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "universeScopePolicy": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "contractVersion": {
+          "const": "MIND_UNIVERSE_POLICY_V1"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "availableAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "crypto": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "exchanges": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "upbit",
+                  "okx"
+                ]
+              },
+              "uniqueItems": true,
+              "maxItems": 500
+            },
+            "quoteMarkets": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "KRW",
+                  "BTC",
+                  "USDT"
+                ]
+              },
+              "uniqueItems": true,
+              "maxItems": 500
+            },
+            "assetGroups": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "bitcoin",
+                  "alt"
+                ]
+              },
+              "uniqueItems": true,
+              "maxItems": 500
+            },
+            "excludeWarnings": {
+              "type": "boolean"
+            },
+            "excludeCautions": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled",
+            "exchanges",
+            "quoteMarkets",
+            "assetGroups",
+            "excludeWarnings",
+            "excludeCautions"
+          ],
+          "additionalProperties": false
+        },
+        "equities": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "markets": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "KR",
+                  "US"
+                ]
+              },
+              "uniqueItems": true,
+              "maxItems": 500
+            },
+            "sectorIds": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "uniqueItems": true,
+              "maxItems": 500
+            },
+            "includeRelatedEtfs": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "enabled",
+            "markets",
+            "sectorIds",
+            "includeRelatedEtfs"
+          ],
+          "additionalProperties": false
+        },
+        "explicitIncludeIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "uniqueItems": true,
+          "maxItems": 500
+        },
+        "explicitExcludeIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "uniqueItems": true,
+          "maxItems": 500
+        },
+        "maxPositions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "sectorLimits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sectorId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "maxPositions": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 500
+              }
+            },
+            "required": [
+              "sectorId",
+              "maxPositions"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true,
+          "maxItems": 500
+        },
+        "minimumOrderAmounts": {
+          "type": "object",
+          "properties": {
+            "KRW": {
+              "type": "number",
+              "minimum": 5000
+            },
+            "BTC": {
+              "type": "number",
+              "minimum": 0.00005
+            },
+            "USDT": {
+              "type": "number",
+              "minimum": 0.5
+            },
+            "USD": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "KRW",
+            "BTC",
+            "USDT",
+            "USD"
+          ],
+          "additionalProperties": false
+        },
+        "selectionPolicy": {
+          "const": "CATEGORY_UNION_EXPLICIT_INCLUDE_MINUS_EXCLUDE_V1"
+        },
+        "exitPolicy": {
+          "const": "ALLOW_EXISTING_HOLDING_REDUCTION"
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "contractVersion",
+        "id",
+        "version",
+        "availableAt",
+        "crypto",
+        "equities",
+        "explicitIncludeIds",
+        "explicitExcludeIds",
+        "maxPositions",
+        "sectorLimits",
+        "minimumOrderAmounts",
+        "selectionPolicy",
+        "exitPolicy",
+        "contentHash"
+      ],
+      "additionalProperties": false
+    },
+    "universeScopeResolution": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "contractVersion": {
+          "const": "MIND_UNIVERSE_RESOLUTION_V1"
+        },
+        "asOf": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "policyRef": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "contentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "id",
+            "version",
+            "contentHash"
+          ],
+          "additionalProperties": false
+        },
+        "policy": {
+          "$ref": "#/$defs/universeScopePolicy"
+        },
+        "status": {
+          "enum": [
+            "READY",
+            "DATA_REQUIRED"
+          ]
+        },
+        "candidateIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "uniqueItems": true,
+          "maxItems": 500
+        },
+        "candidates": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "assetClass",
+              "symbol",
+              "quoteCurrency"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "assetClass": {
+                "enum": [
+                  "crypto",
+                  "equity"
+                ]
+              },
+              "symbol": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "quoteCurrency": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              }
+            }
+          }
+        },
+        "previewCandidateIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "uniqueItems": true,
+          "maxItems": 500
+        },
+        "excluded": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "instrumentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "reasons": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "uniqueItems": true,
+                "maxItems": 500
+              }
+            },
+            "required": [
+              "instrumentId",
+              "reasons"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "unresolved": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "instrumentId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "sectorId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              }
+            },
+            "required": [
+              "code"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "sourceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "kind",
+              "id",
+              "version",
+              "contentHash",
+              "asOf",
+              "availableAt"
+            ]
+          }
+        },
+        "sectorSnapshotRef": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "contentHash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "id",
+                "version",
+                "contentHash"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sectorContexts": {
+          "type": "object"
+        },
+        "sourcePolicy": {
+          "type": "object",
+          "properties": {
+            "maxSourceAgeMs": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cryptoClassification": {
+              "const": "BASE_ASSET_BTC_V1"
+            },
+            "exchangeSubstitutionAllowed": {
+              "const": false
+            }
+          },
+          "required": [
+            "maxSourceAgeMs",
+            "cryptoClassification",
+            "exchangeSubstitutionAllowed"
+          ],
+          "additionalProperties": false
+        },
+        "maxPositions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500
+        },
+        "sectorLimits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sectorId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              },
+              "maxPositions": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 500
+              }
+            },
+            "required": [
+              "sectorId",
+              "maxPositions"
+            ],
+            "additionalProperties": false
+          },
+          "uniqueItems": true,
+          "maxItems": 500
+        },
+        "contentHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "contractVersion",
+        "asOf",
+        "policyRef",
+        "policy",
+        "status",
+        "candidateIds",
+        "candidates",
+        "previewCandidateIds",
+        "excluded",
+        "unresolved",
+        "sourceRefs",
+        "sectorSnapshotRef",
+        "sectorContexts",
+        "sourcePolicy",
+        "maxPositions",
+        "sectorLimits",
+        "contentHash"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

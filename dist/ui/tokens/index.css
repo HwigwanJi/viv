@@ -1,0 +1,12 @@
+/* 토큰 진입점 — palette → foundation → semantic → shadcn 순서가 중요하다.
+ *
+ * 토큰은 Keynes 가 소유한다(2026-09-28 대표 결정, Warm Paper v2 - design/theme-v2.md).
+ * 값은 palette 의 hex 원색(--kw-*)에 두고 semantic 이 --ds-* 로 잇는다. */
+@import "./palette.css";
+@import "./foundation.css";
+@import "./semantic.css";
+@import "./shadcn.css";
+
+:root { color-scheme: light; }
+[data-theme="dark"] { color-scheme: dark; }
+

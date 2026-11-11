@@ -1,0 +1,80 @@
+.mind-life-page{@apply antialiased;background:var(--life-page-bg);@apply text-(color:--life-ink)}
+.mind-life-gallery{@apply max-w-(--life-width);@apply m-auto;@apply p-ui-8}
+.mind-life-header{@apply flex;@apply items-center;@apply justify-between;@apply gap-ui-6;@apply mb-ui-7}
+.mind-life-header h1{font-family:var(--ds-font-sans);@apply text-(length:--life-title);@apply font-ui-semibold;@apply leading-(--ds-leading-3xl);@apply m-0}
+.mind-life-header p{@apply text-(length:--ds-font-size-xs);@apply text-(color:--life-muted);@apply mt-ui-2 mx-0 mb-0}
+.mind-life-mode{@apply text-(length:--ds-font-size-xs);@apply font-ui-medium;@apply text-(color:--life-muted);vertical-align:middle;border:var(--ui-border-width) solid var(--life-line);@apply py-ui-1 px-ui-3;@apply rounded-(--ds-radius-md)}
+.mind-life-total{@apply grid;grid-template-columns:1fr auto;@apply gap-x-ui-2;@apply text-right;font-variant-numeric:tabular-nums}
+.mind-life-total>span{grid-column:1/-1;@apply text-(length:--ds-font-size-xs);@apply text-(color:--life-muted)}
+.mind-life-total strong{@apply text-(length:--ds-font-size-xl);@apply font-ui-semibold}
+.mind-life-total small{align-self:center;@apply text-(length:--ds-font-size-xs);@apply text-(color:--life-muted)}
+.mind-life-toolbar{@apply flex;@apply gap-ui-4;@apply items-center;@apply mb-ui-6}
+.mind-life-toolbar>label{@apply flex;@apply items-center;@apply gap-ui-4;@apply text-(color:--life-muted);@apply text-(length:--ds-font-size-xs);@apply whitespace-nowrap}
+.mind-life-search{flex:1;@apply min-w-0}
+.mind-life-toolbar input,.mind-life-toolbar select{@apply min-w-0;@apply min-h-control-lg;border:var(--ui-border-width) solid var(--life-line);@apply rounded-(--ds-radius-md);background:var(--life-panel);@apply text-(color:--life-ink);@apply py-ui-3 px-ui-5;@apply text-(length:--ds-font-size-sm)}
+.mind-life-toolbar input{@apply w-full;@apply max-w-(--ui-panel-narrow)}
+.mind-life-grid{@apply grid;grid-template-columns:repeat(3,minmax(0,1fr));@apply gap-(--life-gap)}
+.mind-life-card{@apply min-w-0;background:var(--life-panel);border:var(--ui-border-width) solid var(--life-line);@apply rounded-(--life-radius);overflow:hidden}
+.mind-life-stage{@apply relative;@apply block;@apply w-full;aspect-ratio:var(--life-stage-ratio);overflow:hidden;background:var(--life-accent)}
+.mind-life-stage canvas{@apply block;@apply w-full;@apply h-full}
+.mind-life-stage[data-life-view=portrait]{aspect-ratio:1;@apply rounded-(--life-radius)}
+.mind-life-stage[data-life-view=portrait] .mind-life-weather{@apply hidden}
+.mind-life-fallback{@apply absolute;inset:0;@apply grid;place-items:center}
+.mind-life-stage[data-ready=true] .mind-life-fallback{@apply hidden}
+.mind-life-weather{@apply absolute;top:var(--ds-space-4);left:var(--ds-space-4);background:var(--life-label-bg);@apply text-(color:--life-ink);@apply text-(length:--ds-font-size-xs);@apply leading-(--ds-leading-md);@apply rounded-(--ds-radius-sm);@apply py-0 px-ui-3;pointer-events:none}
+.mind-life-card-body{@apply p-ui-6}
+.mind-life-card-body h2{@apply text-(length:--ds-font-size-base);@apply leading-(--ds-leading-sm);@apply font-ui-semibold;@apply m-0}
+.mind-life-card-status,.mind-life-card-detail{@apply text-(color:--life-muted);@apply text-(length:--ds-font-size-xs);@apply my-ui-2 mx-0}
+.mind-life-card-detail{@apply mt-ui-4}
+.mind-life-card-money{@apply flex;@apply gap-ui-3;@apply justify-between;@apply mt-ui-4;@apply text-(length:--ds-font-size-xs);font-variant-numeric:tabular-nums}
+.mind-life-card-money>span{@apply text-(color:--life-muted)}
+.mind-life-settings{@apply relative;@apply text-(length:--ds-font-size-xs);@apply text-(color:--life-ink)}
+.mind-life-settings summary{@apply flex items-center min-h-control-touch cursor-pointer;list-style:none;@apply py-ui-4 px-ui-5;border:var(--ui-border-width) solid var(--life-line);@apply rounded-(--ds-radius-md);background:var(--life-panel)}
+.mind-life-settings>div{@apply absolute;z-index:var(--ui-overlay-layer);top:100%;right:0;@apply min-w-(--life-setting-width);@apply p-ui-6;@apply grid;@apply gap-ui-6;background:var(--life-panel);border:var(--ui-border-width) solid var(--life-line);@apply rounded-(--life-radius);box-shadow:var(--ds-shadow-menu)}
+.mind-life-settings label{@apply min-h-control-touch cursor-pointer;@apply flex;@apply items-center;@apply gap-ui-4;@apply whitespace-nowrap}
+.mind-life-settings input[type=checkbox]{flex:none;@apply w-ui-6;@apply h-ui-6;@apply min-h-0;@apply p-0}
+.mind-life-settings button{@apply min-h-control-touch;border:var(--ui-border-width) solid var(--life-line);@apply rounded-(--ds-radius-md);@apply p-ui-4;@apply cursor-pointer}
+.mind-life-gallery [hidden]{@apply hidden}
+.mind-life-empty{@apply text-(color:--life-muted);@apply text-center;@apply p-ui-10}
+.mind-life-gallery :focus-visible{outline:var(--ui-border-emphasis) solid var(--ds-focus);outline-offset:var(--ds-space-2)}
+.mind-life-live-summary{@apply flex;@apply gap-ui-8;@apply items-center;@apply mb-ui-7}
+.mind-life-live-summary>div{@apply grid;@apply text-(length:--ds-font-size-xs);@apply text-(color:--ds-text-secondary)}
+.mind-life-live-summary strong{@apply text-(length:--ds-font-size-xl);@apply font-ui-semibold;@apply text-(color:--ds-text-default)}
+.mind-life-live-summary .mind-life-settings{@apply ml-auto}
+.mind-companion-overview{@apply flex flex-wrap items-center gap-ui-4 mb-ui-7}
+.mind-companion-overview .mind-life-live-summary{@apply flex-1 mb-0}
+.mind-companion-overview .mind-companion-scope{@apply m-0 text-right}
+@variant max-md{.mind-companion-overview .mind-life-live-summary{@apply basis-full}.mind-companion-overview .mind-companion-scope{@apply text-left}}
+.mind-companion-grid:has([data-life-stage]){@apply gap-(--life-gap)}
+.mind-companion-groups{@apply grid gap-ui-10}
+.mind-companion-group-title{@apply text-ui-base font-ui-semibold text-foreground mt-0 mb-ui-5}
+.mind-companion-group-context{@apply text-ui-xs text-secondary leading-ui-md mt-0 mb-ui-6}
+.mind-companion-history>summary{@apply cursor-pointer min-h-control-touch text-ui-sm font-ui-medium text-foreground leading-ui-read py-ui-4}
+.mind-companion-history[open]>summary{@apply mb-ui-5}
+.mind-companion-history-count{@apply text-ui-xs text-secondary ml-ui-3}
+.mind-companion-card .mind-life-stage{aspect-ratio:var(--life-main-stage-ratio);@apply rounded-(--life-radius)}
+.mind-companion-card .mind-life-weather{top:auto;left:auto;bottom:var(--ds-space-3);right:var(--ds-space-3)}
+.mind-companion-card:has([data-life-stage]) [data-mind-path-passive]{@apply mt-ui-3 mx-0 mb-0}
+.mind-companion-card:has([data-life-stage]) .mind-companion-open{@apply p-0;@apply items-stretch}
+.mind-companion-card:has([data-life-stage]) .mind-companion-open h2{@apply text-left;@apply pt-ui-5 px-0 pb-0;@apply m-0;@apply text-(length:--ds-font-size-base)}
+.mind-companion-card:has([data-life-stage]) .mind-companion-open>p{@apply my-ui-2 mx-0;@apply text-left;@apply text-(length:--ds-font-size-md)}
+.mind-companion-card:has([data-life-stage]) .mind-companion-performance{@apply my-ui-4 mx-0;@apply p-0}
+.mind-companion-card:has([data-life-stage]) .mind-companion-performance>div{@apply flex;@apply items-baseline;@apply justify-between;@apply gap-ui-3;@apply p-0}
+.mind-companion-card:has([data-life-stage]) .mind-companion-performance dd{@apply text-(length:--ds-font-size-sm);@apply m-0}
+.mind-companion-card:has([data-life-stage]) .mind-companion-performance small{@apply hidden}
+.mind-companion-card:has([data-life-stage]) .mind-companion-activity{@apply hidden}
+.mind-companion-card:has([data-life-stage]) .mind-companion-no-performance{@apply min-h-0}
+.mind-companion-card:has([data-life-stage]) .mind-life-today{@apply flex;@apply justify-between;@apply gap-ui-3;font-variant-numeric:tabular-nums}
+.mind-companion-card:has([data-life-stage]) footer{@apply pt-ui-2 px-0 pb-0;@apply mt-ui-3}
+.mind-companion-card:has([data-life-stage]) .mind-companion-customize{top:var(--ds-space-4);right:var(--ds-space-4)}
+.mind-companion-card:has([data-life-stage]) > :is(.mind-companion-customize,.entity-menu-more){opacity:0;pointer-events:none;transition:opacity var(--ds-motion-quick)}
+.mind-companion-card:has([data-life-stage]):is(:hover,:focus-within) > :is(.mind-companion-customize,.entity-menu-more){opacity:1;pointer-events:auto}
+@media (hover:none){.mind-companion-card:has([data-life-stage]) > :is(.mind-companion-customize,.entity-menu-more){opacity:1;pointer-events:auto}}
+@variant max-md{.mind-companion-card:has([data-life-stage]) > :is(.mind-companion-customize,.entity-menu-more){opacity:1;pointer-events:auto;@apply w-control-lg;@apply h-control-lg;top:var(--ds-space-4)}.mind-companion-card:has([data-life-stage]) > .entity-menu-more{left:var(--ds-space-4)}}
+.mind-game-profit-fly{@apply fixed;z-index:var(--life-effect-layer);pointer-events:none;@apply whitespace-nowrap;@apply text-(color:--life-pnl);@apply font-ui-bold;@apply text-(length:--ds-font-size-xl);text-shadow:var(--life-shadow)}
+[data-mind-scoreboard].is-crediting{animation:mind-life-credit var(--life-credit-duration) ease-out}
+@keyframes mind-life-credit{35%{transform:scale(var(--life-credit-scale))}to{transform:scale(1)}}
+@media (width < theme(--breakpoint-lg)){.mind-life-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (width < theme(--breakpoint-sm)){.mind-life-gallery{@apply p-ui-6}.mind-life-grid{grid-template-columns:1fr}.mind-life-toolbar{flex-wrap:wrap}.mind-life-search{flex-basis:100%}.mind-life-toolbar input{max-width:none}.mind-life-header h1{@apply text-(length:--ds-font-size-xl)}}
+@media (prefers-reduced-motion:reduce){[data-mind-scoreboard].is-crediting{animation:none}}
+

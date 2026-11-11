@@ -1,0 +1,15 @@
+import {build} from 'esbuild';
+import {checkCopy} from './check-ui-copy.mjs';
+import {mkdir,copyFile,writeFile} from 'node:fs/promises';
+await checkCopy();
+await mkdir('dist/vendor',{recursive:true});
+for(const [entry,name] of [['node_modules/yaml/browser/index.js','yaml'],['node_modules/lightweight-charts/dist/lightweight-charts.production.mjs','lightweight-charts']])await build({entryPoints:[entry],outfile:`dist/vendor/${name}.mjs`,bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,legalComments:'inline'});
+await copyFile('node_modules/yaml/LICENSE','dist/vendor/yaml-LICENSE.md');
+await copyFile('node_modules/lightweight-charts/LICENSE','dist/vendor/lightweight-charts-LICENSE.md');
+await build({entryPoints:['dist/ui/strategy-graph-editor.jsx'],outfile:'dist/vendor/strategy-graph-editor.mjs',bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,legalComments:'inline',define:{'process.env.NODE_ENV':'"production"'}});
+await build({entryPoints:['dist/ui/strategy-ui-library.jsx'],outfile:'dist/vendor/strategy-ui-library.mjs',bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,loader:{'.css':'empty'},define:{'process.env.NODE_ENV':'"production"'}});
+await build({entryPoints:['dist/ui/mind-motion-gallery.mjs'],outfile:'dist/vendor/mind-motion-gallery.mjs',bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true});
+await build({entryPoints:['scripts/server-update/view-entry.mjs'],outfile:'scripts/server-update/view.mjs',bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true});
+for(const [source,name] of [['react','react'],['react-dom','react-dom'],['@xyflow/react','react-flow']])await copyFile('node_modules/'+source+'/LICENSE','dist/vendor/'+name+'-LICENSE.md');
+await writeFile('dist/vendor/README.md','# Third-party runtime libraries\n\nyaml 2.9.1 — ISC — https://eemeli.org/yaml/\n\nLightweight Charts 5.2.1 — Apache-2.0 — https://www.tradingview.com/lightweight-charts/\n\nReact 19.3.1 and React DOM 19.3.1 — MIT — https://react.dev/\n\nReact Flow 12.12.0 — MIT — https://reactflow.dev/\n\nBuilt from pinned npm packages by scripts/build-vendor.mjs. TradingView attribution is displayed below the chart.\n');
+console.log('Pinned chart and YAML browser runtimes built.');

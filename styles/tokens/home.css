@@ -1,0 +1,44 @@
+:root {
+  --home-brand-tracking: .1em;
+  --home-tab-shadow: 0 1px 3px rgba(25,32,27,.08);
+  --home-button-hover: .95;
+  --home-max-width: 80rem;
+  --home-feature-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+  --home-insight-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  --home-hero-columns: minmax(0, 1fr) minmax(8rem, .65fr);
+  --home-hero-height: 16rem;
+  --home-hero-padding: 1.5rem;
+  --home-hero-return: clamp(2rem, 3.5vw, 3.25rem);
+  --home-hero-tracking: -.03em;
+  --home-title-tracking: -.02em;
+  --home-hero-pet: clamp(7rem, 12vw, 10rem);
+  --home-pet-stage: 10rem;
+  --home-hero-background: var(--ds-bg-raised);
+  --home-hero-ink: var(--ds-text-default);
+  --home-hero-muted: var(--ds-text-secondary);
+  --home-hero-orbit: rgba(255,255,255,.45);
+  --home-hero-button: var(--ds-accent);
+  --home-on-hero-button: var(--ds-text-on-accent);
+  --home-weekly-background: var(--ds-bg-raised);
+  --home-weekly-ink: var(--ds-text-default);
+  --home-carousel-card: 18rem;
+  --home-carousel-card-mobile: 18rem;
+  --home-carousel-interval: 8000;
+  --home-card-height: 11.5rem;
+  --home-card-pet: 4rem;
+  --home-mini-pet: 2.75rem;
+  --home-constellation-pet: 4.25rem;
+  --home-icon-size: 1rem;
+  --home-control-size: 2rem;
+  --home-status-dot: .3rem;
+  --home-skeleton-duration: 1.5s;
+  --home-opacity-subtle: .5;
+  --home-mobile-return: 2.25rem;
+  --home-mobile-pet: 6rem;
+  --home-mobile-hero-columns: minmax(0, 1fr) 5rem;
+  --home-mobile-hero-height: 17rem;
+  --home-mobile-hero-padding: 1.25rem;
+}
+:root[data-theme="dark"] {
+  --home-hero-orbit: rgba(218,236,218,.06);
+}

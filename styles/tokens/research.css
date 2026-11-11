@@ -1,0 +1,23 @@
+/* Research pages use the application scale; artwork keeps its dedicated palette. */
+:root {
+ --report-wide:90rem;
+ --report-prose:72rem;
+ --report-chart:16rem;
+ --report-table:42rem;
+ --report-columns:minmax(0,3fr) minmax(0,1fr);
+ --report-series-a:var(--ds-series-1);
+ --report-series-b:var(--ds-series-2);
+ --report-series-c:var(--ds-series-3);
+ --art-study-canvas:#111917;
+ --art-study-surface:#1b2722;
+ --art-study-line:#35463d;
+ --art-study-foreground:#eef2df;
+ --art-study-muted:#b1beb0;
+ --art-study-accent:#d6e8a3;
+ --art-study-media:#0d1512;
+ --art-study-highlight:#283925;
+ --art-study-highlight-line:#657b49;
+ --art-study-columns:minmax(0,.8fr) minmax(0,1.5fr);
+ --art-study-brand:9rem;
+ --art-study-hero:38rem;
+}

@@ -1,0 +1,181 @@
+{
+  "grid": 24,
+  "stroke": 2,
+  "icons": [
+    {
+      "id": "variable",
+      "label": "변수",
+      "url": "/icons/strategy/variable.svg"
+    },
+    {
+      "id": "instrument",
+      "label": "종목",
+      "url": "/icons/strategy/instrument.svg"
+    },
+    {
+      "id": "timeframe",
+      "label": "봉 주기",
+      "url": "/icons/strategy/timeframe.svg"
+    },
+    {
+      "id": "number",
+      "label": "숫자",
+      "url": "/icons/strategy/number.svg"
+    },
+    {
+      "id": "text",
+      "label": "텍스트",
+      "url": "/icons/strategy/text.svg"
+    },
+    {
+      "id": "boolean",
+      "label": "참·거짓",
+      "url": "/icons/strategy/boolean.svg"
+    },
+    {
+      "id": "candles",
+      "label": "시세",
+      "url": "/icons/strategy/candles.svg"
+    },
+    {
+      "id": "database",
+      "label": "자료",
+      "url": "/icons/strategy/database.svg"
+    },
+    {
+      "id": "book",
+      "label": "호가",
+      "url": "/icons/strategy/book.svg"
+    },
+    {
+      "id": "portfolio",
+      "label": "계좌",
+      "url": "/icons/strategy/portfolio.svg"
+    },
+    {
+      "id": "documents",
+      "label": "자료·기억",
+      "url": "/icons/strategy/documents.svg"
+    },
+    {
+      "id": "universe",
+      "label": "후보 종목",
+      "url": "/icons/strategy/universe.svg"
+    },
+    {
+      "id": "formula",
+      "label": "계산",
+      "url": "/icons/strategy/formula.svg"
+    },
+    {
+      "id": "model",
+      "label": "학습 모델",
+      "url": "/icons/strategy/model.svg"
+    },
+    {
+      "id": "compare",
+      "label": "조건 비교",
+      "url": "/icons/strategy/compare.svg"
+    },
+    {
+      "id": "logic",
+      "label": "조건 조합",
+      "url": "/icons/strategy/logic.svg"
+    },
+    {
+      "id": "branch",
+      "label": "분기",
+      "url": "/icons/strategy/branch.svg"
+    },
+    {
+      "id": "merge",
+      "label": "결합",
+      "url": "/icons/strategy/merge.svg"
+    },
+    {
+      "id": "rank",
+      "label": "순위",
+      "url": "/icons/strategy/rank.svg"
+    },
+    {
+      "id": "filter",
+      "label": "필터",
+      "url": "/icons/strategy/filter.svg"
+    },
+    {
+      "id": "select",
+      "label": "선택",
+      "url": "/icons/strategy/select.svg"
+    },
+    {
+      "id": "allocate",
+      "label": "배분",
+      "url": "/icons/strategy/allocate.svg"
+    },
+    {
+      "id": "decision",
+      "label": "투자 결정",
+      "url": "/icons/strategy/decision.svg"
+    },
+    {
+      "id": "guard",
+      "label": "실행 검사",
+      "url": "/icons/strategy/guard.svg"
+    },
+    {
+      "id": "execute",
+      "label": "주문 실행",
+      "url": "/icons/strategy/execute.svg"
+    },
+    {
+      "id": "question",
+      "label": "AI 질문",
+      "url": "/icons/strategy/question.svg"
+    },
+    {
+      "id": "component",
+      "label": "컴포넌트",
+      "url": "/icons/strategy/component.svg"
+    },
+    {
+      "id": "link",
+      "label": "연결",
+      "url": "/icons/strategy/link.svg"
+    },
+    {
+      "id": "fit",
+      "label": "전체 보기",
+      "url": "/icons/strategy/fit.svg"
+    },
+    {
+      "id": "plus",
+      "label": "추가",
+      "url": "/icons/strategy/plus.svg"
+    },
+    {
+      "id": "undo",
+      "label": "되돌리기",
+      "url": "/icons/strategy/undo.svg"
+    },
+    {
+      "id": "close",
+      "label": "닫기",
+      "url": "/icons/strategy/close.svg"
+    },
+    {
+      "id": "explore",
+      "label": "전략 탐험",
+      "url": "/icons/strategy/explore.svg"
+    },
+    {
+      "id": "more",
+      "label": "더보기",
+      "url": "/icons/strategy/more.svg"
+    },
+    {
+      "id": "arrange",
+      "label": "자동 정렬",
+      "url": "/icons/strategy/arrange.svg"
+    }
+  ]
+}

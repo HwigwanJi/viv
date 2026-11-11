@@ -1,0 +1,1126 @@
+{
+  "schemaVersion": 2,
+  "contractVersion": "mind-strategy-decision-graph-v2",
+  "triggers": [
+    "manual",
+    "closed_bar",
+    "market_event"
+  ],
+  "nodes": [
+    {
+      "id": "has-position",
+      "type": "INPUT",
+      "label": "현재 보유 여부",
+      "position": {
+        "x": 40,
+        "y": 1192
+      },
+      "config": {
+        "kind": "POSITION",
+        "instrumentId": "execution:current",
+        "metricId": "HAS_POSITION",
+        "required": true,
+        "maxAgeMs": 3000
+      }
+    },
+    {
+      "id": "entry",
+      "type": "QUANT",
+      "label": "거래량 돌파 진입",
+      "position": {
+        "x": 392,
+        "y": 1768
+      },
+      "config": {
+        "mode": "CONDITION",
+        "onTrue": "hold",
+        "onFalse": "buy",
+        "buyTargetWeight": 1,
+        "sellTargetWeight": 0,
+        "buyIntent": "ENTRY"
+      }
+    },
+    {
+      "id": "wait",
+      "type": "QUANT",
+      "label": "관망",
+      "position": {
+        "x": 392,
+        "y": 2056
+      },
+      "config": {
+        "mode": "CONDITION",
+        "onTrue": "hold",
+        "onFalse": "hold",
+        "buyTargetWeight": 1,
+        "sellTargetWeight": 0
+      }
+    },
+    {
+      "id": "position-route",
+      "type": "DECISION_ROUTER",
+      "label": "보유 중 AI 판단과 미보유 진입",
+      "position": {
+        "x": 2504,
+        "y": 1794.6666666666667
+      },
+      "config": {
+        "mode": "CONDITION"
+      }
+    },
+    {
+      "id": "risk",
+      "type": "RISK",
+      "label": "공통 현물 위험 한도",
+      "position": {
+        "x": 2856,
+        "y": 1794.6666666666667
+      },
+      "config": {
+        "maxExposure": 1,
+        "maxOrderWeight": 1,
+        "minConfidence": 0
+      }
+    },
+    {
+      "id": "order",
+      "type": "ORDER",
+      "label": "계좌의 관측 지정가 주문",
+      "position": {
+        "x": 3208,
+        "y": 1794.6666666666667
+      },
+      "config": {
+        "execution": "ACCOUNT",
+        "sizing": "TARGET_WEIGHT",
+        "orderType": "LIMIT_FOK",
+        "maxSlippageBps": 20
+      }
+    },
+    {
+      "id": "universe-assets",
+      "type": "INPUT",
+      "label": "투자 범위의 확정 분봉",
+      "position": {
+        "x": 40,
+        "y": 2056
+      },
+      "config": {
+        "kind": "ASSET_SET",
+        "scope": "MIND_UNIVERSE",
+        "timeframe": "1m",
+        "required": true
+      }
+    },
+    {
+      "id": "universe-filter",
+      "type": "FILTER",
+      "label": "후보 조건",
+      "position": {
+        "x": 392,
+        "y": 2920
+      },
+      "config": {
+        "minHistoryBars": 21,
+        "minQuoteVolume": 0,
+        "excludeWarnings": false,
+        "conditions": [
+          {
+            "metric": "MOMENTUM",
+            "lookback": 20,
+            "operator": "gt",
+            "value": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "universe-rank",
+      "type": "RANK",
+      "label": "후보 순위",
+      "position": {
+        "x": 744,
+        "y": 2920
+      },
+      "config": {
+        "terms": [
+          {
+            "metric": "MOMENTUM",
+            "lookback": 2,
+            "weight": 1
+          },
+          {
+            "metric": "MOMENTUM",
+            "lookback": 6,
+            "weight": 1
+          }
+        ],
+        "volatilityBars": 20,
+        "direction": "DESC",
+        "minScore": null,
+        "scoreOperator": "gt",
+        "scoreNormalization": "NONE",
+        "normalizationLookback": 20
+      }
+    },
+    {
+      "id": "universe-select",
+      "type": "SELECT",
+      "label": "상위 후보 선택",
+      "position": {
+        "x": 1448,
+        "y": 2920
+      },
+      "config": {
+        "maxPositions": 1
+      }
+    },
+    {
+      "id": "execution-asset",
+      "type": "INPUT",
+      "label": "현재 평가 종목",
+      "position": {
+        "x": 40,
+        "y": 904
+      },
+      "config": {
+        "kind": "EXECUTION_ASSET",
+        "required": true
+      }
+    },
+    {
+      "id": "universe-member",
+      "type": "MEMBER",
+      "label": "선택 후보에 포함",
+      "position": {
+        "x": 1800,
+        "y": 1912
+      },
+      "config": {}
+    },
+    {
+      "id": "selected-entry",
+      "type": "DECISION_ROUTER",
+      "label": "선택 후보의 진입 평가",
+      "position": {
+        "x": 2152,
+        "y": 1992
+      },
+      "config": {
+        "mode": "CONDITION"
+      }
+    },
+    {
+      "id": "decision-market",
+      "type": "INPUT",
+      "label": "확정 가격 경로와 체결 흐름",
+      "position": {
+        "x": 40,
+        "y": 40
+      },
+      "config": {
+        "kind": "MICROSTRUCTURE",
+        "instrumentId": "execution:current",
+        "timeframe": "1m",
+        "metricId": "DECISION_CONTEXT",
+        "required": true,
+        "maxAgeMs": 3000,
+        "lookbackBars": 20,
+        "flowWindowMs": 60000,
+        "bookMaxAgeMs": 3000
+      }
+    },
+    {
+      "id": "decision-position",
+      "type": "INPUT",
+      "label": "현재 포지션과 최근 체결",
+      "position": {
+        "x": 40,
+        "y": 328
+      },
+      "config": {
+        "kind": "POSITION",
+        "instrumentId": "execution:current",
+        "metricId": "TRADE_HISTORY",
+        "required": true,
+        "maxAgeMs": 3000
+      }
+    },
+    {
+      "id": "ai-entry",
+      "type": "JEV_QUESTION",
+      "label": "AI 신규 진입 판단",
+      "position": {
+        "x": 392,
+        "y": 184
+      },
+      "config": {
+        "provider": "JEV",
+        "reuseWindowMs": 0,
+        "question": {
+          "schemaVersion": 1,
+          "contractVersion": "jev-question-v1",
+          "id": "ai-entry",
+          "type": "choice",
+          "instructions": [
+            "컨텍스트: 너는 청지의 눌림 재가속 마인드에서 진입, 보유, 추가 진입, 축소와 청산을 담당하는 스캘핑 전문가다. 배정 자금을 100%까지 사용해 비용 차감 순수익을 추구한다.",
+            "퀀트 후보 선정과 연결 조건은 관측된 가격과 거래량으로 계산했다. 너는 상승 구간의 눌림 뒤 고점 재돌파를 찾는다. 단순 반등과 추세 재가속을 고점과 저점 순서, 거래량 변화로 구분한다. 추세가 유지되는 되돌림에는 보유하고 재가속에는 남은 자금을 사용한다.",
+            "확정 봉의 가격 경로, 실제 연결된 호가와 체결, 현재 보유 및 최근 체결을 비교해 지금부터의 행동을 선택한다. 자료가 빠진 항목은 관측 결측으로 취급하고 값을 만들어내지 않는다. 호가와 체결 자료가 비어 있으면 확정 가격 경로와 거래량에 근거한다.",
+            "비용: 매수와 매도 수수료 각 5bps, 역사 비교의 불리한 가격 차이 각 5bps를 적용한다. 이미 낸 비용과 새 행동 비용을 구분한다. 보유, 추가 진입, 50% 축소, 전량 청산의 기회비용을 비교한다. 고정 손절률이나 일일 거래 횟수로 결론을 대체하지 않는다.",
+            "현재 시점에 공개된 입력만 사용하고 이후 가격과 역사적 결과는 제외한다. 선택 확률은 행동 적합도다.",
+            "결정: 지금 이 후보의 가격 구조가 강화되어 목표 비중 100%로 진입할 만하면 ENTER, 다음 기회를 기다리면 WAIT."
+          ],
+          "candidates": [
+            {
+              "id": "ENTER",
+              "label": "진입",
+              "description": "비용을 반영한 상승 기회가 있어 목표 비중 1로 진입한다. 거래량 돌파의 고정 조건을 충족하지 않아도 선택할 수 있다."
+            },
+            {
+              "id": "WAIT",
+              "label": "대기",
+              "description": "지금 거래할 때 비용 대비 이점이 부족하여 현금을 유지한다."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ai-entry-route",
+      "type": "DECISION_ROUTER",
+      "label": "AI 선택을 거래 결정에 연결",
+      "position": {
+        "x": 744,
+        "y": 1336
+      },
+      "config": {
+        "mode": "CHOICE",
+        "cases": [
+          {
+            "id": "ENTER",
+            "label": "진입"
+          },
+          {
+            "id": "WAIT",
+            "label": "대기"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ai-add",
+      "type": "QUANT",
+      "label": "AI 추가 진입 목표",
+      "position": {
+        "x": 392,
+        "y": 1192
+      },
+      "config": {
+        "mode": "CONDITION",
+        "onTrue": "buy",
+        "onFalse": "hold",
+        "buyTargetWeight": 1,
+        "sellTargetWeight": 0,
+        "buyIntent": "ADD"
+      }
+    },
+    {
+      "id": "decision-weight",
+      "type": "INPUT",
+      "label": "현재 보유 비중",
+      "position": {
+        "x": 40,
+        "y": 616
+      },
+      "config": {
+        "kind": "POSITION",
+        "instrumentId": "execution:current",
+        "metricId": "WEIGHT",
+        "required": true
+      }
+    },
+    {
+      "id": "can-reduce",
+      "type": "CONDITION",
+      "label": "현재 보유 확인",
+      "position": {
+        "x": 392,
+        "y": 616
+      },
+      "config": {
+        "operator": "gt",
+        "value": 0
+      }
+    },
+    {
+      "id": "ai-reduce",
+      "type": "QUANT",
+      "label": "AI 보유 비중 축소",
+      "position": {
+        "x": 744,
+        "y": 616
+      },
+      "config": {
+        "mode": "CONDITION",
+        "onTrue": "sell",
+        "onFalse": "hold",
+        "buyTargetWeight": 1,
+        "sellTargetWeight": 0,
+        "sellIntent": "REDUCE",
+        "sellPositionFraction": 0.5
+      }
+    },
+    {
+      "id": "ai-exit",
+      "type": "QUANT",
+      "label": "AI 전량 청산",
+      "position": {
+        "x": 392,
+        "y": 1480
+      },
+      "config": {
+        "mode": "CONDITION",
+        "onTrue": "sell",
+        "onFalse": "hold",
+        "buyTargetWeight": 1,
+        "sellTargetWeight": 0,
+        "sellIntent": "EXIT"
+      }
+    },
+    {
+      "id": "ai-holding",
+      "type": "JEV_QUESTION",
+      "label": "AI 보유 판단",
+      "position": {
+        "x": 1096,
+        "y": 1096
+      },
+      "config": {
+        "provider": "JEV",
+        "reuseWindowMs": 0,
+        "question": {
+          "schemaVersion": 1,
+          "contractVersion": "jev-question-v1",
+          "id": "ai-holding",
+          "type": "choice",
+          "instructions": [
+            "컨텍스트: 너는 청지의 눌림 재가속 마인드에서 진입, 보유, 추가 진입, 축소와 청산을 담당하는 스캘핑 전문가다. 배정 자금을 100%까지 사용해 비용 차감 순수익을 추구한다.",
+            "퀀트 후보 선정과 연결 조건은 관측된 가격과 거래량으로 계산했다. 너는 상승 구간의 눌림 뒤 고점 재돌파를 찾는다. 단순 반등과 추세 재가속을 고점과 저점 순서, 거래량 변화로 구분한다. 추세가 유지되는 되돌림에는 보유하고 재가속에는 남은 자금을 사용한다.",
+            "확정 봉의 가격 경로, 실제 연결된 호가와 체결, 현재 보유 및 최근 체결을 비교해 지금부터의 행동을 선택한다. 자료가 빠진 항목은 관측 결측으로 취급하고 값을 만들어내지 않는다. 호가와 체결 자료가 비어 있으면 확정 가격 경로와 거래량에 근거한다.",
+            "비용: 매수와 매도 수수료 각 5bps, 역사 비교의 불리한 가격 차이 각 5bps를 적용한다. 이미 낸 비용과 새 행동 비용을 구분한다. 보유, 추가 진입, 50% 축소, 전량 청산의 기회비용을 비교한다. 고정 손절률이나 일일 거래 횟수로 결론을 대체하지 않는다.",
+            "현재 시점에 공개된 입력만 사용하고 이후 가격과 역사적 결과는 제외한다. 선택 확률은 행동 적합도다.",
+            "결정: 현재 보유 수량 유지 HOLD, 목표 100%까지 추가 ADD, 수량 절반 축소 REDUCE, 전량 회수 EXIT 중 하나를 고른다."
+          ],
+          "candidates": [
+            {
+              "id": "HOLD",
+              "label": "보유",
+              "description": "진입 근거가 유지되고 추가 상승 여지가 있어 현재 수량을 유지한다. 수익 중에도 보유를 연장할 수 있다."
+            },
+            {
+              "id": "ADD",
+              "label": "추가 진입",
+              "description": "진입 근거가 강화되어 배정 자금 안에서 목표 비중 1까지 추가 진입한다. 현재 보유, 남은 현금과 거래 비용을 반영한다."
+            },
+            {
+              "id": "REDUCE",
+              "label": "축소",
+              "description": "현재 보유 수량의 50%를 회수하고 나머지 수량으로 상승 기회를 이어간다. 거래소 최소 주문 금액과 실제 호가를 반영한다."
+            },
+            {
+              "id": "EXIT",
+              "label": "청산",
+              "description": "진입 근거가 소멸했거나 비용을 반영한 추가 보유 이점이 부족하여 전량 청산한다."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ai-holding-route",
+      "type": "DECISION_ROUTER",
+      "label": "AI 선택을 거래 결정에 연결",
+      "position": {
+        "x": 1448,
+        "y": 1288
+      },
+      "config": {
+        "mode": "CHOICE",
+        "cases": [
+          {
+            "id": "HOLD",
+            "label": "보유"
+          },
+          {
+            "id": "ADD",
+            "label": "추가 진입"
+          },
+          {
+            "id": "REDUCE",
+            "label": "축소"
+          },
+          {
+            "id": "EXIT",
+            "label": "청산"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scenario-volume",
+      "type": "INPUT",
+      "label": "확정 시세",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "kind": "MICROSTRUCTURE",
+        "instrumentId": "execution:current",
+        "timeframe": "1m",
+        "metricId": "RVOL",
+        "lookbackBars": 20,
+        "flowWindowMs": 60000,
+        "bookMaxAgeMs": 3000,
+        "required": true,
+        "maxAgeMs": 3000
+      }
+    },
+    {
+      "id": "scenario-volume-condition",
+      "type": "CONDITION",
+      "label": "조건",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "operator": "gte",
+        "value": 1.25
+      }
+    },
+    {
+      "id": "scenario-high",
+      "type": "INPUT",
+      "label": "확정 시세",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "kind": "MICROSTRUCTURE",
+        "instrumentId": "execution:current",
+        "timeframe": "1m",
+        "metricId": "BREAKOUT_RATIO",
+        "lookbackBars": 3,
+        "flowWindowMs": 60000,
+        "bookMaxAgeMs": 3000,
+        "required": true,
+        "maxAgeMs": 3000
+      }
+    },
+    {
+      "id": "scenario-high-condition",
+      "type": "CONDITION",
+      "label": "조건",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "operator": "gt",
+        "value": 0
+      }
+    },
+    {
+      "id": "scenario-trend",
+      "type": "INPUT",
+      "label": "확정 시세",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "kind": "MICROSTRUCTURE",
+        "instrumentId": "execution:current",
+        "timeframe": "1m",
+        "metricId": "RETURN_WINDOW",
+        "lookbackBars": 20,
+        "flowWindowMs": 60000,
+        "bookMaxAgeMs": 3000,
+        "required": true,
+        "maxAgeMs": 3000
+      }
+    },
+    {
+      "id": "scenario-trend-condition",
+      "type": "CONDITION",
+      "label": "조건",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "operator": "gt",
+        "value": 0
+      }
+    },
+    {
+      "id": "scenario-ready",
+      "type": "BOOLEAN_LOGIC",
+      "label": "조건 조합",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "operation": "ALL"
+      }
+    },
+    {
+      "id": "scenario-entry",
+      "type": "DECISION_ROUTER",
+      "label": "결정 선택",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "config": {
+        "mode": "CONDITION"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "has-position-wait-signal",
+      "from": {
+        "nodeId": "has-position",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "wait",
+        "port": "signal"
+      }
+    },
+    {
+      "id": "has-position-position-route-condition",
+      "from": {
+        "nodeId": "has-position",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "position-route",
+        "port": "condition"
+      }
+    },
+    {
+      "id": "selected-entry-position-route-false",
+      "from": {
+        "nodeId": "selected-entry",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "position-route",
+        "port": "false"
+      }
+    },
+    {
+      "id": "position-route-risk-decision",
+      "from": {
+        "nodeId": "position-route",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "risk",
+        "port": "decision"
+      }
+    },
+    {
+      "id": "risk-order-approved",
+      "from": {
+        "nodeId": "risk",
+        "port": "approved"
+      },
+      "to": {
+        "nodeId": "order",
+        "port": "approved"
+      }
+    },
+    {
+      "id": "universe-assets-universe-filter-assets",
+      "from": {
+        "nodeId": "universe-assets",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "universe-filter",
+        "port": "assets"
+      }
+    },
+    {
+      "id": "universe-filter-universe-rank-assets",
+      "from": {
+        "nodeId": "universe-filter",
+        "port": "assets"
+      },
+      "to": {
+        "nodeId": "universe-rank",
+        "port": "assets"
+      }
+    },
+    {
+      "id": "universe-rank-universe-select-rank",
+      "from": {
+        "nodeId": "universe-rank",
+        "port": "rank"
+      },
+      "to": {
+        "nodeId": "universe-select",
+        "port": "rank"
+      }
+    },
+    {
+      "id": "universe-select-universe-member-assets",
+      "from": {
+        "nodeId": "universe-select",
+        "port": "selected"
+      },
+      "to": {
+        "nodeId": "universe-member",
+        "port": "assets"
+      }
+    },
+    {
+      "id": "execution-asset-universe-member-instrument",
+      "from": {
+        "nodeId": "execution-asset",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "universe-member",
+        "port": "instrument"
+      }
+    },
+    {
+      "id": "universe-member-selected-entry-condition",
+      "from": {
+        "nodeId": "universe-member",
+        "port": "condition"
+      },
+      "to": {
+        "nodeId": "selected-entry",
+        "port": "condition"
+      }
+    },
+    {
+      "id": "wait-selected-entry-false",
+      "from": {
+        "nodeId": "wait",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "selected-entry",
+        "port": "false"
+      }
+    },
+    {
+      "id": "decision-market-ai-entry-context",
+      "from": {
+        "nodeId": "decision-market",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "ai-entry",
+        "port": "context"
+      }
+    },
+    {
+      "id": "decision-position-ai-entry-context",
+      "from": {
+        "nodeId": "decision-position",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "ai-entry",
+        "port": "context"
+      }
+    },
+    {
+      "id": "has-position-entry-signal",
+      "from": {
+        "nodeId": "has-position",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "entry",
+        "port": "signal"
+      }
+    },
+    {
+      "id": "ai-entry-ai-entry-route-selector",
+      "from": {
+        "nodeId": "ai-entry",
+        "port": "value"
+      },
+      "to": {
+        "nodeId": "ai-entry-route",
+        "port": "selector"
+      }
+    },
+    {
+      "id": "entry-ai-entry-route-case:ENTER",
+      "from": {
+        "nodeId": "entry",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "ai-entry-route",
+        "port": "case:ENTER"
+      }
+    },
+    {
+      "id": "wait-ai-entry-route-case:WAIT",
+      "from": {
+        "nodeId": "wait",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "ai-entry-route",
+        "port": "case:WAIT"
+      }
+    },
+    {
+      "id": "can-add-ai-add-signal",
+      "from": {
+        "nodeId": "has-position",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "ai-add",
+        "port": "signal"
+      }
+    },
+    {
+      "id": "decision-weight-can-reduce-value",
+      "from": {
+        "nodeId": "decision-weight",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "can-reduce",
+        "port": "value"
+      }
+    },
+    {
+      "id": "can-reduce-ai-reduce-signal",
+      "from": {
+        "nodeId": "can-reduce",
+        "port": "condition"
+      },
+      "to": {
+        "nodeId": "ai-reduce",
+        "port": "signal"
+      }
+    },
+    {
+      "id": "has-position-ai-exit-signal",
+      "from": {
+        "nodeId": "has-position",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "ai-exit",
+        "port": "signal"
+      }
+    },
+    {
+      "id": "decision-market-ai-holding-context",
+      "from": {
+        "nodeId": "decision-market",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "ai-holding",
+        "port": "context"
+      }
+    },
+    {
+      "id": "decision-position-ai-holding-context",
+      "from": {
+        "nodeId": "decision-position",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "ai-holding",
+        "port": "context"
+      }
+    },
+    {
+      "id": "ai-holding-ai-holding-route-selector",
+      "from": {
+        "nodeId": "ai-holding",
+        "port": "value"
+      },
+      "to": {
+        "nodeId": "ai-holding-route",
+        "port": "selector"
+      }
+    },
+    {
+      "id": "wait-ai-holding-route-case:HOLD",
+      "from": {
+        "nodeId": "wait",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "ai-holding-route",
+        "port": "case:HOLD"
+      }
+    },
+    {
+      "id": "ai-add-ai-holding-route-case:ADD",
+      "from": {
+        "nodeId": "ai-add",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "ai-holding-route",
+        "port": "case:ADD"
+      }
+    },
+    {
+      "id": "ai-reduce-ai-holding-route-case:REDUCE",
+      "from": {
+        "nodeId": "ai-reduce",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "ai-holding-route",
+        "port": "case:REDUCE"
+      }
+    },
+    {
+      "id": "ai-exit-ai-holding-route-case:EXIT",
+      "from": {
+        "nodeId": "ai-exit",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "ai-holding-route",
+        "port": "case:EXIT"
+      }
+    },
+    {
+      "id": "universe-rank-ai-holding-context",
+      "from": {
+        "nodeId": "universe-rank",
+        "port": "rank"
+      },
+      "to": {
+        "nodeId": "ai-holding",
+        "port": "context"
+      }
+    },
+    {
+      "id": "ai-holding-route-position-route-true",
+      "from": {
+        "nodeId": "ai-holding-route",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "position-route",
+        "port": "true"
+      }
+    },
+    {
+      "id": "scenario-volume-scenario-volume-condition-value",
+      "from": {
+        "nodeId": "scenario-volume",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "scenario-volume-condition",
+        "port": "value"
+      }
+    },
+    {
+      "id": "scenario-high-scenario-high-condition-value",
+      "from": {
+        "nodeId": "scenario-high",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "scenario-high-condition",
+        "port": "value"
+      }
+    },
+    {
+      "id": "scenario-trend-scenario-trend-condition-value",
+      "from": {
+        "nodeId": "scenario-trend",
+        "port": "data"
+      },
+      "to": {
+        "nodeId": "scenario-trend-condition",
+        "port": "value"
+      }
+    },
+    {
+      "id": "scenario-volume-condition-scenario-ready-conditions",
+      "from": {
+        "nodeId": "scenario-volume-condition",
+        "port": "condition"
+      },
+      "to": {
+        "nodeId": "scenario-ready",
+        "port": "conditions"
+      }
+    },
+    {
+      "id": "scenario-high-condition-scenario-ready-conditions",
+      "from": {
+        "nodeId": "scenario-high-condition",
+        "port": "condition"
+      },
+      "to": {
+        "nodeId": "scenario-ready",
+        "port": "conditions"
+      }
+    },
+    {
+      "id": "scenario-trend-condition-scenario-ready-conditions",
+      "from": {
+        "nodeId": "scenario-trend-condition",
+        "port": "condition"
+      },
+      "to": {
+        "nodeId": "scenario-ready",
+        "port": "conditions"
+      }
+    },
+    {
+      "id": "scenario-ready-scenario-entry-condition",
+      "from": {
+        "nodeId": "scenario-ready",
+        "port": "condition"
+      },
+      "to": {
+        "nodeId": "scenario-entry",
+        "port": "condition"
+      }
+    },
+    {
+      "id": "ai-entry-route-scenario-entry-true",
+      "from": {
+        "nodeId": "ai-entry-route",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "scenario-entry",
+        "port": "true"
+      }
+    },
+    {
+      "id": "wait-scenario-entry-false",
+      "from": {
+        "nodeId": "wait",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "scenario-entry",
+        "port": "false"
+      }
+    },
+    {
+      "id": "scenario-entry-selected-entry-true",
+      "from": {
+        "nodeId": "scenario-entry",
+        "port": "decision"
+      },
+      "to": {
+        "nodeId": "selected-entry",
+        "port": "true"
+      }
+    }
+  ],
+  "outputNodeId": "order",
+  "compositions": [
+    {
+      "id": "scalp-selection",
+      "name": "퀀트 후보 선택과 보유 분기",
+      "nodeIds": [
+        "has-position",
+        "wait",
+        "position-route"
+      ],
+      "collapsed": false,
+      "version": 1
+    },
+    {
+      "id": "scalp-execution",
+      "name": "공통 위험·주문 한도",
+      "nodeIds": [
+        "risk",
+        "order"
+      ],
+      "collapsed": false,
+      "version": 1
+    },
+    {
+      "id": "universe-screen",
+      "name": "후보 평가와 선택",
+      "nodeIds": [
+        "universe-assets",
+        "universe-filter",
+        "universe-rank",
+        "universe-select",
+        "execution-asset",
+        "universe-member",
+        "selected-entry"
+      ],
+      "collapsed": false,
+      "version": 1
+    },
+    {
+      "id": "ai-minute-decisions",
+      "name": "AI 진입과 보유 판단",
+      "nodeIds": [
+        "decision-market",
+        "decision-position",
+        "ai-entry",
+        "ai-entry-route",
+        "ai-add",
+        "decision-weight",
+        "can-reduce",
+        "ai-reduce",
+        "ai-exit",
+        "ai-holding",
+        "ai-holding-route"
+      ],
+      "collapsed": false,
+      "version": 1
+    },
+    {
+      "id": "weekly-scenario",
+      "name": "눌림 재가속 진입 맥락",
+      "version": 1,
+      "collapsed": false,
+      "nodeIds": [
+        "scenario-volume",
+        "scenario-volume-condition",
+        "scenario-high",
+        "scenario-high-condition",
+        "scenario-trend",
+        "scenario-trend-condition",
+        "scenario-ready",
+        "scenario-entry"
+      ]
+    }
+  ],
+  "executionScope": {
+    "kind": "EACH_ASSET",
+    "timeframe": "1m",
+    "maxCandidates": 20,
+    "maxConcurrentPositions": 1
+  }
+}

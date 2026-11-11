@@ -1,0 +1,90 @@
+@reference '../theme.css';
+
+.mind-hud { @apply relative isolate overflow-hidden rounded-ui-xl bg-field min-w-0 w-full; container-type:inline-size; }
+.mind-hud-viewport { @apply w-full overflow-hidden outline-offset-0 h-(--hud-height); touch-action:auto; }
+.mind-hud-feature .mind-hud-viewport { @apply h-(--hud-feature-height); }
+.mind-hud-operation .mind-hud-viewport { @apply h-(--hud-operation-height); }
+.mind-hud-page { @apply flex flex-col relative w-full h-full min-w-0 overflow-hidden px-ui-6 pt-ui-6 pb-ui-5 bg-surface; background-image:var(--hud-grid); background-size:var(--hud-grid-size); }
+.mind-hud-page[inert] { @apply pointer-events-none; }
+.mind-hud .mind-hud-scene { @apply p-0 bg-field; }
+.mind-hud-scene-content { @apply block h-full w-full overflow-hidden relative text-foreground; }
+.mind-hud .mind-hud-scene .mind-life-stage,
+.studio-shell .mind-hud .mind-hud-scene .mind-life-stage { @apply w-full h-full rounded-none; aspect-ratio:auto; }
+.mind-hud-scene-caption { @apply absolute inset-x-0 bottom-0 grid gap-ui-2 px-ui-6 pt-ui-10 pb-ui-12; background:var(--hud-caption-wash); color:var(--hud-scene-ink); }
+.mind-hud-scene-caption small { @apply truncate text-ui-xs; }
+.mind-hud-scene-caption strong { @apply text-ui-xl leading-ui-xl; }
+.mind-hud-scene-caption span { @apply text-ui-xs leading-ui-md; }
+.mind-hud-swipe-hint { @apply absolute left-ui-5 bottom-ui-12 inline-flex items-center gap-ui-3 px-ui-4 py-ui-2 rounded-ui-full text-ui-xs text-foreground pointer-events-none; background:var(--hud-glass); }
+.mind-hud-operation .mind-hud-swipe-hint { @apply left-auto right-ui-5 top-ui-4 bottom-auto; }
+.mind-hud-rail { @apply absolute bottom-ui-2 left-1/2 flex gap-ui-1 rounded-ui-full p-ui-1 z-10 -translate-x-1/2; background:var(--hud-glass); }
+.mind-hud-rail button { @apply flex items-center justify-center w-control-xs h-control-xs min-h-0 rounded-ui-full text-secondary; }
+.mind-hud-rail button:hover { @apply bg-hover text-foreground; }
+.mind-hud-rail button::after { content:""; @apply block w-ui-2 h-ui-2 rounded-ui-full bg-muted; }
+.mind-hud-rail button[aria-current="true"]::after { @apply w-ui-5 bg-accent; }
+.mind-hud-rail svg { @apply sr-only; }
+.mind-hud-panel-head { @apply flex items-center justify-between min-h-control-sm gap-ui-3 pb-ui-3; }
+.mind-hud-kicker { @apply text-ui-xs font-ui-medium text-secondary; }
+.mind-hud-panel-head small { @apply text-ui-xs text-secondary; }
+.mind-hud-stats { @apply m-0 grid grid-cols-2 gap-x-ui-5 gap-y-ui-7 my-auto; }
+.mind-hud-stat { @apply min-w-0; }
+.mind-hud-stat dt { @apply text-ui-xs leading-ui-xs text-secondary mb-ui-4; }
+.mind-hud-stat dd { @apply m-0 min-w-0; }
+.mind-hud-value { @apply flex items-baseline min-w-0 whitespace-nowrap overflow-hidden text-ellipsis font-ui-medium text-foreground leading-ui-xl; font-size:var(--hud-value-size); letter-spacing:var(--hud-value-tracking); font-variant-numeric:tabular-nums; }
+.mind-hud-value [data-hud-glyph] { @apply inline-block shrink-0; }
+.mind-hud-basis { @apply text-ui-xs text-secondary leading-ui-xs m-0 pt-ui-5 pb-ui-10; }
+.mind-hud-empty { @apply flex flex-col justify-center h-full gap-ui-5; }
+.mind-hud-empty p { @apply text-ui-sm text-foreground leading-ui-read m-0; }
+.mind-hud-empty small { @apply text-ui-xs text-secondary leading-ui-md; }
+.mind-hud-panel-head select { @apply text-ui-xs w-auto min-w-0 min-h-control-xs px-ui-3 py-ui-1 rounded-ui-full border-0 bg-field; }
+.mind-hud-chart-chips { @apply inline-flex self-end items-center gap-ui-1 p-ui-1 rounded-ui-full bg-field mb-ui-3; }
+.mind-hud-chart-chips button { @apply text-ui-xs px-ui-4 py-ui-2 rounded-ui-full text-secondary; }
+.mind-hud-chart-chips button[aria-pressed="true"] { @apply bg-surface text-foreground; }
+.mind-hud-chart-value { @apply min-w-0; }
+.mind-hud-chart-body { @apply flex gap-ui-5 flex-1 min-h-0; }
+.mind-hud-chart-plot { @apply flex flex-col flex-1 min-w-0 min-h-0; }
+.mind-hud-periods { @apply flex flex-col gap-ui-2 justify-center shrink-0 self-stretch; }
+.mind-hud-periods button { @apply px-ui-3 py-ui-2 rounded-ui-full text-ui-xs text-secondary; }
+.mind-hud-periods button[aria-pressed="true"] { @apply bg-accent text-on-accent; }
+.mind-hud-chart-value .mind-hud-value { @apply text-ui-lg leading-ui-lg; }
+.mind-hud .mind-hud-chart { @apply w-full flex-1 min-h-0 h-(--hud-chart-height) overflow-visible; }
+.mind-hud-chart-area { fill:var(--hud-chart-fill); }
+.mind-hud-chart-line { @apply fill-none; stroke:var(--ds-accent); stroke-width:var(--hud-chart-stroke); stroke-linejoin:round; stroke-linecap:round; stroke-dasharray:var(--hud-chart-dash); }
+.mind-hud-chart-dates { @apply flex justify-between text-ui-xs text-secondary; }
+.mind-hud-chart-empty { @apply grid flex-1 place-items-center text-ui-xs text-secondary; }
+.mind-hud-page[data-hud-panel="3"] .mind-hud-basis { @apply pt-ui-3; }
+.mind-life-loader { @apply flex items-center justify-center h-full w-full text-secondary bg-field; }
+.mind-life-stage:not([data-ready="true"]) { @apply bg-field; }
+.mind-life-loader svg { @apply w-(--hud-glyph-size) h-(--hud-glyph-size) text-secondary; }
+
+.vibe-shell .home-hero-pet { @apply w-full min-w-0; }
+.vibe-shell .home-hero-pet > .mind-hud { @apply w-full; }
+.vibe-shell .home-hero-pet > .home-pet-caption { @apply sr-only; }
+.vibe-shell .home-hero { @apply gap-ui-9; }
+.vibe-shell .home-hero-copy h2 { @apply text-ui-lg leading-ui-lg; }
+.vibe-shell .home-hero-return { @apply text-ui-3xl leading-ui-3xl my-ui-5; }
+.vibe-shell .home-hero-period { @apply text-ui-xs leading-ui-md; }
+.home-account-group { @apply inline-flex items-center gap-ui-2 ml-auto min-w-0; }
+.home-scope-row .home-account-group .home-account-summary { @apply w-auto ml-0; }
+.vibe-shell .home-card-top { @apply mb-ui-5; }
+.vibe-shell .home-mind-card .home-card-top > .home-status { @apply top-ui-4 bottom-auto left-ui-5 pointer-events-none h-fit; }
+.vibe-shell .home-card-top .home-card-pet { @apply block; }
+.vibe-shell .home-card-open { @apply block; }
+.vibe-shell .mind-companion-card:has(.mind-hud) .mind-companion-performance { @apply hidden; }
+.vibe-shell .mind-companion-card:has(.mind-hud) > .mind-companion-open { @apply pt-ui-5; }
+.vibe-shell .mind-operation-identity:has(.mind-hud) { @apply block; }
+.vibe-shell .mind-operation-main:has(.mind-hud) { @apply p-0; }
+.vibe-shell .mind-operation-main:has(.mind-hud) .mind-hud { @apply rounded-none; }
+.vibe-shell .mind-operation-main:has(.mind-hud) .mind-operation-receipt,
+.vibe-shell .mind-operation-main:has(.mind-hud) .mind-operation-held { @apply mx-ui-6; }
+.vibe-shell .mind-operation-main:has(.mind-hud) .mind-operation-amounts { @apply m-0 px-ui-6 py-ui-5 border-t-0 border-b border-subtle; }
+@media (width < theme(--breakpoint-md)) {
+ .mind-hud-rail button { @apply w-control-touch h-control-touch; }
+ .mind-hud-page { @apply px-ui-6; }
+ .vibe-shell .home-hero { @apply flex flex-col gap-ui-7; }
+ .vibe-shell .home-hero-pet { @apply w-full; }
+ .home-account-group { @apply w-full ml-0; }
+ .mind-hud-feature .mind-hud-viewport { @apply h-(--hud-mobile-height); }
+}
+@media (prefers-reduced-motion:reduce) {
+ .mind-hud *, .mind-life-loader { animation:none; transition:none; }
+}

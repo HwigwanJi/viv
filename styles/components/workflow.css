@@ -1,0 +1,28 @@
+@reference '../theme.css';
+.workflow-empty { @apply flex flex-col items-center justify-center px-ui-7 py-ui-9 text-center min-w-0; @apply min-h-(--ui-workflow-empty-height); }
+.workflow-empty-mark { @apply flex items-center justify-center rounded-ui-xl bg-hover text-secondary mb-ui-5; @apply w-control-touch; @apply h-control-touch; }
+.workflow-empty-mark svg { @apply w-(--ds-icon-size-lg); @apply h-(--ds-icon-size-lg); }
+.workflow-empty :is(h2,h3) { @apply text-ui-base font-ui-medium m-0; }
+.workflow-empty p { @apply text-ui-sm text-secondary mt-ui-3 mb-0; @apply max-w-(--ui-panel-medium); }
+.workflow-empty-actions { @apply mt-ui-6 flex flex-wrap justify-center gap-ui-3; }
+.workflow-filter-summary { @apply flex flex-wrap items-center gap-ui-3 my-ui-4 text-ui-xs; }
+.workflow-filter-summary > span { @apply inline-flex items-center gap-ui-2 px-ui-3 py-ui-2 rounded-ui-md bg-hover min-w-0; overflow-wrap:anywhere; }
+.workflow-filter-summary small { @apply text-secondary; }
+.workflow-filter-summary > span:has(.workflow-filter-remove) { @apply py-0 pr-0 max-w-full; }
+.workflow-filter-summary > span:has(.workflow-filter-remove) small { @apply shrink-0; }
+.workflow-filter-value { @apply min-w-0 truncate; }
+.workflow-filter-summary .button.small.workflow-filter-remove { @apply shrink-0 min-w-control-touch min-h-control-touch p-0 text-ui-base; }
+.form-draft-tools { @apply flex flex-wrap items-center gap-ui-3 mr-auto min-w-0; }
+.form-draft-tools .button { @apply border border-solid border-default; }
+.form-draft-tools [hidden] { @apply hidden; }
+.form-draft-status { @apply text-ui-xs text-secondary m-0 mr-auto; }
+.form-draft-conflicts { @apply p-ui-4 my-ui-4 border border-subtle rounded-ui-md text-ui-sm; overflow-wrap:anywhere; }
+.form-section { @apply min-w-0 border-0 p-0 m-0; }
+.form-section + .form-section { @apply mt-ui-7 pt-ui-6 border-t border-subtle; }
+.form-section legend { @apply mb-ui-5 text-ui-base font-ui-medium; }
+:root[data-reader-open="true"] .studio-page-library .studio-content { @apply w-auto mr-(--ui-reader-width); }
+dialog[data-reader-docked="true"] { @apply fixed m-0 rounded-none border-l border-subtle; inset:var(--ui-reader-top) var(--ds-space-0) var(--ds-space-0) auto; @apply w-(--ui-reader-width); @apply max-w-(--ui-reader-width); @apply h-(--ui-reader-height); @apply max-h-(--ui-reader-height); box-shadow:var(--ds-shadow-raised); }
+dialog[data-reader-docked="true"] .dialog-head { @apply border-b border-subtle; }
+.dialog-context { @apply mt-ui-2 text-ui-xs text-secondary font-ui-regular; }
+.studio-library-table tr[data-selected="true"] { @apply bg-hover; }
+@media (width < theme(--breakpoint-xl)) { :root[data-reader-open="true"] .studio-page-library .studio-content { @apply w-full mr-ui-0; } }

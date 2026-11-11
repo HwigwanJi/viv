@@ -1,0 +1,807 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://keynes-investment-lab.local/schemas/mind-forms/v2/principle-evidence",
+  "title": "원칙별 근거",
+  "description": "비율은 0.01=1%, 시각은 UTC ISO. 교차 필드·시점·범위·프로토타입·사용 권한은 서버 도메인 검증을 함께 적용한다. 자동 운용 관측은 evaluation에 저장된 원본 참조와 코호트를 그대로 보존한다.",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 2
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+    },
+    "kind": {
+      "const": "principle-evidence"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "user",
+            "mcp-llm",
+            "system-export",
+            "market-provider"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "^https://"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "uri"
+      ],
+      "additionalProperties": false
+    },
+    "asOf": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "availableAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "profileId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "instrumentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+          },
+          "maxItems": 500,
+          "uniqueItems": true
+        },
+        "experimentId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "profileId",
+        "instrumentIds",
+        "experimentId"
+      ],
+      "additionalProperties": false
+    },
+    "principleRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 200,
+        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+      },
+      "maxItems": 100,
+      "uniqueItems": true
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "recordRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+          },
+          "maxItems": 200,
+          "uniqueItems": true
+        },
+        "contentHashes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "maxItems": 200
+        },
+        "classification": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "model": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                },
+                "requestId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 200,
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                },
+                "answeredAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "choices": {
+                  "type": "object",
+                  "properties": {
+                    "knowledgeType": {
+                      "enum": [
+                        "OBSERVED_FACT",
+                        "HYPOTHESIS",
+                        "VALIDATED_HEURISTIC",
+                        "OPERATING_PROCEDURE"
+                      ]
+                    },
+                    "evidenceDirection": {
+                      "enum": [
+                        "supporting",
+                        "contradicting",
+                        "mixed",
+                        "unresolved"
+                      ]
+                    },
+                    "marketRegime": {
+                      "enum": [
+                        "trending_up",
+                        "trending_down",
+                        "range",
+                        "volatile",
+                        "unknown"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "knowledgeType",
+                    "evidenceDirection",
+                    "marketRegime"
+                  ],
+                  "additionalProperties": false
+                },
+                "confidence": {
+                  "type": "object",
+                  "properties": {
+                    "knowledgeType": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "evidenceDirection": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "marketRegime": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "knowledgeType",
+                    "evidenceDirection",
+                    "marketRegime"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "model",
+                "requestId",
+                "answeredAt",
+                "choices",
+                "confidence"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "createdAt",
+        "authorId",
+        "recordRefs",
+        "contentHashes",
+        "classification"
+      ],
+      "additionalProperties": false
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "principleId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "principleVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2000
+        },
+        "decisionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "period": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "required": [
+            "start",
+            "end"
+          ],
+          "additionalProperties": false
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "netReturn": {
+              "type": "number",
+              "minimum": -1,
+              "maximum": 1000
+            },
+            "benchmarkReturn": {
+              "type": "number",
+              "minimum": -1,
+              "maximum": 1000
+            },
+            "feesReturn": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "slippageReturn": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "maxDrawdown": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "benchmarkId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+            }
+          },
+          "required": [
+            "netReturn",
+            "benchmarkReturn",
+            "feesReturn",
+            "slippageReturn",
+            "maxDrawdown",
+            "benchmarkId"
+          ],
+          "additionalProperties": false
+        },
+        "regime": {
+          "enum": [
+            "trending_up",
+            "trending_down",
+            "range",
+            "volatile",
+            "unknown"
+          ]
+        },
+        "direction": {
+          "enum": [
+            "supporting",
+            "contradicting",
+            "mixed",
+            "unresolved"
+          ]
+        },
+        "independenceGroup": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        },
+        "experimentType": {
+          "enum": [
+            "FORWARD_PAPER",
+            "POINT_IN_TIME_BACKTEST",
+            "HISTORICAL_FUNCTIONAL_REPLAY",
+            "RETROSPECTIVE_POLICY_SIMULATION"
+          ]
+        },
+        "attribution": {
+          "enum": [
+            "observational",
+            "controlled-ablation"
+          ]
+        },
+        "sourceRecordHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "principleId",
+        "principleVersion",
+        "decisionId",
+        "period",
+        "metrics",
+        "regime",
+        "direction",
+        "independenceGroup",
+        "experimentType",
+        "attribution",
+        "sourceRecordHash"
+      ],
+      "additionalProperties": false
+    },
+    "evaluation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceMode",
+        "runId",
+        "runEvidenceHash",
+        "observationId",
+        "observationHash",
+        "manifestId",
+        "manifestHash",
+        "policyVersion",
+        "policyHash",
+        "principleIds",
+        "cohorts"
+      ],
+      "properties": {
+        "sourceMode": {
+          "const": "FORWARD_AUTO"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+          "maxLength": 200
+        },
+        "runEvidenceHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "observationId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+              "maxLength": 200
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observationHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "manifestId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+          "maxLength": 200
+        },
+        "manifestHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "policyVersion": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+          "maxLength": 200
+        },
+        "policyHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "principleIds": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+            "maxLength": 200
+          }
+        },
+        "cohorts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag",
+              "assessment"
+            ],
+            "properties": {
+              "tag": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "schemaVersion",
+                  "policyVersion",
+                  "cohortPolicyHash",
+                  "manifestHash",
+                  "principleId",
+                  "instrumentId",
+                  "timeframe",
+                  "quoteCurrency",
+                  "marketRegime",
+                  "marketRegimePolicyVersion",
+                  "evaluationMode",
+                  "costPolicyVersion",
+                  "benchmarkPolicyVersion",
+                  "valuationPolicyVersion",
+                  "cohortKey",
+                  "opportunityGroupId",
+                  "subscriptionId",
+                  "profileId",
+                  "decisionId",
+                  "barCloseAt",
+                  "startAt",
+                  "endAt",
+                  "actualDurationMs",
+                  "executionWindowStartAt",
+                  "executionWindowEndAt",
+                  "executionWindowEligible",
+                  "independence",
+                  "weightPromotion"
+                ],
+                "properties": {
+                  "schemaVersion": {
+                    "const": 1
+                  },
+                  "policyVersion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "cohortPolicyHash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "manifestHash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "principleId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                    "maxLength": 200
+                  },
+                  "instrumentId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                    "maxLength": 200
+                  },
+                  "timeframe": {
+                    "const": "4h"
+                  },
+                  "quoteCurrency": {
+                    "const": "USDT"
+                  },
+                  "marketRegime": {
+                    "enum": [
+                      "trending_up",
+                      "trending_down",
+                      "range",
+                      "volatile",
+                      "unknown"
+                    ]
+                  },
+                  "marketRegimePolicyVersion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "evaluationMode": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "costPolicyVersion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "benchmarkPolicyVersion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "valuationPolicyVersion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "cohortKey": {
+                    "type": "string",
+                    "pattern": "^cohort-[a-f0-9]{64}$"
+                  },
+                  "opportunityGroupId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                    "maxLength": 200
+                  },
+                  "subscriptionId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                    "maxLength": 200
+                  },
+                  "profileId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                    "maxLength": 200
+                  },
+                  "decisionId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                    "maxLength": 200
+                  },
+                  "barCloseAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "startAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "actualDurationMs": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "executionWindowStartAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "executionWindowEndAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "executionWindowEligible": {
+                    "type": "boolean"
+                  },
+                  "independence": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "status",
+                      "review",
+                      "eventIds",
+                      "independentGroupApproved"
+                    ],
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "UNRESOLVED_COMMON_SHOCK",
+                          "SHARED_OPPORTUNITY",
+                          "REVIEWED_DISTINCT_OPPORTUNITY"
+                        ]
+                      },
+                      "review": {
+                        "anyOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                              "policyVersion",
+                              "reviewId",
+                              "reviewedAt",
+                              "reviewerId",
+                              "commonShock",
+                              "eventIds"
+                            ],
+                            "properties": {
+                              "policyVersion": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 200
+                              },
+                              "reviewId": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                                "maxLength": 200
+                              },
+                              "reviewedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "reviewerId": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                                "maxLength": 200
+                              },
+                              "commonShock": {
+                                "const": "CLEARED"
+                              },
+                              "eventIds": {
+                                "type": "array",
+                                "maxItems": 50,
+                                "uniqueItems": true,
+                                "items": {
+                                  "type": "string",
+                                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                                  "maxLength": 200
+                                }
+                              }
+                            }
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "eventIds": {
+                        "type": "array",
+                        "maxItems": 50,
+                        "uniqueItems": true,
+                        "items": {
+                          "type": "string",
+                          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                          "maxLength": 200
+                        }
+                      },
+                      "independentGroupApproved": {
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "weightPromotion": {
+                    "const": "USER_APPROVED_CONTROLLED_ABLATION_REQUIRED"
+                  }
+                }
+              },
+              "assessment": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "eligible",
+                  "reasons",
+                  "weightPromotionAllowed"
+                ],
+                "properties": {
+                  "eligible": {
+                    "type": "boolean"
+                  },
+                  "cohortEligible": {
+                    "type": "boolean"
+                  },
+                  "independenceEligible": {
+                    "type": "boolean"
+                  },
+                  "reasons": {
+                    "type": "array",
+                    "maxItems": 50,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                          "maxLength": 200
+                        },
+                        "message": {
+                          "type": "string",
+                          "maxLength": 2000
+                        }
+                      }
+                    }
+                  },
+                  "cohortKey": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                    "maxLength": 200
+                  },
+                  "opportunityGroupId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$",
+                    "maxLength": 200
+                  },
+                  "weightPromotionAllowed": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "kind",
+    "title",
+    "source",
+    "asOf",
+    "availableAt",
+    "scope",
+    "principleRefs",
+    "provenance",
+    "data",
+    "evaluation"
+  ],
+  "additionalProperties": false
+}

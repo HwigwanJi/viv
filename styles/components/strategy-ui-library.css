@@ -1,0 +1,44 @@
+.strategy-library-page { @apply mx-auto min-w-0 px-ui-8 pb-ui-8 text-foreground; max-width:var(--graph-library-width); }
+.strategy-library-masthead { @apply flex min-w-0 items-center justify-between gap-ui-4 border-b border-default py-ui-6; }
+.strategy-library-brand { @apply flex min-w-0 items-center gap-ui-4 text-ui-md font-ui-semibold text-foreground no-underline; }
+.strategy-library-brand span { @apply truncate font-ui-medium text-secondary; }
+.strategy-library-intro { @apply py-ui-5; }
+.strategy-library-eyebrow { @apply text-ui-xs font-ui-medium tracking-widest text-muted; }
+.strategy-library-intro h1 { @apply my-ui-4 text-ui-2xl font-ui-semibold; }
+.strategy-library-intro p { @apply m-0 text-ui-md leading-ui-lg text-secondary; }
+.strategy-library-tabs { @apply mb-ui-6 flex min-w-0 items-center gap-ui-6 border-b border-default; }
+.strategy-library-tabs a { @apply flex items-center gap-ui-2 border-b-2 border-transparent py-ui-4 text-ui-sm font-ui-medium text-secondary no-underline; }
+.strategy-library-tabs a[aria-current=page] { @apply border-accent text-accent; }
+.strategy-library-tabs a span { @apply rounded-ui-sm bg-hover px-ui-2 py-ui-1 text-ui-xs text-secondary; }
+.strategy-library-controls { @apply mb-ui-7 flex min-w-0 flex-wrap items-end gap-ui-4; }
+.strategy-library-controls label { @apply grid min-w-0 gap-ui-2 text-ui-xs text-secondary; }
+.strategy-library-controls select,.strategy-library-section-head input { @apply min-w-0 rounded-ui-md border border-default bg-field px-ui-4 py-ui-3 text-ui-sm text-foreground; }
+.strategy-library-grid { @apply grid min-w-0 grid-cols-4 items-start gap-ui-7; }
+.strategy-library-specimen { @apply min-w-0; }
+.strategy-library-specimen-label { @apply mb-ui-3 flex min-w-0 items-center justify-between gap-ui-2 text-ui-xs text-muted; }
+.strategy-library-specimen-label span:first-child { @apply font-ui-mono; }
+.strategy-library-specimen .strategy-node { @apply w-full; min-height:var(--graph-library-card-height); }
+.strategy-library-specimen > p { @apply my-ui-3 text-ui-xs leading-ui-md text-secondary; }
+.strategy-library-port-summary { @apply mb-0 mt-ui-4 grid min-w-0 gap-ui-2 border-t border-subtle pt-ui-3 text-ui-xs; }
+.strategy-library-port-summary > div { @apply flex min-w-0 justify-between gap-ui-3; }
+.strategy-library-port-summary dt { @apply text-muted; }
+.strategy-library-port-summary dd { @apply m-0 min-w-0 truncate text-right text-secondary; }
+.strategy-library-section-head { @apply mb-ui-6 flex min-w-0 flex-wrap items-center justify-between gap-ui-4; }
+.strategy-library-section-head h2 { @apply mb-ui-2 mt-0 text-ui-lg font-ui-semibold; }
+.strategy-library-section-head p { @apply m-0 text-ui-sm leading-ui-md text-secondary; }
+.strategy-library-icon-grid { @apply grid grid-cols-8 gap-ui-4; }
+.strategy-library-icon-grid a { @apply flex min-w-0 flex-col items-center gap-ui-3 rounded-ui-lg border border-default bg-surface p-ui-6 text-foreground no-underline; }
+.strategy-library-icon-grid a:hover { @apply border-accent bg-accent-soft; }
+.strategy-library-icon-grid .strategy-glyph { @apply size-ui-8; }
+.strategy-library-icon-grid strong { @apply truncate text-ui-sm font-ui-medium; }
+.strategy-library-icon-grid code { @apply truncate text-ui-xs text-muted; }
+.strategy-library-editor-host { height:var(--graph-library-editor-height); }
+.strategy-library-editor-host .strategy-editor { @apply flex h-full min-h-0 flex-col overflow-hidden rounded-ui-lg border border-default; }
+.strategy-library-editor-host .strategy-editor-body { @apply min-h-0 flex-1; height:auto; }
+.strategy-library-editor-host .strategy-editor-footer { @apply shrink-0; }
+.strategy-library-notice { @apply min-h-ui-6 my-ui-4 text-ui-sm text-accent; }
+.strategy-library-footer { @apply mt-ui-8 flex min-w-0 justify-between gap-ui-4 border-t border-default py-ui-6 text-ui-xs text-muted; }
+.strategy-library-tag { @apply rounded-ui-md border border-default bg-surface px-ui-3 py-ui-2 text-ui-xs text-secondary; }
+@variant max-xl { .strategy-library-grid { @apply grid-cols-3; } .strategy-library-icon-grid { @apply grid-cols-6; } }
+@variant max-lg { .strategy-library-grid { @apply grid-cols-2; } .strategy-library-icon-grid { @apply grid-cols-4; } }
+@variant max-md { .strategy-library-page { @apply px-ui-4; } .strategy-library-masthead { @apply py-ui-4; } .strategy-library-brand span { @apply text-ui-xs; } .strategy-library-masthead > a:last-child { @apply text-ui-xs; } .strategy-library-tabs { @apply gap-ui-4; } .strategy-library-tabs a { @apply text-ui-xs; } .strategy-library-grid { @apply grid-cols-1; } .strategy-library-icon-grid { @apply grid-cols-3; } .strategy-library-icon-grid a { @apply p-ui-4; } .strategy-library-footer { @apply flex-col; } }

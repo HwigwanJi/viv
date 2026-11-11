@@ -1,0 +1,14 @@
+dist/data/*.json text eol=lf
+design/mind-companion-ui-contract.json text eol=lf
+design/generated/system-manifest.json text eol=lf
+scripts/check-mind-companion-ui.mjs text eol=lf
+package*.json text eol=lf
+scripts/build-styles.mjs text eol=lf
+styles/** text eol=lf
+dist/*.html text eol=lf
+dist/*.mjs text eol=lf
+dist/*.css text eol=lf
+dist/ui/*.mjs text eol=lf
+dist/ui/*.jsx text eol=lf
+dist/ui/*.css text eol=lf
+dist/ui/tokens/*.css text eol=lf

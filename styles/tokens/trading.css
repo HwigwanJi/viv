@@ -1,0 +1,78 @@
+/* Trading workspace dimensions, chart drawing and contextual navigation. */
+:root {
+  --terminal-header-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr) auto;
+  --terminal-header-caption-height: var(--ds-space-5);
+  --terminal-header-actions-offset:calc(var(--terminal-header-caption-height) + var(--ds-space-2));
+  --terminal-header-value-height: var(--ds-space-9);
+  --terminal-workspace-height: calc(100dvh - var(--ds-header-height) - var(--ds-space-11) - var(--ds-space-4));
+  --terminal-workspace-min-height: 44rem;
+  --terminal-center-min-height: 40rem;
+  --terminal-watchlist-width: 13rem;
+  --terminal-watchlist-compact-width: 11rem;
+  --terminal-discovery-mobile-height: 28rem;
+  --terminal-mind-panel-width: 16rem;
+  --terminal-mind-panel-compact-width: 14rem;
+  --terminal-chart-min-height: 18rem;
+  --terminal-chart-compact-height: 14rem;
+  --terminal-chart-mobile-height: 22rem;
+  --terminal-chart-max-height: 70dvh;
+  --terminal-ledger-min-height: 10rem;
+  --terminal-ledger-compact-height: 8rem;
+  --terminal-ledger-mobile-height: 14rem;
+  --terminal-ledger-max-height: 18rem;
+  --terminal-ledger-share: 27%;
+  --terminal-panel-preview-height: 20rem;
+  --terminal-short-list-height: 9rem;
+  --terminal-watchlist-min-height: 6rem;
+  --terminal-watchlist-mobile-height: 16rem;
+  --terminal-empty-min-height: 6rem;
+  --terminal-empty-panel-height: 10rem;
+  --terminal-table-min-width: 40rem;
+  --terminal-decision-result-width: 14rem;
+  --terminal-ohlc-row-gap: var(--ds-space-2);
+  --terminal-symbol-column-share: 55%;
+  --terminal-symbol-name-width: 6rem;
+  --terminal-symbol-label-width: 8rem;
+  --terminal-market-heading-width: 6rem;
+  --terminal-primary-min-width: 6rem;
+  --terminal-compact-field-width: 8rem;
+  --terminal-picker-min-width: 10rem;
+  --terminal-picker-width: 12rem;
+  --terminal-picker-max-width: 14rem;
+  --terminal-mobile-picker-share: 55%;
+  --terminal-copy-width: 24rem;
+  --terminal-description-label: 5rem;
+  --terminal-sidebar-rail-width: var(--ds-space-12);
+  --terminal-brand-height: calc(var(--ds-space-12) + var(--ds-space-4));
+  --terminal-selected-row-shadow: inset var(--ds-space-2) 0 var(--ds-accent);
+  --terminal-row-menu-shadow: 0 0 0 var(--ds-space-1) var(--ds-bg-raised);
+  --terminal-icon-only-text-size: 0;
+  --terminal-popover-width: var(--ds-tooltip-max-width);
+  --terminal-popover-pinned-width: var(--ds-toast-width);
+  --terminal-popover-inset: var(--ds-space-4);
+  --terminal-popover-offset-x: var(--ds-space-6);
+  --terminal-popover-offset-y: var(--ds-space-5);
+  --terminal-chart-keyboard-y: var(--ds-space-9);
+  --terminal-chart-margin-top: 0.12;
+  --terminal-chart-margin-bottom: 0.24;
+  --terminal-chart-volume-top: 0.82;
+  --terminal-chart-volume-bottom: 0;
+  --terminal-chart-volume-up: rgba(47, 107, 69, 0.35);
+  --terminal-chart-volume-down: rgba(165, 53, 44, 0.35);
+  --terminal-chart-right-offset: 4;
+  --terminal-chart-bar-spacing: var(--ds-space-4);
+  --terminal-chart-min-bar-spacing: var(--ds-space-1);
+  --terminal-chart-crosshair-width: 1;
+  --terminal-chart-marker-size: 0.7;
+  --terminal-chart-zoom-in: 0.75;
+  --terminal-chart-zoom-out: 1.35;
+  --terminal-chart-bar-center: 0.5;
+  --terminal-chart-range-tail: 1;
+}
+
+[data-theme="dark"] {
+  --terminal-chart-volume-up: rgba(134, 199, 154, 0.35);
+  --terminal-chart-volume-down: rgba(238, 154, 142, 0.35);
+}
+
+@custom-variant terminal-short-desktop (@media (width >= 80rem) and (height <= 52rem));

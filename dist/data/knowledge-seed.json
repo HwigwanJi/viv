@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "knowledge": {
+    "schemaVersion": 1,
+    "items": [
+      {
+        "id": "note-0db1a5ae-89e4-4e10-b359-8a6b379d801b",
+        "title": "BTC 현물과 4시간봉",
+        "text": "명세서는 BTC 현물 롱온리와 4시간봉 마감마다의 매수·보유·매도 출력을 정한다.",
+        "kind": "observation",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "BTC 결정모델 명세서 (Buy Hold Sell)",
+        "sourceUrl": null,
+        "sourceType": "attachment",
+        "sourceLocator": "§1–2",
+        "evidenceIds": [],
+        "tags": [
+          "관찰",
+          "명세서 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.365Z",
+        "updatedAt": "2026-10-15T12:34:27.365Z",
+        "review": null,
+        "revisions": []
+      },
+      {
+        "id": "note-fdcdcd5e-e1a1-4b67-b259-ccfd6230bd2c",
+        "title": "가격 구조 중심 운용",
+        "text": "9장의 최종 권고는 가격 구조를 기본 신호로 사용하고 파생 지표는 참고 정보로 출력하는 것이다. k=4, h0=1.5, 행동 기준=0.60을 유지한다.",
+        "kind": "rule",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "BTC 결정모델 명세서 (Buy Hold Sell)",
+        "sourceUrl": null,
+        "sourceType": "attachment",
+        "sourceLocator": "§9 최종 권고",
+        "evidenceIds": [],
+        "tags": [
+          "규칙",
+          "명세서 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.368Z",
+        "updatedAt": "2026-10-15T12:34:27.368Z",
+        "review": null,
+        "revisions": []
+      },
+      {
+        "id": "note-2b98bb9f-1cab-4355-89f0-de8b13853c90",
+        "title": "매수 100%·매도 25%·보유 유지",
+        "text": "매수의 목표는 전략 자금의 BTC 비중 100%, 매도의 목표는 25% 유지, 보유는 현재 비중 유지다. 매도 신호에서 현재 비중이 25%보다 낮으면 보유를 유지하는 실행 규칙을 적용한다.",
+        "kind": "rule",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "BTC 결정모델 명세서 (Buy Hold Sell)",
+        "sourceUrl": null,
+        "sourceType": "attachment",
+        "sourceLocator": "§9 권장 변경 + 실행 해석",
+        "evidenceIds": [],
+        "tags": [
+          "규칙",
+          "명세서 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.368Z",
+        "updatedAt": "2026-10-15T12:34:27.368Z",
+        "review": null,
+        "revisions": []
+      },
+      {
+        "id": "note-ba2c58e9-9141-4744-8157-d9f335464e5e",
+        "title": "바이앤홀드 비교",
+        "text": "명세서의 전체 구간에서 바이앤홀드는 연환산 수익률 35.5%·MDD -77.0%, 25% 유지 전략은 32.6%·MDD -57.3%로 보고되었다. 원래 실험 코드와 실행 산출물을 확보하고 재현 결과를 대조한다.",
+        "kind": "observation",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "BTC 결정모델 명세서 (Buy Hold Sell)",
+        "sourceUrl": null,
+        "sourceType": "attachment",
+        "sourceLocator": "§9 전략별 연간 수익률과 MDD",
+        "evidenceIds": [],
+        "tags": [
+          "관찰",
+          "명세서 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.369Z",
+        "updatedAt": "2026-10-15T12:34:27.369Z",
+        "review": null,
+        "revisions": []
+      },
+      {
+        "id": "note-d0cb29a8-48b7-4b72-ac76-2eb4bb459591",
+        "title": "과열과 추세 유지",
+        "text": "명세서 실험에서 파생 과열에 보유분까지 매도한 경우 거래 횟수가 늘고 성과가 낮아졌다. 강한 추세에서 과열이 지속되는 사례를 설명한다.",
+        "kind": "observation",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "BTC 결정모델 명세서 (Buy Hold Sell)",
+        "sourceUrl": null,
+        "sourceType": "attachment",
+        "sourceLocator": "§9 파생 지표 필터 검증",
+        "evidenceIds": [],
+        "tags": [
+          "관찰",
+          "명세서 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.369Z",
+        "updatedAt": "2026-10-15T12:34:27.369Z",
+        "review": null,
+        "revisions": []
+      },
+      {
+        "id": "note-fe60903b-4320-44f3-b3bc-6612749b376f",
+        "title": "상승장 참여와 급락 대응",
+        "text": "명세서 모델은 2020·2021·2024년 강한 상승장에서 바이앤홀드보다 낮은 수익을 보고했다. 4시간봉 사이의 급락에서는 깊은 낙폭을 기록했다.",
+        "kind": "observation",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "BTC 결정모델 명세서 (Buy Hold Sell)",
+        "sourceUrl": null,
+        "sourceType": "attachment",
+        "sourceLocator": "§9 연간 성과와 전체 구간 재점검",
+        "evidenceIds": [],
+        "tags": [
+          "관찰",
+          "명세서 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.369Z",
+        "updatedAt": "2026-10-15T12:34:27.369Z",
+        "review": null,
+        "revisions": []
+      },
+      {
+        "id": "note-93ad1898-9615-4abc-b4b5-84fb90cb50ad",
+        "title": "강한 기회에서 비중 확대",
+        "text": "대화에서는 적은 손실과 드문 큰 수익을 함께 추구하고, 강한 상승 흐름에서 적극적으로 운용하는 클러치 기능을 요청했다. JEV의 보통·기회 집중 선택과 별도 목표 비중 정책으로 실험한다.",
+        "kind": "hypothesis",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "투자 아이디어 대화 · 요약",
+        "sourceUrl": null,
+        "sourceType": "conversation",
+        "sourceLocator": "대화 2026-10-15 13:09–13:18 KST",
+        "evidenceIds": [],
+        "tags": [
+          "가설",
+          "대화 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.369Z",
+        "updatedAt": "2026-10-15T12:34:27.369Z",
+        "review": null,
+        "revisions": []
+      },
+      {
+        "id": "note-54efa6c4-32d0-49ec-8aa6-0c42770edcbe",
+        "title": "거래소 간 가격 차이",
+        "text": "대화에서는 국내외 거래소 가격 차이에 양쪽 포지션을 잡고 차이가 좁혀지면 함께 정리하는 아이디어를 제시했다. 환산·수수료·펀딩·양쪽 체결과 미헤지 노출을 함께 모델링한다.",
+        "kind": "hypothesis",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "투자 아이디어 대화 · 요약",
+        "sourceUrl": null,
+        "sourceType": "conversation",
+        "sourceLocator": "대화 2026-10-15 09:29 KST",
+        "evidenceIds": [],
+        "tags": [
+          "가설",
+          "대화 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.370Z",
+        "updatedAt": "2026-10-15T12:34:27.370Z",
+        "review": null,
+        "revisions": []
+      },
+      {
+        "id": "note-dcb5f23a-b4c9-42f9-9c1f-975639cf3d27",
+        "title": "OKX·업비트·수수료 환급",
+        "text": "사용 거래소는 OKX와 업비트이며 테더맥스 수수료 환급을 이용한다고 밝혔다. 계정별 실제 수수료와 지급된 환급액을 별도 정산 기록으로 연결한다.",
+        "kind": "observation",
+        "status": "proposed",
+        "version": 1,
+        "sourceTitle": "투자 아이디어 대화 · 요약",
+        "sourceUrl": null,
+        "sourceType": "conversation",
+        "sourceLocator": "대화 2026-10-15 21:13–21:14 KST",
+        "evidenceIds": [],
+        "tags": [
+          "관찰",
+          "대화 요약"
+        ],
+        "createdAt": "2026-10-15T12:34:27.371Z",
+        "updatedAt": "2026-10-15T12:34:27.371Z",
+        "review": null,
+        "revisions": []
+      }
+    ]
+  },
+  "sourceMetadata": {
+    "btc-scope": {
+      "sourceId": "btc-spec-v1",
+      "sourceVersion": 1,
+      "sourceSha256": "9790a09024ad1f042cef61880e1821c53e0d285f48e5e6370245b042f6e9395d",
+      "locator": "§1–2",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    },
+    "btc-final-price": {
+      "sourceId": "btc-spec-v1",
+      "sourceVersion": 1,
+      "sourceSha256": "9790a09024ad1f042cef61880e1821c53e0d285f48e5e6370245b042f6e9395d",
+      "locator": "§9 최종 권고",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    },
+    "btc-target": {
+      "sourceId": "btc-spec-v1",
+      "sourceVersion": 1,
+      "sourceSha256": "9790a09024ad1f042cef61880e1821c53e0d285f48e5e6370245b042f6e9395d",
+      "locator": "§9 권장 변경 + 실행 해석",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    },
+    "btc-hold-benchmark": {
+      "sourceId": "btc-spec-v1",
+      "sourceVersion": 1,
+      "sourceSha256": "9790a09024ad1f042cef61880e1821c53e0d285f48e5e6370245b042f6e9395d",
+      "locator": "§9 전략별 연간 수익률과 MDD",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    },
+    "btc-heat": {
+      "sourceId": "btc-spec-v1",
+      "sourceVersion": 1,
+      "sourceSha256": "9790a09024ad1f042cef61880e1821c53e0d285f48e5e6370245b042f6e9395d",
+      "locator": "§9 파생 지표 필터 검증",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    },
+    "btc-weakness": {
+      "sourceId": "btc-spec-v1",
+      "sourceVersion": 1,
+      "sourceSha256": "9790a09024ad1f042cef61880e1821c53e0d285f48e5e6370245b042f6e9395d",
+      "locator": "§9 연간 성과와 전체 구간 재점검",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    },
+    "conversation-clutch": {
+      "sourceId": "conversation-20261015",
+      "sourceVersion": 1,
+      "sourceSha256": null,
+      "locator": "대화 2026-10-15 13:09–13:18 KST",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    },
+    "conversation-gap": {
+      "sourceId": "conversation-20261015",
+      "sourceVersion": 1,
+      "sourceSha256": null,
+      "locator": "대화 2026-10-15 09:29 KST",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    },
+    "conversation-exchanges": {
+      "sourceId": "conversation-20261015",
+      "sourceVersion": 1,
+      "sourceSha256": null,
+      "locator": "대화 2026-10-15 21:13–21:14 KST",
+      "capturedAt": "2026-10-15T12:34:27.350Z"
+    }
+  },
+  "sources": [
+    {
+      "id": "btc-spec-v1",
+      "kind": "attachment",
+      "title": "BTC 결정모델 명세서 (Buy Hold Sell)",
+      "version": 1,
+      "sha256": "9790a09024ad1f042cef61880e1821c53e0d285f48e5e6370245b042f6e9395d",
+      "capturedAt": "2026-10-15T12:34:27.350Z",
+      "origin": "카카오톡 첨부 · 2026-10-15 10:41 KST",
+      "rawStorage": "local-private",
+      "parsedBy": "markdown-utf8-v1",
+      "sourceSizeBytes": 24308
+    }
+  ]
+}

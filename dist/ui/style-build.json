@@ -1,0 +1,818 @@
+{
+  "schemaVersion": 1,
+  "compiler": "tailwindcss@4.3.3",
+  "inputs": [
+    {
+      "path": "dist/app.mjs",
+      "sha256": "77af015146d76eabc979adbf9bdbc7e54e8c3036199c24d9dadf9408a97e862f"
+    },
+    {
+      "path": "dist/index.html",
+      "sha256": "e4d0391185844c165d186228cdc381a690460ca8375c477bf9c0fa8cb4961499"
+    },
+    {
+      "path": "dist/install.html",
+      "sha256": "4c00d4dd5da921abcb31b4f8f0a4a725494fa9b48e386aa6f6cf7d12bbbcab0b"
+    },
+    {
+      "path": "dist/knowledge.mjs",
+      "sha256": "904eb02caf0284c020158dfe13ca1e2dd9d01e10c51841e80f43b14c45f82b3c"
+    },
+    {
+      "path": "dist/mind-art-preview.html",
+      "sha256": "f44b095a68b74f9256f6045f0f68de7d56414bf014aaa0c398c43f4b97b7a5f3"
+    },
+    {
+      "path": "dist/mind-art-study.html",
+      "sha256": "bf36c87695d10d613defa62dbb9c97c589a6e6f434c29c88b8761ce0a4aa8a6b"
+    },
+    {
+      "path": "dist/mind-motion-gallery.html",
+      "sha256": "f44b095a68b74f9256f6045f0f68de7d56414bf014aaa0c398c43f4b97b7a5f3"
+    },
+    {
+      "path": "dist/research/overseas-rebuild-20261023/index.html",
+      "sha256": "dbdd444f084b060137ce2fcfabab69c27e603fad7a5e55ac4eb7ed894c568ee8"
+    },
+    {
+      "path": "dist/research/regime-minute-forward-20261023/index.html",
+      "sha256": "7b970a0cc973d3aa4e7653462dece056f825d2ffb58fefb4b6808d27a545ca9c"
+    },
+    {
+      "path": "dist/research/weekly-three-minds-20261023.html",
+      "sha256": "7b74aff8df39b09ea90a799cec5cb048f288746fb162ac9af46dbc5d7a17a64b"
+    },
+    {
+      "path": "dist/store.mjs",
+      "sha256": "84787ceda4e66b49e9149a41f217acaf4140e815a1e2bb02d6fc71918de7d6af"
+    },
+    {
+      "path": "dist/strategy-ui-library.html",
+      "sha256": "270516407e1eed49bc658fd7f557d66ee9b7cac49f0dba6d2350405d592e5045"
+    },
+    {
+      "path": "dist/strategy-view.mjs",
+      "sha256": "aa0c8a0b6748cc10785f8a92fc3022d27c9666cca51af116532aeb9de6315f4c"
+    },
+    {
+      "path": "dist/ui/action-menu.mjs",
+      "sha256": "cad855e0a231f49b17007564a6490be21ed2f20d6b0e870560f5db87e0f855b4"
+    },
+    {
+      "path": "dist/ui/app-install.mjs",
+      "sha256": "0f64205c43488f3379daf600646414d7cba91ab8dbe67ce76e275bc42dc54596"
+    },
+    {
+      "path": "dist/ui/app-notifications.mjs",
+      "sha256": "235fc385c459107e504481735dd7c3ab0bf55473423efd29e79da53830cedfdb"
+    },
+    {
+      "path": "dist/ui/automated-trading.mjs",
+      "sha256": "f354bf5d019f2bd6adfd30f298d01bb1ff4bf5524d7c821c2cb083961aa47b44"
+    },
+    {
+      "path": "dist/ui/benchmark-picker.mjs",
+      "sha256": "d231f3547c6676115c1703645778a7711dd43fe400888e58eaaf3fd8d982f256"
+    },
+    {
+      "path": "dist/ui/brand.mjs",
+      "sha256": "2305dd4b2940c27baccd90a5cec677dc5830d57fe04a73a6359cea5d21dde3bc"
+    },
+    {
+      "path": "dist/ui/broker-connections.mjs",
+      "sha256": "a7baabbde19c5fee5d65d964f6b6519ad81a2d24d20f1b104e045709e4a540b0"
+    },
+    {
+      "path": "dist/ui/brokerage-report.mjs",
+      "sha256": "975036ebe1e3f94fd79c2dd14fa00c273a945b5db527dc484b1c7733667e55ad"
+    },
+    {
+      "path": "dist/ui/capability-catalog.mjs",
+      "sha256": "bd6472db37da9df56e231cc6f39252142c7c90bb75d6c76ea578a93117919bac"
+    },
+    {
+      "path": "dist/ui/context-interactions.mjs",
+      "sha256": "62042d2a6d63b782b73d71b360eaf4465a0fb5ec0f291531513a9902ebf223f0"
+    },
+    {
+      "path": "dist/ui/currency-format.mjs",
+      "sha256": "508f8c69ec9580ae54e144d1b8756e16a74521282ec51fd8ff9538ed7f55a4de"
+    },
+    {
+      "path": "dist/ui/cursor-navigation.mjs",
+      "sha256": "39ea52df2f5678e882c0dd161d4e793a1796b52cf283c9d4ede1481f38fa199d"
+    },
+    {
+      "path": "dist/ui/data-table.mjs",
+      "sha256": "ff42178dc9904a386e087912e7c9f76cd4c87be7d95f67f72f967be4b768fb34"
+    },
+    {
+      "path": "dist/ui/decision-method.mjs",
+      "sha256": "a67baf81949f54b1882d205c71e6af0d6415d2c11ea1c1e6529a334efc510dd5"
+    },
+    {
+      "path": "dist/ui/design-tokens.mjs",
+      "sha256": "5e948c66e0e4101389cca727d3f94111001e2fc251edb4dfd93a43923478faaa"
+    },
+    {
+      "path": "dist/ui/dialog-focus.mjs",
+      "sha256": "52383a4261af4a8cd8f8f43d1cd677931e0df4035bee0e3d154893263c51b1d7"
+    },
+    {
+      "path": "dist/ui/dialog-layout.mjs",
+      "sha256": "15c9a5bc5f8678bbc8abf1fcc257fa277df69d238d7feae8003cf383048e1e55"
+    },
+    {
+      "path": "dist/ui/entity-menu.mjs",
+      "sha256": "db2348511077e51f4ad146dfe27359d1528807c0b05a0fcd565cebfb5c982823"
+    },
+    {
+      "path": "dist/ui/event-paper-resource.mjs",
+      "sha256": "31d3ca4cd1c00c530a392df6a80045df747ccf1819b6a6b4129832b0733a9e7b"
+    },
+    {
+      "path": "dist/ui/event-paper-trading.mjs",
+      "sha256": "cf655f5782f6beb09caee9439fddb9bfc165c05e02615160cc8bb75b9c0e2f98"
+    },
+    {
+      "path": "dist/ui/experiment-collection.mjs",
+      "sha256": "0646653c5195c49737c5df0097ee1272dd1d0db5c1b3c88846539f5472980c2d"
+    },
+    {
+      "path": "dist/ui/form-draft.mjs",
+      "sha256": "fb92841f5fa1217da2082e1c62364ebea1bcf2e6af5fab35ed6091132d9c872e"
+    },
+    {
+      "path": "dist/ui/help-tooltip.mjs",
+      "sha256": "19627d60f3c99b2ef8243bc076608ddcbd06289ca450feaf8de9d0c17f75e13c"
+    },
+    {
+      "path": "dist/ui/home-showcase.mjs",
+      "sha256": "c33f738a72b2d7c324141b8dd784694f84f7da501e0d07a8eb449334d1c55f4f"
+    },
+    {
+      "path": "dist/ui/hourly-model-component-editor.jsx",
+      "sha256": "8e596e48933323c8807ddc3e337534a62ff16a0f8b630f745891ffdb595a98f9"
+    },
+    {
+      "path": "dist/ui/hourly-model-learning.mjs",
+      "sha256": "48ed0175d2e91ec7ceffccb8d4bed732bc1dfe58b7fc5bfadb3a64a544d7d4c8"
+    },
+    {
+      "path": "dist/ui/hourly-model-view.mjs",
+      "sha256": "6c8c61d15854b33877110dd7ac98995837f6207fa6f473fd24a715f1c7eaf5c9"
+    },
+    {
+      "path": "dist/ui/hourly-path-controls.jsx",
+      "sha256": "9aadc076611ecd287261a65d175f1718bcd376e8629b8cf2580d04a4deb39f9e"
+    },
+    {
+      "path": "dist/ui/install-page.mjs",
+      "sha256": "a05327b5b00cd6b48fe24836611298289b6db0388d2c930938837e5ec06ba6d9"
+    },
+    {
+      "path": "dist/ui/interface-motion.mjs",
+      "sha256": "d56f4bffad9c9e188ba8280c3e0a9e39d6f4b19fa98430c1c6dcc464f153aa58"
+    },
+    {
+      "path": "dist/ui/investment-console.mjs",
+      "sha256": "432552068f87c2ab7392e4c00fb0552a4e71ef3b8e9809d9532f5d62ce805e27"
+    },
+    {
+      "path": "dist/ui/judgment-model-controls.jsx",
+      "sha256": "1d3ee41dc63e46825f344e39d22e8d955fb1cf829cef57018d885ed89a6ccc76"
+    },
+    {
+      "path": "dist/ui/lab-focus-view.mjs",
+      "sha256": "b9540a383469ec842a31a1a8b04f28cb10c4f109fbdb10565441c5d7e4d04e31"
+    },
+    {
+      "path": "dist/ui/lab-graph-diff.mjs",
+      "sha256": "65069d0a5d815bba5e93b041016ab2ab388e7c7397113408865721b303d3d36a"
+    },
+    {
+      "path": "dist/ui/lab-workspace.mjs",
+      "sha256": "d26841a8969bcb19f316fa73d032bfe51e55ed510fcb3c4306073e17b0bc0c6b"
+    },
+    {
+      "path": "dist/ui/live-change-review.mjs",
+      "sha256": "635e83d63c67afefa45ed35bc22c6050418f680cbca8b6b50023e2581c99f217"
+    },
+    {
+      "path": "dist/ui/managed-portfolio.mjs",
+      "sha256": "76ce570e5bcaf82cb0f01072b289a1cfe13130c007fcc6506c5534b38cf62114"
+    },
+    {
+      "path": "dist/ui/market-library.mjs",
+      "sha256": "9b3fffcdb03799ea064f89403ac95cb7275588dcea63a72712f14767a96ed45f"
+    },
+    {
+      "path": "dist/ui/mind-activity-resource.mjs",
+      "sha256": "87f7e2a2492860c93f58ca993c6c81b68bf4d74b445a7cd8420e83b985a03e54"
+    },
+    {
+      "path": "dist/ui/mind-activity.mjs",
+      "sha256": "4e1cebe478d64405c018d8944ca058d99a7fecba2cf5a04c0229d37263ab0b6b"
+    },
+    {
+      "path": "dist/ui/mind-art-preview.mjs",
+      "sha256": "ef1e50857c9a21f492dd89ebcd27ac2ab3baf8458e366184e1e12915fc6fc724"
+    },
+    {
+      "path": "dist/ui/mind-art-scene.mjs",
+      "sha256": "1d15243b9f380e2fde8fca2b6a54a8a5a6da27f500bcd384b2cbfae98e577776"
+    },
+    {
+      "path": "dist/ui/mind-avatar.mjs",
+      "sha256": "02c131993758a8e8bfa924c20fb3eac0a60bc7c24d470bc278ae770b9e33f3ad"
+    },
+    {
+      "path": "dist/ui/mind-companion.mjs",
+      "sha256": "3d40d44084bae21c280ca505215810f312e0a9193c1a3f39987f45da1499b5bc"
+    },
+    {
+      "path": "dist/ui/mind-game-resource.mjs",
+      "sha256": "62253f8efd1af94cdfe4ad9dafff508c64b3b0bffc21f915605533ceadfa879d"
+    },
+    {
+      "path": "dist/ui/mind-game.mjs",
+      "sha256": "9a1ad3df16d630946a80e054ea8f1bdf4f21f4d62791b659694af75fc1041d26"
+    },
+    {
+      "path": "dist/ui/mind-hud.mjs",
+      "sha256": "5c38dec9d63d564d19ca4181dc5a9a3e8394d9d0c567bbb40faf5288a936eedb"
+    },
+    {
+      "path": "dist/ui/mind-life-anchors.mjs",
+      "sha256": "79731433b7ec881d7023a5f839a86d78c552a19325f3dadaf8c47b8ed1944d6b"
+    },
+    {
+      "path": "dist/ui/mind-life-appearance.mjs",
+      "sha256": "be772fc12352d8e5d7bf040c8f68d6ec35004b7ae4459e4faf8d410551e9f759"
+    },
+    {
+      "path": "dist/ui/mind-life-gallery.mjs",
+      "sha256": "c5b4e40fa031453aa3cccc14bd95d1f3b436482ade1ec72bd7ff3d88e637fda0"
+    },
+    {
+      "path": "dist/ui/mind-life-scene.mjs",
+      "sha256": "9ae124ff6cee568f3e7388d3eb85fa3f07fb044dac7f6323563b0a6f08f464ce"
+    },
+    {
+      "path": "dist/ui/mind-life.mjs",
+      "sha256": "61c855e1d7b31d3da3e1699f711d6c3e8488218e0fb443030a477b074f1f00b6"
+    },
+    {
+      "path": "dist/ui/mind-motion-gallery.mjs",
+      "sha256": "37374e63c8d47e6eda7505c3249f4c3bc4a7f5c3dda931253f38bd79ad464a61"
+    },
+    {
+      "path": "dist/ui/mind-output-3d-scene.mjs",
+      "sha256": "616c5f5006ce3d6639314d74357b596ee40dba96aaf0a2f30aefac954fa60b13"
+    },
+    {
+      "path": "dist/ui/mind-output-3d.jsx",
+      "sha256": "2e131ae95651ba39c7d73b5abcf899e4a0a7929f42967ac8777439a53490a5b6"
+    },
+    {
+      "path": "dist/ui/news-comparison.mjs",
+      "sha256": "6da747c42ddc21bd4f51f1e47e427eca813ad3a88841173fc70e595e95143329"
+    },
+    {
+      "path": "dist/ui/operation-controls.mjs",
+      "sha256": "4473a55bfd5698c47966fdffbab95ff05d42a7909714cff570ec8fca43419583"
+    },
+    {
+      "path": "dist/ui/operation-window.mjs",
+      "sha256": "db8185e38cbb5026c3f72b0cae509396c7de3fe5251cb00131b90527411061d8"
+    },
+    {
+      "path": "dist/ui/operations.mjs",
+      "sha256": "8f038f9affe2bcb054ecf9c507f6f80e876e5efbc2d9cd2bc61600e747547557"
+    },
+    {
+      "path": "dist/ui/paper-activity-resource.mjs",
+      "sha256": "891a890702ddd32c5cf88d1961056d194ee75254492e3e587f20f823008e7a95"
+    },
+    {
+      "path": "dist/ui/paper-funding-request.mjs",
+      "sha256": "b8193bbfbe47ae86b6853454f456641847366e79147b5d4e6be3536c08fbbcf7"
+    },
+    {
+      "path": "dist/ui/portfolio-route.mjs",
+      "sha256": "6b8095a6f5d3aa590bdeda5c5cbd11d0cd98d3319ee7c69b556501525c61a8ef"
+    },
+    {
+      "path": "dist/ui/position-cooldown-controls.jsx",
+      "sha256": "e3567913a4ee557ac4951719f1be84b784d2b82c8d80adac7fffa02e2d580bc5"
+    },
+    {
+      "path": "dist/ui/quant-strategy-library.mjs",
+      "sha256": "52b0915478a97e0085a04027b2940dddf294a9ae3d1762b1a4980007a20c8fc4"
+    },
+    {
+      "path": "dist/ui/regime-node-controls.jsx",
+      "sha256": "00188941ce8c86b703ac4825cf95494e22a3d0cc8f174c5ab2356fec98a02cac"
+    },
+    {
+      "path": "dist/ui/shell.mjs",
+      "sha256": "006c86954ee962f0591b4570b1c4882903fc0f2aba340cd7aae49a85e1769714"
+    },
+    {
+      "path": "dist/ui/simulation-asset-scope.mjs",
+      "sha256": "1e4d987767f0ebd322ec6874a6120606b6c187fa36c98e7f7cb0af6d4b4a8449"
+    },
+    {
+      "path": "dist/ui/simulation-baseline-comparison.mjs",
+      "sha256": "57c2a1b4442bd613a7aa48cf105ee0fc22bb9f9127881822f02dd19eaf1b9c8a"
+    },
+    {
+      "path": "dist/ui/simulation-editor-state.mjs",
+      "sha256": "2342b17fad91a85380b9796c76199b5f167ccc9db7a1e18e38a17a9e6ad0159e"
+    },
+    {
+      "path": "dist/ui/simulation-lab.mjs",
+      "sha256": "dc92331f70cd52edd57fe0d8e3c1de1797a1af676d5710822185444224ded10a"
+    },
+    {
+      "path": "dist/ui/simulation-playground.mjs",
+      "sha256": "9a466379a06e13020d3c31c652937a671a9843af1f4f9b5f73f93a37fcabf55f"
+    },
+    {
+      "path": "dist/ui/simulation-pre-provider-recovery.mjs",
+      "sha256": "b8395f651845e95c98284f51ac15877221d27a27e00e20144676a7a05ad56768"
+    },
+    {
+      "path": "dist/ui/simulation-valuation.mjs",
+      "sha256": "f2806b8ef8c85ff04954ab0bc63098d78c7b4eb0b1a84e944c3f80acb85f491f"
+    },
+    {
+      "path": "dist/ui/strategy-context-menu.jsx",
+      "sha256": "d18d374ec991692a8ae534892efaf209c41dc68474d7530d1d5d4950f38f0d5e"
+    },
+    {
+      "path": "dist/ui/strategy-explorer.jsx",
+      "sha256": "d9c63db5aef55a6880a48d940a8ef9427fbb6e0650ee637a9ad72267cf0905c0"
+    },
+    {
+      "path": "dist/ui/strategy-graph-editor.jsx",
+      "sha256": "cbd59fac9bbb35c0927af7a1d7cd06f6111b7ab7f1168c91a8bb607c864e2f75"
+    },
+    {
+      "path": "dist/ui/strategy-icons.mjs",
+      "sha256": "7168dda97d02e540080ee6066ffeff2ac98f2fc2a9d869a5879099a9de865e41"
+    },
+    {
+      "path": "dist/ui/strategy-learning.mjs",
+      "sha256": "bb4b1cd761249a6b9bef2253f016055ff0f73b7bc3cc4e30686b24db9e6694d9"
+    },
+    {
+      "path": "dist/ui/strategy-model-library.mjs",
+      "sha256": "60ad5aead311c400ff73e05841aeb033fddbe5185e71baa51c0474c2d6dc701d"
+    },
+    {
+      "path": "dist/ui/strategy-parameter-controls.jsx",
+      "sha256": "636aa0872e5182b9c34bb3dc0c80ed2abc9174d7a9c522e5632a6a1f161f2ae0"
+    },
+    {
+      "path": "dist/ui/strategy-part-card.jsx",
+      "sha256": "0cdf97cdb4970975d08da5a04eb046f8674dc9184c839cd0fa1d5018e114ef19"
+    },
+    {
+      "path": "dist/ui/strategy-ui-library.jsx",
+      "sha256": "4b64d1f349b8bde8a14fde00f72d62ec125396c49e2917c298c9d12c7578e27b"
+    },
+    {
+      "path": "dist/ui/strategy-ui-samples.mjs",
+      "sha256": "286d67ea085415315bb7f72efc01377f732a1d0d49f16df9833526601a202980"
+    },
+    {
+      "path": "dist/ui/studio-controller.mjs",
+      "sha256": "e02bd4de3f135112c8c1281161e52f0dfd9c8fda72cf294c58b7308adf6e91d0"
+    },
+    {
+      "path": "dist/ui/studio-shell.mjs",
+      "sha256": "822df56e2134af7621c74ca250a450b22ec2e3cb869a1becf14343808edd9660"
+    },
+    {
+      "path": "dist/ui/terminal-universe.mjs",
+      "sha256": "b56da3a057441c82d4c0425c4bf0cdf3a3b744346c585b44e3397bdbb1a80dff"
+    },
+    {
+      "path": "dist/ui/terminal-workspace-controls.mjs",
+      "sha256": "04384a950e17f8afdf823f0eb4d47209fe1f1603a35acc1a3b8d3b899821df69"
+    },
+    {
+      "path": "dist/ui/tokens/foundation.css",
+      "sha256": "450b70604c4cb17d00adef92384171e7448bcb1ed4994de38467ae97bc200456"
+    },
+    {
+      "path": "dist/ui/tokens/index.css",
+      "sha256": "43e6b885411a4dbdda5b1b62375f5f2657eabc216d43a19ec3f2a853bf787271"
+    },
+    {
+      "path": "dist/ui/tokens/palette.css",
+      "sha256": "41fb59e6e769e7e62394197beb52025295cfa95ee4832fee977522317115bd93"
+    },
+    {
+      "path": "dist/ui/tokens/semantic.css",
+      "sha256": "06e600fcf4ee5a2757926257aad93b46670c94fc2065f394f829c59ec4c5470a"
+    },
+    {
+      "path": "dist/ui/tokens/shadcn.css",
+      "sha256": "b3aaecb0aea2249887e9a0cf592bc15318de86512b83316379a81a25432c3d94"
+    },
+    {
+      "path": "dist/ui/trade-fill-summary.mjs",
+      "sha256": "f2e787c2045eee27d1f20de8d4829a6748cc2e432ed0f1203b796b7d61e8e848"
+    },
+    {
+      "path": "dist/ui/trading-terminal.mjs",
+      "sha256": "0ddd249f80a7c962c7ba5ded93666c006ff1b3ed6c9945127eb6cfeb55fd5c88"
+    },
+    {
+      "path": "dist/ui/universe-catalog-picker.mjs",
+      "sha256": "224623b49d8f5c1224bf5a78fb098b88744511144311cec8828540501f6f4d60"
+    },
+    {
+      "path": "dist/ui/universe-editor.mjs",
+      "sha256": "6cea1fed612415794fdb819d2a2da135d2e2291b9f854c6770c2b32fbe5f2458"
+    },
+    {
+      "path": "dist/ui/vamp-model-controls.jsx",
+      "sha256": "24105fc6ccdd8e5e9e5a01968173182eb1a731e026d3ededbfeada031db9a728"
+    },
+    {
+      "path": "dist/ui/workflow-state.mjs",
+      "sha256": "8747bac9e31f920ef1c3467b902e975dbfe6a84b4094607ae650819725317034"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "aa68b2d67addbf7eaaa85b44cdd8970777c5b9b5477011429f4274e9746b1698"
+    },
+    {
+      "path": "package.json",
+      "sha256": "6ae455bf8e93274ee7fd1964a680b39a70fdd336202901317b3f7204ebe24db0"
+    },
+    {
+      "path": "scripts/build-styles.mjs",
+      "sha256": "c4da862a35d8ccbe3d2e7d877f6d9ad459c21caa839cfa9a4032772ad0821c23"
+    },
+    {
+      "path": "scripts/style-contract.mjs",
+      "sha256": "a225075071a1819c31777784836fc3764a83b6933a2f228808cf698f25ae5986"
+    },
+    {
+      "path": "styles/components/action-menu.css",
+      "sha256": "733d08f2c18e3317a0ccfc526a02b695d22d6186f34c00095503a2f20f913854"
+    },
+    {
+      "path": "styles/components/base.css",
+      "sha256": "6ace79c6bfe33c6cb9ba1932ac940ccc4cc30a00421a8d6486a3cec64d1d80cf"
+    },
+    {
+      "path": "styles/components/benchmark.css",
+      "sha256": "58f33d64c201bd10f9b964fd409d27a22fe6fb702c51029f8b2b49b4bbaf16ce"
+    },
+    {
+      "path": "styles/components/console.css",
+      "sha256": "4b7766c666627be344a58eef1b0f6fa681a3f142e2f8824278e70d693e9398ab"
+    },
+    {
+      "path": "styles/components/data-table.css",
+      "sha256": "92681f235192f1f18e587dc46c6e194c541d971d0f14ad98a09c7d59101e9d92"
+    },
+    {
+      "path": "styles/components/experience-flow.css",
+      "sha256": "ff5efbbc756f413cf3dcdaed5971259512feca374bdce684bed68feef3e095f7"
+    },
+    {
+      "path": "styles/components/experiment-collection.css",
+      "sha256": "8c7006421c942791ca544456214441f4ac342fbbc62534c899ef3d39bd1a7013"
+    },
+    {
+      "path": "styles/components/help-tooltip.css",
+      "sha256": "1f95f0751cc5b3bd87900a02c3fe9979762ae7224b46e9be9455113f86c35e3f"
+    },
+    {
+      "path": "styles/components/home-showcase.css",
+      "sha256": "a0aa2a595daf591fbbbef8e8e9672fb1cbcc54a698da169ad5e97220506a1eb6"
+    },
+    {
+      "path": "styles/components/hourly-model-workspace.css",
+      "sha256": "16497bdfd1332475ad20a34eefaca206c3fc564e28b692f98b6dabb289c799ce"
+    },
+    {
+      "path": "styles/components/interface-motion.css",
+      "sha256": "c9df7b446b96e1a8f6d6e5f75758b97c1de1f93f89fcc48d8a503c297f08df5b"
+    },
+    {
+      "path": "styles/components/lab-workspace.css",
+      "sha256": "e96c0bb7a051fa6eaa40c2d80149142f1b7d85f58bc9d9f89a315140de942e71"
+    },
+    {
+      "path": "styles/components/live-change-review.css",
+      "sha256": "78a1b009f3adce19f50a06c382b113c0969466fb70e5711bf8f920302459554a"
+    },
+    {
+      "path": "styles/components/mind-activity.css",
+      "sha256": "661bf965a681351281bfc06eccdc87f03431b73aa39f1d18d62d756fa11cd8ac"
+    },
+    {
+      "path": "styles/components/mind-art-study.css",
+      "sha256": "f5b57abb1e474218b6a2c5f0f5296fda0d7d8c63725895559a06f91214cf1025"
+    },
+    {
+      "path": "styles/components/mind-art.css",
+      "sha256": "69934ad8e8998931298510ce2d0af82a2d25adec260556fbe88f163fb54f661e"
+    },
+    {
+      "path": "styles/components/mind-avatar.css",
+      "sha256": "bc595b088b8f54924b91e7ba8598f027e16cde8ed44122d69ad8d9815792cb73"
+    },
+    {
+      "path": "styles/components/mind-companion-summary.css",
+      "sha256": "8cccc61323564b960b2791954610cee3d2b641e53facdb5caf1c098c51103a06"
+    },
+    {
+      "path": "styles/components/mind-game.css",
+      "sha256": "a1ec7f9de1242c65effe58c5815975aaddf3b962f26ddcbfe70f45f91b43e2f5"
+    },
+    {
+      "path": "styles/components/mind-hud.css",
+      "sha256": "19c8fb233f6158b8420d5ff5d3cc5795c561fe346a849f2ce0fb9820ad3d434a"
+    },
+    {
+      "path": "styles/components/mind-life.css",
+      "sha256": "2b0148bbae59d24ade0a04512014be59d0ce1ed19968b0c4d5e8ddc0ce4ace97"
+    },
+    {
+      "path": "styles/components/quant-strategy-library.css",
+      "sha256": "8cc4a291cc3d630f7da642ba8755395cd27971faef678f66c254ce0a78abf6d5"
+    },
+    {
+      "path": "styles/components/research-report.css",
+      "sha256": "2af49fe55f3e9872a4ae5e91d37f90c3c69307896db1979c2a58fc92bfd6b884"
+    },
+    {
+      "path": "styles/components/server-update.css",
+      "sha256": "33dbccd0076b4b1d7e0caeb74b3646567cf61b153fa7a0ec3886b1390052a962"
+    },
+    {
+      "path": "styles/components/strategy-explorer.css",
+      "sha256": "88ea9318c8058848fabbd4a24ff08013556993df0008aef9c833f0aab670066b"
+    },
+    {
+      "path": "styles/components/strategy-graph-editor.css",
+      "sha256": "60796e1781e528686a5843dc4e6779c4db9b21e2c76a53fa0de461f38f5077cb"
+    },
+    {
+      "path": "styles/components/strategy-learning.css",
+      "sha256": "22ab4d75dbe22de71b8539807aad37ad8564e19e31211f94d47d00ebd7de5e35"
+    },
+    {
+      "path": "styles/components/strategy-parts.css",
+      "sha256": "428ddd9f417b18f23bc4c7f930bdb00f036197e1fbc508da16d817b8e5ddd9ed"
+    },
+    {
+      "path": "styles/components/strategy-ui-library.css",
+      "sha256": "3cbdb9a6e5a9d7546b6a3d49363e3dc2492fbb69b209e86a49638ed33e84e958"
+    },
+    {
+      "path": "styles/components/strategy-workspace.css",
+      "sha256": "7ae3cbc583633357867991c61b65a6e447307adbf987321fe60c47b60fbaccac"
+    },
+    {
+      "path": "styles/components/studio-shell.css",
+      "sha256": "36987075c4528055b686ae4df70daf5055615714aae15fc10a847732ace1bf72"
+    },
+    {
+      "path": "styles/components/surfaces.css",
+      "sha256": "569e605b74293ccf313deb52c8e909e629d32cb6bebede776322d5c867740ce3"
+    },
+    {
+      "path": "styles/components/trading-terminal.css",
+      "sha256": "ce07033be04fcf8e8a5d61dc7336f6dafde958139dc1ee011d24eefe7ede7f3f"
+    },
+    {
+      "path": "styles/components/vibe-workspace.css",
+      "sha256": "a8edd47fa754ef2b75e3f4f11b37bfc6ad50c54e005dace602b04bc4f0728e13"
+    },
+    {
+      "path": "styles/components/workflow.css",
+      "sha256": "c5badacefd4160c162336f3c4c6a1357fdc232adb5f8e20ee1e6e57c12a9d220"
+    },
+    {
+      "path": "styles/theme.css",
+      "sha256": "2af9b06610659f2b63d541af834f18feb5a60326e7b3de521e695f3df8e4023e"
+    },
+    {
+      "path": "styles/tokens/action-menu.css",
+      "sha256": "306fb34e76c63348705b6b0e41520dd31d373443be0bb95435f883fcb5c99aa0"
+    },
+    {
+      "path": "styles/tokens/benchmark.css",
+      "sha256": "56d1ca48cdec0a08ad91ed935a7b9585586cf2d741ac74e824fcfb755913c66c"
+    },
+    {
+      "path": "styles/tokens/companion.css",
+      "sha256": "42c6b1075f09974067890bb549161257d4c42bd8819f1b81ae552ed790e28ea0"
+    },
+    {
+      "path": "styles/tokens/console.css",
+      "sha256": "433f71eaa330d11625a6a6344d3f743e8bba1c5e264c75462ec90f0182116269"
+    },
+    {
+      "path": "styles/tokens/graph.css",
+      "sha256": "67e824ee73a373ace97193c27c6f0a2f7336792762da08c9f3faea555021624c"
+    },
+    {
+      "path": "styles/tokens/help-tooltip.css",
+      "sha256": "1479c0ecf77816da3dfb53b3128458a5e7aa630dc90f80abbc64d36e41164974"
+    },
+    {
+      "path": "styles/tokens/home.css",
+      "sha256": "580a7f48bacbeb8c822cc3325d8aaa03ec386cb3194be59da0cd43f1f68ca96f"
+    },
+    {
+      "path": "styles/tokens/interface-motion.css",
+      "sha256": "d5ad1dff99f07341dad533e39faf006d2c19656875edbde595dfdd12122d8715"
+    },
+    {
+      "path": "styles/tokens/lab-workspace.css",
+      "sha256": "7a3b5d52ef665ae4c574f4f5eee49336396af9e5154a2ef5fe40c0082f3ad2a5"
+    },
+    {
+      "path": "styles/tokens/layout.css",
+      "sha256": "1ca661f48653bd22820481647f4e2b5a536fc7c6266dfe5a791545483b339ed1"
+    },
+    {
+      "path": "styles/tokens/mind-activity.css",
+      "sha256": "13146da487db6a44b2b946e8dcc92f6c4a9aad5c8b43df24452df57debfc73a9"
+    },
+    {
+      "path": "styles/tokens/mind-art.css",
+      "sha256": "e05b7c396f29ebb561e7a86593ba9ec14c1fd769e1885470634231d99fe0c7ba"
+    },
+    {
+      "path": "styles/tokens/mind-game.css",
+      "sha256": "b63385af42924a6cb97c2890ad2d0190868d02b1882ee191740130208737a982"
+    },
+    {
+      "path": "styles/tokens/mind-hud.css",
+      "sha256": "43befabe423fe1b5bc8bac13ce8caccad99e039032ea5a49925244a45bf6375f"
+    },
+    {
+      "path": "styles/tokens/mind-life.css",
+      "sha256": "80daf4778d833c5027c0d56d631f0e851027bc7ccc2fff0ac3b64803e86d08e0"
+    },
+    {
+      "path": "styles/tokens/research.css",
+      "sha256": "d63e59dd7f0f5b0f1a83e64b594e5006d35ce43b055b3d18046dd3878e11231a"
+    },
+    {
+      "path": "styles/tokens/strategy-explorer.css",
+      "sha256": "c70affade0edd51a370ded5694fce79c01aef41daca042f1e91c20f2a62f04ad"
+    },
+    {
+      "path": "styles/tokens/trading.css",
+      "sha256": "d99e4dbb9c5bb3a862c656b205243fe81519e0899ef3de97e8d33c0882c0bdf9"
+    },
+    {
+      "path": "styles/tokens/vibe.css",
+      "sha256": "60816329df64187b7a65cb624d7706aa32544f90ce0d2f835fac95a4f6a0cf18"
+    }
+  ],
+  "inputHash": "8cc67935ad9a6cbf99558c0dc28069eda3fccd8413eba2d5876ad00306ed45e2",
+  "pages": [
+    {
+      "path": "dist/index.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/style.css",
+        "dist/ui/console.css",
+        "dist/ui/trading-terminal.css",
+        "dist/ui/mind-avatar.css",
+        "dist/ui/mind-companion-summary.css",
+        "dist/ui/help-tooltip.css",
+        "dist/benchmark.css",
+        "dist/vendor/strategy-graph-editor.css",
+        "dist/ui/strategy-graph-editor.css"
+      ],
+      "system": "TAILWIND"
+    },
+    {
+      "path": "dist/install.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/style.css",
+        "dist/ui/trading-terminal.css"
+      ],
+      "system": "TAILWIND"
+    },
+    {
+      "path": "dist/mind-art-preview.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/style.css"
+      ],
+      "system": "TAILWIND"
+    },
+    {
+      "path": "dist/mind-art-study.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/ui/mind-art-study.css"
+      ],
+      "system": "TAILWIND"
+    },
+    {
+      "path": "dist/mind-motion-gallery.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/style.css"
+      ],
+      "system": "TAILWIND"
+    },
+    {
+      "path": "dist/research/overseas-rebuild-20261023/index.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/ui/research-report.css"
+      ],
+      "system": "TAILWIND"
+    },
+    {
+      "path": "dist/research/regime-minute-forward-20261023/index.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/ui/research-report.css"
+      ],
+      "system": "TAILWIND"
+    },
+    {
+      "path": "dist/research/weekly-three-minds-20261023.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/ui/research-report.css"
+      ],
+      "system": "TAILWIND"
+    },
+    {
+      "path": "dist/strategy-ui-library.html",
+      "stylesheets": [
+        "dist/ui/tailwind.css",
+        "dist/style.css",
+        "dist/vendor/strategy-graph-editor.css",
+        "dist/ui/strategy-graph-editor.css"
+      ],
+      "system": "TAILWIND"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "dist/ui/tailwind.css",
+      "sha256": "10877da7a5116fa46f8b958c3a0907b68b963123f73f3ecc39516dfb3037235f"
+    },
+    {
+      "path": "dist/style.css",
+      "sha256": "5727b018852d4f4ae5be59d3d8752748394804fcbe996c03ffd6eb799812f355"
+    },
+    {
+      "path": "dist/ui/console.css",
+      "sha256": "56aa159e70d93a404dfb821eb501fc5473de487f2726828ac8e18048b3463719"
+    },
+    {
+      "path": "dist/ui/trading-terminal.css",
+      "sha256": "ab4db4c4f995e0e74fd497d2f37f2e0ec8b25a3f6e7b3871ce7b4a1611477551"
+    },
+    {
+      "path": "dist/ui/mind-avatar.css",
+      "sha256": "31a68e36d5368d869e9cedd402d85c6d168bcd3ca8d1adb6081beb57f7fd6e59"
+    },
+    {
+      "path": "dist/ui/mind-companion-summary.css",
+      "sha256": "0e2378b7c07d3f810b642d3bcc6064f579e33307595077ba8b354fd1d26d19f5"
+    },
+    {
+      "path": "dist/ui/help-tooltip.css",
+      "sha256": "1ecca2f526f1b14bea1aaa392907bf462eb320f1dd904d1dff41e814e3331a24"
+    },
+    {
+      "path": "dist/ui/strategy-graph-editor.css",
+      "sha256": "3af88765d3a5b2f0510bbe9fb0c53ab8f5a9f7ff4555dbdffbc913f253703663"
+    },
+    {
+      "path": "dist/benchmark.css",
+      "sha256": "3014612cd92c7fa5b0cc953e037f4b2337b392b6cf85860ea2efc3beca46d001"
+    },
+    {
+      "path": "dist/ui/research-report.css",
+      "sha256": "d88e64da68b4d35fb21c1b86581d1e284791144ca562f4f3631c9f3eb3bafadd"
+    },
+    {
+      "path": "dist/ui/mind-art-study.css",
+      "sha256": "181d1f86493ed11e89d4ebf4cf0e1e5978292253c2d3ba7d7b62827f85d1db5c"
+    }
+  ]
+}

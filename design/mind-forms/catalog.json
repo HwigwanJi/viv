@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "formats": [
+    "json",
+    "yaml"
+  ],
+  "forms": [
+    {
+      "kind": "mind-policy",
+      "title": "마인드 정책",
+      "schema": "mind-policy.schema.json",
+      "schemaVersions": [
+        1
+      ]
+    },
+    {
+      "kind": "trade-review",
+      "title": "거래 검토",
+      "schema": "trade-review.schema.json",
+      "schemaVersions": [
+        1,
+        2
+      ],
+      "schemasByVersion": {
+        "1": "trade-review.schema.json",
+        "2": "trade-review-v2.schema.json"
+      }
+    },
+    {
+      "kind": "market-context",
+      "title": "투자 자료",
+      "schema": "market-context.schema.json",
+      "schemaVersions": [
+        1
+      ]
+    },
+    {
+      "kind": "principle-evidence",
+      "title": "원칙별 근거",
+      "schema": "principle-evidence.schema.json",
+      "schemaVersions": [
+        1,
+        2
+      ],
+      "schemasByVersion": {
+        "1": "principle-evidence.schema.json",
+        "2": "principle-evidence-v2.schema.json"
+      }
+    },
+    {
+      "kind": "weight-proposal",
+      "title": "가중치 변경 제안",
+      "schema": "weight-proposal.schema.json",
+      "schemaVersions": [
+        1
+      ]
+    }
+  ]
+}

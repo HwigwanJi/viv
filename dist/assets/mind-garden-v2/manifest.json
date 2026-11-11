@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "mode": "ART_PREVIEW_ONLY",
+  "provider": "Built-in image_gen",
+  "characters": [
+    "cat"
+  ],
+  "motions": [
+    "idle",
+    "scan",
+    "think",
+    "settle"
+  ],
+  "atlas": {
+    "columns": 6,
+    "rows": 4,
+    "cellWidth": 256,
+    "cellHeight": 256,
+    "baselines": [
+      246,
+      230,
+      214,
+      202
+    ],
+    "bounds": "frame-bounds-v2.json"
+  },
+  "assets": [
+    {
+      "name": "cat-atlas-v2.png",
+      "bytes": 2132951,
+      "sha256": "288b5fadfc74781764805cf4bf23faf8e5bce7fe00cbdb5d59ec1cba793db846",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "name": "garden-sunny.png",
+      "bytes": 3486827,
+      "sha256": "449a378b6a94953e1a958f6e49b8477bd5f02f4f779ad0ae6586d119d2e2997d",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "name": "garden-rainy.png",
+      "bytes": 3413897,
+      "sha256": "5836b861fccbaa60370673856af1aeaa6ca9909ef25ad23d3c53396eeeef270f",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "name": "garden-sunny-cute.png",
+      "bytes": 2045546,
+      "sha256": "0046f9a4882786e4e238d3c11aa8bed18260b3e1d28b90c6acadf03a981a6484",
+      "width": 1536,
+      "height": 1024
+    },
+    {
+      "name": "garden-rainy-cute.png",
+      "bytes": 2259508,
+      "sha256": "1449792f4b4ba9fd073f00ede007b0f99eb831b60c271077be80c987c1ada5ed",
+      "width": 1536,
+      "height": 1024
+    }
+  ],
+  "thirdPartyAssetsUsed": [],
+  "operationSettingsChanged": false,
+  "prompts": "../../../artifacts/cji-mind-observatory-20261021/professional-art-study/generation-prompts.json",
+  "artDirection": "Cute pastel side-scrolling village",
+  "activeBackgrounds": {
+    "sunny": "garden-sunny-cute.png",
+    "rainy": "garden-rainy-cute.png"
+  },
+  "sceneCalibration": {
+    "width": 768,
+    "height": 512,
+    "groundY": 397,
+    "waterX": [
+      535,
+      715
+    ],
+    "waterY": [
+      330,
+      366
+    ]
+  },
+  "backgroundPrompts": "../../../artifacts/cji-mind-observatory-20261021/cute-background/prompts.json"
+}

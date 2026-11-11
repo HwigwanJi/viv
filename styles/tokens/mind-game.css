@@ -1,0 +1,30 @@
+:root {
+ --game-sky-sunny: linear-gradient(160deg,#e5f4ff,#fef4d7 80%);
+ --game-sky-rainy: linear-gradient(155deg,#b6c4da,#d9dce6 80%);
+ --game-sky-calm: linear-gradient(160deg,#e3e9f6,#f4eee4);
+ --game-sky-unknown: linear-gradient(160deg,#e9e8e5,#f5f3ef);
+ --game-ink:#303d48; --game-muted:#75818a; --game-white:#fffdf8;
+ --game-grass:#c8d9ad; --game-grass-back:#dbe7c6; --game-floor:#e7d5b2;
+ --game-monitor:#f7fcff; --game-desk:#a68c70; --game-plant:#809d75;
+ --game-score-bg:#283e40; --game-score-ink:#f3f4e8; --game-score-muted:#bed0c6;
+ --game-gold:#e7bc52; --game-gold-light:#fff1b9; --game-profit:#476a46; --game-loss:#6c7794;
+ --game-card-radius:1.5rem; --game-stage-height:15rem; --game-gallery-stage-height:13rem;
+ --game-border:1px; --game-shadow:0 10px 32px #273c3b0d;
+ --game-score-size:2rem; --game-title-size:1.25rem; --game-caption-size:.68rem;
+ --game-score-gap:1.5rem; --game-stage-label-bottom:.6rem; --game-score-padding:1.5rem;
+ --game-round:999px; --game-layer-effect:1000; --game-one:1rem; --game-half:.5rem;
+ --game-sun-size:2.6rem; --game-cloud-size:4rem; --game-cloud-height:1.5rem;
+ --game-weather-inset:1.2rem; --game-weather-speed:18s; --game-rain-speed:.85s;
+ --game-rain:repeating-linear-gradient(110deg,transparent 0 13px,#788ca54a 14px 15px,transparent 16px 28px);
+ --game-breathe-speed:4.7s; --game-look-speed:6.5s; --game-think-speed:2.4s;
+ --game-step-speed:1.2s; --game-hold-speed:7.8s; --game-settle-speed:1.6s;
+ --game-blink-speed:6.3s; --game-small-angle:7deg; --game-negative-angle:-7deg;
+ --game-arm-up:-55deg; --game-arm-down:42deg; --game-tilt-small:3deg;
+ --game-character-scale:1; --game-motion-ease:cubic-bezier(.4,0,.2,1);
+ --game-tracking:.13em; --game-motion-delay:0s; --game-delay-1:-.6s; --game-delay-2:-1.7s;
+ --game-delay-3:-2.3s; --game-delay-4:-3.1s; --game-delay-5:-4.2s;
+ --game-sparkle-size:1.4rem; --game-cue-size:1.6rem; --game-fly-size:1.1rem;
+ --game-fly-shadow:0 3px 0 #ffffffcc,0 7px 24px #303d4833;
+ --game-rain-opacity:.45; --game-hill-opacity:.7; --game-credit-shadow:0 0 25px #e7bc5266;
+ --game-pop-duration:.65s;
+}

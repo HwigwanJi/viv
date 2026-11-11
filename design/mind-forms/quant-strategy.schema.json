@@ -1,0 +1,806 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "contractVersion": {
+      "const": "quant-strategy-resource-v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "previousVersion": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "contentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "version",
+            "contentHash"
+          ]
+        }
+      ]
+    },
+    "definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 24,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "position": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "x": {
+                        "type": "number",
+                        "minimum": -10000,
+                        "maximum": 10000
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": -10000,
+                        "maximum": 10000
+                      }
+                    },
+                    "required": [
+                      "x",
+                      "y"
+                    ]
+                  },
+                  "type": {
+                    "const": "INPUT"
+                  },
+                  "config": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "enum": [
+                          "OHLCV",
+                          "METRIC",
+                          "CONTEXT",
+                          "MEMORY",
+                          "KNOWLEDGE"
+                        ]
+                      },
+                      "instrumentId": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                      },
+                      "required": {
+                        "type": "boolean"
+                      },
+                      "timeframe": {
+                        "enum": [
+                          "4h",
+                          "1d"
+                        ]
+                      },
+                      "metricId": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                      },
+                      "maxAgeMs": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "instrumentId",
+                      "required"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "position",
+                  "type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "position": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "x": {
+                        "type": "number",
+                        "minimum": -10000,
+                        "maximum": 10000
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": -10000,
+                        "maximum": 10000
+                      }
+                    },
+                    "required": [
+                      "x",
+                      "y"
+                    ]
+                  },
+                  "type": {
+                    "const": "SIGNAL"
+                  },
+                  "config": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "moduleId": {
+                            "const": "BTC_DOC9"
+                          },
+                          "implementationVersion": {
+                            "const": "btc-spec-section9-explicit-assumptions-v1"
+                          },
+                          "role": {
+                            "const": "FEATURE_PROVIDER"
+                          },
+                          "required": {
+                            "type": "boolean"
+                          },
+                          "parametersVersionId": {
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                          },
+                          "parametersHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "parameters": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "k": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "h0": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "h1": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "buyThreshold": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "sellThreshold": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "buyTargetWeight": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "sellTargetWeight": {
+                                "type": "number",
+                                "minimum": 0
+                              },
+                              "dailyMaWindow": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "atrPeriod": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "maWindow": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "slopeZWindow": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "pivotLeft": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "pivotRight": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "distanceScale": {
+                                "type": "integer",
+                                "minimum": 0
+                              },
+                              "selectedCategories": {
+                                "type": "array",
+                                "items": {
+                                  "const": "price"
+                                },
+                                "minItems": 1,
+                                "maxItems": 1
+                              },
+                              "categoryWeights": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                  "price": {
+                                    "type": "number",
+                                    "minimum": 0
+                                  },
+                                  "derivatives": {
+                                    "type": "number",
+                                    "minimum": 0
+                                  },
+                                  "spot_flow": {
+                                    "type": "number",
+                                    "minimum": 0
+                                  },
+                                  "macro": {
+                                    "type": "number",
+                                    "minimum": 0
+                                  },
+                                  "onchain": {
+                                    "type": "number",
+                                    "minimum": 0
+                                  }
+                                },
+                                "required": [
+                                  "price",
+                                  "derivatives",
+                                  "spot_flow",
+                                  "macro",
+                                  "onchain"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "k",
+                              "h0",
+                              "h1",
+                              "buyThreshold",
+                              "sellThreshold",
+                              "buyTargetWeight",
+                              "sellTargetWeight",
+                              "dailyMaWindow",
+                              "atrPeriod",
+                              "maWindow",
+                              "slopeZWindow",
+                              "pivotLeft",
+                              "pivotRight",
+                              "distanceScale",
+                              "selectedCategories",
+                              "categoryWeights"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "moduleId",
+                          "implementationVersion",
+                          "role",
+                          "required",
+                          "parametersVersionId",
+                          "parametersHash",
+                          "parameters"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "moduleId": {
+                            "const": "OPPORTUNITY"
+                          },
+                          "implementationVersion": {
+                            "const": "clutch-close-feature-provider-v1"
+                          },
+                          "role": {
+                            "const": "FEATURE_PROVIDER"
+                          },
+                          "required": {
+                            "type": "boolean"
+                          },
+                          "parametersVersionId": {
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                          },
+                          "parametersHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "parameters": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "shortWindow": {
+                                "type": "integer",
+                                "minimum": 2,
+                                "maximum": 100
+                              },
+                              "longWindow": {
+                                "type": "integer",
+                                "minimum": 3,
+                                "maximum": 500
+                              },
+                              "breakoutWindow": {
+                                "type": "integer",
+                                "minimum": 3,
+                                "maximum": 500
+                              },
+                              "trendThreshold": {
+                                "type": "number",
+                                "minimum": 0.001,
+                                "maximum": 0.2
+                              },
+                              "minOpportunity": {
+                                "type": "number",
+                                "minimum": 0.05,
+                                "maximum": 0.95
+                              },
+                              "baseWeightRatio": {
+                                "type": "number",
+                                "minimum": 0.05,
+                                "maximum": 1
+                              },
+                              "addProfitThreshold": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 0.2
+                              },
+                              "trailingStopRatio": {
+                                "type": "number",
+                                "minimum": 0.005,
+                                "maximum": 0.3
+                              }
+                            },
+                            "required": [
+                              "shortWindow",
+                              "longWindow",
+                              "breakoutWindow",
+                              "trendThreshold",
+                              "minOpportunity",
+                              "baseWeightRatio",
+                              "addProfitThreshold",
+                              "trailingStopRatio"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "moduleId",
+                          "implementationVersion",
+                          "role",
+                          "required",
+                          "parametersVersionId",
+                          "parametersHash",
+                          "parameters"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "moduleId": {
+                            "const": "MEAN_REVERSION"
+                          },
+                          "implementationVersion": {
+                            "const": "mean-reversion-close-feature-provider-v1"
+                          },
+                          "role": {
+                            "const": "FEATURE_PROVIDER"
+                          },
+                          "required": {
+                            "type": "boolean"
+                          },
+                          "parametersVersionId": {
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                          },
+                          "parametersHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "parameters": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "window": {
+                                "type": "integer",
+                                "minimum": 2,
+                                "maximum": 500
+                              },
+                              "entryDeviation": {
+                                "type": "number",
+                                "exclusiveMinimum": 0,
+                                "maximum": 0.5
+                              },
+                              "exitDeviation": {
+                                "type": "number",
+                                "minimum": 0,
+                                "maximum": 0.5
+                              }
+                            },
+                            "required": [
+                              "window",
+                              "entryDeviation",
+                              "exitDeviation"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "moduleId",
+                          "implementationVersion",
+                          "role",
+                          "required",
+                          "parametersVersionId",
+                          "parametersHash",
+                          "parameters"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "position",
+                  "type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "position": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "x": {
+                        "type": "number",
+                        "minimum": -10000,
+                        "maximum": 10000
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": -10000,
+                        "maximum": 10000
+                      }
+                    },
+                    "required": [
+                      "x",
+                      "y"
+                    ]
+                  },
+                  "type": {
+                    "const": "CONDITION"
+                  },
+                  "config": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "operator": {
+                        "enum": [
+                          "gt",
+                          "gte",
+                          "lt",
+                          "lte"
+                        ]
+                      },
+                      "value": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "operator",
+                      "value"
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "position",
+                  "type",
+                  "config"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "position": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "x": {
+                        "type": "number",
+                        "minimum": -10000,
+                        "maximum": 10000
+                      },
+                      "y": {
+                        "type": "number",
+                        "minimum": -10000,
+                        "maximum": 10000
+                      }
+                    },
+                    "required": [
+                      "x",
+                      "y"
+                    ]
+                  },
+                  "type": {
+                    "const": "QUANT"
+                  },
+                  "config": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "buyAbove": {
+                            "type": "number",
+                            "minimum": -1,
+                            "maximum": 1
+                          },
+                          "sellBelow": {
+                            "type": "number",
+                            "minimum": -1,
+                            "maximum": 1
+                          },
+                          "buyTargetWeight": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "sellTargetWeight": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "required": [
+                          "buyAbove",
+                          "sellBelow",
+                          "buyTargetWeight",
+                          "sellTargetWeight"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "mode": {
+                            "const": "CONDITION"
+                          },
+                          "onTrue": {
+                            "enum": [
+                              "buy",
+                              "hold",
+                              "sell"
+                            ]
+                          },
+                          "onFalse": {
+                            "enum": [
+                              "buy",
+                              "hold",
+                              "sell"
+                            ]
+                          },
+                          "buyTargetWeight": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "sellTargetWeight": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "required": [
+                          "mode",
+                          "onTrue",
+                          "onFalse",
+                          "buyTargetWeight",
+                          "sellTargetWeight"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "position",
+                  "type",
+                  "config"
+                ]
+              }
+            ]
+          }
+        },
+        "edges": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+              },
+              "from": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "nodeId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                  },
+                  "port": {
+                    "enum": [
+                      "data",
+                      "signal",
+                      "condition",
+                      "decision",
+                      "approved",
+                      "market",
+                      "value",
+                      "context",
+                      "decisions",
+                      "true",
+                      "false"
+                    ]
+                  }
+                },
+                "required": [
+                  "nodeId",
+                  "port"
+                ]
+              },
+              "to": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "nodeId": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+                  },
+                  "port": {
+                    "enum": [
+                      "data",
+                      "signal",
+                      "condition",
+                      "decision",
+                      "approved",
+                      "market",
+                      "value",
+                      "context",
+                      "decisions",
+                      "true",
+                      "false"
+                    ]
+                  }
+                },
+                "required": [
+                  "nodeId",
+                  "port"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "from",
+              "to"
+            ]
+          }
+        },
+        "outputNodeId": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$"
+        }
+      },
+      "required": [
+        "nodes",
+        "edges",
+        "outputNodeId"
+      ]
+    },
+    "contentHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "contractVersion",
+    "id",
+    "version",
+    "name",
+    "description",
+    "createdAt",
+    "previousVersion",
+    "definition",
+    "contentHash"
+  ]
+}

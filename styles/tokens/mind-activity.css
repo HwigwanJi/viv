@@ -1,0 +1,33 @@
+:root {
+  --mind-operation-portrait-width: 12rem;
+  --mind-operation-portrait-compact-width: 6rem;
+  --mind-operation-columns: minmax(0,2fr) minmax(18rem,1fr);
+  --mind-notification-shadow: var(--ds-shadow-raised);
+  --mind-notification-gap: var(--ds-space-3);
+  --mind-activity-status-dot: .4rem;
+  --mind-activity-timeline-icon: 1.75rem;
+  --mind-activity-filter-width: 7rem;
+  --mind-activity-preview-width: 38rem;
+  --mind-activity-preview-available-width: calc(100dvw - var(--mind-activity-preview-inset) * 2);
+  --mind-activity-preview-max-height: 70dvh;
+  --mind-activity-preview-gap: var(--ds-space-4);
+  --mind-activity-preview-inset: var(--ds-space-4);
+  --mind-activity-preview-layer: var(--help-tooltip-layer);
+  --mind-activity-preview-hover-ms: 220;
+  --mind-activity-preview-leave-ms: 180;
+  --mind-activity-replay-step-ms: 650;
+  --mind-activity-preview-visible-steps: 7;
+  --mind-activity-step-width: 4.5rem;
+  --mind-activity-light-size: var(--ds-space-4);
+  --mind-activity-edge-width: var(--ds-space-3);
+  --mind-activity-edge-top: var(--ds-space-5);
+  --mind-activity-edge-thickness: 1px;
+  --mind-activity-light-halo: 0 0 0 var(--ds-space-2) var(--ds-focus-halo);
+  --mind-activity-buy: var(--ds-success);
+  --mind-activity-buy-surface: var(--ds-success-bg);
+  --mind-activity-sell: var(--ds-danger);
+  --mind-activity-sell-surface: var(--ds-danger-bg);
+  --mind-activity-wait: var(--ds-accent);
+  --mind-activity-wait-surface: var(--ds-info-bg);
+  --mind-activity-icon-size: var(--ds-space-11);
+}

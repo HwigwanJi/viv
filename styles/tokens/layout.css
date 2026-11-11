@@ -1,0 +1,64 @@
+/* Application-wide visual scale. Components consume these through Tailwind. */
+:root {
+  --ui-workflow-empty-height: 15rem;
+  --ui-reader-width: 30rem;
+  --ui-reader-top: 3.5rem;
+  --ui-reader-breakpoint: 80rem;
+  --ui-reader-height: calc(100dvh - var(--ui-reader-top));
+  --ui-border-width: 1px;
+  --ui-border-emphasis: 2px;
+  --ui-mark-width: 3px;
+  --ui-opacity-disabled: .65;
+  --ui-opacity-visible: 1;
+  --ui-opacity-hidden: 0;
+  --ui-press-offset: .5px;
+  --ui-line-height-solid: 1;
+  --ui-content-textarea-min: 6rem;
+  --ui-content-document-min: 20rem;
+  --ui-chart-height: 20rem;
+  --ui-table-min: 42rem;
+  --ui-column-compact: 6rem;
+  --ui-column-numeric: 8rem;
+  --ui-column-name: 12rem;
+  --ui-column-detail: 16rem;
+  --ui-panel-narrow: 20rem;
+  --ui-mind-header-portrait: 3.5rem;
+  --ui-mind-switcher-width: 10rem;
+  --ui-task-max-width: 72rem;
+  --ui-command-max-height: 24rem;
+  --ui-strategy-count-size: 2rem;
+  --ui-panel-medium: 28rem;
+  --ui-panel-wide: 40rem;
+  --ui-modal-width: 56rem;
+  --ui-dialog-width: 40rem;
+  --ui-modal-height: 88svh;
+  --ui-dialog-padding: var(--ds-space-6);
+  --ui-overlay-layer: 100;
+  --ui-toast-layer: 300;
+  --ui-scrollbar-width: 6px;
+  --ui-screen-width: 100vw;
+  --ui-screen-height: 100svh;
+  --ui-dynamic-screen-height: 100dvh;
+  --ui-overlay-max-width: 90vw;
+  --ui-feedback-max-height: 62svh;
+  --ui-chart-compact-height: 16rem;
+  --ui-companion-stage-height: 12rem;
+  --ui-companion-preview-height: 14rem;
+  --ui-empty-panel-height: 28rem;
+  --ui-menu-min-width: 12rem;
+  --ui-menu-max-width: 24rem;
+  --ui-animation-once: 1;
+  --ui-mobile-breakpoint: 48rem;
+  --ui-prose-width: 76ch;
+  --ui-drawer-hidden-offset: -105%;
+  --ui-detail-value-width: 70%;
+  --ui-detail-value-mobile-width: 65%;
+}
+
+:root {
+  --ui-motion-reduced: 0.01ms;
+  --ui-layer-toast: 100;
+  --ui-layer-navigation: 60;
+  --ui-layer-backdrop: 55;
+  --ui-layer-context: 2000;
+}

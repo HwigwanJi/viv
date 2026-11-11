@@ -1,0 +1,33 @@
+:root {
+  --hud-height: 20rem;
+  --hud-feature-height: 22rem;
+  --hud-operation-height: 22rem;
+  --hud-mobile-height: 20rem;
+  --hud-rail-width: var(--ds-space-11);
+  --hud-rail-middle: 50%;
+  --hud-rail-transform: translateY(-50%);
+  --hud-rail-shadow: 0 4px 24px #00000020;
+  --hud-glass: color-mix(in srgb, var(--ds-bg-canvas) 84%, transparent);
+  --hud-grid-line: color-mix(in srgb, var(--ds-border-subtle) 32%, transparent);
+  --hud-grid: linear-gradient(var(--hud-grid-line) 1px, transparent 1px),linear-gradient(90deg,var(--hud-grid-line) 1px,transparent 1px);
+  --hud-grid-size: var(--ds-space-8) var(--ds-space-8);
+  --hud-caption-wash: linear-gradient(transparent, #101214e8);
+  --hud-scene-ink: #ffffff;
+  --hud-value-size: clamp(var(--ds-font-size-base), 5.5cqw, var(--ds-font-size-2xl));
+  --hud-value-tracking: -.04em;
+  --hud-chart-height: 6.5rem;
+  --hud-chart-fill: color-mix(in srgb,var(--ds-accent) 10%,transparent);
+  --hud-chart-stroke: 1.7;
+  --hud-chart-dash: 1;
+  --hud-transition-ms: 480;
+  --hud-reveal-ms: 240;
+  --hud-chart-reveal-ms: 620;
+  --hud-digit-stagger-ms: 12;
+  --hud-wheel-threshold: 14;
+  --hud-wheel-settle-ms: 180;
+  --hud-touch-intent-px: 8;
+  --hud-swipe-threshold-px: 40;
+  --hud-click-suppression-ms: 700;
+  --hud-status-offset: var(--ds-space-4);
+  --hud-glyph-size: var(--ds-space-9);
+}

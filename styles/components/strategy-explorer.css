@@ -1,0 +1,111 @@
+@reference '../theme.css';
+dialog.strategy-dialog:has(.strategy-exploring) > .dialog-head { @apply hidden; }
+.strategy-editor-body { transition:grid-template-columns var(--guide-fold-duration) ease-in-out; }
+.strategy-editor .strategy-inspector,.strategy-editor .strategy-palette { transition:opacity var(--guide-fold-duration) ease-in-out,transform var(--guide-fold-duration) ease-in-out; }
+.strategy-editor.strategy-exploring .strategy-editor-body { @apply grid; grid-template-columns:var(--guide-layout-columns); grid-template-rows:minmax(0,1fr); }
+.strategy-editor.strategy-exploring .strategy-canvas { @apply relative; grid-column:2; grid-row:1; visibility:visible; }
+.strategy-guide-dimmed { opacity:var(--guide-dim-opacity); transition:opacity var(--guide-fold-duration) ease-in-out; }
+.strategy-guide-current { opacity:1; z-index:var(--guide-focus-layer)!important; }
+.strategy-guide-current .strategy-node { background:var(--ds-bg-raised); border-color:var(--ds-accent); box-shadow:var(--guide-focus-shadow); }
+.strategy-guide-edge .react-flow__edge-path { stroke:var(--ds-accent); }
+.strategy-exploring .react-flow__controls,.strategy-exploring .react-flow__minimap { @apply hidden; }
+.guide-canvas-heading { @apply absolute top-ui-6 left-ui-6 right-ui-6 flex items-center gap-ui-4 text-ui-xs text-secondary pointer-events-none; z-index:var(--guide-focus-layer); }
+.guide-canvas-heading strong { @apply font-ui-medium text-foreground truncate; }
+.strategy-exploring .strategy-inspector,.strategy-exploring .strategy-palette { @apply opacity-0 pointer-events-none; transform:var(--guide-panel-exit); }
+.strategy-editor.strategy-exploring > .strategy-editor-toolbar,.strategy-editor.strategy-exploring > .strategy-editor-footer { @apply hidden; }
+.strategy-explore-trigger[aria-pressed="true"] { @apply bg-accent text-on-accent border-accent; }
+.strategy-presentation { @apply relative flex flex-col min-h-0 min-w-0 overflow-hidden border-l; grid-column:4; grid-row:1; border-color:var(--guide-line); z-index:var(--guide-overlay-layer); color:var(--guide-ink); background:var(--guide-scene-bg); animation:guide-presentation-enter var(--guide-fold-duration) ease-in-out both; }
+.guide-presentation-header { @apply flex items-center justify-between shrink-0 min-w-0 gap-ui-6 px-ui-8 py-ui-5; }
+.guide-presentation-header > div:first-child { @apply flex items-center gap-ui-5 min-w-0; }
+.guide-presentation-header span { @apply text-ui-sm font-ui-semibold whitespace-nowrap; }
+.guide-presentation-header small { @apply text-ui-xs truncate; color:var(--guide-muted); }
+.guide-presentation-tools { @apply flex items-center gap-ui-3 shrink-0 min-w-0; }
+.guide-node-menu { @apply relative; }
+.guide-node-menu summary { @apply flex items-center justify-center min-h-control-touch rounded-ui-md px-ui-4 text-ui-xs cursor-pointer; color:var(--guide-muted); }
+.guide-node-menu[open] label { @apply absolute right-0 top-full rounded-ui-xl p-ui-5 border; z-index:var(--guide-overlay-layer); background:var(--guide-scene-bg); border-color:var(--guide-line); box-shadow:var(--guide-menu-shadow); }
+.guide-node-menu select { @apply min-h-control-touch text-ui-sm rounded-ui-md px-ui-4; max-width:var(--guide-jump-width); background:var(--guide-field); color:var(--guide-ink); }
+.guide-presentation-close { @apply inline-flex items-center justify-center min-h-control-touch min-w-control-touch border-0 rounded-ui-full bg-transparent; color:var(--guide-muted); }
+.guide-presentation-close svg { @apply w-ui-7 h-ui-7; }
+.guide-progress { @apply flex items-center gap-ui-5 px-ui-8 shrink-0; }
+.guide-progress progress { @apply flex-1 appearance-none border-0 overflow-hidden rounded-ui-full; height:var(--guide-progress-height); background:var(--guide-field); }
+.guide-progress progress::-webkit-progress-bar { background:var(--guide-field); }
+.guide-progress progress::-webkit-progress-value { background:var(--guide-action); transition:width var(--guide-slide-duration) ease-in-out; }
+.guide-progress progress::-moz-progress-bar { background:var(--guide-action); }
+.guide-progress > span { @apply text-ui-xs tabular-nums whitespace-nowrap; color:var(--guide-muted); }
+.guide-presentation-stage { @apply flex flex-col flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden px-ui-8 py-ui-9; overscroll-behavior:contain; }
+.guide-slide { @apply w-full mx-auto; max-width:var(--guide-slide-width); animation:guide-slide-enter var(--guide-slide-duration) cubic-bezier(.22,.68,0,1) both; }
+.guide-slide[data-direction="back"] { --guide-enter-offset:var(--guide-back-offset); }
+.guide-slide .guide-slide-role { @apply flex items-center gap-ui-3 m-0 text-ui-xs font-ui-medium; color:var(--guide-muted); }
+.guide-slide-role svg { @apply w-ui-6 h-ui-6; }
+.guide-slide h2 { @apply mt-ui-5 mb-ui-4 font-ui-semibold outline-none break-keep; font-size:var(--guide-heading-size); line-height:var(--guide-heading-leading); letter-spacing:var(--guide-story-tracking); }
+.guide-node-title { @apply m-0 mb-ui-8 text-ui-sm break-words; color:var(--guide-muted); }
+.guide-slide-story { @apply font-ui-medium; font-size:var(--guide-story-size); letter-spacing:var(--guide-story-tracking); line-height:var(--guide-story-leading); }
+.guide-slide-story p { @apply m-0 mb-ui-5 whitespace-pre-wrap break-words; }
+.guide-slide-story strong { @apply font-ui-semibold; color:var(--guide-emphasis); }
+.guide-condition-group > p { @apply m-0 mb-ui-5 text-ui-sm font-ui-medium; color:var(--guide-muted); }
+.guide-condition-group > div { @apply border-l pl-ui-6; border-color:var(--guide-line); }
+.guide-condition-group .guide-condition-group { @apply my-ui-5; }
+.guide-condition-row { @apply flex items-start justify-between gap-ui-7 py-ui-5; }
+.guide-condition-row > span { @apply text-ui-sm leading-ui-read min-w-0 break-words; color:var(--guide-muted); }
+.guide-condition-row small { @apply block text-ui-xs mt-ui-2; }
+.guide-condition-row > strong { @apply text-ui-lg font-ui-semibold text-right shrink-0; color:var(--guide-emphasis); }
+.guide-key-values { @apply m-0 mt-ui-7 flex flex-wrap gap-ui-8 border-y py-ui-6; border-color:var(--guide-line); }
+.guide-key-values dt { @apply text-ui-xs mb-ui-3; color:var(--guide-muted); }
+.guide-key-values dd { @apply m-0 text-ui-xl font-ui-semibold; }
+.guide-slide-branches { @apply flex flex-col mt-ui-7; }
+.guide-slide-branches button { @apply relative w-full min-w-0 flex flex-col items-start gap-ui-3 text-left rounded-ui-xl pl-ui-6 pr-ui-10 py-ui-6 mb-ui-4 border-0; background:var(--guide-field); color:var(--guide-ink); transition:background var(--guide-fold-duration) ease-in-out,transform var(--guide-fold-duration) ease-in-out; }
+.guide-slide-branches button:hover,.guide-slide-branches button[aria-pressed="true"] { background:var(--guide-selected); }
+.guide-slide-branches button:active { transform:var(--guide-press-scale); }
+.guide-slide-branches button:disabled { @apply opacity-(--graph-disabled-opacity); }
+.guide-slide-branches button > span:first-child { @apply text-ui-xs; color:var(--guide-muted); }
+.guide-slide-branches button strong { @apply text-ui-md leading-ui-read font-ui-semibold break-words; }
+.guide-branch-arrow { @apply absolute right-ui-6 top-1/2 -translate-y-1/2; }
+.guide-next-path { @apply flex flex-col items-start gap-ui-4 mt-ui-7 text-ui-xs; color:var(--guide-muted); }
+.guide-next-path select { @apply w-full min-w-0 min-h-control-touch rounded-ui-md text-ui-sm p-ui-4 border-0; color:var(--guide-ink); background:var(--guide-field); }
+.guide-slide-details { @apply mt-ui-7 text-ui-xs; }
+.guide-slide-details > summary { @apply inline-flex items-center min-h-control-touch cursor-pointer; color:var(--guide-muted); }
+.guide-slide-detail-content { @apply mt-ui-4 rounded-ui-xl p-ui-6; background:var(--guide-field); }
+.guide-slide-detail-content > p { @apply m-0 mb-ui-5 leading-ui-read whitespace-pre-wrap; }
+.guide-slide-details dl { @apply m-0; }
+.guide-slide-details dl > div { @apply grid grid-cols-2 gap-ui-6 py-ui-3; }
+.guide-slide-details dt { @apply leading-ui-md; color:var(--guide-muted); }
+.guide-slide-details dd { @apply m-0 text-right break-words whitespace-pre-wrap leading-ui-md; }
+.guide-input-links { @apply border-t mt-ui-4 pt-ui-4 flex flex-wrap gap-ui-3; border-color:var(--guide-line); }
+.guide-input-links h3 { @apply basis-full m-0 text-ui-xs font-ui-medium; color:var(--guide-muted); }
+.guide-input-links button { @apply px-ui-4 py-ui-3 min-h-control-touch rounded-ui-md text-ui-xs border-0; color:var(--guide-ink); background:var(--guide-scene-bg); }
+.guide-variable-source { @apply m-0 mt-ui-4 text-ui-xs whitespace-pre-wrap leading-ui-read; color:var(--guide-muted); }
+.guide-presentation-footer { @apply flex flex-col gap-ui-5 px-ui-8 pt-ui-5 pb-ui-7 shrink-0 min-w-0; background:var(--guide-scene-bg); }
+.guide-navigation,.guide-presentation-position { @apply flex w-full mx-auto min-w-0; max-width:var(--guide-slide-width); }
+.guide-navigation { @apply gap-ui-5; }
+.guide-navigation button { @apply inline-flex items-center justify-center gap-ui-4 rounded-ui-xl px-ui-7 py-ui-5 text-ui-sm font-ui-semibold; min-height:var(--guide-cta-height); }
+.guide-previous { @apply border-0 shrink-0; color:var(--guide-muted); background:var(--guide-field); }
+.guide-next { @apply flex-1 border-0; color:var(--guide-on-action); background:var(--guide-action); }
+.guide-navigation button:disabled { @apply opacity-(--graph-disabled-opacity); }
+.guide-presentation-position small { @apply max-w-full truncate text-ui-xs; color:var(--guide-muted); }
+.strategy-presentation:has(.guide-slide-branches) .guide-presentation-position { @apply hidden; }
+.guide-navigation .guide-next:disabled { @apply hidden; }
+.guide-presentation-error { @apply text-ui-xs; color:var(--guide-error); }
+.strategy-presentation :is(button,select,summary):focus-visible { @apply outline-2 outline-offset-2; outline-color:var(--guide-emphasis); }
+@keyframes guide-slide-enter { from { opacity:0;transform:var(--guide-enter-offset); } to {opacity:1;transform:none;} }
+@keyframes guide-presentation-enter { from {opacity:0;} to {opacity:1;} }
+@variant max-md {
+ .strategy-editor.strategy-exploring .strategy-editor-body { @apply grid; grid-template-columns:minmax(0,1fr); grid-template-rows:var(--guide-mobile-canvas-height) minmax(0,1fr); }
+ .strategy-editor.strategy-exploring .strategy-canvas { grid-column:1; grid-row:1; }
+ .strategy-exploring .strategy-presentation { @apply border-l-0 border-t; grid-column:1; grid-row:2; }
+ .guide-canvas-heading { @apply top-ui-2 left-ui-6 right-ui-6; }
+ .guide-presentation-header { @apply gap-ui-3 px-ui-6 py-ui-3; }
+ .guide-presentation-header small { @apply hidden; }
+ .guide-progress { @apply px-ui-7; }
+ .guide-presentation-stage { @apply px-ui-7 py-ui-5; }
+ .guide-slide h2 { font-size:var(--guide-mobile-heading-size); }
+ .guide-slide h2 { @apply mt-ui-3; }
+ .guide-node-title { @apply mb-ui-5; }
+ .guide-slide-branches { @apply mt-ui-5; }
+ .guide-slide-branches button { @apply py-ui-4; }
+ .guide-condition-row { @apply py-ui-4; }
+ .guide-condition-row { @apply gap-ui-5; }
+ .guide-condition-row > strong { @apply text-ui-md; }
+ .guide-presentation-footer { @apply px-ui-6 pb-ui-6; }
+ .guide-navigation button { @apply px-ui-6; }
+}
+@media(prefers-reduced-motion:reduce) { .strategy-presentation,.guide-slide,.strategy-editor-body,.strategy-exploring .strategy-inspector,.strategy-exploring .strategy-palette,.guide-progress progress::-webkit-progress-value,.guide-slide-branches button,.strategy-guide-dimmed { animation:none;transition:none; } }

@@ -1,0 +1,92 @@
+@reference '../theme.css';
+
+.quant-library,.quant-detail { @apply min-w-0; }
+.quant-library .studio-page-head { @apply items-start gap-ui-5; }
+.quant-library .studio-page-head > div:first-child { @apply min-w-0; }
+.quant-library .studio-page-head > .actions { @apply flex-none; }
+.quant-query-bar { @apply items-end gap-ui-4; }
+.quant-query-bar > label { @apply min-w-0; }
+.quant-catalog .studio-table { @apply w-full table-fixed; min-width:calc(var(--ui-column-detail) + var(--ui-column-compact) + var(--ui-column-compact) + var(--ui-column-numeric) + var(--ui-column-name) + var(--ds-space-12)); }
+.quant-catalog .studio-table th:first-child { @apply w-(--ui-column-detail); }
+.quant-catalog .studio-table th:nth-child(2),.quant-catalog .studio-table th:nth-child(3) { @apply w-(--ui-column-compact); }
+.quant-catalog .studio-table th:nth-child(4) { @apply w-(--ui-column-numeric); }
+.quant-catalog .studio-table th:nth-child(5) { @apply w-(--ui-column-name); }
+.quant-catalog .studio-table th:last-child { @apply w-ui-12; }
+.quant-catalog .quant-title { @apply block w-full min-w-0 truncate text-left; max-width:none; }
+.quant-catalog .studio-table td:nth-child(4),.quant-catalog .studio-table th:nth-child(4) { @apply text-right tabular-nums; }
+.quant-catalog .studio-table td:last-child { @apply text-right; }
+.quant-catalog .studio-table td:nth-child(5) { @apply text-ui-xs text-secondary; @apply whitespace-normal; }
+.quant-status { @apply inline-flex flex-none rounded-ui-sm bg-hover px-ui-3 py-ui-1 text-ui-xs leading-ui-md font-ui-medium text-secondary; }
+.quant-status[data-status="APPROVED"] { @apply text-positive; }
+.quant-empty { @apply flex flex-col items-center gap-ui-4 px-ui-6 py-ui-12 text-center; }
+.quant-empty h2 { @apply m-0 text-ui-md font-ui-semibold; }
+.quant-empty p { @apply m-0 text-ui-sm text-secondary; overflow-wrap:anywhere; }
+.quant-detail-identity { @apply flex min-w-0 flex-wrap items-center gap-ui-4 pb-ui-5 border-b border-subtle; }
+.quant-detail-identity > strong { @apply text-ui-md tabular-nums; }
+.quant-published-at { @apply ml-auto text-ui-xs text-secondary tabular-nums; }
+.quant-description { @apply mt-ui-5 text-ui-sm leading-ui-read text-secondary; overflow-wrap:anywhere; }
+.quant-detail-section { @apply mt-ui-6 rounded-ui-md border border-default; }
+.quant-detail-section > summary { @apply cursor-pointer px-ui-5 py-ui-4 text-ui-sm font-ui-semibold; }
+.quant-detail-section > summary > span:first-child { @apply ml-ui-2; }
+.quant-section-count { @apply ml-ui-4 text-ui-xs font-ui-regular text-secondary tabular-nums; }
+.quant-section-body { @apply min-w-0 border-t border-subtle px-ui-5 pb-ui-5; }
+.quant-section-body > .studio-table-scroll:first-child { @apply mt-ui-5; }
+.quant-current-version { @apply text-ui-xs font-ui-medium text-secondary; }
+.quant-detail .quant-contract { @apply mt-ui-6; }
+.quant-detail .quant-contract h3 { @apply mt-0; }
+@variant max-sm {
+  .quant-library .studio-page-head { @apply flex-col; }
+  .quant-library .studio-page-head > .actions { @apply w-full justify-end; }
+  .quant-query-bar > .studio-record-search { @apply w-full; }
+  .quant-published-at { @apply ml-0; }
+  .quant-section-count { @apply ml-ui-2; }
+}
+
+.strategy-library-header { @apply mb-ui-6 min-w-0; }
+.strategy-library-nav { @apply flex gap-ui-6 overflow-x-auto border-b border-subtle; }
+.strategy-library-nav a { @apply flex-none border-b-2 border-transparent py-ui-3 text-ui-sm text-secondary no-underline; }
+.strategy-library-nav a[aria-current="page"] { @apply border-accent text-foreground; }
+.strategy-library-browser { @apply min-w-0; }
+.strategy-library-caption { @apply flex items-center justify-between gap-ui-4 pb-ui-4; }
+.strategy-library-browser .studio-table td { @apply whitespace-normal; }
+.strategy-library-browser .studio-table td:first-child { @apply min-w-(--ui-column-name); }
+.strategy-library-browser .strategy-library-name { @apply w-full max-w-full min-h-control-touch line-clamp-2; overflow-wrap:anywhere; }
+.strategy-library-browser .studio-table td:last-child { @apply text-right; }
+.strategy-library-browser .studio-table .actions { @apply justify-end flex-nowrap; }
+.review-impact { @apply mb-ui-5 border-l-2 border-accent pl-ui-4; }
+.review-impact .detail-row { @apply items-start; }
+.review-impact .detail-row strong { @apply text-left font-ui-regular; }
+.strategy-program-long { @apply grid-cols-1; }
+.strategy-program-long textarea { @apply w-full resize-y text-ui-sm leading-ui-read; }
+.strategy-deployment-allocations { @apply grid min-w-0 gap-ui-5 my-ui-5; }
+.strategy-allocation { @apply min-w-0 m-0 rounded-ui-lg border border-solid border-default bg-surface px-ui-5 pb-ui-5; }
+.strategy-allocation > legend { @apply max-w-full px-ui-2 text-ui-sm font-ui-medium leading-ui-md; overflow-wrap:anywhere; }
+.strategy-allocation-heading { @apply flex min-w-0 flex-wrap items-center justify-between gap-ui-3 pt-ui-3 pb-ui-4; }
+.strategy-allocation-members { @apply grid min-w-0 gap-ui-4; }
+.strategy-allocation-member { @apply flex flex-wrap min-w-0 items-center gap-ui-4 text-ui-sm font-ui-regular; }
+.strategy-allocation-member > span:first-child { @apply min-w-(--ui-column-compact) max-w-full flex-1 break-keep; overflow-wrap:anywhere; }
+.strategy-allocation-value { @apply inline-flex ml-auto flex-none w-(--ui-column-numeric) max-w-full items-center gap-ui-2 text-secondary; }
+.strategy-allocation-value input { @apply min-w-0 w-full min-h-control-touch text-right tabular-nums; }
+.strategy-allocation-message { @apply m-0 mt-ui-4 text-ui-xs font-ui-regular leading-ui-md text-negative; }
+.strategy-allocation[data-allocation-state="ready"] [data-strategy-allocation-total] { @apply text-positive; }
+.strategy-allocation[aria-invalid="true"] { @apply border-negative; }
+.strategy-allocation[aria-invalid="true"] [data-strategy-allocation-total] { @apply text-negative; }
+.strategy-deployment-scope { @apply min-w-0 border-t border-subtle pt-ui-3; }
+.strategy-deployment-scope h3 { @apply mt-ui-4 mb-ui-2 text-ui-xs font-ui-medium text-secondary; }
+.strategy-deployment-scope p { @apply m-0 text-ui-sm font-ui-regular leading-ui-read; overflow-wrap:anywhere; }
+.strategy-deployment-scope p.tiny { @apply mt-ui-2 text-ui-xs text-secondary; }
+
+.quant-edit-mode { @apply rounded-ui-lg border border-default bg-surface px-ui-4 py-ui-3; }
+.quant-edit-mode > label { @apply flex min-h-control-touch items-center gap-ui-2 text-ui-sm font-ui-medium; }
+.quant-edit-mode > p { @apply m-0 text-ui-xs leading-ui-md text-secondary; }
+.quant-edit-settings { @apply m-0 min-w-0 border-0 p-0; }
+.quant-edit-settings > legend { @apply mb-ui-3 text-ui-sm font-ui-medium; }
+.quant-edit-source { @apply min-w-0 rounded-ui-lg border border-default px-ui-4 py-ui-3; }
+[data-quant-edit-mode="source"] .quant-edit-source { @apply border-accent; }
+.quant-edit-source > textarea { @apply w-full min-w-0 min-h-(--ui-content-textarea-min) resize-y rounded-ui-md border border-default bg-surface px-ui-4 py-ui-3 text-ui-sm leading-ui-read; }
+.strategy-source-picker { @apply m-0 min-w-0 rounded-ui-lg border border-default px-ui-4 pb-ui-4; }
+.strategy-source-picker > legend { @apply px-ui-2 text-ui-sm font-ui-medium; }
+.strategy-source-options { @apply grid min-w-0 gap-ui-2; }
+.strategy-source-option { @apply flex min-h-control-touch min-w-0 items-center gap-ui-3 rounded-ui-md px-ui-3 py-ui-2; }
+.strategy-source-option:has(input:checked) { @apply bg-field; }
+.strategy-source-option > span { @apply min-w-0 break-keep text-ui-sm leading-ui-read; overflow-wrap:anywhere; }

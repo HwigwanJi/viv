@@ -1,0 +1,280 @@
+/*
+ * 글꼴 · 눈금 · 모양 · 그림자 · 움직임 - 명세 design/theme-v2.md §4-§7.
+ * 본문 13/20, 문서 16/28, 12px 아래 글자 없음. 컨트롤 28/32/36/40(기본 32, 원격·터치 44), 줄 32.
+ * 모서리 컨트롤 8 · 카드와 메뉴 12 · 대화상자와 시트 16. 기본 간격 8.
+ * OS 별 굵기는 여기서만 덮는다 - palette/semantic 에 두면 대비 검사가 읽는 첫 블록이 바뀐다.
+ */
+:root {
+  --ds-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --ds-font-serif: var(--ds-font-sans);
+  --ds-font-mono: ui-monospace, "SF Mono", Consolas, "Malgun Gothic", monospace;
+
+  /* UI 본문과 작은 본문은 14px 눈금을 공유한다. */
+  --ds-font-size-xs: 12px;
+  --ds-font-size-md: 14px;
+  --ds-font-size-sm: 14px;
+  --ds-font-size-read: 15px;
+  --ds-font-size-base: 16px;
+  --ds-font-size-lg: 18px;
+  --ds-font-size-xl: 20px;
+  --ds-font-size-2xl: 24px;
+  --ds-font-size-3xl: 30px;
+  --ds-font-size-xxl: 30px;
+  --ds-font-size-4xl: 36px;
+  --ds-leading-xs: 16px;
+  --ds-leading-md: 20px;
+  --ds-leading-sm: 20px;
+  --ds-leading-read: 26px;
+  --ds-leading-base: 28px;
+  --ds-leading-lg: 28px;
+  --ds-leading-xl: 30px;
+  --ds-leading-2xl: 32px;
+  --ds-leading-3xl: 40px;
+  --ds-leading-4xl: 46px;
+  /* 옛 줄 높이 이름 - 작은 글자 · UI 본문 · 14/22 입력칸과 문서 표 */
+  --ds-line-sm: 16px;
+  --ds-line-md: 20px;
+  --ds-line-lg: 22px;
+  --ds-tracking-tight: -0.01em;
+  --ds-tracking-serif-lg: -0.005em;
+  --ds-tracking-serif-xl: -0.01em;
+  --ds-tracking-serif-3xl: -0.015em;
+  --ds-tracking-serif-4xl: -0.02em;
+  --ds-measure-doc: 680px;
+  --ds-measure-extract: 720px;
+
+  /* 굵기 - 윈도우와 기본값. 700 은 그리지 않는다 */
+  --ds-weight-regular: 400;
+  --ds-weight-medium: 500;
+  --ds-weight-semibold: 600;
+  --ds-weight-bold: 700;
+  --ds-weight-prose: 400;
+  --ds-weight-serif-display: 500;
+  --ds-weight-serif-heading: 600;
+
+  --ds-icon-size-2xs: 12px;
+  --ds-icon-size-xs: 14px;
+  --ds-icon-size-sm: 16px;
+  --ds-icon-size-md: 20px;
+  --ds-icon-size-lg: 24px;
+  --ds-icon-stroke: 1.75;
+  --ds-icon-stroke-thin: 1.5;
+
+  /* 모서리 - 안쪽 모서리는 바깥에서 여백을 뺀 값, 4 아래로 안 내린다 */
+  --ds-radius-xs: 3px;
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 6px;
+  --ds-radius-lg: 8px;
+  --ds-radius-control-lg: 10px;
+  --ds-radius-xl: 12px;
+  --ds-radius-2xl: 16px;
+  --ds-radius-full: 9999px;
+
+  /* 간격 - 4px 격자 */
+  --ds-space-0: 0px;
+  --ds-space-1: 2px;
+  --ds-space-2: 4px;
+  --ds-space-3: 6px;
+  --ds-space-4: 8px;
+  --ds-space-5: 12px;
+  --ds-space-6: 16px;
+  --ds-space-7: 20px;
+  --ds-space-8: 24px;
+  --ds-space-9: 32px;
+  --ds-space-10: 40px;
+  --ds-space-11: 48px;
+  --ds-space-12: 64px;
+  --ds-space-13: 5rem;
+  --ds-space-14: 6rem;
+  --ds-space-15: 8rem;
+  --ds-space-16: 10rem;
+  --ds-motion-stamp-start:scale(1.15) rotate(-6deg);
+  --ds-gap: var(--ds-space-4);
+  --ds-gap-stack: var(--ds-space-5);
+  --ds-gap-section: var(--ds-space-8);
+
+  /* 컨트롤 높이 - sm(28) 이 기본, md(32) 는 대화상자와 입력 양식, lg(36) 은 ui/ 안에서만 */
+  --ds-control-height-xs: 28px;
+  --ds-control-height-sm: 32px;
+  --ds-control-height-md: 36px;
+  --ds-control-height-lg: 40px;
+  --ds-control-height-touch: 44px;
+
+  /* 줄 */
+  --ds-row-height: 32px;
+  --ds-row-height-comfortable: 36px;
+  --ds-row-height-two-line: 48px;
+  --ds-row-height-group: 28px;
+  --ds-list-row-height: 40px;
+  --ds-list-row-height-two-line: 52px;
+  --ds-sidebar-item-height: 30px;
+  --ds-sidebar-subitem-height: 28px;
+  --ds-tree-node-height: 28px;
+  --ds-menu-item-height: 30px;
+
+  /* 틀. 폭은 컨트롤 높이에서 계산하지 않는다 - 높이를 바꾸면 폭이 같이 움직였다 */
+  --ds-header-height: 44px;
+  --ds-sheet-header-height: 48px;
+  --ds-sidebar-width: 248px;
+  --ds-sidebar-width-icon: 48px;
+  --ds-sidebar-width-mobile: 288px;
+  --ds-filter-rail-width: 176px;
+  --ds-outline-width: 256px;
+  --ds-page-width: 960px;
+  --ds-workspace-width: 912px;
+  --ds-workspace-height: 648px;
+  --ds-layout-gap: 24px;
+  --ds-list-max-width: 1280px;
+  --ds-doc-sheet-width: 760px;
+  --ds-sheet-width: 440px;
+  --ds-sheet-width-wide: 600px;
+  --ds-dialog-width-sm: 420px;
+  --ds-dialog-width-md: 560px;
+  --ds-command-width: 640px;
+  --ds-ai-bar-width: 720px;
+  --ds-infobox-width: 240px;
+  --ds-toast-width: 360px;
+  --ds-empty-width: 360px;
+  --ds-menu-min-width: 200px;
+  --ds-tooltip-max-width: 280px;
+
+  /* 초점은 윤곽선이다 - 단추 그림자와 부딪치지 않는다 */
+  --ds-focus-width: 2px;
+  --ds-focus-offset: 2px;
+  --ds-focus-offset-inset: -2px;
+
+  /* 움직임 - 나갈 때가 들어올 때보다 짧다 */
+  --ds-motion-instant: 0ms;
+  --ds-motion-fast: 100ms;
+  --ds-motion-quick: 150ms;
+  --ds-motion-base: 200ms;
+  --ds-motion-slow: 320ms;
+  --ds-motion-slower: 480ms;
+  --ds-motion-draw: 900ms;
+  --ds-motion-flash: 1600ms;
+  --ds-motion-loop: 1600ms;
+  --ds-motion-breathe: 2400ms;
+  --ds-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ds-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ds-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ds-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --ds-ease-spring: cubic-bezier(0.3, 1.35, 0.45, 1);
+
+  /* 그림자 - 면의 가장자리는 테두리가 아니라 그림자 안의 고리다(S = 58,44,20) */
+  --ds-shadow-ring: 0 0 0 1px rgba(58, 44, 20, 0.1);
+  --ds-shadow-control: 0 0 0 1px rgba(58, 44, 20, 0.1), 0 1px 2px rgba(58, 44, 20, 0.06);
+  --ds-shadow-raised: 0 0 0 1px rgba(58, 44, 20, 0.08), 0 1px 2px rgba(58, 44, 20, 0.05),
+    0 2px 6px -2px rgba(58, 44, 20, 0.07);
+  --ds-shadow-raised-hover: 0 0 0 1px rgba(58, 44, 20, 0.08), 0 1px 1px rgba(58, 44, 20, 0.04),
+    0 4px 10px -4px rgba(58, 44, 20, 0.09), 0 12px 24px -12px rgba(58, 44, 20, 0.12);
+  --ds-shadow-popover: 0 0 0 1px rgba(58, 44, 20, 0.1), 0 2px 4px rgba(58, 44, 20, 0.04),
+    0 8px 16px -6px rgba(58, 44, 20, 0.1), 0 20px 36px -12px rgba(58, 44, 20, 0.16);
+  --ds-shadow-dialog: 0 0 0 1px rgba(58, 44, 20, 0.1), 0 4px 8px rgba(58, 44, 20, 0.05),
+    0 24px 48px -12px rgba(58, 44, 20, 0.2), 0 48px 96px -24px rgba(58, 44, 20, 0.14);
+  --ds-shadow-button: 0 0 0 1px var(--ds-border-default);
+  --ds-shadow-primary: 0 1px 2px rgba(20, 32, 64, 0.14);
+  --ds-shadow-danger: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 1px rgba(80, 20, 14, 0.26), 0 2px 5px -1px rgba(80, 20, 14, 0.18);
+  --ds-shadow-field: inset 0 0 0 1px var(--ds-border-default), inset 0 -1px 0 var(--ds-border-control);
+  --ds-shadow-field-hover: inset 0 0 0 1px var(--ds-border-strong), inset 0 -1px 0 var(--ds-border-control);
+  --ds-shadow-field-focus: inset 0 0 0 1px var(--ds-focus), 0 0 0 3px var(--ds-focus-halo);
+  --ds-shadow-field-invalid: inset 0 0 0 1px var(--ds-danger-mark), 0 0 0 3px var(--ds-danger-halo);
+  --ds-shadow-inset: inset 0 1px 2px rgba(58, 44, 20, 0.08);
+  --ds-shadow-tooltip: 0 4px 12px rgba(28, 22, 12, 0.18);
+  --ds-shadow-bar-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --ds-shadow-kbd: 0 0 0 1px rgba(58, 44, 20, 0.12), inset 0 -1px 0 rgba(58, 44, 20, 0.12);
+  --ds-shadow-thumb: 0 1px 2px rgba(58, 44, 20, 0.25), 0 0 0 0.5px rgba(58, 44, 20, 0.12);
+  --ds-shadow-highlight: inset 0 -2px 0 var(--ds-highlight-underline);
+  --ds-top-highlight: 0 0 0 0 transparent;
+  --ds-kbd-bg: linear-gradient(var(--ds-bg-raised), var(--ds-bg-panel));
+}
+
+:root[data-os="mac"] {
+  --ds-weight-regular: 400;
+  --ds-weight-medium: 500;
+  --ds-weight-semibold: 600;
+  --ds-weight-prose: 400;
+}
+
+/* 손가락으로 누르는 화면 - 최소 누름 넓이 44 */
+@media (pointer: coarse) {
+  :root {
+    --ds-control-height-xs: var(--ds-control-height-touch);
+    --ds-control-height-sm: var(--ds-control-height-touch);
+    --ds-control-height-md: var(--ds-control-height-touch);
+    --ds-control-height-lg: var(--ds-control-height-touch);
+  }
+}
+
+@media (width < theme(--breakpoint-md)) {
+  :root {
+    --ds-control-height-xs: var(--ds-control-height-touch);
+    --ds-control-height-sm: var(--ds-control-height-touch);
+    --ds-control-height-md: var(--ds-control-height-touch);
+    --ds-control-height-lg: var(--ds-control-height-touch);
+  }
+}
+
+/* 어두운 바탕의 밝은 글자는 같은 굵기에서 더 두껍게 보인다(윈도우 화면 검수) - 한 칸씩 내린다. mac 은 위 블록이 이긴다 */
+[data-theme="dark"] {
+  --ds-weight-regular: 400;
+  --ds-weight-medium: 500;
+  --ds-weight-semibold: 600;
+  --ds-weight-prose: 400;
+}
+
+/* 다크 그림자 - 고리와 윗면 빛은 따뜻한 흰색(H = 255,244,224), 떨어지는 그림자는 검정 */
+[data-theme="dark"] {
+  --ds-shadow-ring: 0 0 0 1px rgba(255, 244, 224, 0.08);
+  --ds-shadow-control: 0 0 0 1px rgba(255, 244, 224, 0.08), inset 0 1px 0 rgba(255, 244, 224, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+  --ds-shadow-raised: 0 0 0 1px rgba(255, 244, 224, 0.07), inset 0 1px 0 rgba(255, 244, 224, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.35), 0 4px 10px -4px rgba(0, 0, 0, 0.4);
+  --ds-shadow-raised-hover: 0 0 0 1px rgba(255, 244, 224, 0.08), inset 0 1px 0 rgba(255, 244, 224, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.3), 0 12px 24px -10px rgba(0, 0, 0, 0.5);
+  --ds-shadow-popover: 0 0 0 1px rgba(255, 244, 224, 0.1), inset 0 1px 0 rgba(255, 244, 224, 0.06),
+    0 4px 8px rgba(0, 0, 0, 0.35), 0 20px 40px -12px rgba(0, 0, 0, 0.6);
+  --ds-shadow-dialog: 0 0 0 1px rgba(255, 244, 224, 0.1), inset 0 1px 0 rgba(255, 244, 224, 0.06),
+    0 8px 16px rgba(0, 0, 0, 0.4), 0 32px 64px -16px rgba(0, 0, 0, 0.7);
+  --ds-shadow-button: 0 0 0 1px var(--ds-border-default);
+  --ds-shadow-primary: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ds-shadow-danger: var(--ds-shadow-primary);
+  --ds-shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  --ds-shadow-tooltip: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --ds-shadow-bar-highlight: inset 0 1px 0 rgba(255, 244, 224, 0.06);
+  --ds-shadow-kbd: 0 0 0 1px rgba(255, 244, 224, 0.1), inset 0 1px 0 rgba(255, 244, 224, 0.06);
+  --ds-shadow-thumb: 0 1px 2px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(255, 244, 224, 0.1);
+  --ds-top-highlight: inset 0 1px 0 rgba(255, 244, 224, 0.05);
+  --ds-kbd-bg: linear-gradient(var(--ds-bg-overlay), var(--ds-bg-raised));
+}
+
+/* 순간(명세 §7.3) - 실제 사건에 한 번씩만. 다시 그릴 때 틀지 않는다 */
+@keyframes kw-flash {
+  0%, 25% { background-color: var(--ds-ai-bg); }
+  100% { background-color: transparent; }
+}
+@keyframes kw-digit {
+  from { transform: translateY(calc(-1 * var(--ds-space-4))); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes kw-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes kw-stamp {
+  from { transform: var(--ds-motion-stamp-start); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes kw-sheen {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(333.33%); }
+}
+@keyframes kw-shine {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+@keyframes kw-breathe {
+  0%, 100% { box-shadow: 0 0 0 var(--ds-focus-width) transparent; }
+  50% { box-shadow: 0 0 0 var(--ds-focus-width) color-mix(in srgb, var(--ds-ai-mark) 35%, transparent); }
+}
+

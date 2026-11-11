@@ -1,0 +1,80 @@
+@reference '../theme.css';
+
+.studio-shell :is(.button,.home-icon-button,.home-primary-link,.studio-jump-trigger,.shell-control,.studio-template-card) {
+  transition: background-color var(--ui-motion-control-duration), color var(--ui-motion-control-duration), border-color var(--ui-motion-control-duration), box-shadow var(--ui-motion-control-duration), transform var(--ui-motion-control-duration) var(--ui-motion-ease-enter);
+}
+.studio-shell :is(.button,.home-icon-button,.home-primary-link,.studio-jump-trigger,.shell-control):active:not(:disabled) {
+  transform:scale(var(--ui-motion-pressed-scale));
+  transition-duration:var(--ui-motion-press-duration);
+}
+.studio-shell :is(.studio-template-card,.home-mind-card,.mind-companion-card) {
+  transition: transform var(--ui-motion-control-duration) var(--ui-motion-ease-enter), border-color var(--ui-motion-control-duration), box-shadow var(--ui-motion-control-duration);
+}
+@media (hover:hover) and (pointer:fine) {
+  .studio-shell :is(.studio-template-card,.home-mind-card,.mind-companion-card):hover {
+    transform:translateY(var(--ui-motion-lift));
+    box-shadow:var(--ds-shadow-raised-hover);
+  }
+}
+.ui-action-menu-panel[data-open],.strategy-node-menu {
+  animation:ui-popup-enter var(--ui-motion-popup-duration) var(--ui-motion-ease-enter);
+  transform-origin:top right;
+}
+#detail-dialog {
+  opacity:0;
+  transform:translateY(var(--ui-motion-distance-md));
+  transition:opacity var(--ui-motion-popup-duration) var(--ui-motion-ease-exit),transform var(--ui-motion-popup-duration) var(--ui-motion-ease-exit),display var(--ui-motion-popup-duration) allow-discrete,overlay var(--ui-motion-popup-duration) allow-discrete;
+}
+#detail-dialog[open] {
+  opacity:1;
+  transform:none;
+  transition-duration:var(--ui-motion-dialog-duration);
+  transition-timing-function:var(--ui-motion-ease-enter);
+}
+#detail-dialog::backdrop {
+  transition:background-color var(--ui-motion-popup-duration);
+}
+@starting-style {
+  #detail-dialog[open] { opacity:0; transform:translateY(var(--ui-motion-distance-md)); }
+  #detail-dialog[open]::backdrop { background-color:var(--ui-motion-backdrop-from); }
+}
+.studio-jump-results a {
+  @apply relative;
+  transition:background-color var(--ui-motion-control-duration),color var(--ui-motion-control-duration);
+}
+.studio-jump-results a:focus-visible { outline-offset:calc(-1 * var(--ds-focus-width)); }
+.studio-universe-summary[open] > p,
+.mind-operation-depth[open] > :not(summary),
+.strategy-editor.inspector-open .strategy-inspector {
+  animation:ui-panel-enter var(--ui-motion-popup-duration) var(--ui-motion-ease-enter);
+}
+.studio-shell :is(.field input,.field select,.field textarea) {
+  transition:border-color var(--ui-motion-control-duration),box-shadow var(--ui-motion-control-duration);
+}
+.studio-shell .loading,.studio-shell .home-loading {
+  animation:ui-loading-breathe var(--ui-motion-loading-duration) ease-in-out infinite;
+}
+#toast.show { animation:ui-toast-enter var(--ui-motion-page-duration) var(--ui-motion-ease-enter); }
+
+@keyframes ui-popup-enter {
+  from { opacity:0; transform:translateY(calc(-1 * var(--ui-motion-distance-sm))); }
+  to { opacity:1; transform:none; }
+}
+@keyframes ui-panel-enter {
+  from { opacity:0; transform:translateY(var(--ui-motion-distance-sm)); }
+  to { opacity:1; transform:none; }
+}
+@keyframes ui-toast-enter {
+  from { opacity:0; transform:translate(-50%,var(--ui-motion-distance-md)); }
+  to { opacity:1; transform:translate(-50%,0); }
+}
+@keyframes ui-loading-breathe {
+  50% { opacity:var(--ui-motion-loading-low); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .studio-shell *,#detail-dialog,#detail-dialog::backdrop,.ui-action-menu-panel,#toast {
+    animation:none!important;
+    transition:none!important;
+  }
+  .studio-shell :is(.button,.home-icon-button,.home-primary-link,.studio-jump-trigger,.shell-control,.studio-template-card,.home-mind-card,.mind-companion-card):is(:hover,:active) { transform:none; }
+}

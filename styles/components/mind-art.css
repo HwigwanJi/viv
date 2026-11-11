@@ -1,0 +1,34 @@
+.mind-art-page{@apply antialiased;background:var(--mind-art-bg);@apply text-(color:--mind-art-ink)}
+.mind-art-preview{@apply max-w-(--mind-art-width);@apply m-auto;@apply p-(--mind-art-padding)}
+.mind-art-header{@apply flex;@apply justify-between;@apply items-center;@apply gap-(--mind-art-gap);@apply mb-(--mind-art-gap)}
+.mind-art-eyebrow{@apply text-(color:--mind-art-accent-ink);@apply text-(length:--ds-font-size-xs);letter-spacing:var(--mind-art-eyebrow-tracking)}
+.mind-art-header h1{font-family:var(--ds-font-sans);@apply text-(length:--mind-art-title);@apply font-ui-bold;letter-spacing:var(--mind-art-title-tracking);@apply leading-(--mind-art-title-leading);@apply my-ui-2 mx-0}
+.mind-art-header p,.mind-art-caption p,.mind-art-footer p,.mind-art-status{@apply text-(color:--mind-art-muted);@apply text-(length:--ds-font-size-sm)}
+.mind-art-score{@apply grid;grid-template-columns:1fr auto;@apply gap-x-ui-2;@apply text-right;@apply whitespace-nowrap}
+.mind-art-score>span{grid-column:1 / -1;@apply text-(color:--mind-art-muted);@apply text-(length:--ds-font-size-sm)}
+.mind-art-score strong{@apply text-(length:--mind-art-score);@apply font-ui-bold;font-variant-numeric:tabular-nums;@apply text-(color:--mind-art-effect)}
+.mind-art-score small{align-self:center;@apply text-(color:--mind-art-muted)}
+.mind-art-controls{@apply flex;@apply gap-ui-2;flex-wrap:wrap;@apply mb-ui-3}
+.mind-art-controls button,.mind-art-weather button{@apply min-h-control-touch;@apply py-ui-2 px-ui-4;border:var(--ui-border-width) solid var(--mind-art-border);@apply rounded-(--ds-radius-md);@apply text-(color:--mind-art-ink);background:var(--mind-art-panel);@apply cursor-pointer}
+.mind-art-controls button[aria-pressed=true],.mind-art-controls button[data-game-demo-profit]{background:var(--mind-art-accent);@apply text-(color:--mind-art-ink)}
+.mind-art-preview button:focus-visible,.mind-art-preview a:focus-visible{outline:var(--ui-border-emphasis) solid var(--mind-art-accent-ink);outline-offset:var(--ds-space-2)}
+.mind-art-status{@apply min-h-ui-5;@apply mb-ui-4}
+.mind-art-grid{@apply grid;grid-template-columns:repeat(2,minmax(0,1fr));@apply gap-(--mind-art-gap)}
+.mind-art-card{@apply min-w-0;border:var(--ui-border-width) solid var(--mind-art-border);@apply rounded-(--mind-art-radius);overflow:hidden;background:var(--mind-art-panel)}
+.mind-art-stage{@apply relative;aspect-ratio:3 / 2;background:var(--mind-art-bg);overflow:hidden}
+.mind-art-stage canvas{@apply block;@apply w-full;@apply h-full}
+.mind-art-badges{@apply absolute;@apply flex;@apply justify-between;@apply gap-ui-2;inset:var(--ds-space-3) var(--ds-space-3) auto;pointer-events:none}
+.mind-art-badges span{background:var(--mind-art-bg);border:var(--ui-border-width) solid var(--mind-art-border);@apply rounded-(--ds-radius-md);@apply py-ui-1 px-ui-3;@apply text-(length:--ds-font-size-xs);@apply text-(color:--mind-art-ink)}
+.mind-art-caption{@apply flex;@apply items-center;@apply justify-between;@apply gap-ui-3;@apply p-ui-4}
+.mind-art-caption h2{@apply text-(length:--ds-font-size-base);@apply font-ui-semibold;@apply mt-0 mx-0 mb-ui-1}
+.mind-art-caption p{@apply m-0}
+.mind-art-weather{@apply flex;@apply gap-ui-1;flex-shrink:0}
+.mind-art-weather button{@apply py-ui-1 px-ui-2}
+.mind-art-footer{@apply mt-(--mind-art-gap);@apply pt-ui-4;border-top:var(--ui-border-width) solid var(--mind-art-border)}
+.mind-art-footer a{@apply text-(color:--mind-art-accent-ink);@apply underline;text-underline-offset:var(--ds-space-2)}
+.mind-art-footer p{@apply mt-ui-2}
+.mind-art-page .mind-game-profit-fly{@apply fixed;z-index:var(--mind-art-effect-layer);pointer-events:none;@apply text-(color:--mind-art-effect);@apply font-ui-bold;@apply text-(length:--ds-font-size-xl);text-shadow:var(--mind-art-effect-shadow);@apply whitespace-nowrap}
+.mind-art-score .is-crediting{animation:mind-art-credit var(--mind-art-credit-duration) ease-out}
+@keyframes mind-art-credit{30%{color:var(--mind-art-ink);transform:scale(var(--mind-art-credit-scale))}to{transform:scale(1)}}
+@media (width < theme(--breakpoint-md)){.mind-art-preview{@apply p-(--mind-art-mobile)}.mind-art-grid{grid-template-columns:1fr}.mind-art-header{@apply items-start}.mind-art-header h1{@apply text-(length:--mind-art-score)}.mind-art-score strong{@apply text-(length:--mind-art-gap)}.mind-art-caption{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.mind-art-score .is-crediting{animation:none}}

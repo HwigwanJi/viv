@@ -1,0 +1,134 @@
+@reference '../theme.css';
+@import './data-table.css';
+
+.research-report { @apply m-0 bg-canvas text-foreground font-ui-sans text-ui-read leading-ui-read; }
+.research-report > main,.research-report.report-forward { @apply max-w-report-wide mx-auto p-ui-9; }
+.research-report.report-forward { @apply min-h-screen; }
+.research-report.report-overseas > main { @apply max-w-report-prose; }
+.research-report header { @apply border-t-4 border-b border-accent py-ui-7 mb-ui-8; }
+.research-report h1 { @apply text-ui-3xl leading-ui-3xl font-ui-semibold mt-ui-2 mb-ui-5; }
+.research-report h2 { @apply text-ui-xl leading-ui-xl font-ui-semibold mt-0 mb-ui-6; }
+.research-report h3 { @apply text-ui-lg leading-ui-lg font-ui-medium mt-0 mb-ui-4; }
+.research-report p { @apply my-ui-4; }
+.research-report :is(.layout,.grid) { @apply grid grid-cols-(--report-columns) gap-ui-8; }
+.research-report.report-forward > .grid { @apply mt-ui-8; }
+.research-report .panel,.research-report.report-overseas .card { @apply min-w-0 bg-surface border border-default rounded-ui-xl p-ui-8 mb-ui-7; }
+.research-report .panel > h2.section-start { @apply mt-ui-6; }
+.research-report :is(.muted,small,.eyebrow,.metric,footer) { @apply text-secondary; }
+.research-report small { @apply text-ui-xs leading-ui-xs; }
+.research-report :is(.eyebrow,.metric,footer,dt) { @apply text-ui-sm; }
+.research-report .eyebrow { @apply mb-ui-4; }
+.research-report .tag { @apply inline-block rounded-ui-md bg-negative-soft text-negative px-ui-4 py-ui-3 text-ui-xs; }
+.research-report .badge { @apply inline-block rounded-ui-full bg-accent-soft text-accent px-ui-5 py-ui-3 text-ui-sm; }
+.research-report .tabs { @apply flex flex-wrap gap-ui-4 mb-ui-7; }
+.research-report button { @apply inline-flex items-center justify-center min-h-control-sm rounded-ui-lg border border-default bg-surface px-ui-5 py-ui-2 text-ui-sm leading-ui-md font-ui-medium cursor-pointer; }
+.research-report button:hover { @apply bg-hover; }
+.research-report button.active,.research-report button[aria-pressed=true] { @apply text-on-accent bg-accent border-accent; }
+.research-report :is(button,a):focus-visible { @apply outline-2 outline-offset-2 outline-accent; }
+.research-report .cards { @apply grid grid-cols-3 gap-ui-5 mb-ui-7; }
+.research-report .card { @apply bg-field p-ui-6 rounded-ui-lg min-w-0; }
+.research-report .big { @apply text-ui-2xl leading-ui-2xl font-ui-bold mt-ui-6 mb-ui-3 tabular-nums; }
+.research-report .hero { @apply text-ui-3xl leading-ui-3xl font-ui-bold text-positive; }
+.research-report .metric { @apply my-ui-3; }
+.research-report.report-overseas .metric { @apply text-ui-2xl font-ui-semibold; }
+.research-report :is(.pos,.positive) { @apply text-positive; }
+.research-report :is(.neg,.negative,#error) { @apply text-negative; }
+.research-report .table,.research-report .table-wrap { @apply block min-w-0 w-full max-w-full overflow-x-auto; }
+.research-report table { @apply w-full border-collapse text-ui-sm; }
+.research-report th,.research-report td { @apply text-right px-ui-4 py-ui-5 border-b border-subtle align-top; }
+.research-report th { @apply bg-field text-secondary font-ui-medium; }
+.research-report :is(th,td):first-child { @apply text-left; }
+.research-report.report-forward table { @apply whitespace-nowrap; }
+.research-report .flow { @apply flex items-stretch gap-ui-4 my-ui-4; }
+.research-report .step { @apply flex-1 bg-field border border-default p-ui-5 text-center text-ui-sm leading-ui-read; }
+.research-report .arrow { @apply self-center text-muted; }
+.research-report a { @apply text-accent no-underline; }
+.research-report a:hover { @apply underline; }
+.research-report .cta { @apply block mt-ui-5 px-ui-5 py-ui-5 rounded-ui-lg bg-accent text-on-accent text-center font-ui-medium; }
+.research-report :is(.warn,.warning) { @apply border-l-4 border-warning pl-ui-5; }
+.research-report .node { @apply border-l-4 border-accent bg-field p-ui-5 my-ui-4; }
+.research-report #chart { @apply w-full h-report-chart; }
+.research-report svg { @apply w-full h-auto font-ui-sans text-ui-xs; }
+.research-report :is(.series-a,.series-b,.series-c) { @apply inline-block mr-ui-5; }
+.research-report .series-a { @apply text-series-a; }
+.research-report .series-b { @apply text-series-b; }
+.research-report .series-c { @apply text-series-c; }
+.research-report .list p { @apply border-b border-subtle pb-ui-5; }
+.research-report .model-link { @apply block py-ui-4 border-b border-subtle text-ui-sm; }
+.research-report .stats { @apply flex flex-wrap gap-ui-9 my-ui-8; }
+.research-report .stats b { @apply block text-ui-2xl leading-ui-2xl font-ui-semibold; }
+.research-report progress { @apply w-full h-ui-5; accent-color:var(--ds-accent); }
+.research-report code { @apply break-all font-ui-mono text-ui-xs; }
+.research-report dt { @apply text-secondary mt-ui-7; }
+.research-report dd { @apply mx-0 mt-ui-2 mb-0 text-ui-sm leading-ui-read; }
+.research-report.brokerage-report :is(p,dd,td) { @apply wrap-anywhere; }
+.research-report.brokerage-report dl { @apply grid grid-cols-3 gap-x-ui-6 gap-y-ui-5; }
+.research-report.brokerage-report dt { @apply mt-0; }
+.research-report.brokerage-report dd { @apply col-span-2 mt-0; }
+.research-report.brokerage-report table { @apply table-fixed; }
+.research-report.brokerage-report #research :is(th,td):first-child { @apply w-2/5; }
+.research-report .report-orders { @apply list-none p-0 m-0; }
+.research-report .report-orders > li { @apply min-w-0 border-t border-subtle py-ui-7; }
+.research-report .report-order-heading { @apply flex flex-wrap items-baseline justify-between gap-ui-4; }
+.research-report .report-order-heading h3 { @apply m-0 wrap-anywhere; }
+.research-report .report-order-heading > span { @apply text-ui-sm text-secondary; }
+.research-report .report-order-time { @apply text-ui-xs text-secondary mt-ui-2 mb-ui-5; }
+.research-report.brokerage-report :is(.report-fill-metrics,.report-comparison-metrics) { @apply grid grid-cols-2 gap-ui-6; }
+.research-report :is(.report-fill-metrics,.report-comparison-metrics) > div { @apply min-w-0; }
+.research-report.brokerage-report :is(.report-fill-metrics,.report-comparison-metrics) dd { @apply text-ui-lg leading-ui-lg font-ui-semibold mt-ui-2 text-right tabular-nums; }
+.research-report .report-order-details { @apply mt-ui-5; }
+.research-report .report-order-details summary { @apply min-h-control-touch list-item py-ui-3 text-ui-sm text-secondary cursor-pointer; }
+.research-report .report-order-details summary:focus-visible { @apply outline-2 outline-offset-2 outline-accent; }
+.research-report .report-order-details dl { @apply mt-ui-4; }
+.research-report footer { @apply text-ui-xs leading-ui-read mt-ui-7; }
+.research-report .hide { @apply hidden; }
+@media (width < theme(--breakpoint-lg)) {
+ .research-report > main,.research-report.report-forward { @apply p-ui-6; }
+ .research-report :is(.layout,.grid) { @apply grid-cols-1; }
+ .research-report .cards { @apply grid-cols-1; }
+ .research-report .panel,.research-report.report-overseas .card { @apply p-ui-6; }
+ .research-report .flow { @apply flex-col; }
+ .research-report .arrow { @apply hidden; }
+ .research-report .stats { @apply gap-ui-7; }
+}
+@media (pointer:coarse) { .research-report button { @apply min-h-control-touch; } }
+@media (width >= theme(--breakpoint-lg)) {
+ .research-report .report-orders { @apply grid grid-cols-2 gap-x-ui-8; }
+}
+@media print {
+ .research-report { @apply bg-white text-black; }
+ .research-report > main { @apply max-w-none p-0; }
+ .research-report .panel { @apply break-inside-avoid rounded-none border-0 border-t p-0 py-ui-6 mb-0; }
+ .research-report .tabs,.research-report .studio-table-cell-label { @apply hidden; }
+ .research-report .report-comparison { @apply break-inside-avoid; }
+ .research-report.brokerage-report > main > header details { @apply hidden; }
+ .research-report .report-order-details::details-content { content-visibility:visible; }
+ .research-report .report-order-details summary { @apply hidden; }
+ .research-report .report-orders > li { @apply break-inside-avoid; }
+ .research-report .report-orders { @apply block; }
+ .research-report .table-wrap { @apply overflow-visible; }
+ .research-report :is(h2,h3) { @apply break-after-avoid; }
+}
+@media (width < theme(--breakpoint-sm)) {
+ .research-report.brokerage-report dl { @apply grid-cols-1 gap-y-ui-2; }
+ .research-report.brokerage-report dt { @apply mt-ui-4; }
+ .research-report.brokerage-report dd { @apply col-span-1; }
+ .research-report.brokerage-report .report-fill-metrics { @apply grid-cols-2; }
+ .research-report.brokerage-report .report-fill-metrics dt { @apply mt-0; }
+ .research-report .report-fill-metrics > div:nth-child(3) dd { @apply text-ui-sm leading-ui-read; }
+}
+
+.research-report .report-comparison { @apply border-y border-subtle py-ui-6 my-ui-7; }
+.research-report .report-comparison-metrics { @apply items-end; }
+.research-report .report-comparison h3 { @apply mb-ui-2; }
+.research-report .report-comparison-metrics dt { @apply mt-0; }
+@container studio-table (width < theme(--breakpoint-md)) {
+ .research-report.brokerage-report #research td:first-child { @apply w-auto; }
+}
+
+.research-report.brokerage-report .report-comparison-metrics dd { @apply text-left; }
+@media (width >= theme(--breakpoint-lg)) {
+ .research-report.brokerage-report .report-comparison-metrics { @apply grid-cols-4; }
+}
+.research-report.brokerage-report > main > header summary { @apply min-h-control-touch py-ui-3 cursor-pointer; }
+.research-report.brokerage-report > main > header .badge { @apply inline-flex items-center min-h-control-touch; }

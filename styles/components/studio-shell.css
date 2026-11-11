@@ -1,0 +1,283 @@
+@reference '../theme.css';
+
+/* Context groups share the canonical routes and the Wiki sidebar state. */
+.studio-shell .studio-task-nav {
+  @apply flex flex-col gap-ui-6 font-ui-sans;
+}
+.studio-shell .studio-nav-group {
+  @apply grid min-w-0 gap-ui-1;
+}
+.studio-shell .studio-nav-group > h3 {
+  @apply px-ui-4 pt-ui-3 pb-ui-2 m-0 text-ui-xs leading-ui-xs font-ui-medium;
+  @apply text-(color:--ds-sidebar-label);
+}
+.studio-shell .studio-nav-group > a,
+.studio-shell .studio-nav-group > .disabled {
+  @apply block min-w-0 min-h-ui-9 px-ui-4 py-ui-3 text-ui-sm leading-ui-sm rounded-ui-sm no-underline truncate;
+  @apply text-(color:--ds-sidebar-text);
+}
+.studio-shell .studio-nav-group > a:hover {
+  background: var(--ds-fill-sidebar-hover);
+}
+.studio-shell .studio-nav-group > a[aria-current=page] {
+  @apply font-ui-semibold text-foreground;
+  background: var(--ds-sidebar-active-bg);
+}
+.studio-shell .studio-nav-group > .disabled {
+  @apply text-(color:--ds-sidebar-label);
+  @apply opacity-50;
+}
+.studio-shell .studio-scope-summary {
+  @apply grid min-w-0 gap-ui-3 px-ui-2 pb-ui-7 text-ui-xs leading-ui-sm;
+  @apply text-(color:--ds-sidebar-label);
+}
+.studio-shell .studio-scope-summary > span:last-child {
+  @apply truncate text-ui-sm text-foreground font-ui-medium;
+}
+.studio-shell .studio-return-link {
+  @apply flex items-center min-w-0 gap-ui-3 mt-auto px-ui-4 pt-ui-8 pb-ui-2 text-ui-xs leading-ui-sm text-secondary no-underline;
+}
+.studio-shell .studio-return-link > span:last-child {
+  @apply min-w-0 truncate;
+}
+.studio-shell .studio-return-link:hover {
+  @apply text-foreground;
+}
+.studio-shell .breadcrumb {
+  @apply flex-1 overflow-hidden;
+}
+.studio-shell .breadcrumb > .studio-breadcrumb-list {
+  @apply min-w-0 overflow-hidden gap-ui-3;
+}
+.studio-shell .breadcrumb > .studio-breadcrumb-list > li {
+  @apply flex items-center min-w-0;
+  @apply max-w-(--terminal-picker-min-width);
+}
+.studio-shell .breadcrumb > .studio-breadcrumb-list > li:last-child {
+  @apply shrink-0;
+}
+.studio-shell .breadcrumb > .studio-breadcrumb-list > li + li:before {
+  @apply shrink-0 mr-ui-3;
+}
+.studio-shell .studio-breadcrumb-list > li > a,
+.studio-shell .studio-breadcrumb-list > li > span {
+  @apply block min-w-0 truncate;
+}
+.studio-shell .studio-breadcrumb-list > li > a {
+  @apply no-underline text-secondary;
+}
+.studio-shell .studio-breadcrumb-list > li > a:hover {
+  @apply underline text-foreground;
+}
+.studio-shell .studio-mind-scope > select {
+  @apply truncate;
+}
+.studio-mind-shell {
+  --shell-sidebar-width: var(--terminal-sidebar-rail-width);
+}
+.studio-mind-shell .studio-sidebar-columns {
+  @apply grid-cols-1;
+}
+.studio-mind-shell .studio-primary-nav {
+  @apply border-0;
+}
+.studio-mind-workspace {
+  @apply min-w-0 mb-ui-7 font-ui-sans;
+}
+.studio-mind-workspace-top {
+  @apply flex min-w-0 flex-wrap items-center gap-ui-4 mb-ui-6;
+}
+.studio-mind-back, .studio-mind-origin {
+  @apply inline-flex min-w-0 items-center gap-ui-2 text-ui-xs leading-ui-xs text-secondary no-underline;
+  @apply min-h-control-lg;
+}
+.studio-mind-back:hover, .studio-mind-origin:hover {
+  @apply text-foreground underline;
+}
+.studio-mind-workspace-heading {
+  @apply flex flex-wrap min-w-0 items-center justify-between gap-ui-5 mb-ui-5;
+}
+.studio-mind-workspace-heading>[data-studio-action="mind-automation"] { @apply shrink-0; }
+.studio-mind-workspace-actions { @apply flex shrink-0 items-center gap-ui-3; }
+.studio-mind-identity {
+  @apply flex flex-1 min-w-0 items-center gap-ui-4;
+}
+.studio-mind-identity > .mind-avatar {
+  @apply shrink-0;
+}
+.studio-mind-identity > .mind-life-stage {
+  @apply shrink-0;
+  @apply w-(--ui-mind-header-portrait);
+}
+.studio-mind-identity-text {
+  @apply grid min-w-0 gap-ui-1;
+}
+.studio-mind-identity h1 {
+  @apply m-0 min-w-0 truncate font-ui-sans text-ui-2xl leading-ui-2xl font-ui-semibold;
+}
+.studio-mind-state {
+  @apply text-ui-md leading-ui-md text-secondary;
+}
+.studio-mind-switcher {
+  @apply block min-w-0 max-w-full ml-auto text-ui-xs leading-ui-xs text-secondary;
+  @apply w-(--ui-mind-switcher-width);
+}
+.studio-mind-switcher select {
+  @apply min-w-0 w-full truncate text-ui-md bg-transparent border-transparent;
+  @apply min-h-control-lg;
+}
+.studio-mind-tabs, .studio-mind-collection-nav {
+  @apply flex min-w-0 gap-ui-2 overflow-x-auto py-ui-2;
+}
+.studio-mind-tabs > a, .studio-mind-collection-nav > a {
+  @apply inline-flex items-center shrink-0 whitespace-nowrap rounded-ui-full px-ui-5 py-ui-3 text-ui-sm leading-ui-sm font-ui-medium text-secondary no-underline;
+  @apply min-h-control-lg;
+}
+.studio-mind-tabs > a:hover, .studio-mind-collection-nav > a:hover {
+  @apply text-foreground;
+}
+.studio-mind-tabs > a[aria-current=page], .studio-mind-collection-nav > a[aria-current=page] {
+  @apply bg-(--ds-bg-inverse) text-(color:--ds-text-inverse);
+}
+.studio-mind-collection-nav {
+  @apply mb-ui-7;
+}
+
+.studio-jump-trigger {
+  @apply inline-flex items-center gap-ui-6 rounded-ui-md border border-default px-ui-5 py-ui-3 text-ui-xs text-secondary bg-surface;
+  @apply min-h-control-md;
+}
+.studio-jump-trigger:hover { @apply text-foreground border-strong; }
+.studio-jump-trigger kbd { @apply font-ui-sans text-ui-xs text-secondary; }
+.studio-jump { @apply flex flex-col gap-ui-4; }
+.studio-jump-search { @apply flex items-end gap-ui-4; }
+.studio-jump-search .field { @apply flex-1 min-w-0; }
+.studio-jump-search .pill { @apply shrink-0 mb-ui-3; }
+.studio-jump-results { @apply flex flex-col overflow-y-auto; @apply max-h-(--ui-command-max-height); }
+.studio-jump-group + .studio-jump-group { @apply mt-ui-4 pt-ui-4 border-t border-default; }
+.studio-jump-group h3 { @apply px-ui-5 py-ui-3 text-ui-xs font-ui-semibold text-secondary; }
+.studio-jump-context { @apply block mt-ui-2 text-foreground font-ui-regular break-words; }
+.studio-jump-results a { @apply flex items-center justify-between gap-ui-5 px-ui-5 py-ui-4 rounded-ui-md text-foreground no-underline; @apply min-h-control-touch; }
+.studio-jump-results a[aria-selected="true"],.studio-jump-results a:hover,.studio-jump-results a:focus-visible { @apply bg-hover; }
+.studio-jump-results a > span:first-child { @apply min-w-0 break-words; }
+.studio-jump-task { @apply shrink-0 text-secondary text-ui-xs; }
+.studio-jump-arrow { @apply shrink-0 text-secondary; }
+.studio-jump-results [hidden],.studio-jump-empty[hidden] { @apply hidden; }
+.studio-jump-problem { @apply flex flex-wrap items-center gap-ui-4 text-ui-sm; }
+.studio-jump-problem p { @apply min-w-0; overflow-wrap:anywhere; }
+.studio-jump :is([data-studio-jump-clear],[data-studio-jump-retry]) { @apply border border-solid border-default bg-surface px-ui-5 text-ui-sm min-h-control-touch; }
+.studio-jump-problem[hidden] { @apply hidden; }
+.studio-jump-empty { @apply flex flex-col items-center gap-ui-4 py-ui-6 text-ui-sm text-secondary; }
+.studio-jump-keys { @apply flex flex-wrap gap-ui-5 pt-ui-4 border-t border-default text-ui-xs text-secondary; }
+.studio-jump-keys span { @apply inline-flex items-center gap-ui-2; }
+.studio-jump-keys kbd { @apply font-ui-sans rounded-ui-sm border border-default px-ui-2; }
+@media (pointer:coarse) { .studio-jump-keys { @apply hidden; } }
+.studio-page-settings .studio-content { @apply max-w-(--ui-task-max-width); }
+.studio-page-settings .studio-sheet { @apply rounded-ui-lg; }
+.studio-page-settings .studio-sheet-head { @apply bg-transparent; }
+.studio-page-library .studio-sheet { @apply rounded-ui-md; }
+.studio-page-library .studio-table th { @apply bg-transparent; }
+.studio-catalog-search { @apply flex items-end flex-wrap gap-ui-6 mt-ui-6 mb-ui-6; }
+.studio-catalog-search .field { @apply flex-1; min-width:min(100%,var(--ui-panel-narrow)); }
+.studio-catalog-search > span { @apply text-ui-xs text-secondary py-ui-3; }
+.studio-catalog-results { @apply overflow-auto; @apply max-h-(--ui-command-max-height); }
+.studio-catalog-results th { @apply sticky top-0; background:var(--ds-bg-panel); }
+[data-capability-group] > summary { @apply cursor-pointer font-ui-semibold; }
+.studio-universe-summary { @apply min-w-0; }
+.studio-universe-summary > summary { @apply cursor-pointer text-accent; }
+.studio-universe-summary > summary > span { @apply text-ui-xs font-ui-regular ml-ui-4; }
+.studio-universe-summary > p { @apply mt-ui-4 text-ui-xs text-secondary font-ui-regular leading-ui-sm overflow-y-auto; overflow-wrap:anywhere; @apply max-h-(--ui-command-max-height); }
+.studio-strategy-summary .detail-row { @apply py-ui-5; }
+.studio-strategy-summary > .studio-sheet-body { @apply grid grid-cols-2 gap-x-ui-9; }
+.studio-strategy-summary .detail-row { @apply flex-col items-start justify-start gap-ui-3; }
+.studio-strategy-summary .detail-row > strong { @apply text-left text-ui-base; }
+.studio-strategy-summary .studio-policy-text { @apply col-span-full; }
+.studio-strategy-summary .studio-policy-text { @apply mt-ui-5 pt-ui-5 border-t border-subtle text-secondary; }
+.studio-page-library .studio-page-head { @apply pb-ui-6 border-b border-subtle; }
+.studio-task-description { @apply text-ui-sm text-secondary mb-ui-6; }
+.studio-template-grid { @apply grid grid-cols-2 gap-ui-6; }
+.studio-template-card { @apply grid content-start gap-ui-5 min-w-0 text-left border border-default rounded-ui-lg bg-surface p-ui-7; }
+.studio-template-card:hover { @apply border-accent bg-hover; }
+.studio-template-card > .studio-template-kind { @apply text-ui-lg font-ui-semibold text-foreground; }
+.studio-template-card > span { @apply text-ui-sm text-secondary; }
+.studio-template-card > strong { @apply text-ui-xs font-ui-medium text-accent mt-ui-4; }
+.studio-shell .studio-primary-nav > a[data-nav] { @apply font-ui-medium; @apply text-(color:--ds-text-secondary); }
+.studio-shell .studio-primary-nav > a[data-nav].active { @apply text-accent; }
+.studio-shell .studio-primary-nav > a[data-nav] > svg { @apply w-(--ds-icon-size-md); @apply h-(--ds-icon-size-md); }
+.studio-shell .studio-mind-tabs > a { @apply py-ui-5 px-ui-3; }
+.studio-shell .studio-page-head .actions > .button:not(.primary) { @apply bg-transparent border-transparent text-secondary; }
+.studio-shell .studio-page-head .actions > .button:not(.primary):hover { @apply bg-hover text-foreground; }
+
+@variant max-md {
+  .studio-template-grid { @apply grid-cols-1; }
+  .studio-strategy-summary > .studio-sheet-body { @apply grid-cols-1; }
+  .studio-jump-trigger { @apply px-ui-3; }
+  .studio-jump-trigger kbd { @apply hidden; }
+  .studio-jump-trigger > span { @apply text-ui-xs; }
+}
+.studio-mind-shell .studio-page-head > :is(h1,h2) {
+  @apply m-0 min-w-0 truncate font-ui-sans text-ui-2xl leading-ui-2xl font-ui-semibold;
+}
+@variant md {
+  :root[data-sidebar-state] .studio-mind-shell .studio-sidebar > .brand {
+    @apply justify-center px-0;
+  }
+  .studio-mind-shell .studio-sidebar > .brand .brand-name {
+    @apply hidden;
+  }
+  :root[data-sidebar-state] .studio-mind-shell .studio-primary-label {
+    @apply block;
+  }
+}
+@variant max-md {
+  .studio-mind-shell .studio-primary-nav > a[data-nav] {
+    @apply flex-row justify-start gap-ui-5 px-ui-5;
+  }
+  .studio-mind-shell .studio-primary-account {
+    @apply justify-start px-ui-5;
+  }
+  .studio-mind-workspace-heading {
+    @apply grid grid-cols-1 gap-ui-4;
+  }
+  .studio-mind-workspace-heading > .studio-mind-identity { @apply w-full; }
+  .studio-mind-workspace-heading .studio-mind-identity h1 { @apply whitespace-normal text-ui-xl leading-ui-lg; word-break:keep-all; overflow-wrap:break-word; }
+  .studio-mind-workspace-actions { @apply justify-self-end; }
+  .studio-mind-switcher {
+    @apply shrink;
+  }
+  .studio-mind-tabs, .studio-mind-collection-nav {
+    @apply gap-ui-4;
+  }
+  .studio-shell .studio-context-nav {
+    @apply overscroll-contain;
+  }
+  .studio-shell .breadcrumb > .studio-breadcrumb-list > li:not(:last-child) {
+    @apply hidden;
+  }
+  .studio-shell .breadcrumb > .studio-breadcrumb-list > li:last-child:before {
+    @apply hidden;
+  }
+  .studio-shell .breadcrumb > .studio-breadcrumb-list > li:last-child {
+    @apply shrink min-w-0;
+  }
+}
+
+.studio-data-group { @apply mt-ui-6; }
+.studio-data-group-head { @apply flex items-center justify-between gap-ui-4 mb-ui-4; }
+.studio-data-group-head h2 { @apply text-ui-base font-ui-semibold; }
+.studio-data-group-error { @apply flex flex-wrap items-center gap-ui-4 mb-ui-4; }
+.studio-data-grid { @apply grid grid-cols-1 gap-ui-5; }
+.studio-data-card { @apply flex flex-col min-w-0; }
+.studio-data-card .studio-sheet-head { @apply flex-wrap items-start gap-ui-3; }
+.studio-data-card .studio-sheet-head h3 { @apply min-w-0 text-ui-sm font-ui-semibold; }
+.studio-data-card > .studio-sheet-body { @apply flex-1; }
+.studio-data-actions { @apply flex flex-wrap gap-ui-3 px-ui-5 pb-ui-5; }
+.studio-data-actions .button { @apply whitespace-normal; }
+.studio-data-scope { @apply mt-ui-2 text-ui-xs text-secondary; }
+@media (width >= theme(--breakpoint-md)) { .studio-data-grid { @apply grid-cols-2; } }
+@media (width >= theme(--breakpoint-lg)) { .studio-data-grid { @apply grid-cols-3; } }
+
+.studio-budget-setup { @apply border-t border-subtle px-ui-5 py-ui-5; }
+.studio-budget-setup h3 { @apply text-ui-sm font-ui-semibold text-secondary; }
+.studio-budget-setup .actions { @apply mt-ui-3 flex-wrap justify-start gap-ui-3; }
+.studio-page-settings .studio-budget-setup .button.small { @apply min-h-control-touch; }

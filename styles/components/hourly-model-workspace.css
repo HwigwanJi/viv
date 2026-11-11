@@ -1,0 +1,47 @@
+.strategy-model-entry { @apply mt-ui-3 grid gap-ui-2 border-t border-subtle pt-ui-2; }
+.strategy-model-entry p { @apply m-0 text-ui-xs leading-ui-sm text-secondary; }
+.strategy-model-entry > button { @apply w-full; }
+.strategy-hourly-model { @apply grid gap-ui-3; }
+.strategy-model-source { @apply grid gap-ui-2 rounded-ui-md border border-default bg-canvas p-ui-3; }
+.strategy-model-source h4,.strategy-model-source p { @apply m-0; }
+.model-components-workspace { @apply flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-surface; }
+.model-path-tabs { @apply flex min-w-0 shrink-0 flex-wrap items-center gap-ui-2 border-b border-default p-ui-3; }
+.model-path-tabs [aria-pressed=true] { @apply border-accent bg-accent-soft text-accent; }
+.model-path-description { @apply min-w-0 text-ui-xs text-secondary; }
+.model-components-body { @apply grid min-h-0 min-w-0 flex-1 overflow-hidden; grid-template-columns:var(--graph-palette-width) minmax(0,1fr) var(--graph-inspector-width); }
+.model-tree-view .model-components-body { grid-template-columns:var(--graph-palette-width) minmax(0,1fr); }
+.model-components-outline { @apply flex min-h-0 min-w-0 flex-col gap-ui-2 overflow-auto border-r border-default p-ui-3; }
+.model-components-outline > button { @apply shrink-0 text-left; }
+.model-components-canvas { @apply min-h-0 min-w-0 overflow-hidden bg-canvas; }
+.model-components-canvas .strategy-node { width:var(--graph-parameter-node-width); }
+.model-components-properties { @apply min-h-0 min-w-0 overflow-auto border-l border-default p-ui-4; }
+.model-components-properties > header { @apply mb-ui-4 flex items-center justify-between gap-ui-2; }
+.model-components-properties > header > button { @apply hidden; }
+.model-components-properties p { @apply text-ui-sm leading-ui-md text-secondary; }
+.model-components-properties details { @apply my-ui-3; }
+.model-components-footer { @apply shrink-0 border-t border-default p-ui-3 text-ui-xs text-secondary; }
+.model-mobile-select { @apply hidden; }
+@media (width < theme(--breakpoint-md)) {
+ .model-components-workspace .strategy-editor-toolbar { @apply flex-col items-stretch; }
+ .model-components-workspace .strategy-editor-tools { @apply flex-wrap justify-start; }
+ .model-path-description { @apply hidden; }
+ .model-mobile-select { @apply flex items-center gap-ui-3 border-b border-default px-ui-3 py-ui-2 text-ui-sm; }
+ .model-mobile-select select { @apply min-w-0 flex-1; }
+ .model-components-body,.model-tree-view .model-components-body { @apply relative block; }
+ .model-components-outline { @apply hidden; }
+ .model-components-canvas { @apply h-full w-full; }
+ .model-components-properties { @apply hidden h-full border-0; }
+ .model-properties-open .model-components-canvas { @apply invisible; }
+ .model-properties-open .model-components-properties { @apply absolute inset-0 block bg-surface; }
+ .model-components-properties > header > button { @apply block; }
+ .model-components-workspace button,.model-mobile-select select { min-height:var(--ds-control-height-touch); }
+}
+
+
+.model-components-workspace .strategy-editor-context { @apply flex-row items-center gap-ui-3; }
+.model-components-workspace .strategy-editor-context > button { @apply shrink-0; }
+@media (width < theme(--breakpoint-md)) {
+ .model-components-workspace .strategy-editor-toolbar { @apply flex-nowrap; }
+ .model-components-workspace .strategy-editor-context { @apply w-full flex-none basis-auto; }
+ .model-components-workspace .strategy-editor-tools { @apply w-full min-w-0; }
+}

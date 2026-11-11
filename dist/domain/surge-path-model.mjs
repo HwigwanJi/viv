@@ -1,0 +1,39 @@
+import {assertHourlyPathModel,predictHourlyPathModel} from './hourly-path-model.mjs';
+import {assertHourlyModelComponents} from './hourly-model-components.mjs';
+import {selectHourlyValue} from './hourly-value-policy.mjs';
+import {hashInputPackage} from './workspace.mjs';
+import {PORTFOLIO_TARGET_VERSION,PORTFOLIO_CANDIDATE_VERSION} from './portfolio-graph.mjs';
+
+export const SURGE_MODEL_FAMILY='SURGE_PATH_FOREST';
+const M=60000,check=(v,code)=>{if(!v)throw Object.assign(Error(code),{code,status:409});},sum=a=>a.reduce((s,v)=>s+v,0);
+export function assertSurgeModelConfig(c){
+ check(c?.family===SURGE_MODEL_FAMILY&&['family,model,policy','components,family,model,policy'].includes(Object.keys(c).sort().join(',')),'SURGE_MODEL_CONFIG');if(c.model!==null){assertHourlyPathModel(c.model);check(c.model.timeframe==='1m','SURGE_MODEL_TIMEFRAME');}
+ if(c.components)assertHourlyModelComponents(c.components,c.model);
+ const p=c.policy;check(p&&Object.keys(p).sort().join(',')==='candidateCount,decisionEveryMinutes,forecastExitSlippageBps,watchMinutes'&&Number.isInteger(p.candidateCount)&&p.candidateCount>=1&&p.candidateCount<=40&&Number.isInteger(p.watchMinutes)&&p.watchMinutes>=1&&p.watchMinutes<=60&&Number.isInteger(p.decisionEveryMinutes)&&p.decisionEveryMinutes>=1&&p.decisionEveryMinutes<=180&&Number.isFinite(p.forecastExitSlippageBps)&&p.forecastExitSlippageBps>=0&&p.forecastExitSlippageBps<=100,'SURGE_MODEL_POLICY');return c;
+}
+/** Zero-trade minutes carry the last trade for FEATURES; execution requires an observed quote. */
+export function minuteFeatureBars(candles,{asOf,count=30}={}){
+ const end=Date.parse(asOf),start=end-count*M,byTime=new Map(candles.map(b=>[Date.parse(b.openTime),b]));let previous=candles.filter(b=>Date.parse(b.openTime)<start).at(-1)?.close??null;const bars=[],carried=[];
+ for(let t=start;t<end;t+=M){const b=byTime.get(t);if(b){previous=b.close;bars.push([t,b.open,b.high,b.low,b.close,b.volume]);}else{if(!(previous>0))return {ready:false,bars:[],carried:[]};bars.push([t,previous,previous,previous,previous,0]);carried.push(new Date(t).toISOString());}}
+ return {ready:bars.length===count,bars,carried,policy:'LAST_TRADE_ZERO_VOLUME_FOR_FEATURES_ONLY'};
+}
+export function rankSurgeWatch(current,previous,{watchMinutes=5}={}){
+ const now=Date.parse(current.at),old=[...previous].filter(p=>p.at<current.at&&now-Date.parse(p.at)<=watchMinutes*M).sort((a,b)=>a.at.localeCompare(b.at))[0],byMarket=new Map((old?.rows??[]).map(r=>[r.market,r]));
+ return current.rows.map(r=>{const prior=byMarket.get(r.market),elapsed=prior?(now-Date.parse(old.at))/M:null,momentum=prior&&prior.price>0?Math.log(r.price/prior.price)/elapsed:Math.log1p(r.changeRate??0)/Math.max(1,(now-Date.parse(current.at.slice(0,10)+'T00:00:00.000Z'))/M);return {...r,momentumPerMinute:momentum,watchFrom:old?.at??null,score:momentum*Math.sqrt(Math.log1p(r.quoteVolume24h))};}).sort((a,b)=>b.score-a.score||a.market.localeCompare(b.market));
+}
+export function surgeExitState(position,model,currentPrice,asOf,saved=null){
+ const p=model.targetPolicy;if(!p)return {exit:false,reason:null};check(position.entryPrice>0&&Number.isFinite(Date.parse(position.entryAt))&&position.entryAt<=asOf,'SURGE_OWN_ENTRY_REQUIRED');
+ const peak=saved?.entryAt===position.entryAt?Math.max(saved.peak,currentPrice):Math.max(position.entryPrice,currentPrice),gain=currentPrice/position.entryPrice-1,peakGain=peak/position.entryPrice-1,age=(Date.parse(asOf)-Date.parse(position.entryAt))/M;
+ const reason=gain<=-p.initialStopBps/10000?'INITIAL_STOP':peakGain>=p.trailingActivationBps/10000&&currentPrice/peak-1<=-p.trailingStopBps/10000?'TRAILING_EXIT':age>=model.horizonBars?'FORECAST_HORIZON':null;return {entryAt:position.entryAt,entryPrice:position.entryPrice,peak,ageMinutes:age,exit:!!reason,reason};
+}
+export function evaluateSurgePath(config,value,portfolio,fees,{asOf,accountId,maxQuoteAgeMs=3000}={}){
+ assertSurgeModelConfig(config);check(config.model,'SURGE_MODEL_REQUIRED');check(value?.contractVersion===PORTFOLIO_CANDIDATE_VERSION&&value.timeframe==='1m'&&value.asOf===new Date(Math.floor(Date.parse(asOf)/M)*M).toISOString()&&value.universeHash===portfolio?.universeHash&&portfolio.profileId===value.profileId,'SURGE_MODEL_SCOPE');
+ check(portfolio.account?.accountId===accountId&&portfolio.account.asOf===asOf&&fees,'SURGE_MODEL_ACCOUNT');
+ const frames=[],positionStates={};for(const item of value.items){const bars=item.bars.map(b=>[Date.parse(b.openTime),b.open,b.high,b.low,b.close,b.volume]),forecast=predictHourlyPathModel(config.model,{bars},{asOf:value.asOf,availableAt:value.availableAt??asOf,decisionAt:asOf,components:config.components});if(!forecast.ready)continue;check(item.quote&&item.quote.availableAt<=asOf,'SURGE_MODEL_QUOTE');forecast.marketPathForecast={...forecast.marketPathForecast,featureReferencePrice:forecast.marketPathForecast.referencePrice,referencePrice:(Number(item.quote.bidPrice)+Number(item.quote.askPrice))/2,valuation:'GROSS_RETURN_APPLIED_TO_OBSERVED_CURRENT_MID'};const market=item.instrumentId.slice('crypto:upbit:'.length),position=portfolio.account.positions.find(p=>p.market===market);if(position){positionStates[market]=surgeExitState(position,config.model,bars.at(-1)[4],asOf,portfolio.surgePositions?.[market]);}frames.push({market,entryAllowed:item.warning===false&&item.warningKnown===true,forecastAsOf:value.asOf,availableAt:item.quote.availableAt,quoteAsOf:item.quote.eventTime,bidPrice:item.quote.bidPrice,askPrice:item.quote.askPrice,quoteBasis:item.quote.basis??'OBSERVED_BBO',sourceHash:item.quote.sourceHash,forecastExitSlippageBps:Math.max(config.policy.forecastExitSlippageBps,(Number(item.quote.askPrice)-Number(item.quote.bidPrice))/(Number(item.quote.askPrice)+Number(item.quote.bidPrice))*10000),forecast});}
+ const selection=selectHourlyValue({asOf,profileId:value.profileId,accountId,account:portfolio.account,frames,fees,modelHash:config.model.hash,forecastExitSlippageBps:config.policy.forecastExitSlippageBps,maxQuoteAgeMs,timeframe:'1m'});
+ if(!selection.ready)return selection;
+ const forced=Object.values(positionStates).some(s=>s.exit),selected=forced?selection.values.find(v=>v.kind==='CASH'):selection.selected,held=portfolio.weights,chosen=selected.market?'crypto:upbit:'+selected.market:null,weights=selected.kind==='HOLD'?Object.fromEntries(held.map(p=>[p.instrumentId,p.weight])):chosen?{[chosen]:1}:{},ids=[...new Set([...Object.keys(weights),...held.map(p=>p.instrumentId)])].sort();
+ const targets=ids.map(instrumentId=>({instrumentId,targetWeight:weights[instrumentId]??0})),cashValue=selection.values.find(v=>v.kind==='CASH').value;
+ const review={trainedThrough:config.model.training.lastLabelAt,predictionHorizon:config.model.horizonBars+'m',modelHash:config.model.hash,costBps:(Number(fees.buyRate)+Number(fees.sellRate))*5000+config.policy.forecastExitSlippageBps,selected,candidateCount:value.items.length,samples:config.model.training.sampleCount,experts:selection.values.map(v=>({mode:v.market??v.kind,netLogReturn:Math.log(v.value/cashValue),allocation:selected.kind===v.kind&&selected.market===v.market?1:0,samples:config.model.training.sampleCount,selectionBasis:'POOLED_PRICE_PATH_FORECAST'}))};
+ return {ready:true,status:'READY',kind:'TARGET_WEIGHTS',value:{contractVersion:PORTFOLIO_TARGET_VERSION,profileId:value.profileId,quoteCurrency:value.quoteCurrency,asOf:value.asOf,universeHash:value.universeHash,targets,cashWeight:1-sum(targets.map(t=>t.targetWeight)),rebalanceDue:forced||selection.steps.length>0},portfolioState:{surgePositions:positionStates},policyExit:forced,modelReview:review,modelHash:config.model.hash,selection,forecasts:frames.map(f=>({market:f.market,forecast:f.forecast,bidPrice:f.bidPrice,askPrice:f.askPrice})),basisRefs:['surge-model:'+config.model.hash]};
+}

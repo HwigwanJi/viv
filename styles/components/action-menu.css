@@ -1,0 +1,22 @@
+@reference '../theme.css';
+
+.ui-action-menu { @apply inline-flex flex-none min-w-0 align-middle; }
+.ui-action-menu-trigger { @apply inline-flex flex-none items-center justify-center gap-ui-3; }
+.ui-action-menu-trigger > span { @apply min-w-0 truncate; }
+.ui-action-menu-trigger > svg { @apply w-(--ds-icon-size-sm); @apply h-(--ds-icon-size-sm); @apply shrink-0; }
+.ui-action-menu-trigger.ui-action-menu-compact { @apply px-ui-3; }
+.ui-action-menu-trigger[aria-expanded="true"] { @apply bg-hover text-foreground; }
+.ui-action-menu-panel { @apply fixed m-0 block box-border overflow-y-auto rounded-ui-md border border-default bg-surface p-ui-2 text-ui-sm leading-ui-md text-foreground; inset:auto; min-width:min(var(--action-menu-min-width),calc(var(--ui-screen-width) - var(--ds-space-8))); @apply w-max; @apply max-w-(--action-menu-max-width); z-index:var(--action-menu-layer); box-shadow:var(--ds-shadow-tooltip); }
+.ui-action-menu-panel[hidden] { @apply hidden!; }
+:is(.ui-action-menu-panel,.ui-action-menu-panel > [role="menu"]) > :is(button,a) { @apply flex w-full min-w-0 items-center justify-start rounded-ui-sm border-0 bg-transparent px-ui-4 py-ui-3 text-left text-ui-sm leading-ui-md font-ui-regular text-foreground cursor-pointer; @apply whitespace-normal; overflow-wrap:anywhere; box-shadow:none; @apply min-h-control-sm; }
+:is(.ui-action-menu-panel,.ui-action-menu-panel > [role="menu"]) > :is(button,a):is(:hover,:focus) { @apply bg-hover; outline:none; }
+:is(.ui-action-menu-panel,.ui-action-menu-panel > [role="menu"]) > :is(button:disabled,[aria-disabled="true"]) { @apply text-muted cursor-not-allowed; }
+.ui-action-menu-group { @apply px-ui-4 py-ui-2 text-ui-xs leading-ui-sm font-ui-semibold text-secondary; }
+.ui-action-menu-group:not(:first-child) { @apply mt-ui-2 border-t border-subtle pt-ui-3; }
+@media (pointer:coarse) { .ui-action-menu-trigger,:is(.ui-action-menu-panel,.ui-action-menu-panel > [role="menu"]) > :is(button,a) { @apply min-h-control-touch; } }
+
+.ui-action-menu-panel [role="menuitem"][hidden] { @apply hidden!; }
+.ui-action-menu-search { @apply sticky top-0 bg-surface pb-ui-2; }
+.ui-action-menu-panel [data-ui-menu-results] { @apply block px-ui-4 py-ui-2; }
+
+.ui-action-menu-panel[role="dialog"] button,.ui-action-menu-search input { @apply min-h-control-touch; }

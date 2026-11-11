@@ -1,0 +1,67 @@
+const allowed={studio:new Set(['profile','manifest-profile','document','document-note','universe-policy','strategy-plan','knowledge-policy','sector-import']),library:new Set(['create','import']),quant:new Set(['import','edit']),strategyLibrary:new Set(['deployment'])};
+const managers=new WeakMap();
+const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function draftFormType(form){for(const type of Object.keys(allowed)){const kind=form?.dataset?.[type+'Form'];if(allowed[type].has(kind))return type+':'+kind;}return null;}
+const selectedValues=value=>{try{const parsed=JSON.parse(value);if(Array.isArray(parsed)&&parsed.every(item=>typeof item==='string'))return parsed;}catch{}return [value];};
+const fieldValue=field=>['checkbox','radio'].includes(field.type)?String(field.checked):field.type==='select-multiple'?JSON.stringify([...field.selectedOptions].map(option=>option.value)):field.value;
+function setFieldValue(field,value){if(['checkbox','radio'].includes(field.type))field.checked=value==='true';else if(field.type==='select-multiple'){const selected=selectedValues(value);for(const option of field.options)option.selected=selected.includes(option.value);}else field.value=value;}
+const valueLabel=(field,value)=>field?.type==='select-multiple'?selectedValues(value).map(v=>[...field.options].find(option=>option.value===v)?.label||v).join(', ')||'선택 없음':['checkbox','radio'].includes(field?.type)?value==='true'?'선택됨':'선택 안 함':field?.options?[...field.options].find(option=>option.value===value)?.label||value:value;
+export function formValues(form){return [...form.elements].filter(el=>el.name&&!['file','password','hidden','submit','button'].includes(el.type)).map(el=>({name:el.name,type:el.type,value:fieldValue(el)}));}
+export function mergeFormDraft(base,saved,current){const next=current.map(v=>({...v})),conflicts=[];for(let i=0;i<saved.length;i++){if(saved[i]?.value===base[i]?.value)continue;const index=next.findIndex((v,j)=>v.name===saved[i].name&&v.type===saved[i].type&&current.slice(0,j).filter(p=>p.name===v.name).length===saved.slice(0,i).filter(p=>p.name===v.name).length);if(index<0)continue;if(next[index].value===base[i]?.value||next[index].value===saved[i].value)next[index].value=saved[i].value;else conflicts.push({index,name:next[index].name,base:base[i]?.value,current:next[index].value,draft:saved[i].value});}return {values:next,conflicts};}
+export function retainFormConflicts(base,values,conflicts){const result={base:base.map(v=>({...v})),values:values.map(v=>({...v}))};for(const c of conflicts)if(values[c.index]?.value===c.current){result.base[c.index].value=c.base;result.values[c.index].value=c.draft;}return result;}
+const isFieldList=values=>Array.isArray(values)&&values.every(v=>v&&typeof v.name==='string'&&typeof v.type==='string'&&typeof v.value==='string');
+const signature=form=>[...form.elements].filter(el=>['kind','mindId','documentId','manifestId'].includes(el.name)).map(el=>[el.name,el.value]);
+// Keep the pre-grouping field order so existing quant drafts survive the editor layout change.
+function quantDraftFieldNames(form){const names=[...form.elements].filter(el=>!el.matches?.('[data-quant-settings]')).map(el=>el.name),mode=names.indexOf('editSource');if(mode>=0){names.splice(mode,1);names.splice(names.indexOf('definition'),0,'editSource');}return names;}
+export function createFormDrafts(doc,{storage,getScope=()=>''}={}){
+ if(storage===undefined)try{storage=globalThis.sessionStorage;}catch{storage=null;}
+ const states=new WeakMap(),fallbacks=new Map();let active=null,applying=false;
+ function changed(form,state){return state.conflicts.length>0||JSON.stringify(formValues(form))!==JSON.stringify(state.base);}
+ function update(form,text,error=false){const state=states.get(form),note=form.querySelector('[data-form-draft-status]');if(note){const message=text+(state.memoryOnly?' 이 탭에서만 보관 중 · 새로고침하면 사라집니다.':'');if(note.textContent!==message)note.textContent=message;const role=error?'alert':'status';if(note.getAttribute?.('role')!==role)note.setAttribute('role',role);}const discard=form.querySelector('[data-draft-action="discard"]'),undo=form.querySelector('[data-draft-action="undo"]');if(discard)discard.hidden=state.committed||!changed(form,state);if(undo)undo.hidden=state.committed||!state.undo;}
+ function applyValues(form,values){
+  const fields=values.map((value,i)=>[...form.elements].filter(el=>el.name===value.name&&el.type===value.type)[values.slice(0,i).filter(el=>el.name===value.name&&el.type===value.type).length]);
+  const assign=()=>values.forEach((value,i)=>{const field=fields[i];if(!field)return;setFieldValue(field,value.value);});
+  const previous=fields.map(field=>field&&fieldValue(field));applying=true;
+  try{assign();fields.forEach((field,i)=>{if(field&&previous[i]!==values[i].value)field.dispatchEvent?.(new (doc.defaultView?.Event||Event)('change',{bubbles:true}));});assign();}finally{applying=false;}
+ }
+ function capture(form=active){const state=states.get(form);if(!state||state.committed||applying)return;const saved=retainFormConflicts(state.base,formValues(form),state.conflicts),dirty=changed(form,state),undo=state.undo?.persist?{...retainFormConflicts(state.base,state.undo.values,state.undo.conflicts),focusName:state.undo.focusName}:null,retained=dirty||!!undo,record={...saved,undo,at:new Date().toISOString()};fallbacks.set(state.key,retained?record:null);let cleanupError=false;
+  try{if(!storage)throw Error('storage unavailable');if(!retained)storage.removeItem(state.key);else storage.setItem(state.key,JSON.stringify(record));fallbacks.delete(state.key);state.memoryOnly=false;}
+  catch{state.memoryOnly=retained;cleanupError=!retained&&!!storage;}
+  update(form,cleanupError?'이전 임시 내용을 지우지 못했습니다. 새로고침하면 다시 나타날 수 있습니다.':state.conflicts.length?'변경된 현재 값과 임시 내용을 함께 확인하세요.':dirty?(state.memoryOnly?'작성 중':'이 탭에 임시 저장됨'):undo?'되돌릴 작성 내용이 있습니다.':state.undo?'현재 값으로 되돌렸습니다.':'',cleanupError);
+ }
+ function prepare(dialog){capture();active=null;const form=dialog.querySelector('form'),type=draftFormType(form);if(!type)return;const key='cji-form-draft-v1:'+JSON.stringify([getScope(),type,form.dataset.draftIdentity??form.dataset.studioId??form.dataset.libraryId??form.dataset.quantId??'',signature(form),form.dataset.quantForm==='edit'?quantDraftFieldNames(form):null]),base=formValues(form),state={key,base,committed:false,conflicts:[],undo:null,memoryOnly:false};states.set(form,state);active=form;
+  const tools=doc.createElement('div');tools.className='form-draft-tools';const note=doc.createElement('p');note.className='form-draft-status';note.setAttribute('data-form-draft-status','');note.setAttribute('role','status');note.setAttribute('aria-live','polite');note.setAttribute('aria-atomic','true');tools.append(note);
+  for(const [action,label]of [['discard','작성 내용 버리기'],['undo','되돌리기']]){const button=doc.createElement('button');button.type='button';button.className='button small';button.textContent=label;button.hidden=true;button.setAttribute('data-draft-action',action);tools.append(button);}form.querySelector('.form-actions')?.prepend(tools);
+  let saved;if(fallbacks.has(key)){saved=fallbacks.get(key);state.memoryOnly=!!saved;}else try{saved=JSON.parse(storage?.getItem(key)||'null');}catch{}if(!isFieldList(saved?.base)||!isFieldList(saved?.values))return;
+  const merged=mergeFormDraft(saved.base,saved.values,base);state.conflicts=merged.conflicts;applyValues(form,merged.values);
+  if(isFieldList(saved.undo?.base)&&isFieldList(saved.undo?.values)){const prior=mergeFormDraft(saved.undo.base,saved.undo.values,base);state.undo={values:prior.values,conflicts:prior.conflicts,persist:true,focusName:typeof saved.undo.focusName==='string'?saved.undo.focusName:null};}
+  update(form,'이 탭의 작성 내용을 복원했습니다.');
+  renderConflicts(form,state);
+ }
+ function renderConflicts(form,state){  form.querySelector('.form-draft-conflicts')?.remove();if(state.conflicts.length){const fields=[...form.elements].filter(el=>el.name&&!['file','password','hidden','submit','button'].includes(el.type)),details=doc.createElement('details');details.className='form-draft-conflicts';details.open=true;details.innerHTML='<summary>현재 값이 바뀐 '+state.conflicts.length+'개 항목</summary>'+state.conflicts.map(c=>'<div data-draft-conflict="'+c.index+'"><p><strong>'+esc(fields[c.index]?.labels?.[0]?.textContent.trim()||c.name)+'</strong><br>현재: '+esc(valueLabel(fields[c.index],c.current))+'<br>작성 중: '+esc(valueLabel(fields[c.index],c.draft))+'</p><button type="button" data-draft-resolve="'+c.index+'" data-draft-choice="draft">작성 내용 사용</button> <button type="button" data-draft-resolve="'+c.index+'" data-draft-choice="current">현재 값 유지</button></div>').join('');form.querySelector('.dialog-form-content')?.prepend(details);update(form,'변경된 현재 값과 임시 내용을 함께 확인하세요.');}
+ }
+ function replace(form,changes){
+  const state=states.get(form);if(!state)return false;if(state.committed)return true;
+  const previous=formValues(form),next=previous.map(field=>Object.hasOwn(changes,field.name)?{...field,value:changes[field.name]}:field);
+  if(JSON.stringify(previous)===JSON.stringify(next))return true;
+  const undo={values:previous,conflicts:state.conflicts,persist:true,focusName:Object.keys(changes)[0]};applyValues(form,next);state.conflicts=state.conflicts.filter(c=>next[c.index]?.value===c.current);state.undo=undo;renderConflicts(form,state);capture(form);return true;
+ }
+ function committed(form){const state=states.get(form);if(!state)return;state.committed=true;state.undo=null;state.memoryOnly=false;fallbacks.set(state.key,null);let cleanupError=false;try{storage?.removeItem(state.key);fallbacks.delete(state.key);}catch{cleanupError=true;}update(form,'서버에 저장됨'+(cleanupError?' · 이전 임시 내용 정리 실패. 새로고침하면 다시 나타날 수 있습니다.':''),cleanupError);}
+ function removeConflict(form,state,index){state.conflicts=state.conflicts.filter(c=>c.index!==index);form.querySelector('[data-draft-conflict="'+index+'"]')?.remove();const details=form.querySelector('.form-draft-conflicts');if(!state.conflicts.length)details?.remove();else if(details)details.querySelector('summary').textContent='현재 값이 바뀐 '+state.conflicts.length+'개 항목';}
+ const input=event=>{const form=event.target.closest?.('form'),state=states.get(form);if(!state||applying||event.target.type==='file'||['INPUT','SELECT','TEXTAREA'].includes(event.target.tagName)&&!event.target.name)return;state.undo=null;for(const c of [...state.conflicts])if(formValues(form)[c.index]?.value!==c.current)removeConflict(form,state,c.index);capture(form);};
+ const click=event=>{const action=event.target.closest?.('[data-draft-action]');if(action){event.preventDefault();const form=action.closest('form'),state=states.get(form);if(!state||state.committed)return;
+  if(action.dataset.draftAction==='discard'){try{storage?.removeItem(state.key);}catch{update(form,'임시 내용을 지우지 못했습니다. 다시 시도하세요.',true);return;}fallbacks.delete(state.key);state.memoryOnly=false;state.undo={values:formValues(form),conflicts:state.conflicts};state.conflicts=[];for(const field of form.elements)if(field.type==='file')field.value='';applyValues(form,state.base);form.querySelector('.form-draft-conflicts')?.remove();update(form,'현재 값으로 되돌렸습니다.');form.querySelector('[data-draft-action="undo"]')?.focus({preventScroll:true});}
+  else if(action.dataset.draftAction==='undo'&&state.undo){const prior=state.undo;state.undo=null;for(const field of form.elements)if(field.type==='file')field.value='';state.conflicts=prior.conflicts;applyValues(form,prior.values);renderConflicts(form,state);capture(form);const focus=[...form.elements].find(field=>field.name===prior.focusName)||form.querySelector('[data-draft-action="discard"]');focus?.focus({preventScroll:true});if(focus?.closest?.('.dialog-form-content'))focus.scrollIntoView?.({block:'nearest'});}return;}
+  const button=event.target.closest?.('[data-draft-resolve]');if(!button)return;const form=button.closest('form'),state=states.get(form),index=Number(button.dataset.draftResolve),conflict=state?.conflicts.find(c=>c.index===index);if(!conflict)return;const field=[...form.elements].filter(el=>el.name&&!['file','password','hidden','submit','button'].includes(el.type))[index],value=button.dataset.draftChoice==='draft'?conflict.draft:conflict.current;applyValues(form,formValues(form).map((item,i)=>i===index?{...item,value}:item));removeConflict(form,state,index);capture(form);field.focus();};
+ doc.addEventListener('input',input);doc.addEventListener('change',input);doc.addEventListener('click',click);
+ const controller={prepare,capture,committed,replace,destroy(){capture();fallbacks.clear();doc.removeEventListener('input',input);doc.removeEventListener('change',input);doc.removeEventListener('click',click);managers.delete(doc);}};managers.set(doc,controller);return controller;
+}
+export function clearFormDraft(form){managers.get(form?.ownerDocument)?.committed(form);}
+
+
+export function replaceFormDraftValues(form,changes){
+ if(form?.closest?.('dialog')?.open===false)return;
+ const manager=managers.get(form?.ownerDocument);if(manager?.replace(form,changes))return;
+ // shortcut: Standalone callers keep direct assignment; mount the shared draft manager for undo.
+ for(const [name,value]of Object.entries(changes)){const field=form?.elements?.[name];if(!field||field.disabled||field.value===value)continue;field.value=value;field.dispatchEvent?.(new (form.ownerDocument?.defaultView?.Event||Event)('input',{bubbles:true}));}
+}

@@ -1,0 +1,244 @@
+@reference '../theme.css';
+
+.mind-automation-workspace { @apply min-w-0; }
+.mind-operation-layout { @apply grid items-start gap-ui-6; @apply grid-cols-(--mind-operation-columns); }
+.mind-operation-primary { @apply min-w-0; }
+.mind-operation-layout > .mind-activity-feed { @apply mt-0; }
+.mind-operation-layout:not(:has(> .mind-activity-feed)) { @apply grid-cols-1; }
+@media (width < theme(--breakpoint-xl)) { .mind-operation-layout { @apply grid-cols-1; } }
+.mind-operation { @apply min-w-0 overflow-hidden border border-subtle rounded-ui-2xl bg-surface; --mind-activity-tone:var(--mind-activity-wait); --mind-activity-tone-surface:var(--mind-activity-wait-surface); }
+.mind-operation[data-tone="buy"],.mind-activity-feed li[data-tone="buy"] { --mind-activity-tone:var(--mind-activity-buy); --mind-activity-tone-surface:var(--mind-activity-buy-surface); }
+.mind-operation[data-tone="sell"],.mind-activity-feed li[data-tone="sell"] { --mind-activity-tone:var(--mind-activity-sell); --mind-activity-tone-surface:var(--mind-activity-sell-surface); }
+.mind-operation-main { @apply min-w-0 p-ui-7; }
+.mind-operation-bar { @apply flex flex-wrap min-w-0 items-center justify-between gap-ui-5 px-ui-6 py-ui-4 border-b border-subtle bg-(--ds-bg-panel); }
+.mind-operation-state { @apply grid min-w-0 gap-ui-1; }
+.mind-operation-state h3 { @apply m-0 text-ui-xs font-ui-medium text-secondary; }
+.mind-operation-controls,.operation-actions,.operation-tools { @apply inline-flex min-w-0 items-center gap-ui-2; }
+.operation-tools { @apply pl-ui-2 border-l border-subtle; }
+.operation-control svg { @apply shrink-0; @apply w-(--ds-icon-size-md); @apply h-(--ds-icon-size-md); }
+.operation-actions .button.operation-control,.operation-actions .button.ui-action-menu-trigger { @apply flex items-center justify-center rounded-ui-md px-ui-3 bg-transparent border-transparent text-secondary; @apply min-w-control-touch; @apply min-h-control-touch; }
+.operation-actions .operation-control:hover,.operation-actions .ui-action-menu-trigger:hover { @apply bg-hover text-foreground; }
+.operation-actions .button.operation-control-primary { @apply gap-ui-2 px-ui-4 border-default bg-surface text-foreground font-ui-medium; }
+.operation-actions .operation-control-primary[data-auto-action="resume"],.operation-actions .operation-control-primary[data-event-paper-action="resume"] { @apply bg-accent text-white border-accent; }
+.operation-actions .operation-control-primary[data-auto-action="resume"]:hover,.operation-actions .operation-control-primary[data-event-paper-action="resume"]:hover { @apply bg-accent text-white; }
+.operation-currency { @apply text-ui-base font-ui-medium; }
+.operation-actions[aria-busy="true"] .operation-control-primary svg { animation:ui-loading-breathe var(--ui-motion-loading-duration) ease-in-out infinite; }
+.mind-operation-identity { @apply flex min-w-0 items-center gap-ui-7; }
+.mind-operation-identity > .mind-avatar { @apply shrink-0; }
+.mind-operation-identity > .mind-life-stage { @apply shrink-0 rounded-ui-xl; @apply w-(--mind-operation-portrait-width); }
+.mind-operation-preparation { @apply grid min-w-0 items-center gap-ui-8 p-ui-8 border border-subtle rounded-ui-2xl bg-surface md:grid-cols-2; }
+.mind-operation-preparation h2 { @apply m-0 text-ui-2xl font-ui-semibold; }
+.mind-operation-preparation p { @apply text-ui-md leading-ui-read text-secondary; }
+.mind-operation-preparation .actions { @apply mt-ui-7; }
+.mind-operation-preparation .mind-life-stage { @apply rounded-ui-xl; }
+.mind-operation-copy { @apply min-w-0; }
+.mind-operation-eyebrow { @apply m-0 mb-ui-3 text-ui-sm leading-ui-md text-secondary truncate; }
+.mind-operation-copy h2 { @apply m-0 text-ui-3xl leading-ui-3xl font-ui-semibold text-foreground; overflow-wrap:anywhere; }
+.mind-operation-runtime { @apply mt-ui-3 mb-0 text-ui-md leading-ui-read text-secondary; }
+.mind-operation-receipt { @apply flex flex-wrap items-center gap-x-ui-5 gap-y-ui-3 mt-ui-6 text-ui-sm leading-ui-read text-secondary; }
+.mind-operation-held { @apply min-w-0 mt-ui-4 mb-0 text-ui-sm leading-ui-read text-foreground truncate; }
+.mind-operation-amounts { @apply grid grid-cols-3 min-w-0 gap-ui-6 mt-ui-7 mb-0 pt-ui-6 border-t border-subtle; }
+.mind-operation-amounts > div { @apply min-w-0; }
+.mind-operation-amounts dt { @apply flex items-center gap-ui-2 text-ui-sm leading-ui-read text-secondary; }
+.mind-operation-amounts dd { @apply m-0 mt-ui-2 text-ui-lg leading-ui-lg font-ui-semibold tabular-nums; overflow-wrap:anywhere; }
+.mind-operation-status { @apply inline-flex items-center gap-ui-2 text-ui-sm leading-ui-md text-secondary; }
+.operation-status-dot { @apply rounded-ui-full bg-muted shrink-0; @apply w-(--mind-activity-status-dot); @apply h-(--mind-activity-status-dot); }
+.mind-operation-status[data-active="true"] .operation-status-dot { background:var(--ds-success); }
+.mind-operation[data-tone="attention"] .operation-status-dot { background:var(--ds-danger); }
+.mind-operation-attention { @apply flex flex-wrap items-center gap-ui-5 border border-subtle rounded-ui-lg p-ui-5 mt-ui-5 text-ui-sm leading-ui-read bg-field; }
+.mind-operation-attention .actions { @apply m-0; }
+.operation-scope { @apply grid min-w-0 gap-ui-3 py-ui-5 border-b border-subtle; }
+.operation-scope h3 { @apply m-0 text-ui-sm font-ui-medium text-secondary; }
+.operation-scope .studio-universe-summary { @apply text-ui-sm; }
+.mind-activity-loading { @apply text-ui-sm leading-ui-read text-secondary px-ui-5; }
+.mind-activity-feed { @apply min-w-0 mt-ui-8; }
+.mind-activity-feed h3 { @apply m-0 mb-ui-4 text-ui-base leading-ui-read font-ui-medium; }
+.mind-activity-feed > ol { @apply list-none m-0 p-0 grid gap-ui-3; }
+.mind-notification-stack > ol { @apply gap-ui-0; }
+.mind-notification-stack > ol > li { @apply relative rounded-ui-xl bg-surface; box-shadow:var(--mind-notification-shadow); @apply mb-(--mind-notification-gap); }
+.mind-notification-stack > ol > li:last-child { @apply mb-ui-0; }
+.mind-notification-cta { @apply relative grid w-full min-w-0 items-start gap-ui-1 text-left border-0 bg-transparent p-0 cursor-pointer; grid-template-columns:minmax(0,1fr); color:inherit; }
+.mind-notification-cta > strong,.mind-notification-cta > small { grid-column:1; }
+.mind-notification-stack > ol > li { @apply py-ui-4; }
+.mind-notification-cta > .mind-notification-next { @apply mt-ui-2; grid-column:1; }
+.mind-notification-stack > ol > li[data-activity-kind] { @apply grid items-start gap-ui-4; grid-template-columns:var(--mind-activity-icon-size) minmax(0,1fr); }
+.mind-notification-stack > ol > li[data-activity-kind] > time { @apply text-left; grid-column:2; }
+.mind-notification-cta > strong { @apply whitespace-normal; }
+.mind-notification-cta:focus-visible { @apply outline-2 outline-offset-2 outline-accent rounded-ui-lg; }
+.mind-notification-next { @apply block mt-ui-3 text-ui-xs leading-ui-md text-accent font-ui-medium; }
+.mind-notification-stack > ol > li:hover { @apply bg-hover; }
+:is(.mind-activity-feed > ol,.mind-activity-history-rows) > li { @apply flex min-w-0 items-center gap-ui-5 px-ui-6 py-ui-5 border border-subtle rounded-ui-xl bg-surface; --mind-activity-tone:var(--mind-activity-wait); --mind-activity-tone-surface:var(--mind-activity-wait-surface); }
+:is(.mind-activity-feed > ol,.mind-activity-history-rows) > li[data-mind-activity-card] { @apply cursor-pointer; }
+:is(.mind-activity-feed > ol,.mind-activity-history-rows) > li[data-mind-activity-card]:hover { @apply bg-hover; }
+:is(.mind-activity-feed > ol,.mind-activity-history-rows) > li[data-mind-activity-card]:focus-visible { @apply outline-2 outline-offset-2 outline-accent; }
+.mind-activity-feed [data-mind-path-passive] { @apply inline-block mt-ui-2 text-ui-xs leading-ui-md text-accent; }
+.mind-activity-icon { @apply flex shrink-0 items-center justify-center rounded-ui-lg text-ui-xl; @apply w-(--mind-activity-icon-size); @apply h-(--mind-activity-icon-size); @apply text-(color:--mind-activity-tone); background:var(--mind-activity-tone-surface); }
+.mind-activity-feed li > div { @apply flex-1 min-w-0; }
+.mind-activity-feed strong { @apply block min-w-0 truncate text-ui-md leading-ui-read font-ui-medium; }
+.mind-activity-feed small { @apply block min-w-0 mt-ui-1 text-ui-sm leading-ui-md text-secondary; overflow-wrap:anywhere; }
+.mind-activity-feed time { @apply shrink-0 text-ui-xs leading-ui-md text-secondary text-right tabular-nums; }
+.mind-activity-head { @apply flex items-center min-w-0 gap-ui-4 mb-ui-4; }
+.mind-activity-head h3 { @apply mr-auto mb-0; }
+.mind-activity-head > a { @apply shrink-0 text-ui-xs no-underline text-secondary; }
+.mind-activity-head > a:hover { @apply text-accent; }
+.mind-activity-filter { @apply min-w-0; }
+.mind-activity-filter select { @apply text-ui-xs py-ui-2 pl-ui-3 pr-ui-6 border-transparent bg-transparent; @apply min-h-control-touch; @apply max-w-(--mind-activity-filter-width); }
+.mind-activity-count { @apply sr-only; }
+.mind-activity-timeline { container-type:inline-size; container-name:mind-activity; }
+.mind-activity-timeline > ol { @apply gap-ui-0 border border-subtle rounded-ui-xl bg-surface; }
+.mind-activity-feed.mind-activity-timeline > ol > .mind-activity-day { @apply bg-field px-ui-5 py-ui-3; }
+.mind-activity-day :is(h3,h4) { @apply m-0 text-ui-xs leading-ui-md font-ui-medium text-secondary; }
+:is(.mind-activity-timeline > ol,.mind-activity-history-rows) > li { @apply grid items-start gap-x-ui-4 gap-y-ui-2 px-ui-5 py-ui-5 border-0 border-b border-subtle rounded-none bg-transparent; grid-template-columns:var(--mind-activity-timeline-icon) minmax(0,1fr) var(--ds-control-height-touch); box-shadow:none; }
+:is(.mind-activity-timeline > ol,.mind-activity-history-rows) > li:last-child { @apply border-b-0; }
+:is(.mind-activity-timeline > ol,.mind-activity-history-rows) > li:not([data-activity-kind]) { @apply block; }
+:is(.mind-activity-timeline > ol,.mind-activity-history-rows) > li[hidden] { @apply hidden; }
+.mind-activity-timeline .mind-activity-icon { @apply rounded-ui-full text-ui-sm; @apply w-(--mind-activity-timeline-icon); @apply h-(--mind-activity-timeline-icon); }
+:is(.mind-activity-timeline > ol,.mind-activity-history-rows) > li > div { grid-column:2; grid-row:1; }
+.mind-activity-timeline time { @apply text-left; grid-column:2; grid-row:2; }
+:is(.mind-activity-timeline > ol,.mind-activity-history-rows) > li > .entity-menu-more { @apply m-0 min-h-control-touch min-w-control-touch; grid-column:3; grid-row:1 / span 2; }
+@container mind-activity (width >= theme(--breakpoint-md)) {
+ :is(.mind-activity-timeline > ol,.mind-activity-history-rows) > li { grid-template-columns:var(--mind-activity-timeline-icon) minmax(0,1fr) auto var(--ds-control-height-touch); }
+ .mind-activity-timeline time { @apply pt-ui-1 text-right; grid-column:3; grid-row:1; }
+ :is(.mind-activity-timeline > ol,.mind-activity-history-rows) > li > .entity-menu-more { grid-column:4; }
+}
+.mind-activity-timeline .mind-notification-next { @apply sr-only; }
+.mind-activity-timeline .mind-notification-cta { @apply pr-ui-5; }
+.mind-activity-timeline .mind-notification-cta::after { content:'↗'; @apply absolute right-0 top-0 text-ui-sm text-secondary; }
+.mind-activity-timeline .mind-notification-cta:hover strong { @apply text-accent; }
+.mind-activity-timeline .mind-notification-cta > strong { @apply text-ui-sm; }
+.mind-activity-timeline small { @apply text-ui-xs; }
+.mind-operation-history,.mind-operation-advanced { @apply mt-ui-6 border-t border-subtle pt-ui-5 text-ui-sm leading-ui-read; }
+.mind-operation-history > summary,.mind-operation-advanced > summary { @apply cursor-pointer text-secondary; }
+.mind-operation-history > section { @apply py-ui-5 border-b border-subtle; }
+.mind-operation-history header { @apply flex flex-wrap items-center gap-ui-4; }
+.mind-operation-history header > span { @apply text-secondary; }
+.mind-operation-advanced .form-grid { @apply mt-ui-5; }
+.mind-path-trigger { @apply inline-flex items-center gap-ui-2 px-ui-4 py-ui-2 rounded-ui-full border-0 bg-(--ds-bg-panel) text-ui-sm leading-ui-read cursor-pointer text-foreground min-h-control-md; }
+.mind-path-trigger:hover { @apply bg-hover; }
+.mind-path-trigger[data-studio-action="mind-execution"] { @apply bg-(--ds-bg-inverse) text-(color:--ds-text-inverse); }
+.mind-path-trigger:focus-visible,.mind-path-close:focus-visible { @apply outline-2 outline-offset-2 outline-accent; }
+.mind-path-popover { @apply fixed min-w-0 m-0 border border-subtle rounded-ui-xl p-ui-6 bg-surface text-foreground overflow-y-auto; width:min(var(--mind-activity-preview-width),var(--mind-activity-preview-available-width)); @apply max-h-(--mind-activity-preview-max-height); z-index:var(--mind-activity-preview-layer); box-shadow:var(--ds-shadow-popover); }
+.mind-path-popover > header { @apply flex min-w-0 items-start justify-between gap-ui-5; }
+.mind-path-popover > header strong { @apply block text-ui-base leading-ui-read; }
+.mind-path-popover > header small { @apply block mt-ui-1 text-ui-xs leading-ui-md text-secondary; }
+.mind-path-close { @apply p-ui-2 border-0 bg-transparent text-ui-xl leading-ui-lg cursor-pointer text-secondary; }
+.mind-path-caption { @apply flex justify-between gap-ui-4 mt-ui-5 mb-ui-4 text-ui-xs leading-ui-md text-secondary; }
+.mind-path-steps { @apply flex gap-ui-3 p-0 m-0 list-none overflow-x-auto; }
+.mind-path-steps > li { @apply relative flex-1 min-w-0 flex flex-col items-center gap-ui-3 p-ui-3 text-center rounded-ui-md bg-field; @apply min-w-(--mind-activity-step-width); }
+.mind-path-steps > li[data-linked-next]::after { content:''; @apply absolute; top:var(--mind-activity-edge-top); left:100%; @apply w-(--mind-activity-edge-width); @apply h-(--mind-activity-edge-thickness); background:var(--ds-border-strong); }
+.mind-path-steps > li[data-replaying][data-linked-next]::after { background:var(--ds-accent); }
+.mind-path-steps > li[hidden] { @apply hidden; }
+.mind-path-light { @apply block shrink-0 rounded-ui-full bg-muted; @apply w-(--mind-activity-light-size); @apply h-(--mind-activity-light-size); }
+.mind-path-steps > li[data-node-state="done"] .mind-path-light { background:var(--ds-success-mark); }
+.mind-path-steps > li[data-replaying] { @apply bg-hover; }
+.mind-path-steps > li[data-replaying] .mind-path-light { @apply bg-accent; box-shadow:var(--mind-activity-light-halo); }
+.mind-path-step-name { @apply block w-full min-w-0 truncate text-ui-xs leading-ui-md font-ui-medium; }
+.mind-path-steps small { @apply block w-full min-w-0 truncate text-ui-xs leading-ui-xs text-secondary; }
+.mind-path-all { @apply mt-ui-5 pt-ui-4 border-t border-subtle text-ui-xs leading-ui-read; }
+.mind-path-all > summary { @apply cursor-pointer text-accent; }
+.mind-path-all ol,.mind-path-all ul { @apply mt-ui-4 pl-ui-6; }
+.mind-path-all li { @apply py-ui-2; overflow-wrap:anywhere; }
+.mind-path-all li strong { @apply text-ui-sm leading-ui-md; }
+.mind-path-all li small { @apply block text-secondary; }
+@media (width < theme(--breakpoint-md)) {
+ .mind-operation-main { @apply p-ui-5; }
+ .mind-operation-bar { @apply gap-ui-3 px-ui-4 py-ui-3; }
+ .mind-operation-bar .mind-operation-state { @apply flex-1; }
+ .mind-operation-status { @apply text-ui-xs; }
+ .mind-operation-main { @apply min-h-ui-0; }
+ .mind-operation-identity { @apply gap-ui-4; }
+ .mind-operation-identity > .mind-life-stage { @apply w-(--mind-operation-portrait-compact-width); }
+ .mind-operation-copy h2 { @apply text-ui-2xl leading-ui-2xl; }
+ .mind-operation-amounts { @apply gap-ui-4; }
+ .mind-operation-amounts dd { @apply text-ui-md leading-ui-read; }
+ :is(.mind-activity-feed > ol,.mind-activity-history-rows) > li { @apply flex-wrap px-ui-4; }
+ .mind-activity-feed time { @apply w-full text-left; }
+}
+@media (prefers-reduced-motion:reduce) { .mind-path-steps > li[data-replaying] .mind-path-light { box-shadow:none; } .operation-actions[aria-busy="true"] .operation-control-primary svg { animation:none; } }
+
+/* Status, explanation and controls belong to one decision area. */
+.mind-operation-context { @apply m-0 text-ui-sm leading-ui-read text-secondary; }
+.mind-operation-bar .mind-operation-state { @apply flex-1; }
+.mind-operation-bar:has(.mind-operation-context) { @apply items-start; }
+@media (width < theme(--breakpoint-md)) {
+ .mind-operation-bar .mind-operation-state { @apply basis-full; }
+ .mind-operation-bar .mind-operation-controls { @apply w-full; }
+}
+
+.notification-toolbar { @apply sticky top-0 z-10 flex flex-wrap items-start justify-between gap-ui-4 border-b border-solid border-subtle bg-surface pb-ui-3; }
+.notification-toolbar > .studio-local-tabs { @apply mb-0 shrink-0; }
+.notification-cleanup { @apply mt-ui-3 mb-ui-4 flex-wrap justify-end gap-ui-2; }
+.mind-notification-cta > .notification-meta { @apply flex flex-wrap items-baseline justify-between gap-x-ui-4 gap-y-ui-1; }
+.notification-meta > time { @apply text-ui-xs font-ui-regular; }
+.notification-group { @apply mt-ui-6; }
+.notification-group > h3 { @apply flex items-center gap-ui-2 text-ui-sm; }
+.notification-state { @apply inline-flex flex-wrap items-center gap-ui-2; }
+.notification-unread { @apply inline-flex items-center gap-ui-1 text-ui-xs text-secondary; }
+.notification-unread > span { @apply shrink-0 rounded-ui-full bg-accent; width:var(--mind-activity-status-dot); height:var(--mind-activity-status-dot); }
+.notification-group .notification-expired { @apply bg-field text-secondary; box-shadow:none; }
+.notification-group .notification-expired .mind-notification-next { @apply text-secondary; }
+.notification-group .mind-notification-cta > strong { @apply whitespace-normal line-clamp-2 text-ui-sm leading-ui-read; overflow-wrap:anywhere; }
+.notification-group .mind-notification-cta > .notification-meta { @apply mb-ui-2; }
+.notification-group .notification-meta > time { @apply w-auto; }
+.notification-preparation { @apply m-0 text-ui-xs leading-ui-read text-secondary; }
+.notification-group .notification-preparation > strong { @apply inline whitespace-normal text-ui-xs; }
+
+
+.automation-order-heading { @apply flex flex-wrap items-start justify-between gap-ui-4; }
+.automation-order-heading > div { @apply min-w-0; overflow-wrap:anywhere; }
+.automation-order-heading .mind-trade-receipt { @apply m-0; }
+.mind-trade-receipt { @apply flex flex-wrap items-start gap-x-ui-6 gap-y-ui-3 m-0 mt-ui-3 mb-ui-2; }
+.mind-trade-receipt > div { @apply min-w-0; }
+.mind-trade-receipt dt { @apply text-ui-xs text-secondary; }
+.mind-trade-receipt dd { @apply m-0 text-ui-sm tabular-nums; overflow-wrap:anywhere; }
+.mind-trade-receipt .mind-trade-price dd { @apply text-ui-md font-ui-semibold text-foreground; }
+@container mind-activity (width >= theme(--breakpoint-lg)) {
+ .mind-activity-timeline li[data-activity-kind="STRATEGY_ORDER"] > div:has(> .mind-trade-receipt) { @apply grid gap-x-ui-6 gap-y-ui-2; grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+ .mind-activity-timeline li[data-activity-kind="STRATEGY_ORDER"] > div:has(> .mind-trade-receipt) > .mind-notification-cta { grid-column:1; grid-row:1; }
+ .mind-activity-timeline li[data-activity-kind="STRATEGY_ORDER"] > div:has(> .mind-trade-receipt) > .mind-path-trigger { @apply justify-self-start; grid-column:1; grid-row:2; }
+ .mind-activity-timeline li[data-activity-kind="STRATEGY_ORDER"] > div > .mind-trade-receipt { @apply grid grid-cols-3 m-0 pl-ui-6 border-l border-subtle; grid-column:2; grid-row:1 / span 2; }
+}
+
+.mind-operation-diagnostic { @apply flex flex-wrap items-center min-w-0 gap-ui-3 mt-ui-3 pl-ui-4 border-l-2 border-subtle text-ui-sm leading-ui-read; }
+.mind-operation-diagnostic[data-operation-diagnostic="current"] { @apply border-negative; }
+.mind-operation-diagnostic p { @apply basis-full m-0 text-secondary; overflow-wrap:anywhere; }
+.mind-operation-issue-label { @apply inline-flex items-center gap-ui-2 rounded-ui-full bg-field px-ui-3 py-ui-1 text-ui-xs font-ui-semibold text-foreground; }
+.mind-operation-diagnostic .button { @apply min-h-control-touch; }
+.mind-operation-status-details { @apply grid min-w-0 gap-ui-3; }
+.mind-operation-status-details > .actions { @apply m-0; }
+.mind-operation-status-details .button { @apply min-h-control-touch; }
+.mind-operation-status-details .mind-activity-loading { @apply m-0 p-0; }
+.mind-operation-read-error { @apply m-0 text-ui-sm leading-ui-read text-secondary; overflow-wrap:anywhere; }
+
+.mind-activity-history-rows { @apply grid gap-ui-0 p-0 m-0 list-none; }
+.mind-activity-timeline > ol > .mind-hold-history { @apply p-0; }
+.mind-hold-history > details > summary { @apply min-h-control-touch px-ui-5 py-ui-3 text-ui-sm text-secondary cursor-pointer; }
+.mind-hold-history > details > summary:focus-visible { @apply outline-2 outline-offset-2 outline-accent; }
+.mind-decision-record > .mind-path-trigger { @apply min-h-control-touch p-0 bg-transparent font-ui-semibold text-left; }
+.mind-decision-record > small { @apply block text-secondary leading-ui-read; overflow-wrap:anywhere; }
+
+.operation-report-group + .operation-report-group { @apply mt-ui-7; }
+.operation-report-group > h3 { @apply m-0 mb-ui-2 text-ui-sm font-ui-semibold text-foreground; }
+.operation-report-list { @apply grid gap-ui-0 p-0 m-0 list-none; }
+.operation-report-list > li { @apply min-w-0 border-b border-subtle; }
+.operation-report-list > li:last-child { @apply border-b-0; }
+.operation-report-list a { @apply flex items-center justify-between gap-ui-4 min-w-0 min-h-control-touch py-ui-3 text-foreground; }
+.operation-report-list a > span:first-child { @apply min-w-0; }
+.operation-report-list time { @apply block text-ui-xs text-secondary; }
+.operation-report-list strong { @apply block text-ui-sm font-ui-medium leading-ui-read whitespace-normal; overflow-wrap:anywhere; }
+.operation-report-list a > span:last-child { @apply shrink-0; }
+.operation-report-list a:focus-visible { @apply outline-2 outline-offset-2 outline-accent; }
+
+.notification-day { @apply mt-ui-5; }
+.notification-day > h4 { @apply m-0 mb-ui-3 border-b border-solid border-subtle pb-ui-2 text-ui-xs font-ui-medium text-secondary; }
+
+@variant max-md {
+  .notification-toolbar > .studio-local-tabs { @apply grid grid-cols-3 w-full; }
+  .notification-toolbar > .studio-local-tabs > .button { @apply min-h-ui-11 px-ui-2; white-space:normal; }
+}
+.dialog-body:has(> .notification-toolbar) { @apply scroll-pt-ui-12; }
+
+.notification-search { @apply grid items-center gap-ui-2 my-ui-3; grid-template-columns:minmax(0,1fr) auto; }
+.notification-search > .field { @apply m-0 min-w-0; }
+.notification-search > output { @apply col-span-2; }
+.notification-search [hidden],.notification-cleanup[hidden],.notification-day[hidden],.notification-group[hidden],.notification-group li[hidden] { @apply hidden; }

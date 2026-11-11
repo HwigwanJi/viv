@@ -1,0 +1,193 @@
+@reference '../theme.css';
+
+.vibe-shell.studio-shell {
+  @apply block min-h-screen bg-canvas;
+}
+.vibe-shell > .main {
+  @apply m-0 min-w-0 rounded-none border-0 shadow-none bg-canvas;
+}
+.vibe-shell .vibe-topbar {
+  @apply sticky top-0 z-30 flex items-center gap-ui-9 px-ui-8 py-0 border-0 bg-canvas;
+  @apply h-(--vibe-header-height);
+}
+.vibe-topbar .brand {
+  @apply inline-flex items-center gap-ui-4 m-0 p-0 border-0 min-w-0 no-underline shrink-0;
+}
+.vibe-topbar .brand-mark {
+  @apply flex items-center justify-center w-ui-9 h-ui-9 bg-accent text-on-accent rounded-ui-lg;
+}
+.vibe-topbar .brand-mark svg { @apply w-ui-7 h-ui-7; }
+.vibe-topbar .brand-name {
+  @apply flex items-baseline gap-ui-4 text-ui-xl text-foreground font-ui-bold whitespace-nowrap;
+  letter-spacing: var(--vibe-letter-spacing);
+}
+.vibe-topbar .brand-name small { @apply text-ui-xs font-ui-medium text-secondary; letter-spacing: var(--ds-tracking-tight); }
+.vibe-navigation { @apply flex flex-1 items-center gap-ui-6; }
+.vibe-navigation > a { @apply inline-flex items-center gap-ui-3 text-ui-sm text-secondary font-ui-medium py-ui-3 no-underline; }
+.vibe-navigation > a .app-icon { @apply hidden; }
+.vibe-navigation > a:hover,.vibe-navigation > a[aria-current="page"] { @apply text-foreground no-underline; }
+.vibe-navigation > a[aria-current="page"] { @apply underline underline-offset-(--ds-space-4) decoration-accent; }
+.vibe-shell .top-actions { @apply gap-ui-3 ml-auto; }
+.vibe-shell .studio-jump-trigger,.vibe-shell .top-actions > .shell-control {
+  @apply inline-flex items-center justify-center w-ui-9 h-ui-9 min-h-0 p-0 rounded-ui-full border-0 bg-transparent text-secondary shadow-none;
+}
+.vibe-shell .studio-jump-trigger:hover { @apply bg-hover text-foreground; }
+.vibe-shell .execution-view-toggle { @apply inline-flex items-center p-ui-1 gap-0 rounded-ui-full border-0 bg-field; }
+.vibe-shell .execution-view-toggle button { @apply min-h-0 h-ui-9 px-ui-5 py-0 rounded-ui-full border-0 bg-transparent shadow-none text-ui-xs text-secondary; }
+.vibe-shell .execution-view-toggle button[aria-pressed="true"] { @apply bg-surface text-foreground; }
+.vibe-tools { @apply relative; }
+.vibe-shell .vibe-tools .ui-action-menu-trigger { @apply flex items-center justify-center w-ui-9 h-ui-9 min-h-0 p-0 rounded-ui-full border-0 bg-transparent shadow-none text-secondary; }
+.vibe-tools .ui-action-menu-panel > .shell-control { @apply w-full justify-start; }
+.vibe-tools .ui-action-menu-panel > [data-shell="theme"]::after { content: '테마'; @apply ml-ui-4; }
+.vibe-tools .ui-action-menu-panel > [data-app-install]::after { content: '앱 설치'; @apply ml-ui-4; }
+.vibe-mobile-dock { @apply hidden; }
+.vibe-shell .studio-content { @apply w-full max-w-(--vibe-content-width) mx-auto px-ui-9 pt-ui-7 pb-ui-10; }
+.vibe-shell .studio-trading-content { @apply p-ui-4 max-w-none; }
+.vibe-context { @apply relative px-ui-9 pb-ui-4 border-b border-subtle overflow-x-auto; }
+.vibe-context .studio-task-nav { @apply flex flex-row items-center gap-ui-7; }
+.vibe-context .studio-nav-group { @apply flex flex-row items-center gap-ui-3 shrink-0; }
+.vibe-context .studio-nav-group > h3,.vibe-context .studio-scope-summary { @apply sr-only; }
+.vibe-context .studio-return-link { @apply inline-flex items-center gap-ui-3 px-ui-4 py-ui-3 text-ui-sm text-secondary; }
+.vibe-context .studio-nav-group > a { @apply min-h-0 px-ui-5 py-ui-3 rounded-ui-full text-ui-sm text-secondary; }
+.vibe-context .studio-nav-group > a[aria-current="page"] { @apply bg-field text-foreground; }
+.vibe-shell :is(.page-head,.section-head) h1 { @apply text-ui-2xl leading-ui-2xl; }
+.vibe-shell .button {
+  @apply rounded-ui-lg min-h-control-md px-ui-5 py-ui-3 bg-field border-transparent text-foreground shadow-none text-ui-sm font-ui-medium;
+}
+.vibe-shell .button:hover { @apply bg-hover border-transparent shadow-none; }
+.vibe-shell .button.primary { @apply bg-accent text-on-accent border-transparent shadow-none; }
+.vibe-shell .button.primary:hover { background: var(--ds-accent-hover); }
+.vibe-shell .button.small { @apply min-h-control-sm px-ui-4 py-ui-2 text-ui-xs; }
+.vibe-shell :is(input:not([type="checkbox"]):not([type="radio"]),select,textarea) { @apply bg-field border-transparent rounded-ui-lg shadow-none; }
+.vibe-shell :is(.studio-sheet,.panel,.settings-card,.section-card) { @apply border-subtle shadow-none; }
+.vibe-shell .studio-sheet-head { @apply px-ui-6 py-ui-5; }
+.vibe-shell .studio-sheet-head h2 { @apply text-ui-sm; }
+.vibe-shell .studio-mind-workspace { @apply mb-ui-8; }
+.vibe-shell .studio-mind-heading h1 { @apply text-ui-xl leading-ui-xl; }
+.vibe-shell .studio-mind-workspace-top { @apply mb-ui-6; }
+.vibe-shell .studio-mind-tabs { @apply gap-ui-6 border-subtle; }
+.vibe-shell .studio-mind-tabs > a { @apply px-0 py-ui-5 text-ui-sm bg-transparent rounded-none; }
+.vibe-shell .studio-mind-tabs > a[aria-current="page"] { @apply text-foreground; }
+.vibe-shell .studio-record-groups[data-record-summary] { @apply grid-cols-1 gap-0; }
+.vibe-shell .studio-record-groups[data-record-summary] .studio-sheet { @apply bg-transparent border-0 border-b border-subtle rounded-none; }
+.vibe-shell .studio-record-groups[data-record-summary] .studio-sheet-head { @apply px-0 pt-ui-7 pb-ui-4 border-0; }
+.vibe-shell .studio-record-groups[data-record-summary] .studio-sheet-body { @apply px-0; }
+.vibe-shell .mind-activity-feed li { @apply bg-transparent border-0 border-b border-subtle rounded-none shadow-none; }
+.vibe-shell .mind-operation { @apply border-0 bg-surface rounded-ui-2xl; }
+.vibe-shell .mind-operation-main { @apply p-ui-8; }
+.vibe-shell .mind-operation-copy h2 { @apply text-ui-xl leading-ui-xl font-ui-semibold; }
+.vibe-shell .mind-operation-stage { @apply rounded-ui-xl; }
+.vibe-shell .mind-activity-head h2 { @apply text-ui-sm; }
+.vibe-shell .home-heading p { @apply text-secondary; }
+.vibe-shell .home-heading h1 { @apply text-ui-2xl; }
+.vibe-shell .home-hero { @apply border-0; }
+.vibe-shell .home-recent { @apply border-0 bg-transparent; }
+.vibe-shell .home-mind-card { @apply border-0 shadow-none; }
+.vibe-shell .home-icon-button { @apply border-0 bg-field; }
+.vibe-shell .home-carousel { @apply gap-ui-7; }
+.vibe-shell .home-mind-card { @apply p-0 bg-transparent w-(--vibe-gallery-card-width) overflow-hidden; }
+.vibe-shell .home-mind-card:hover { @apply bg-transparent; }
+.vibe-shell .home-mind-card .home-card-top { @apply block relative p-0 mb-ui-5; }
+.vibe-shell .home-card-pet { @apply block; }
+.vibe-shell .home-card-pet > .mind-life-stage,
+.vibe-shell .home-card-pet .mind-avatar { @apply w-full h-auto rounded-ui-xl; aspect-ratio:var(--vibe-gallery-ratio); }
+.vibe-shell .home-card-top .home-status { @apply absolute left-ui-5 bottom-ui-5 px-ui-4 py-ui-2 rounded-ui-full bg-canvas text-foreground text-ui-xs; }
+.vibe-shell .home-mind-card > footer { @apply border-0 pt-ui-3 pb-ui-5 mt-ui-3; }
+.vibe-shell .home-card-name { @apply text-ui-sm mb-ui-4; }
+.vibe-shell .home-card-result { @apply gap-ui-5; }
+.vibe-shell .home-card-result strong { @apply text-ui-xl; }
+.vibe-shell .home-card-open:hover { @apply no-underline; }
+.vibe-shell .mind-operation-state h3 { @apply sr-only; }
+.vibe-shell .mind-operation-bar { @apply bg-transparent px-ui-6 py-ui-3; }
+.vibe-shell .mind-operation-identity > .mind-life-stage { @apply w-ui-12; }
+.vibe-shell .mind-operation-identity { @apply items-start gap-ui-5; }
+.vibe-shell .mind-operation-eyebrow { @apply text-ui-xs mb-ui-2; }
+.vibe-shell .mind-operation-runtime { @apply text-ui-sm leading-ui-md; }
+.vibe-shell .mind-operation-receipt { @apply gap-ui-4; }
+.vibe-shell .mind-operation-receipt > span { @apply basis-full text-ui-xs; }
+.vibe-shell .mind-operation .mind-path-trigger,
+.vibe-shell .mind-activity-feed .mind-path-trigger { @apply bg-transparent text-secondary px-0 py-ui-2 rounded-none text-ui-xs min-h-control-sm; }
+@container mind-activity (width < theme(--breakpoint-md)) {
+ .vibe-shell .mind-activity-feed .mind-path-trigger { @apply min-h-control-touch; }
+}
+.vibe-shell .mind-operation .mind-path-trigger:hover,
+.vibe-shell .mind-activity-feed .mind-path-trigger:hover { @apply text-accent; }
+.vibe-shell .mind-operation-amounts { @apply mt-ui-6 pt-ui-5 gap-ui-5; }
+.vibe-shell .mind-operation-amounts dt { @apply text-ui-xs; }
+.vibe-shell .mind-operation-amounts dd { @apply font-ui-sans text-ui-base leading-ui-base; }
+.vibe-shell .mind-activity-timeline > ol { @apply border-0 rounded-none; }
+.vibe-shell .mind-activity-icon { @apply rounded-ui-full; }
+.vibe-shell .mind-activity-feed > ol > li { @apply px-0 py-ui-6; }
+.vibe-shell .mind-activity-feed > ol > li strong { @apply text-ui-sm; }
+.vibe-shell .studio-mind-actions > .ui-action-menu-trigger { @apply text-secondary; }
+
+/* Market header owns a single compact rhythm; no fixed caption rows. */
+.trading-terminal .terminal-header { @apply grid items-center gap-ui-7 px-ui-7 py-ui-6; grid-template-columns:var(--vibe-header-columns); }
+.trading-terminal .terminal-market-heading,.trading-terminal .terminal-price-pair,.trading-terminal .terminal-mind-filter { @apply flex flex-col justify-center min-w-0 gap-ui-2; grid-template-rows:none; }
+.trading-terminal .terminal-symbol-line { @apply flex items-center gap-ui-4 min-h-0; }
+.trading-terminal .terminal-symbol-line h1 { @apply text-ui-lg leading-ui-lg m-0; }
+.trading-terminal .terminal-symbol-line h1 button { @apply inline-flex items-center gap-ui-3 text-inherit p-0; }
+.trading-terminal .terminal-symbol-line h1 button > span { @apply text-secondary text-ui-sm; }
+.trading-terminal .terminal-market-heading .terminal-venue { @apply border-0 p-0 text-ui-xs text-secondary; }
+.trading-terminal .terminal-market-price { @apply flex items-baseline gap-ui-3 min-h-0; }
+.trading-terminal .terminal-market-price > strong { @apply text-ui-xl leading-ui-xl font-ui-semibold; letter-spacing:var(--ds-tracking-tight); }
+.trading-terminal .terminal-market-price > span { @apply text-ui-xs text-secondary; }
+.trading-terminal .terminal-market-price > .terminal-positive { @apply text-positive; }
+.trading-terminal .terminal-market-price > .terminal-negative { @apply text-negative; }
+.trading-terminal .terminal-price-label { @apply flex items-center flex-wrap gap-ui-3 text-ui-xs text-secondary min-h-0; }
+.trading-terminal .terminal-header-asof { @apply block min-w-0 text-ui-xs; }
+.trading-terminal .terminal-header-asof time { @apply inline; }
+.trading-terminal .terminal-header-actions { @apply flex items-center gap-ui-3 m-0; }
+.trading-terminal .terminal-mind-filter select { @apply min-h-control-md max-w-full text-ui-xs rounded-ui-lg px-ui-5; }
+.trading-terminal .terminal-header-actions button { @apply min-h-control-md rounded-ui-lg px-ui-5 py-ui-3 text-ui-xs shadow-none; }
+.trading-terminal .terminal-chart-tools { @apply gap-ui-4 px-ui-5 py-ui-3 min-h-0; }
+.trading-terminal :is(.terminal-timeframes,.terminal-ranges) { @apply m-0 p-0; }
+.trading-terminal :is(.terminal-timeframes,.terminal-ranges) select { @apply min-h-control-sm text-ui-xs px-ui-4 py-ui-2 bg-field border-transparent rounded-ui-lg; }
+.trading-terminal .terminal-chart-layout-actions button { @apply min-h-control-sm text-ui-xs px-ui-4 py-ui-2 border-0 bg-transparent; }
+.trading-terminal .terminal-ohlc { @apply gap-ui-4 px-ui-5 pt-ui-2 pb-ui-3 text-ui-xs overflow-x-auto; }
+.trading-terminal .terminal-ohlc > span { @apply shrink-0; }
+.trading-terminal .terminal-chart-footer { @apply gap-ui-4 px-ui-5 py-ui-3; }
+.trading-terminal .terminal-ledger-tabs button { @apply text-ui-xs px-ui-5 py-ui-4; }
+
+@media (width < theme(--breakpoint-xl)) {
+  .trading-terminal .terminal-header { @apply grid-cols-2 gap-ui-5; }
+  .trading-terminal .terminal-header-actions { @apply justify-end; }
+  .vibe-topbar .brand-name small { @apply hidden; }
+}
+@media (width < theme(--breakpoint-md)) {
+  .vibe-shell .vibe-topbar { @apply h-ui-12 px-ui-6 gap-ui-4; }
+  .vibe-topbar .brand-mark { @apply w-ui-8 h-ui-8; }
+  .vibe-topbar .brand-name { @apply text-ui-lg; }
+  .vibe-shell .vibe-navigation { @apply hidden; }
+  .vibe-shell .top-actions { @apply gap-ui-2; }
+  .vibe-shell .top-actions :is(.studio-jump-trigger,.app-notification-button),
+  .vibe-shell .vibe-tools .ui-action-menu-trigger { @apply w-control-touch h-control-touch; }
+  .vibe-shell .top-actions > [role="status"] { @apply sr-only; }
+  .vibe-shell .execution-view-toggle button { @apply min-h-0 h-ui-9 px-ui-4; }
+  .vibe-mobile-dock { @apply fixed bottom-0 left-0 right-0 z-30 flex justify-around items-center border-t border-subtle bg-canvas pt-ui-2 pb-(--vibe-safe-bottom) h-(--vibe-dock-height); }
+  .vibe-mobile-dock > a { @apply flex flex-col items-center justify-center gap-ui-2 flex-1 min-h-control-touch text-ui-xs text-secondary no-underline; }
+  .vibe-mobile-dock > a[aria-current="page"] { @apply text-accent; }
+  .vibe-shell .studio-content { @apply px-ui-6 pt-ui-6 pb-(--vibe-content-bottom); }
+  .vibe-shell .studio-trading-content { @apply px-0 pt-ui-2; }
+  .vibe-context { @apply px-ui-6; }
+  .vibe-shell .studio-mind-heading h1 { @apply text-ui-lg leading-ui-lg; }
+  .vibe-shell .studio-mind-workspace { @apply mb-ui-6; }
+  .vibe-shell .studio-mind-tabs { @apply gap-ui-6; }
+  .vibe-shell .mind-operation-main { @apply p-ui-6; }
+  .vibe-shell .home-mind-card { @apply w-(--vibe-gallery-mobile-width); }
+  .trading-terminal .terminal-header { @apply px-ui-6 py-ui-5 gap-ui-4; }
+  .trading-terminal .terminal-price-pair { @apply items-end; }
+  .trading-terminal .terminal-price-label { @apply justify-end; }
+  .trading-terminal .terminal-market-price { @apply flex-wrap justify-end gap-ui-2; }
+  .trading-terminal .terminal-market-price > strong { @apply text-ui-lg leading-ui-lg; }
+  .trading-terminal .terminal-market-price > span { @apply text-ui-xs; }
+  .trading-terminal .terminal-header-asof { @apply inline; }
+  .trading-terminal .terminal-price-label .help-trigger { @apply hidden; }
+  .trading-terminal .terminal-mind-filter select { @apply min-h-control-md text-ui-xs; }
+  .trading-terminal .terminal-header-actions button { @apply min-h-control-md; }
+  .trading-terminal .terminal-chart-tools { @apply flex-nowrap px-ui-5 py-ui-3; }
+  .trading-terminal .terminal-chart-layout-actions { @apply ml-auto shrink-0; }
+  .trading-terminal .terminal-chart-layout-actions button { @apply min-h-control-md; }
+  .trading-terminal .terminal-ohlc { @apply flex flex-nowrap overflow-x-auto min-h-0; }
+  .trading-terminal .terminal-ohlc > time { @apply hidden; }
+}

@@ -1,0 +1,136 @@
+/* shadcn 게이트
+ *
+ * shadcn 컴포넌트는 --background · --primary 같은 자기 이름을 읽는다.
+ * 그 이름에 색 리터럴을 적으면 그 순간 색 체계가 둘이 되고, 둘은 반드시
+ * 어긋난다. 어긋난 자리는 화면에서 티가 안 나다가 대비 미달로 드러난다.
+ *
+ * 그래서 이 파일에는 var(--ds-*) 만 온다. `#fff` 나 `12px` 이 들어오는 순간
+ * 두 번째 색 체계가 시작된다. npm run test:gates 가 그걸 막는다. */
+:root {
+  --background: var(--ds-bg-canvas);
+  --foreground: var(--ds-text-default);
+  --card: var(--ds-bg-raised);
+  --card-foreground: var(--ds-text-default);
+  --popover: var(--ds-bg-overlay);
+  --popover-foreground: var(--ds-text-default);
+  --primary: var(--ds-accent);
+  --primary-foreground: var(--ds-text-on-accent);
+  --primary-hover: var(--ds-accent-hover);
+  --primary-pressed: var(--ds-accent-pressed);
+  --secondary: var(--ds-bg-panel);
+  --secondary-foreground: var(--ds-text-default);
+  --muted: var(--ds-bg-panel);
+  --muted-foreground: var(--ds-text-secondary);
+  --accent: var(--ds-bg-hover);
+  --accent-foreground: var(--ds-text-default);
+  --destructive: var(--ds-danger);
+  --destructive-foreground: var(--ds-text-on-accent);
+  --destructive-muted: var(--ds-danger-bg);
+  --success: var(--ds-success);
+  --success-muted: var(--ds-success-bg);
+  --warning: var(--ds-warning);
+  --warning-muted: var(--ds-warning-bg);
+  --border: var(--ds-border-default);
+  --border-subtle: var(--ds-border-subtle);
+  --border-strong: var(--ds-border-strong);
+  --border-control: var(--ds-border-control);
+  --input: var(--ds-border-default);
+  --ring: var(--ds-focus);
+  --focus: var(--ds-focus);
+  --focus-halo: var(--ds-focus-halo);
+  --selected: var(--ds-bg-selected);
+  --link: var(--ds-text-link);
+  --radius: var(--ds-radius-lg);
+
+  --raised: var(--ds-bg-raised);
+  --overlay: var(--ds-bg-overlay);
+  --panel: var(--ds-bg-panel);
+  --field: var(--ds-bg-field);
+  --hover: var(--ds-fill-hover);
+  --pressed: var(--ds-fill-pressed);
+  --skeleton: var(--ds-bg-skeleton);
+  --skeleton-highlight: var(--ds-bg-skeleton-hi);
+  --scrollbar: var(--ds-scrollbar);
+  --scrollbar-hover: var(--ds-scrollbar-hover);
+  --inverse: var(--ds-bg-inverse);
+  --inverse-foreground: var(--ds-text-inverse);
+  --scrim: var(--ds-scrim);
+  --placeholder: var(--ds-text-placeholder);
+  --tertiary: var(--ds-text-tertiary);
+  --disabled: var(--ds-text-disabled);
+
+  --accent-soft: var(--ds-accent-soft);
+  --accent-soft-border: var(--ds-accent-soft-border);
+  --accent-text: var(--ds-accent-text);
+  --accent-mark: var(--ds-accent-mark);
+
+  --danger-fill: var(--ds-danger-fill);
+  --danger-fill-hover: var(--ds-danger-fill-hover);
+  --danger-fill-pressed: var(--ds-danger-fill-pressed);
+  --danger-soft-hover: var(--ds-danger-soft-hover);
+  --danger-border: var(--ds-danger-border);
+  --danger-mark: var(--ds-danger-mark);
+  --success-border: var(--ds-success-border);
+  --success-mark: var(--ds-success-mark);
+  --warning-border: var(--ds-warning-border);
+  --warning-mark: var(--ds-warning-mark);
+  --info: var(--ds-info);
+  --info-muted: var(--ds-info-bg);
+  --info-border: var(--ds-info-border);
+  --info-mark: var(--ds-info-mark);
+  --neutral: var(--ds-neutral);
+  --neutral-muted: var(--ds-neutral-bg);
+  --neutral-border: var(--ds-neutral-border);
+  --neutral-mark: var(--ds-neutral-mark);
+  --ai: var(--ds-ai);
+  --ai-muted: var(--ds-ai-bg);
+  --ai-border: var(--ds-ai-border);
+  --ai-mark: var(--ds-ai-mark);
+  --highlight: var(--ds-highlight-bg);
+  --seal: var(--ds-seal);
+
+  --sidebar: var(--ds-sidebar-bg);
+  --sidebar-foreground: var(--ds-sidebar-text);
+  --sidebar-accent: var(--ds-sidebar-hover);
+  --sidebar-accent-foreground: var(--ds-text-default);
+  --sidebar-border: var(--ds-border-default);
+  --sidebar-ring: var(--ds-focus);
+  --sidebar-primary: var(--ds-accent);
+  --sidebar-primary-foreground: var(--ds-text-on-accent);
+  --sidebar-label: var(--ds-sidebar-label);
+  --sidebar-count: var(--ds-sidebar-count-bg);
+  --sidebar-count-foreground: var(--ds-sidebar-count-text);
+  --sidebar-active: var(--ds-sidebar-active-bg);
+  --sidebar-active-foreground: var(--ds-sidebar-active-text);
+  --sidebar-active-icon: var(--ds-sidebar-active-icon);
+
+  --series-1: var(--ds-series-1);
+  --series-2: var(--ds-series-2);
+  --series-3: var(--ds-series-3);
+  --series-4: var(--ds-series-4);
+  --series-5: var(--ds-series-5);
+  --series-6: var(--ds-series-6);
+  --chart-grid: var(--ds-chart-grid);
+  --chart-axis: var(--ds-chart-axis);
+  --chart-tick: var(--ds-chart-tick);
+
+  --tint-ink: var(--ds-tint-ink-bg);
+  --tint-ink-foreground: var(--ds-tint-ink-fg);
+  --tint-sage: var(--ds-tint-sage-bg);
+  --tint-sage-foreground: var(--ds-tint-sage-fg);
+  --tint-ochre: var(--ds-tint-ochre-bg);
+  --tint-ochre-foreground: var(--ds-tint-ochre-fg);
+  --tint-clay: var(--ds-tint-clay-bg);
+  --tint-clay-foreground: var(--ds-tint-clay-fg);
+  --tint-plum: var(--ds-tint-plum-bg);
+  --tint-plum-foreground: var(--ds-tint-plum-fg);
+  --tint-stone: var(--ds-tint-stone-bg);
+  --tint-stone-foreground: var(--ds-tint-stone-fg);
+  --tint-teal: var(--ds-tint-teal-bg);
+  --tint-teal-foreground: var(--ds-tint-teal-fg);
+
+  --ill-line: var(--ds-ill-line);
+  --ill-wash: var(--ds-ill-wash);
+  --ill-detail: var(--ds-ill-detail);
+}
+

@@ -1,0 +1,16 @@
+@reference '../theme.css';
+
+.help-tooltip { @apply inline-flex flex-none items-center align-middle font-ui-regular; }
+.help-label { @apply inline-flex min-w-0 items-center gap-ui-3; line-height:inherit; }
+.help-tooltip-trigger { @apply inline-flex flex-none items-center justify-center size-ui-8 p-ui-1 border-0 rounded-ui-md text-secondary bg-transparent cursor-help align-middle; @apply leading-(--ui-line-height-solid); }
+.help-tooltip-trigger svg { @apply shrink-0; @apply w-(--ds-icon-size-xs); @apply h-(--ds-icon-size-xs); stroke-width:var(--ds-icon-stroke); }
+.help-tooltip-trigger:hover { @apply text-foreground bg-hover; }
+.help-tooltip-trigger:focus-visible { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.help-tooltip-content { @apply fixed block m-0 px-ui-5 py-ui-4 w-max box-border border-0 rounded-ui-md font-ui-sans text-ui-xs leading-ui-md font-ui-regular whitespace-normal text-left overflow-visible max-h-none cursor-default; inset:auto; z-index:var(--help-tooltip-layer); max-width:min(var(--help-tooltip-max-width),calc(var(--ui-screen-width) - var(--ds-space-8))); background:var(--help-tooltip-background); @apply text-(color:--help-tooltip-foreground); letter-spacing:0; word-break:keep-all; overflow-wrap:anywhere; box-shadow:var(--ds-shadow-tooltip); animation:help-enter var(--ds-motion-quick) var(--ds-ease-out); }
+.help-tooltip-content[hidden] { @apply hidden!; }
+.help-tooltip-content::after { @apply absolute pointer-events-none; content:""; left:var(--help-arrow-x,var(--help-tooltip-center)); @apply w-(--help-tooltip-arrow-size); @apply h-(--help-tooltip-arrow-size); background:inherit; transform:translateX(var(--help-tooltip-center-offset)) rotate(var(--help-tooltip-arrow-rotation)); }
+.help-tooltip-content[data-side="top"]::after { bottom:var(--help-tooltip-arrow-offset); }
+.help-tooltip-content[data-side="bottom"]::after { top:var(--help-tooltip-arrow-offset); }
+@keyframes help-enter { from { opacity:0; transform:translateY(var(--help-tooltip-enter-distance)); } to { opacity:1; transform:translateY(0); } }
+@media (prefers-reduced-motion:reduce) { .help-tooltip-content { @apply animate-none; } }
+@media (pointer:coarse) { .help-tooltip-trigger { @apply w-control-touch; @apply h-control-touch; } }

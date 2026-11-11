@@ -1,0 +1,259 @@
+@import './hourly-model-workspace.css';
+@reference '../theme.css';
+@import './live-change-review.css';
+@import './strategy-parts.css';
+@import './strategy-ui-library.css';
+.strategy-node-menu { @apply fixed inset-auto m-0 z-20 flex flex-col gap-ui-2 overflow-auto rounded-ui-md border border-default bg-surface p-ui-4; box-shadow:var(--ds-shadow-control); }
+.strategy-node-menu button { @apply rounded-ui-sm border-0 bg-transparent px-ui-4 py-ui-3 text-left text-foreground; }
+.strategy-node-menu button:hover { @apply bg-hover; }
+.strategy-node-menu button { @apply min-h-control-touch; }
+.strategy-node-menu button[aria-disabled=true] { @apply text-muted cursor-default; }
+.strategy-execution-status { @apply mt-ui-3 block text-ui-xs font-ui-semibold; }
+.strategy-node.execution-done { border-color:var(--ds-success); }
+.strategy-node.execution-waiting,.strategy-node.execution-replay { border-color:var(--ds-accent); background:var(--ds-accent-soft); animation:graph-execution-pulse var(--graph-execution-pulse) ease-in-out infinite; }
+.strategy-node.execution-blocked,.strategy-node.execution-error { border-color:var(--ds-danger); }
+.strategy-node.execution-skipped,.strategy-node-excluded { @apply border-dashed; }
+.strategy-node.execution-skipped .strategy-node-meta,.strategy-node-excluded .strategy-node-meta { @apply text-secondary; }
+.strategy-canvas .execution-edge-used .react-flow__edge-path { stroke:var(--ds-accent); stroke-width:var(--graph-edge-selected-width); }
+.strategy-execution-detail { @apply my-ui-4 min-w-0 border-b border-default pb-ui-4; }
+.strategy-execution-detail pre { @apply max-w-full overflow-auto text-ui-xs; @apply max-h-(--graph-mobile-inspector-height); }
+@keyframes graph-execution-pulse { 50% { box-shadow:var(--graph-node-selected-shadow); } }
+@media (prefers-reduced-motion: reduce) { .strategy-node.execution-waiting,.strategy-node.execution-replay { animation:none; } .strategy-canvas .react-flow__edge.animated path { animation:none; } }
+.strategy-scope { @apply min-w-0 text-ui-xs leading-ui-xs text-secondary; }
+.strategy-palette h3, .strategy-inspector h3 { @apply m-0 mb-ui-5 text-ui-xs leading-ui-xs font-ui-semibold; }
+.strategy-palette h3:not(:first-child) { @apply mt-ui-8; }
+.strategy-palette-item { @apply mb-ui-3 flex min-w-0 items-center gap-ui-2; }
+.strategy-palette-item > button { @apply flex min-w-0 flex-1 cursor-pointer items-center gap-ui-2 whitespace-nowrap rounded-ui-md border border-default bg-surface px-ui-4 py-ui-4 text-left text-ui-xs leading-ui-xs text-inherit; }
+.strategy-palette-item > button > [aria-hidden=true] { @apply shrink-0; }
+.strategy-palette-item > button > .strategy-palette-label { @apply min-w-0 truncate; }
+.strategy-palette-item > span { @apply shrink-0; }
+.strategy-palette-item > button:hover { @apply bg-hover; }
+.strategy-palette-footer { @apply mt-auto flex min-w-0 items-start gap-ui-3 pt-ui-8 text-ui-xs leading-ui-xs text-secondary; }
+.strategy-palette-footer > span { @apply min-w-0; }
+.strategy-composition-node { @apply border-2 border-accent; }
+.strategy-composition-node > button { @apply mt-ui-4; }
+.strategy-composition-boundary { @apply mt-ui-3 flex items-center gap-ui-3 text-ui-xs text-secondary; }
+.strategy-composition-port { top:calc((var(--graph-port-index) + 1) * 100% / (var(--graph-port-total) + 1)); }
+.strategy-composition-settings { @apply mb-ui-4 min-w-0 border-b border-default pb-ui-4; }
+.strategy-composition-settings h4 { @apply mb-ui-2 mt-ui-4 text-ui-xs font-ui-semibold; }
+.strategy-composition-settings ul { @apply m-0 grid list-none gap-ui-3 p-0; }
+.strategy-composition-settings li { @apply grid min-w-0 gap-ui-1 text-ui-xs; }
+.strategy-composition-settings li strong { @apply min-w-0 truncate font-ui-medium; }
+.strategy-composition-settings li small { @apply text-secondary; }
+.strategy-node-summary { @apply mb-0 mt-ui-4 grid min-w-0 gap-ui-2 border-t border-subtle pt-ui-3 text-ui-xs leading-ui-xs; }
+.strategy-node-summary > div { @apply flex min-w-0 items-baseline gap-ui-3; }
+.strategy-node-summary dt { @apply min-w-0 flex-1 truncate text-secondary; }
+.strategy-node-summary dd { @apply m-0 min-w-0 flex-1 truncate text-right font-ui-medium tabular-nums; }
+.strategy-node-pending { @apply mt-ui-3 block text-ui-xs text-accent; }
+.strategy-inline-field { @apply my-ui-3 grid min-w-0 items-center gap-ui-3 text-ui-xs leading-ui-xs; grid-template-columns:minmax(0,1fr) var(--graph-inline-input-width); }
+.strategy-inline-field > span { @apply min-w-0 truncate; }
+.strategy-inline-field input,.strategy-inline-field select { @apply w-full min-w-0 rounded-ui-sm border border-default bg-field px-ui-2 py-ui-2 text-ui-xs text-foreground tabular-nums; }
+.strategy-inline-field [aria-invalid=true] { @apply border-negative; }
+.strategy-inline-weights { @apply min-w-0 border-t border-subtle; }
+.strategy-router-rule { @apply flex flex-wrap items-center gap-ui-3 text-ui-xs text-secondary; }
+.strategy-node-meta { @apply mt-ui-2 truncate text-ui-xs leading-ui-xs text-secondary; }
+.strategy-node .react-flow__handle { @apply border-2 border-strong bg-surface; @apply w-(--graph-handle-size); @apply h-(--graph-handle-size); }
+.strategy-canvas .react-flow__edge-path { stroke:var(--ds-text-tertiary); stroke-width:var(--graph-edge-width); }
+.strategy-canvas .react-flow__edge.selected .react-flow__edge-path { stroke:var(--ds-accent); stroke-width:var(--graph-edge-selected-width); }
+.strategy-canvas .react-flow__controls { @apply overflow-hidden rounded-ui-md border border-default; box-shadow:var(--ds-shadow-control); }
+.strategy-canvas .react-flow__controls-button { @apply border-default bg-surface; fill:var(--ds-text-default); }
+.strategy-canvas .react-flow__minimap { @apply rounded-ui-md border border-default bg-surface; @apply w-(--graph-minimap-width); @apply h-(--graph-minimap-height); }
+.strategy-canvas .react-flow__attribution { @apply bg-transparent text-ui-xs leading-ui-xs; }
+.strategy-inspector > fieldset { @apply m-0 min-w-0 border-0 p-0; }
+.strategy-inspector .field { @apply mb-ui-6 flex min-w-0 flex-col gap-ui-3 text-ui-xs leading-ui-xs; overflow-wrap:anywhere; }
+.strategy-inspector input, .strategy-inspector select, .strategy-editor-footer input[type=number] { @apply min-w-0 rounded-ui-md border border-default bg-field p-ui-4 font-ui-sans text-ui-md leading-ui-md text-inherit; }
+.strategy-inspector .field > input, .strategy-inspector .field > select { @apply w-full; }
+.strategy-inspector .field > select { @apply truncate; }
+.strategy-inspector [aria-invalid=true] { border-color:var(--ds-danger); }
+.strategy-inspector-head { @apply mb-ui-6 flex min-w-0 flex-wrap items-center gap-ui-4; }
+.strategy-inspector-head h3, .strategy-inspector-head h4 { @apply m-0 min-w-0 text-ui-xs leading-ui-xs; overflow-wrap:anywhere; }
+.strategy-weight { @apply mb-ui-4 grid min-w-0 items-center gap-ui-4 text-ui-xs leading-ui-xs; grid-template-columns:minmax(0,1fr) var(--graph-weight-input-width); }
+.strategy-weight input { @apply w-full shrink-0 tabular-nums; }
+.strategy-weight-name { @apply flex min-w-0 items-center gap-ui-2; }
+.strategy-weight-label { @apply min-w-0; overflow-wrap:anywhere; }
+.strategy-weight-name > span:last-child { @apply shrink-0; }
+.strategy-weight-total { @apply ml-auto whitespace-nowrap text-ui-xs leading-ui-xs tabular-nums text-secondary; }
+.strategy-learning-status { @apply mb-ui-7 mt-ui-5 flex min-w-0 items-start gap-ui-4 text-ui-xs leading-ui-xs text-secondary; }
+.strategy-learning-status > span { @apply shrink-0; }
+.strategy-parameters, .strategy-connect { @apply my-ui-7 min-w-0 text-ui-xs leading-ui-xs; }
+.strategy-parameters summary, .strategy-connect summary { @apply mb-ui-4 cursor-pointer text-secondary; overflow-wrap:anywhere; }
+.strategy-parameters textarea { @apply mb-ui-4 w-full min-w-0 resize-y rounded-ui-md border border-default bg-canvas p-ui-4 font-ui-mono text-ui-xs leading-ui-md text-inherit; @apply min-h-(--graph-parameters-height); }
+.strategy-inspector p { @apply min-w-0; overflow-wrap:anywhere; }
+.strategy-delete { @apply mt-ui-5 text-negative; }
+.strategy-decision-choices { @apply mt-ui-6 flex flex-wrap gap-ui-2; }
+.strategy-decision-choices span { @apply rounded-ui-md border border-default px-ui-4 py-ui-3 text-ui-xs leading-ui-xs; }
+.strategy-replay-status { @apply grid w-full min-w-0 gap-ui-2 text-ui-xs leading-ui-xs; }
+.strategy-replay-meta { @apply flex min-w-0 flex-wrap items-center gap-ui-3 text-secondary tabular-nums; }
+.strategy-replay-meta > span,.strategy-replay-meta time { @apply shrink-0; }
+.strategy-replay-current { @apply flex min-w-0 items-center gap-ui-3; }
+.strategy-replay-focus { @apply min-w-0 shrink cursor-pointer truncate border-0 bg-transparent p-0 text-left font-ui-semibold text-accent underline decoration-transparent; }
+.strategy-replay-focus:hover { @apply decoration-current; }
+.strategy-replay-focus:focus-visible { @apply outline outline-accent; }
+.strategy-replay-state { @apply shrink-0 text-secondary; }
+.strategy-replay-result { @apply min-w-0 flex-1 truncate text-foreground tabular-nums; }
+
+.strategy-run-settings { @apply flex min-w-0 flex-wrap items-center gap-ui-6 text-ui-xs leading-ui-xs; }
+.strategy-run-settings label { @apply flex min-w-0 items-center gap-ui-3; }
+.strategy-editor-footer input[type=number] { @apply p-ui-2 tabular-nums; @apply w-(--graph-weight-input-width); }
+.strategy-validation { @apply basis-full text-ui-xs leading-ui-xs text-secondary; overflow-wrap:anywhere; }
+.strategy-validation.error { @apply text-negative; }
+.strategy-editor button:focus-visible, .strategy-editor input:focus-visible, .strategy-editor select:focus-visible, .strategy-editor summary:focus-visible, .strategy-editor textarea:focus-visible { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.strategy-editor button:disabled, .strategy-palette-item button:disabled { @apply cursor-default; @apply opacity-(--graph-disabled-opacity); }
+
+@variant max-lg {
+  .strategy-canvas .react-flow__minimap { @apply hidden; }
+}
+@variant max-md {
+  .strategy-palette h3, .strategy-palette-footer { @apply hidden; }
+  .strategy-palette-item { @apply m-0; }
+  .strategy-palette-item .help-tooltip { @apply hidden; }
+  .strategy-run-settings { @apply gap-ui-4; }
+}
+
+.strategy-node-vibe .strategy-node-symbol { background:var(--ds-accent-soft); @apply text-(color:--ds-accent-text); }
+.strategy-inline-text { @apply my-ui-3 grid min-w-0 gap-ui-2 text-ui-xs leading-ui-xs; }
+.strategy-inline-text input,.strategy-inline-text textarea { @apply w-full min-w-0 rounded-ui-sm border border-default bg-field px-ui-3 py-ui-2 text-ui-xs text-foreground; }
+.strategy-inline-text textarea { @apply resize-y; @apply min-h-(--graph-inline-text-height); }
+.strategy-inline-caption { @apply my-ui-3 flex min-w-0 flex-wrap items-center gap-ui-2 text-ui-xs leading-ui-xs text-secondary tabular-nums; }
+.strategy-inline-caption > span { @apply min-w-0; overflow-wrap:anywhere; }
+.strategy-router-branches { @apply grid min-w-0 gap-ui-3 text-ui-xs leading-ui-xs; }
+.strategy-router-branches > span { @apply flex min-w-0 items-center justify-between gap-ui-3; }
+.strategy-router-branches b { @apply min-w-0 truncate font-ui-medium; }
+.strategy-port-count-3.strategy-port-0 { top:var(--graph-port-start); }
+.strategy-port-count-3.strategy-port-1 { top:var(--graph-port-middle); }
+.strategy-port-count-3.strategy-port-2 { top:var(--graph-port-end); }
+.strategy-port-label { @apply absolute right-full mr-ui-3 whitespace-nowrap rounded-ui-sm bg-surface px-ui-2 py-ui-1 text-ui-xs text-secondary; }
+.strategy-source-picks { @apply my-ui-5 grid min-w-0 gap-ui-3 border-0 p-0 text-ui-xs; }
+.strategy-source-picks label { @apply flex min-w-0 items-center gap-ui-2; overflow-wrap:anywhere; }
+.strategy-presets { @apply mb-ui-5 min-w-0 border-b border-default pb-ui-5 text-ui-xs; }
+.strategy-presets summary { @apply cursor-pointer font-ui-medium; }
+.strategy-presets .field { @apply mt-ui-4; }
+.strategy-library-picker { @apply mb-ui-5 min-w-0 border-b border-default pb-ui-5 text-ui-xs; }
+.strategy-node-instance { @apply mb-ui-2 min-w-0 truncate text-ui-xs text-secondary; }
+.strategy-library-picker summary,.strategy-library-register summary { @apply cursor-pointer font-ui-semibold; }
+.strategy-library-picker .field,.strategy-library-register .field { @apply mt-ui-4; }
+.strategy-library-picker .button { @apply my-ui-2; }
+.strategy-library-instance { @apply mt-ui-4 grid min-w-0 gap-ui-2 border-t border-subtle pt-ui-3; }
+.strategy-library-instance > button.studio-row-link,.strategy-library-instance > span { @apply min-w-0 truncate; }
+.strategy-library-instance > span { @apply text-muted; }
+.strategy-library-binding { @apply my-ui-4 flex min-w-0 flex-wrap items-center gap-ui-3 rounded-ui-sm border border-default bg-field p-ui-3 text-ui-xs; }
+.strategy-library-identity,.strategy-library-detach { @apply grid w-full min-w-0 gap-ui-2; }
+.strategy-library-identity > strong,.strategy-library-identity > span,.strategy-library-detach > strong { @apply min-w-0 truncate; }
+.strategy-library-identity > span { @apply text-secondary; }
+.strategy-library-detach { @apply border-t border-default pt-ui-3; }
+.strategy-library-upgrade { @apply mb-ui-5 grid min-w-0 gap-ui-3 rounded-ui-sm border border-default bg-field p-ui-4 text-ui-xs; overflow-wrap:anywhere; }
+.strategy-library-upgrade h3 { @apply m-0 text-ui-sm; }
+.strategy-library-upgrade ul { @apply m-0 pl-ui-5; }
+.strategy-library-register { @apply my-ui-5 border-t border-default pt-ui-4 text-ui-xs; }
+.quant-title { @apply block w-full min-w-0 truncate text-left; @apply max-w-(--graph-inspector-width); }
+.quant-node-fields { @apply mb-ui-5 grid grid-cols-2 gap-ui-4 rounded-ui-sm border border-default p-ui-5; }
+.quant-node-fields legend { @apply px-ui-3 text-ui-sm font-ui-semibold; }
+.quant-detail h3 { @apply mt-ui-7 mb-ui-4 text-ui-sm; }
+.quant-contract { @apply min-w-0; }
+@variant max-sm { .quant-node-fields { @apply grid-cols-1; } }
+
+.strategy-palette-tabs { @apply mb-ui-5 flex min-w-0 shrink-0 gap-ui-1 rounded-ui-md bg-hover p-ui-1; }
+.strategy-palette-tabs button { @apply min-w-0 flex-1 cursor-pointer rounded-ui-sm border-0 bg-transparent px-ui-3 py-ui-3 text-ui-xs font-ui-medium text-secondary; }
+.strategy-palette-tabs button[aria-pressed=true] { @apply bg-surface text-foreground; box-shadow:var(--ds-shadow-control); }
+.strategy-palette-add,.strategy-outline { @apply min-w-0; }
+.strategy-palette-search { @apply mb-ui-5 grid min-w-0 gap-ui-2 text-ui-xs text-secondary; }
+.strategy-palette-search input { @apply box-border w-full min-w-0 rounded-ui-md border border-default bg-field px-ui-3 py-ui-3 text-ui-xs text-foreground; }
+.strategy-palette-group { @apply mb-ui-4 min-w-0 border-b border-subtle pb-ui-3; }
+.strategy-palette-group > summary { @apply mb-ui-3 cursor-pointer text-ui-xs font-ui-semibold; }
+.strategy-palette-group > summary > span { @apply ml-ui-2 font-ui-regular tabular-nums text-muted; }
+.strategy-palette-empty { @apply text-ui-xs text-secondary; }
+.strategy-outline-node { @apply mb-ui-2 flex w-full min-w-0 cursor-pointer items-center gap-ui-3 rounded-ui-md border border-transparent bg-transparent px-ui-3 py-ui-3 text-left text-foreground; }
+.strategy-outline-node > span:last-child { @apply grid min-w-0 flex-1 gap-ui-1; }
+.strategy-outline-node strong { @apply min-w-0 truncate text-ui-xs font-ui-medium; }
+.strategy-outline-node small { @apply min-w-0 truncate text-ui-xs text-muted; }
+.strategy-outline-symbol { @apply shrink-0; @apply w-(--graph-node-symbol-size); @apply h-(--graph-node-symbol-size); }
+.strategy-outline-symbol svg { @apply size-full; stroke-width:var(--ds-icon-stroke); }
+.strategy-outline-node:hover,.strategy-outline-instance-title:hover { @apply bg-hover; }
+.strategy-outline-node[aria-pressed=true],.strategy-outline-instance-title[aria-pressed=true] { @apply border-default bg-surface; }
+.strategy-outline-instance { @apply mb-ui-5 min-w-0 border-b border-default pb-ui-4; }
+.strategy-outline-instance-title { @apply grid w-full min-w-0 cursor-pointer gap-ui-2 rounded-ui-md border border-transparent bg-transparent px-ui-3 py-ui-3 text-left text-foreground; }
+.strategy-outline-instance-title strong { @apply min-w-0 truncate text-ui-xs font-ui-semibold; }
+.strategy-outline-instance-title span { @apply min-w-0 truncate text-ui-xs text-secondary tabular-nums; }
+.strategy-outline-instance > details { @apply mt-ui-2 min-w-0; }
+.strategy-outline-instance > details > summary { @apply cursor-pointer px-ui-3 py-ui-2 text-ui-xs text-secondary; }
+.strategy-draft-state { @apply whitespace-nowrap text-ui-xs text-secondary; }
+.strategy-draft-state.changed,.strategy-draft-state.pending { @apply text-accent; }
+@variant max-md {
+ .strategy-palette-tabs { @apply sticky top-0; }
+ .strategy-outline { @apply grid grid-cols-2 gap-ui-2; }
+ .strategy-outline-instance { @apply col-span-2; }
+ .strategy-palette-group .strategy-palette-item { @apply mb-ui-3; }
+}
+
+@import './quant-strategy-library.css';
+
+.strategy-inspector .field input[type=checkbox] { @apply inline-block h-ui-6 w-ui-6 min-h-ui-6 shrink-0 p-0 mr-ui-3 align-middle; box-shadow:none; accent-color:var(--ds-accent); }
+.strategy-node-controls { @apply mt-ui-4 min-w-0 border-t border-subtle pt-ui-2; }
+.strategy-radio { @apply my-ui-3 min-w-0 border-0 p-0 text-ui-xs; }
+.strategy-radio legend { @apply mb-ui-3 text-secondary; }
+.strategy-radio > div { @apply flex min-w-0 flex-wrap gap-ui-3; }
+.strategy-radio label { @apply flex min-w-0 flex-1 cursor-pointer items-center gap-ui-2 rounded-ui-sm border border-default bg-field px-ui-3 py-ui-3; }
+.strategy-radio label:has(input:checked) { @apply border-accent text-accent; background:var(--ds-accent-soft); }
+.strategy-radio input[type=radio] { @apply m-0 shrink-0; accent-color:var(--ds-accent); @apply w-ui-5; @apply h-ui-5; }
+.strategy-radio span { @apply min-w-0 truncate; }
+.strategy-radio:disabled label { @apply cursor-default; }
+.strategy-question-options { @apply my-ui-3 grid min-w-0 gap-ui-2; }
+.strategy-question-option { @apply min-w-0 rounded-ui-sm border border-subtle bg-field px-ui-3 py-ui-2 text-ui-xs; }
+.strategy-question-option > span { @apply block truncate; }
+.strategy-question-option input { @apply w-full min-w-0 rounded-ui-sm border border-default bg-surface px-ui-2 py-ui-2; }
+.strategy-question-criteria { @apply grid min-w-0 gap-ui-3; }
+.strategy-question-json,.strategy-router-question { @apply grid min-w-0 gap-ui-3; }
+.strategy-question-json textarea { @apply font-mono; }
+.strategy-question-json .actions { @apply flex flex-wrap gap-ui-2; }
+.strategy-router-impact { @apply flex min-w-0 items-start gap-ui-2 text-ui-xs; }
+.strategy-router-impact input { @apply shrink-0; }
+.strategy-router-impact > span { @apply min-w-0; overflow-wrap:anywhere; }
+.strategy-node-jev_question .strategy-node-symbol { background:var(--ds-accent-soft); @apply text-(color:--ds-accent-text); }
+.strategy-node-boolean_logic .strategy-node-symbol { background:var(--graph-router-surface); @apply text-(color:--graph-router-foreground); }
+.strategy-node .strategy-port[style] { top:calc(var(--graph-port-start) + (var(--graph-port-end) - var(--graph-port-start)) * var(--graph-port-index) / (var(--graph-port-total) - 1)); }
+.strategy-connection-state { @apply mt-ui-3 flex min-w-0 items-center gap-ui-2 border-t border-subtle pt-ui-3 text-ui-xs text-secondary; }
+.strategy-connection-dot { @apply inline-block shrink-0 rounded-full; @apply w-ui-2; @apply h-ui-2; background:var(--ds-success); }
+.strategy-node.connection-incomplete { @apply border-dashed; }
+.strategy-node.connection-invalid { border-color:var(--ds-danger); }
+.strategy-node.connection-incomplete .strategy-connection-dot { background:var(--ds-text-tertiary); }
+.strategy-node.connection-invalid .strategy-connection-dot { background:var(--ds-danger); }
+.strategy-node .react-flow__handle.port-needs-connection { @apply border-dashed; }
+.strategy-node .react-flow__handle.valid { border-color:var(--ds-success); background:var(--ds-success-bg); }
+.strategy-node .react-flow__handle.connecting:not(.valid) { border-color:var(--ds-danger); }
+.strategy-canvas .connection-edge-invalid .react-flow__edge-path { stroke:var(--ds-danger); stroke-dasharray:var(--graph-invalid-dash); }
+.strategy-connection-toast { @apply absolute left-ui-5 right-ui-5 top-ui-5 z-20 flex items-start justify-between gap-ui-4 rounded-ui-md border border-negative bg-surface px-ui-5 py-ui-4 text-ui-xs text-negative; box-shadow:var(--ds-shadow-control); }
+.strategy-connection-toast span { @apply min-w-0; overflow-wrap:anywhere; }
+.strategy-connection-toast button { @apply shrink-0 cursor-pointer border-0 bg-transparent p-0 text-inherit; }
+.strategy-node.execution-waiting .strategy-node-controls,.strategy-node.execution-replay .strategy-node-summary { background-image:repeating-linear-gradient(var(--graph-active-pattern-angle),transparent,transparent var(--graph-active-pattern-gap),var(--ds-accent-soft) var(--graph-active-pattern-gap),var(--ds-accent-soft) var(--graph-active-pattern-size)); background-size:var(--graph-active-pattern-size) var(--graph-active-pattern-size); animation:graph-active-pattern var(--graph-active-pattern-duration) linear infinite; }
+@keyframes graph-active-pattern { to { background-position:var(--graph-active-pattern-size) 0; } }
+@media (prefers-reduced-motion: reduce) { .strategy-node.execution-waiting .strategy-node-controls,.strategy-node.execution-replay .strategy-node-summary { animation:none; } }
+.mind-output-3d { @apply relative block w-full overflow-hidden; @apply h-(--mind-output-3d-height); }
+.mind-output-3d__canvas,.mind-output-3d__fallback { @apply absolute inset-0 size-full; }
+.mind-output-3d__fallback { @apply grid place-items-center; }
+.mind-output-3d__canvas canvas { @apply block size-full; }
+
+.mind-output-3d__fallback[hidden] { @apply hidden; }
+.mind-output-3d__fallback .mind-avatar { @apply size-full; }
+
+.strategy-live-approval { @apply grid basis-full min-w-0 gap-ui-3 rounded-ui-sm border border-default bg-field p-ui-4 text-ui-xs leading-ui-xs; overflow-wrap:anywhere; }
+.strategy-live-approval h3 { @apply m-0 text-ui-sm; }
+.strategy-live-approval p { @apply m-0; }
+.strategy-live-approval summary { @apply cursor-pointer text-secondary; }
+.strategy-live-approval details { @apply overflow-auto; @apply max-h-(--graph-parameters-height); }
+
+/* The canvas owns the workspace; a selected part owns the one editing surface. */
+.strategy-node-expand { @apply mt-ui-3 w-full; }
+.strategy-node .strategy-node-summary { @apply mt-ui-2 gap-ui-1 pt-ui-2; }
+.strategy-node .strategy-connection-state { @apply mt-ui-2 pt-ui-2; }
+.strategy-node .mind-output-3d { @apply h-ui-12; }
+.strategy-run-limits { @apply min-w-0 text-ui-xs; }
+.strategy-run-limits > summary { @apply cursor-pointer text-secondary; }
+.strategy-run-limits[open] { @apply max-h-(--graph-parameters-height) overflow-auto; }
+.strategy-run-limits label { @apply my-ui-3 flex items-center gap-ui-3; }
+.strategy-run-limits input { @apply min-w-0; }
+@variant max-md {
+ .strategy-inspector .strategy-inline-field { @apply my-ui-4; }
+}
+
+@import './strategy-workspace.css';
+@import './strategy-explorer.css';

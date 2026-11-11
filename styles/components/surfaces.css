@@ -1,0 +1,31 @@
+@reference '../theme.css';
+
+/* Shared containers own the inset for headers and content in every workspace. */
+.studio-sheet { @apply min-w-0 bg-surface border border-solid border-default rounded-ui-xl; }
+.studio-sheet-head { @apply flex items-center justify-between gap-ui-5 px-ui-6 py-ui-5 border-b border-solid border-subtle; }
+.studio-sheet-head h2 { @apply m-0 text-ui-base font-ui-semibold; }
+.studio-sheet-body { @apply px-ui-6 py-ui-5; }
+.studio-record-source-heading { @apply mt-ui-6 mb-ui-4 text-ui-base font-ui-medium; }
+.studio-record-groups { @apply grid gap-ui-6; }
+.studio-record-groups[data-record-summary] { @apply lg:grid-cols-3; }
+.studio-record-groups[data-record-summary] .studio-sheet-head { @apply flex-wrap items-start; }
+.studio-record-groups[data-record-summary] .studio-sheet-head h2 { @apply text-ui-sm; }
+.studio-record-groups[data-record-summary] .studio-sheet-body { @apply pb-0; }
+.studio-record-groups[data-record-summary] .mind-activity-feed li { @apply px-0; }
+.studio-record-groups[data-record-summary] .mind-activity-feed small { @apply text-ui-xs; }
+.studio-record-heading { @apply flex flex-wrap min-w-0 items-center gap-ui-3; }
+.studio-record-group > .studio-sheet-head h2 { @apply min-w-0 max-w-full whitespace-normal; overflow-wrap:anywhere; }
+.studio-record-heading .pill { @apply shrink-0; }
+.studio-record-link { @apply inline-block max-w-full min-h-control-touch whitespace-normal text-foreground no-underline; overflow-wrap:anywhere; }
+.studio-record-link:hover { @apply text-accent; }
+.studio-record-link > span { @apply ml-ui-2 text-secondary; }
+.studio-record-group > .mind-activity-feed { @apply m-0 px-ui-6 py-ui-6; }
+.studio-record-group .mind-activity-timeline > ol { @apply border-0 rounded-none; }
+.ui-scroll-locked { @apply overflow-hidden; }
+@media (width < theme(--breakpoint-md)) {
+ .studio-sheet-head { @apply flex-wrap; }
+.studio-record-group > .mind-activity-feed { @apply px-ui-5 py-ui-5; }
+}
+
+[data-knowledge-pin-preview] .detail-row { @apply flex-wrap; }
+[data-knowledge-pin-preview] .detail-row > span { @apply shrink-0 whitespace-normal; }

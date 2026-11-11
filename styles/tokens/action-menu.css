@@ -1,0 +1,7 @@
+:root {
+  --action-menu-min-width: var(--ui-menu-min-width);
+  --action-menu-max-width: var(--ui-menu-max-width);
+  --action-menu-anchor-gap: var(--ds-space-2);
+  --action-menu-viewport-inset: var(--ds-space-4);
+  --action-menu-layer: var(--help-tooltip-layer);
+}

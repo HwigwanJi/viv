@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "id": "mind-profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289-v1",
+  "kind": "mind-policy",
+  "title": "추세형 정책 양식 예시",
+  "source": {
+    "type": "system-export",
+    "id": "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289",
+    "uri": null
+  },
+  "asOf": "2026-10-16T00:00:00.000Z",
+  "availableAt": "2026-10-16T00:00:00.000Z",
+  "scope": {
+    "profileId": "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289",
+    "instrumentIds": [
+      "crypto:okx:BTC-USDT"
+    ],
+    "experimentId": null
+  },
+  "principleRefs": [
+    "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:philosophy",
+    "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:discipline",
+    "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:evidence:1",
+    "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:evidence:2",
+    "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:evidence:3"
+  ],
+  "provenance": {
+    "createdAt": "2026-10-16T00:00:00.000Z",
+    "authorId": "form-example",
+    "recordRefs": [
+      "version-fe6f06d5-23e3-488d-8ac7-173c88dfda66",
+      "version-be7ffdde-dc45-4146-a33b-7e979aa1c46a",
+      "version-caa38fe4-04ea-4ba5-b8a5-6f25d2248cee",
+      "memory-cd63f086-c368-430b-8456-02db664cfe2a"
+    ],
+    "contentHashes": [
+      "56ad17d78f3716b1714cba5e989f210608cb4a4bf5092ddf487bac0488c1a2df"
+    ],
+    "classification": null
+  },
+  "data": {
+    "name": "추세형 정책 양식 예시",
+    "version": 1,
+    "versionRefs": {
+      "profileVersionId": "version-fe6f06d5-23e3-488d-8ac7-173c88dfda66",
+      "strategyVersionId": "version-be7ffdde-dc45-4146-a33b-7e979aa1c46a",
+      "riskPresetVersionId": "version-caa38fe4-04ea-4ba5-b8a5-6f25d2248cee",
+      "memoryVersionId": "memory-cd63f086-c368-430b-8456-02db664cfe2a"
+    },
+    "profileSettings": {
+      "philosophy": "확인된 가격 방향과 추세 지속 근거를 검토한다. 손실 한도 안에서 큰 추세 참여 기회를 평가한다.",
+      "style": "trend",
+      "horizon": "4h",
+      "evidencePreferences": [
+        "추세 지속",
+        "확정 고저점",
+        "가격 구조"
+      ],
+      "discipline": "보유·손실·비용 한도와 반대 근거를 함께 검토한다.",
+      "learningPolicy": "user-approved"
+    },
+    "strategySettings": {
+      "provider": "jev",
+      "modelConfig": {
+        "k": 4,
+        "h0": 1.5,
+        "h1": 1.5,
+        "buyThreshold": 0.6,
+        "sellThreshold": 0.6,
+        "buyTargetWeight": 1,
+        "sellTargetWeight": 0.25,
+        "dailyMaWindow": 200,
+        "atrPeriod": 14,
+        "maWindow": 50,
+        "slopeZWindow": 540,
+        "pivotLeft": 2,
+        "pivotRight": 2,
+        "distanceScale": 3,
+        "selectedCategories": [
+          "price"
+        ],
+        "categoryWeights": {
+          "price": 40,
+          "derivatives": 25,
+          "spot_flow": 15,
+          "macro": 10,
+          "onchain": 10
+        }
+      },
+      "mechanicalModelVersionId": "btc-spec-section9-explicit-assumptions-v1",
+      "decisionContractVersionId": "btc-profile-choice-v1",
+      "fusionPolicyVersionId": "btc-semantic-conflict-v1",
+      "fusionMode": "advisory"
+    },
+    "riskPreset": {
+      "normalBuyWeight": 0.5,
+      "clutchBuyWeight": 1,
+      "sellWeight": 0.25,
+      "maxExposure": 1,
+      "maxOrderWeight": 1,
+      "dailyLossLimit": 0.05,
+      "minNotional": 10,
+      "maxFeeBps": 100,
+      "maxSlippageBps": 100
+    },
+    "approvedMemory": [],
+    "principles": [
+      {
+        "id": "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:philosophy",
+        "version": 1,
+        "title": "투자 철학",
+        "text": "확인된 가격 방향과 추세 지속 근거를 검토한다. 손실 한도 안에서 큰 추세 참여 기회를 평가한다.",
+        "kind": "core",
+        "weight": 1,
+        "bounds": {
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "id": "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:discipline",
+        "version": 1,
+        "title": "운용 규율",
+        "text": "보유·손실·비용 한도와 반대 근거를 함께 검토한다.",
+        "kind": "core",
+        "weight": 1,
+        "bounds": {
+          "min": 1,
+          "max": 1
+        }
+      },
+      {
+        "id": "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:evidence:1",
+        "version": 1,
+        "title": "추세 지속",
+        "text": "검토할 근거: 추세 지속",
+        "kind": "evidence",
+        "weight": 0.5,
+        "bounds": {
+          "min": 0.1,
+          "max": 0.9
+        }
+      },
+      {
+        "id": "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:evidence:2",
+        "version": 1,
+        "title": "확정 고저점",
+        "text": "검토할 근거: 확정 고저점",
+        "kind": "evidence",
+        "weight": 0.5,
+        "bounds": {
+          "min": 0.1,
+          "max": 0.9
+        }
+      },
+      {
+        "id": "profile-71cfe444-eaea-4bf6-afe4-3d6e3de2a289:evidence:3",
+        "version": 1,
+        "title": "가격 구조",
+        "text": "검토할 근거: 가격 구조",
+        "kind": "evidence",
+        "weight": 0.5,
+        "bounds": {
+          "min": 0.1,
+          "max": 0.9
+        }
+      }
+    ],
+    "universe": {
+      "mode": "single",
+      "instrumentIds": [
+        "crypto:okx:BTC-USDT"
+      ],
+      "selection": {
+        "method": "fixed",
+        "maxPositions": 1,
+        "minQuoteVolume": 0,
+        "minHistoryBars": 64,
+        "rebalance": "manual"
+      }
+    },
+    "inputs": [
+      {
+        "id": "price-ohlcv",
+        "status": "connected",
+        "required": true,
+        "sourceRefs": []
+      },
+      {
+        "id": "approved-memory",
+        "status": "approved-context",
+        "required": false,
+        "sourceRefs": [
+          "memory-cd63f086-c368-430b-8456-02db664cfe2a"
+        ]
+      },
+      {
+        "id": "macro",
+        "status": "unavailable",
+        "required": false,
+        "sourceRefs": []
+      },
+      {
+        "id": "news",
+        "status": "unavailable",
+        "required": false,
+        "sourceRefs": []
+      }
+    ],
+    "trigger": {
+      "event": "closed-candle",
+      "interval": "4h",
+      "settleDelayMs": 15000,
+      "cooldownMs": 15000
+    },
+    "weightPolicy": {
+      "method": "bounded-shrinkage-v1",
+      "approval": "version-review",
+      "maxStep": 0.1,
+      "minIndependentSamples": 3,
+      "version": 1
+    }
+  }
+}

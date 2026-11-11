@@ -1,0 +1,2796 @@
+@reference "../theme.css";
+
+.trading-terminal {
+  --terminal-up: var(--ds-success);
+  --terminal-down: var(--ds-danger);
+  @apply flex;
+  @apply flex-col;
+  @apply min-w-0;
+  @apply min-h-(--terminal-center-min-height);
+  @apply h-(--terminal-workspace-height);
+  @apply border border-solid border-default;
+  @apply bg-surface;
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+  @apply text-foreground;
+  @apply font-ui-sans;
+}
+
+.trading-terminal * {
+  @apply box-border;
+}
+
+.trading-terminal button,.trading-terminal select,.trading-terminal input {
+  font: inherit;
+}
+
+.trading-terminal button {
+  @apply cursor-pointer;
+}
+
+.trading-terminal button:disabled {
+  @apply cursor-default;
+  @apply opacity-50;
+}
+
+.trading-terminal button:focus-visible,.trading-terminal input:focus-visible,.trading-terminal select:focus-visible,.terminal-chart:focus-visible {
+  @apply outline-2 outline-solid outline-accent;
+  outline-offset: var(--ds-focus-offset-inset);
+}
+
+.trading-terminal button {
+  @apply border-0;
+  @apply rounded-ui-sm;
+  @apply bg-transparent;
+  @apply text-inherit;
+}
+
+.trading-terminal button:hover {
+  @apply bg-hover;
+}
+
+.trading-terminal button[aria-pressed=true] {
+  @apply text-(color:--ds-accent-text);
+  background: var(--ds-bg-selected);
+}
+
+.terminal-layout {
+  @apply grid;
+  grid-template-columns: var(--terminal-watchlist-width) minmax(0,1fr) var(--terminal-mind-panel-width);
+  @apply flex-1;
+  @apply min-h-0;
+}
+
+.terminal-watchlist {
+  @apply flex;
+  @apply flex-col;
+  @apply border-r border-solid border-r-default;
+  @apply min-w-0;
+  @apply min-h-0;
+}
+
+.terminal-list-heading,.terminal-section-heading {
+  @apply flex;
+  @apply items-center;
+  @apply justify-between;
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply min-h-ui-10;
+}
+
+.terminal-list-heading h2,.terminal-section-heading h2 {
+  @apply text-ui-md;
+  @apply font-ui-semibold;
+  @apply m-0;
+}
+
+.terminal-list-heading>span {
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+.terminal-instrument-tabs {
+  @apply flex;
+  @apply gap-ui-1;
+  @apply pt-0 pr-ui-4 pb-ui-3 pl-ui-4;
+  @apply border-b border-solid border-b-subtle;
+}
+
+.terminal-instrument-tabs>button {
+  @apply text-ui-xs;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply whitespace-nowrap;
+}
+
+.terminal-search {
+  @apply block;
+  @apply pt-ui-4 pr-ui-4 pb-ui-3 pl-ui-4;
+}
+
+.terminal-search input {
+  @apply w-full;
+  @apply h-ui-9;
+  @apply min-h-ui-9;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply border border-solid border-default;
+  @apply rounded-ui-sm;
+  background: var(--ds-bg-panel);
+  @apply text-inherit;
+}
+
+.terminal-market-filter,.terminal-universe-filters {
+  @apply block px-ui-4 pb-ui-3 min-w-0;
+}
+.terminal-market-filter select,.terminal-universe-filters select {
+  @apply w-full min-w-0 h-ui-8 text-ui-xs rounded-ui-sm border border-solid border-default bg-surface px-ui-2;
+}
+.terminal-universe-filters {
+  @apply grid grid-cols-2 gap-ui-2;
+}
+.terminal-universe-filters[hidden] { @apply hidden; }
+.terminal-market-filter[hidden] { @apply hidden; }
+.terminal-universe-filters label { @apply min-w-0; }
+.terminal-universe-footer { @apply shrink-0 border-t border-solid border-t-subtle px-ui-4 py-ui-3; }
+.terminal-universe-pager { @apply flex items-center justify-between gap-ui-2 text-ui-xs; }
+.terminal-universe-pager button { @apply text-ui-xs px-ui-3 py-ui-1; }
+.terminal-universe-source { @apply flex items-center gap-ui-1 min-w-0 text-ui-xs text-secondary mt-ui-2; }
+.terminal-universe-source-label { @apply truncate min-w-0; }
+.terminal-universe-source > .help-tooltip { @apply shrink-0; }
+.terminal-list-empty { @apply flex flex-col items-center gap-ui-3; }
+.terminal-list-empty[hidden] { @apply hidden; }
+
+.terminal-instruments-scroll {
+  @apply flex-1;
+  @apply overflow-auto;
+  @apply min-h-(--terminal-watchlist-min-height);
+}
+
+.terminal-instruments {
+  @apply border-collapse;
+  @apply w-full;
+  @apply table-fixed;
+}
+
+.terminal-instruments th {
+  @apply h-ui-8;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply bg-surface;
+  @apply sticky;
+  @apply top-0;
+  @apply text-left;
+  @apply text-secondary;
+  @apply text-ui-xs;
+  @apply font-ui-medium;
+  @apply border-b border-solid border-b-subtle;
+  @apply z-10;
+}
+
+.terminal-instruments th:first-child {
+  @apply w-(--terminal-symbol-column-share);
+}
+
+.terminal-instruments th:last-child {
+  @apply text-right;
+}
+
+.terminal-instruments td {
+  @apply h-ui-11;
+  @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+  @apply border-b border-solid border-b-subtle;
+  @apply whitespace-nowrap;
+  @apply overflow-hidden;
+}
+
+.terminal-instruments tr[aria-selected=true] {
+  background: var(--ds-bg-selected);
+}
+
+.terminal-instruments td:first-child {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-2;
+}
+
+.terminal-star {
+  @apply text-ui-base!;
+  @apply text-secondary!;
+  @apply w-ui-7;
+  @apply h-ui-8;
+  @apply shrink-0;
+  @apply p-0!;
+}
+
+.terminal-star[aria-pressed=true] {
+  @apply text-(color:--ds-warning)!;
+  @apply bg-transparent!;
+}
+
+.terminal-instrument-name {
+  @apply p-0!;
+  @apply grid;
+  @apply gap-ui-1;
+  @apply text-left;
+  @apply min-w-0;
+}
+
+.terminal-instrument-name strong {
+  @apply text-ui-xs;
+  @apply font-ui-semibold;
+  @apply overflow-hidden;
+  @apply text-ellipsis;
+}
+
+.terminal-instrument-name small {
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply overflow-hidden;
+  @apply text-ellipsis;
+}
+
+.terminal-instruments td:last-child {
+  @apply text-right;
+  @apply tabular-nums;
+  @apply text-ui-xs;
+}
+
+.terminal-instruments td:last-child>span {
+  @apply block;
+}
+
+.terminal-instruments td:last-child small {
+  @apply block;
+  @apply text-ui-xs;
+}
+
+.terminal-watchlist-source {
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply border-t border-solid border-t-subtle;
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+.terminal-list-empty {
+  @apply pt-ui-6 pr-ui-4 pb-ui-6 pl-ui-4;
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply text-center;
+}
+
+.terminal-center {
+  @apply flex;
+  @apply flex-col;
+  @apply min-w-0;
+  @apply min-h-0;
+}
+
+.terminal-chart-tools {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-4;
+  @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+  @apply min-h-ui-10;
+  @apply border-b border-solid border-b-subtle;
+  @apply shrink-0;
+}
+
+.terminal-timeframes {
+  @apply flex;
+  @apply gap-ui-1;
+}
+
+.terminal-timeframes>button {
+  @apply pt-ui-2 pr-ui-3 pb-ui-2 pl-ui-3;
+  @apply text-ui-xs;
+  @apply font-ui-medium;
+}
+
+.terminal-source-select {
+  @apply min-w-0;
+}
+
+.terminal-source-select select {
+  @apply h-ui-8;
+  @apply min-h-ui-8;
+  @apply pt-ui-1 pr-ui-6 pb-ui-1 pl-ui-3;
+  @apply max-w-(--terminal-compact-field-width);
+  @apply text-foreground;
+  @apply bg-surface;
+  @apply border border-solid border-default;
+  @apply rounded-ui-sm;
+  @apply text-ui-xs;
+}
+
+.terminal-chart-tools>[data-terminal-action=fit] {
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply pt-ui-2 pr-ui-3 pb-ui-2 pl-ui-3;
+  @apply whitespace-nowrap;
+}
+
+.terminal-ohlc {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-5;
+  @apply pt-ui-3 pr-ui-5 pb-ui-1 pl-ui-5;
+  @apply min-h-ui-8;
+  @apply whitespace-nowrap;
+  @apply overflow-hidden;
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply tabular-nums;
+}
+
+.terminal-ohlc strong {
+  @apply font-ui-medium;
+  @apply text-foreground;
+}
+
+.terminal-ohlc time {
+  @apply text-ui-xs;
+}
+
+.terminal-chart-frame {
+  @apply relative;
+  @apply flex-1;
+  @apply min-h-(--terminal-chart-min-height);
+  @apply max-h-(--terminal-chart-max-height);
+  @apply isolate;
+}
+
+.terminal-chart {
+  @apply h-full;
+  @apply min-h-(--terminal-chart-min-height);
+  @apply w-full;
+}
+
+.terminal-chart-message {
+  @apply absolute;
+  @apply inset-0;
+  @apply flex;
+  @apply flex-col;
+  @apply items-center;
+  @apply justify-center;
+  @apply gap-ui-5;
+  @apply text-center;
+  @apply p-ui-9;
+  @apply text-secondary;
+  @apply bg-surface;
+  @apply text-ui-xs;
+  @apply z-10;
+}
+
+.terminal-chart-message[hidden] {
+  @apply hidden;
+}
+
+.terminal-chart-message button {
+  @apply pt-ui-2 pr-ui-5 pb-ui-2 pl-ui-5;
+  @apply border border-solid border-default;
+}
+
+.terminal-chart-footer {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-5;
+  @apply min-h-ui-9;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply border-t border-solid border-t-subtle;
+  @apply border-b border-solid border-b-default;
+  @apply shrink-0;
+}
+
+.terminal-ranges {
+  @apply flex;
+  @apply gap-ui-0;
+}
+
+.terminal-ranges button {
+  @apply pt-ui-1 pr-ui-3 pb-ui-1 pl-ui-3;
+  @apply text-ui-xs;
+}
+
+.terminal-marker-legend {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-4;
+  @apply text-ui-xs;
+  @apply whitespace-nowrap;
+}
+
+.terminal-marker-legend i {
+  @apply not-italic;
+}
+
+.terminal-marker-legend>span {
+  @apply text-secondary;
+}
+
+.terminal-bar-asof {
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply ml-auto;
+  @apply whitespace-nowrap;
+}
+
+.terminal-buy,.terminal-positive {
+  @apply text-(color:--terminal-up)!;
+}
+
+.terminal-sell,.terminal-negative {
+  @apply text-(color:--terminal-down)!;
+}
+
+.terminal-hold {
+  @apply text-(color:--ds-text-secondary);
+}
+
+.terminal-failed {
+  @apply text-(color:--ds-danger);
+}
+
+.terminal-action {
+  @apply font-ui-semibold;
+}
+
+.terminal-records {
+  @apply flex;
+  @apply flex-col;
+  @apply min-h-(--terminal-ledger-min-height);
+  @apply h-(--terminal-ledger-share);
+  @apply max-h-(--terminal-panel-preview-height);
+  @apply shrink-0;
+}
+
+.terminal-record-tabs {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-1;
+  @apply pt-0 pr-ui-4 pb-0 pl-ui-4;
+  @apply border-b border-solid border-b-default;
+  @apply min-h-ui-9;
+  @apply shrink-0;
+}
+
+.terminal-record-tabs>button {
+  @apply self-stretch;
+  @apply border-b-2 border-solid border-b-transparent;
+  @apply rounded-none;
+  @apply pt-0 pr-ui-4 pb-0 pl-ui-4;
+  @apply text-ui-xs;
+}
+
+.terminal-record-tabs>button[aria-pressed=true] {
+  border-bottom-color: var(--ds-accent);
+  @apply bg-transparent;
+  @apply text-(color:--ds-accent-text);
+}
+
+.terminal-record-tabs>span {
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply ml-auto;
+  @apply whitespace-nowrap;
+  @apply overflow-hidden;
+  @apply text-ellipsis;
+}
+
+.terminal-records-body {
+  @apply overflow-auto;
+  @apply min-h-0;
+  @apply flex-1;
+}
+
+.terminal-records-body > .mind-activity-feed { @apply m-ui-4 p-ui-5 border border-subtle rounded-ui-xl bg-surface; }
+.terminal-records-body .mind-activity-head { @apply flex-wrap; }
+.terminal-records-body .mind-activity-head h3 { @apply min-w-0 break-words; overflow-wrap:anywhere; }
+
+.terminal-table-scroll {
+  @apply overflow-auto;
+  @apply min-w-0;
+}
+
+.terminal-table {
+  @apply w-full;
+  @apply border-collapse;
+  @apply whitespace-nowrap;
+  @apply text-ui-xs;
+  @apply tabular-nums;
+}
+
+.terminal-table th {
+  background: var(--ds-bg-panel);
+  @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+  @apply sticky;
+  @apply top-0;
+  @apply text-right;
+  @apply text-ui-xs;
+  @apply font-ui-medium;
+  @apply text-secondary;
+  @apply border-b border-solid border-b-default;
+  @apply z-10;
+}
+
+.terminal-table td {
+  @apply h-ui-9;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply text-right;
+  @apply border-b border-solid border-b-subtle;
+}
+
+.terminal-table th:first-child,.terminal-table th:nth-child(2),.terminal-table td:first-child,.terminal-table td:nth-child(2) {
+  @apply text-left;
+}
+
+.terminal-table td strong {
+  @apply font-ui-medium;
+}
+
+.terminal-table td small {
+  @apply block;
+  @apply max-w-(--ds-infobox-width);
+  @apply text-ellipsis;
+  @apply overflow-hidden;
+  @apply text-secondary;
+  @apply text-ui-xs;
+}
+
+.terminal-table td>button {
+  @apply text-(color:--ds-text-link);
+  @apply text-ui-xs;
+  @apply pt-ui-1 pr-ui-2 pb-ui-1 pl-ui-2;
+}
+
+.terminal-decision-table th:nth-child(4),.terminal-decision-table th:nth-child(5),.terminal-decision-table .terminal-numeric-cell {
+  @apply text-right tabular-nums whitespace-nowrap;
+}
+.terminal-decision-table .terminal-decision-result {
+  @apply block min-w-0 truncate;
+  @apply max-w-(--terminal-decision-result-width);
+}
+
+.terminal-record-footer {
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply border-t border-solid border-t-subtle;
+  @apply text-right;
+}
+
+.terminal-record-footer>button {
+  @apply text-ui-xs;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply border border-solid border-default;
+}
+
+.terminal-empty {
+  @apply flex;
+  @apply items-center;
+  @apply justify-center;
+  @apply min-h-(--terminal-empty-min-height);
+  @apply p-ui-7;
+  @apply text-center;
+  @apply text-secondary;
+  @apply text-ui-xs;
+}
+
+.terminal-minds {
+  @apply border-l border-solid border-l-default;
+  @apply min-w-0;
+  @apply min-h-0;
+  @apply flex;
+  @apply flex-col;
+}
+
+.terminal-section-heading {
+  @apply border-b border-solid border-b-subtle;
+}
+
+.terminal-section-heading>button {
+  @apply text-(color:--ds-text-link);
+  @apply text-ui-xs;
+  @apply pt-ui-1 pr-ui-2 pb-ui-1 pl-ui-2;
+}
+
+.terminal-mind-list {
+  @apply flex-1;
+  @apply overflow-auto;
+  @apply min-h-0;
+}
+
+.terminal-mind-row {
+  @apply p-ui-5;
+  @apply border-b border-solid border-b-subtle;
+}
+
+.terminal-mind-row>div:first-child {
+  @apply flex;
+  @apply items-center;
+  @apply justify-between;
+  @apply gap-ui-4;
+}
+
+.terminal-mind-row>div:first-child>button {
+  @apply p-0;
+  @apply text-ui-xs;
+  @apply font-ui-semibold;
+  @apply text-left;
+  @apply min-w-0;
+  @apply overflow-hidden;
+  @apply text-ellipsis;
+}
+
+.terminal-mind-row>div:first-child>span {
+  @apply text-ui-xs;
+  @apply whitespace-nowrap;
+}
+
+.terminal-muted {
+  @apply text-secondary;
+}
+.terminal-mind-title { @apply relative block w-full max-w-full min-w-0 min-h-control-touch p-0 pr-ui-5 text-left whitespace-normal; overflow-wrap:anywhere; }
+.terminal-mind-title::after { content:'›'; @apply absolute right-ui-1 top-1/2 -translate-y-1/2; }
+.terminal-mind-title:hover { @apply underline; }
+
+.terminal-mind-row p {
+  @apply text-ui-xs;
+  @apply mt-ui-3 mr-0 mb-ui-3 ml-0;
+}
+
+.terminal-mind-metadata {
+  @apply flex;
+  @apply items-center;
+  @apply justify-between;
+  @apply gap-ui-2;
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply mt-ui-2;
+  @apply tabular-nums;
+}
+
+.terminal-mind-distribution {
+  @apply grid;
+  @apply grid-cols-3;
+  @apply gap-ui-4;
+  @apply pt-ui-4 pr-0 pb-ui-3 pl-0;
+}
+
+.terminal-mind-distribution>span {
+  @apply grid;
+  @apply gap-ui-1;
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+.terminal-mind-distribution strong {
+  @apply text-ui-xs;
+  @apply tabular-nums;
+  @apply text-foreground;
+  @apply font-ui-medium;
+}
+
+.terminal-mind-inputs {
+  @apply text-secondary;
+}
+
+.terminal-mind-account {
+  @apply grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  @apply gap-ui-2;
+  @apply mt-ui-4 mr-0 mb-ui-4 ml-0;
+  @apply text-ui-xs;
+}
+
+.terminal-mind-account dt {
+  @apply text-secondary;
+}
+
+.terminal-mind-account dd {
+  @apply m-0;
+  @apply text-right;
+  @apply tabular-nums;
+}
+
+.terminal-mind-actions {
+  @apply flex;
+  @apply gap-ui-4;
+  @apply mt-ui-4;
+}
+
+.terminal-mind-actions>button {
+  @apply pt-ui-1 pr-0 pb-ui-1 pl-0;
+  @apply text-ui-xs;
+  @apply text-(color:--ds-text-link);
+}
+
+.terminal-mind-footer {
+  @apply flex;
+  @apply justify-end;
+  @apply gap-ui-3;
+  @apply border-t border-solid border-t-default;
+  @apply pt-ui-4 pr-ui-4 pb-ui-4 pl-ui-4;
+}
+
+.terminal-mind-footer>button {
+  @apply border border-solid border-default;
+  @apply text-ui-xs;
+  @apply pt-ui-2 pr-ui-3 pb-ui-2 pl-ui-3;
+}
+
+.terminal-status {
+  @apply flex;
+  @apply gap-ui-6;
+  @apply items-center;
+  @apply pt-ui-2 pr-ui-5 pb-ui-2 pl-ui-5;
+  @apply min-h-ui-8;
+  @apply border-t border-solid border-t-default;
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply shrink-0;
+}
+
+.terminal-status>span:last-child {
+  @apply ml-auto;
+  @apply whitespace-nowrap;
+  @apply overflow-hidden;
+  @apply text-ellipsis;
+}
+
+.terminal-connection:before {
+  content: '';
+  @apply inline-block;
+  @apply w-ui-2;
+  @apply h-ui-2;
+  @apply rounded-ui-full;
+  @apply mt-0 mr-ui-3 mb-ui-0 ml-0;
+  background: var(--terminal-up);
+}
+
+.terminal-connection.terminal-failed:before {
+  background: var(--terminal-down);
+}
+
+.terminal-connection.terminal-loading:before {
+  background: var(--ds-warning);
+}
+
+.terminal-chart-popover {
+  @apply absolute;
+  @apply z-20;
+  @apply border border-solid border-default;
+  @apply rounded-ui-md;
+  background: var(--ds-bg-overlay);
+  box-shadow: var(--ds-shadow-popover);
+  @apply text-foreground;
+  @apply text-ui-xs;
+  @apply pointer-events-none;
+  @apply overflow-auto;
+  max-height: calc(100% - var(--ds-space-6));
+}
+
+.terminal-chart-popover.is-pinned {
+  @apply pointer-events-auto;
+}
+
+.terminal-chart-popover[hidden] {
+  @apply hidden;
+}
+
+.terminal-popover-heading {
+  @apply flex;
+  @apply justify-between;
+  @apply items-center;
+  @apply gap-ui-4;
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply border-b border-solid border-b-subtle;
+}
+
+.terminal-popover-heading strong {
+  @apply font-ui-medium;
+  @apply text-ui-xs;
+}
+
+.terminal-popover-heading>span {
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+.terminal-popover-heading>button {
+  @apply text-ui-xs;
+  @apply pt-ui-1 pr-ui-2 pb-ui-1 pl-ui-2;
+}
+
+.terminal-popover-decision {
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply border-b border-solid border-b-subtle;
+}
+
+.terminal-popover-decision:last-child {
+  @apply border-b-0;
+}
+
+.terminal-popover-decision>div {
+  @apply flex flex-wrap items-center gap-ui-3;
+}
+.terminal-popover-decision>div>strong { @apply min-w-0 wrap-anywhere text-ui-sm font-ui-medium; }
+.terminal-popover-decision>div>span:not(.pill) { @apply text-ui-xs text-secondary; }
+
+.terminal-popover-decision>div>button { @apply ml-auto; }
+.terminal-popover-decision>button { @apply mt-ui-4; }
+
+.terminal-popover-decision dl {
+  @apply grid;
+  grid-template-columns: var(--terminal-description-label) minmax(0, 1fr);
+  @apply gap-ui-2;
+  @apply mt-ui-4 mr-0 mb-0 ml-0;
+  @apply text-ui-xs;
+  @apply tabular-nums;
+}
+
+.terminal-popover-decision dt {
+  @apply text-secondary;
+}
+
+.terminal-popover-decision dd {
+  @apply m-0;
+  @apply text-right;
+  @apply wrap-anywhere;
+}
+
+.terminal-popover-decision p {
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply mt-ui-4 mr-0 mb-0 ml-0;
+  @apply leading-ui-md;
+  @apply whitespace-normal;
+}
+
+@variant 2xl {
+  .terminal-layout {
+    grid-template-columns: var(--terminal-mind-panel-width) minmax(0,1fr) var(--terminal-mind-panel-width);
+  }
+  .terminal-records {
+    @apply h-(--terminal-ledger-share);
+    @apply max-h-(--terminal-chart-mobile-height);
+  }
+  .terminal-instruments td {
+    @apply h-ui-11;
+  }
+}
+
+@variant max-xl {
+  .terminal-layout {
+    grid-template-columns: var(--terminal-watchlist-width) minmax(0,1fr) var(--terminal-mind-panel-compact-width);
+  }
+  .terminal-mind-row {
+    @apply p-ui-4;
+  }
+  .terminal-mind-metadata {
+    @apply flex-wrap;
+  }
+  .terminal-ohlc {
+    @apply gap-ui-4;
+  }
+  .terminal-ohlc time {
+    @apply hidden;
+  }
+  .terminal-bar-asof {
+    @apply hidden;
+  }
+  .terminal-chart-tools {
+    @apply gap-ui-2;
+    @apply p-ui-3;
+  }
+  .terminal-source-select select {
+    @apply max-w-(--ui-column-compact);
+  }
+  .terminal-chart-tools>[data-terminal-action=fit] {
+    @apply text-ui-xs;
+    @apply p-ui-2;
+  }
+}
+
+@variant max-lg {
+  .trading-terminal {
+    @apply h-auto;
+    @apply min-h-0;
+  }
+  .terminal-layout {
+    grid-template-columns: var(--terminal-watchlist-compact-width) minmax(0,1fr);
+  }
+  .terminal-center {
+    @apply min-h-(--terminal-center-min-height);
+  }
+  .terminal-chart-frame {
+    @apply h-(--terminal-chart-mobile-height);
+    @apply flex-none;
+  }
+  .terminal-minds {
+    @apply col-span-full;
+    @apply border-l-0;
+    @apply border-t border-solid border-t-default;
+  }
+  .terminal-mind-list {
+    @apply grid;
+    @apply grid-cols-3;
+    @apply overflow-visible;
+  }
+  .terminal-mind-row {
+    @apply border-r border-solid border-r-subtle;
+  }
+  .terminal-records {
+    @apply h-(--terminal-ledger-mobile-height);
+    @apply max-h-none;
+  }
+  .terminal-record-tabs>span {
+    @apply hidden;
+  }
+  .terminal-watchlist-source {
+    @apply text-ui-xs;
+  }
+}
+
+@variant max-sm {
+  .terminal-layout {
+    @apply flex;
+    @apply flex-col;
+  }
+  .terminal-watchlist {
+    @apply border-r-0;
+    @apply border-b border-solid border-b-default;
+    @apply max-h-(--terminal-watchlist-mobile-height);
+  }
+  .terminal-list-heading {
+    @apply hidden;
+  }
+  .terminal-instrument-tabs {
+    @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+  }
+  .terminal-search {
+    @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+  }
+  .terminal-instruments-scroll {
+    @apply max-h-(--terminal-short-list-height);
+    @apply min-h-(--terminal-watchlist-min-height);
+  }
+  .terminal-instruments td {
+    @apply h-ui-10;
+  }
+  .terminal-instruments td:first-child {
+    @apply gap-ui-4;
+  }
+  .terminal-instrument-name {
+    @apply flex;
+    @apply items-baseline;
+    @apply gap-ui-4;
+  }
+  .terminal-instruments th:first-child {
+    @apply w-(--terminal-symbol-column-share);
+  }
+  .terminal-instruments td:last-child>span,.terminal-instruments td:last-child>small {
+    @apply inline-block;
+    @apply ml-ui-4;
+  }
+  .terminal-watchlist-source {
+    @apply hidden;
+  }
+  .terminal-center {
+    @apply min-h-0;
+  }
+  .terminal-chart-tools {
+    @apply flex-wrap;
+    @apply gap-ui-3;
+    @apply min-h-ui-10;
+  }
+  .terminal-source-select select {
+    @apply max-w-(--terminal-market-heading-width);
+  }
+  .terminal-chart-tools>[data-terminal-action=fit] {
+    @apply hidden;
+  }
+  .terminal-timeframes>button {
+    @apply pt-ui-2 pr-ui-3 pb-ui-2 pl-ui-3;
+  }
+  .terminal-ohlc {
+    @apply pt-ui-3 pr-ui-4 pb-ui-1 pl-ui-4;
+    @apply gap-ui-4;
+    @apply text-ui-xs;
+    @apply flex-wrap;
+    @apply whitespace-normal;
+    @apply min-h-ui-8;
+  }
+  .terminal-ohlc>span:last-child {
+    @apply inline;
+  }
+  .terminal-chart-frame {
+    @apply h-(--terminal-panel-preview-height);
+    @apply min-h-(--terminal-panel-preview-height);
+  }
+  .terminal-chart {
+    @apply min-h-(--terminal-panel-preview-height);
+  }
+  .terminal-chart-footer {
+    @apply gap-ui-4;
+    @apply pt-ui-2 pr-ui-3 pb-ui-2 pl-ui-3;
+  }
+  .terminal-marker-legend {
+    @apply gap-ui-3;
+    @apply text-ui-xs;
+  }
+  .terminal-ranges>button {
+    @apply pt-ui-1 pr-ui-2 pb-ui-1 pl-ui-2;
+    @apply text-ui-xs;
+  }
+  .terminal-records {
+    @apply h-(--terminal-ledger-mobile-height);
+    @apply min-h-(--terminal-empty-panel-height);
+  }
+  .terminal-record-tabs {
+    @apply pt-0 pr-ui-2 pb-0 pl-ui-2;
+  }
+  .terminal-record-tabs>button {
+    @apply text-ui-xs;
+    @apply pt-0 pr-ui-4 pb-0 pl-ui-4;
+  }
+  .terminal-table {
+    @apply min-w-(--terminal-table-min-width);
+  }
+  .terminal-mind-list {
+    @apply block;
+  }
+  .terminal-mind-row {
+    @apply p-ui-5;
+    @apply border-r-0;
+  }
+  .terminal-mind-row>div:first-child>button {
+    @apply text-ui-md;
+  }
+  .terminal-mind-metadata {
+    @apply text-ui-xs;
+    @apply flex-nowrap;
+  }
+  .terminal-mind-distribution {
+    @apply max-w-(--terminal-popover-width);
+  }
+  .terminal-mind-account {
+    @apply max-w-(--terminal-popover-width);
+  }
+  .terminal-status {
+    @apply gap-ui-4;
+    @apply flex-wrap;
+    @apply min-h-ui-8;
+  }
+  .terminal-status>span:last-child:empty {
+    @apply hidden;
+  }
+  .terminal-chart-popover {
+    max-width: calc(100% - var(--ds-space-6));
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .trading-terminal * {
+    @apply scroll-auto;
+  }
+}
+
+.terminal-attribution {
+  @apply ml-auto;
+  @apply whitespace-nowrap;
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply no-underline;
+}
+
+.terminal-attribution:hover {
+  @apply underline;
+}
+
+.terminal-scope-select select {
+  @apply h-ui-8;
+  @apply min-h-ui-8;
+  @apply max-w-(--terminal-picker-min-width);
+  @apply pt-ui-1 pr-ui-6 pb-ui-1 pl-ui-3;
+  @apply border border-solid border-default;
+  @apply rounded-ui-sm;
+  @apply bg-surface;
+  @apply text-inherit;
+  @apply text-ui-xs;
+}
+
+.studio-content {
+  @apply max-w-none;
+  @apply p-ui-6;
+}
+
+.studio-trading-content {
+  @apply p-ui-4;
+}
+
+.studio-service-status {
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+.studio-page-head {
+  @apply flex;
+  @apply items-center;
+  @apply justify-between;
+  @apply gap-ui-6;
+  @apply mt-ui-1 mr-0 mb-ui-6 ml-0;
+}
+
+.studio-page-head h1 {
+  @apply text-ui-2xl;
+  @apply leading-ui-2xl;
+  @apply font-ui-semibold;
+  @apply m-0;
+}
+
+.studio-page-head .actions {
+  @apply shrink-0 flex-wrap;
+}
+
+.studio-table-scroll {
+  @apply relative overflow-auto;
+}
+
+.studio-table {
+  @apply border-collapse;
+  @apply w-full;
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+}
+
+.studio-table th {
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply text-left;
+  @apply text-ui-xs;
+  @apply font-ui-medium;
+  @apply text-secondary;
+  background: var(--ds-bg-panel);
+  @apply whitespace-nowrap;
+  @apply border-b border-solid border-b-default;
+}
+
+.studio-table td {
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply border-b border-solid border-b-subtle;
+  @apply align-middle;
+}
+
+.studio-table td:nth-child(2) {
+  @apply max-w-(--ds-sheet-width);
+}
+
+.studio-table tr:last-child td {
+  @apply border-b-0;
+}
+
+.studio-table td:last-child {
+  @apply whitespace-nowrap;
+}
+
+.studio-table .button {
+  @apply shadow-none;
+  @apply border border-solid border-subtle;
+  @apply text-ui-xs;
+  @apply pt-ui-1 pr-ui-3 pb-ui-1 pl-ui-3;
+  @apply mr-ui-2;
+}
+
+.studio-query-bar {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-5;
+  @apply mt-0 mr-0 mb-ui-5 ml-0;
+  @apply min-h-ui-9;
+  @apply text-ui-xs;
+}
+
+.studio-query-bar select,.studio-query-bar input {
+  @apply min-h-control-md;
+  @apply ml-ui-2;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply bg-surface;
+  @apply border border-solid border-default;
+  @apply rounded-ui-sm;
+  @apply text-inherit;
+  @apply text-ui-xs;
+}
+
+.studio-query-bar>span {
+  @apply ml-auto;
+  @apply text-secondary;
+  @apply text-ui-xs;
+}
+
+.studio-pagination {
+  @apply flex;
+  @apply justify-between;
+  @apply items-center;
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply border-t border-solid border-t-subtle;
+  @apply text-ui-xs;
+}
+
+.studio-pagination>div {
+  @apply flex;
+  @apply gap-ui-2;
+}
+
+.studio-detail-intro {
+  @apply whitespace-pre-wrap;
+  @apply text-ui-sm leading-ui-read text-secondary;
+  @apply mb-ui-5;
+}
+
+.studio-document-workspace { @apply min-w-0; }
+.studio-document-toolbar { @apply sticky top-0 z-10 flex flex-wrap items-center gap-ui-3 bg-surface py-ui-3 mb-ui-4 border-b border-subtle; }
+.studio-document-validation { @apply m-0 mb-ui-4 text-secondary; overflow-wrap:anywhere; }
+
+.studio-document-input {
+  @apply font-ui-mono!;
+  @apply min-h-(--terminal-panel-preview-height)!;
+  @apply text-ui-xs!;
+}
+
+.studio-decision-summary {
+  @apply border border-solid border-default;
+  @apply rounded-ui-md;
+  @apply overflow-hidden;
+}
+
+.studio-loading {
+  @apply min-h-(--terminal-chart-min-height);
+  @apply flex;
+  @apply flex-col;
+  @apply items-center;
+  @apply justify-center;
+  @apply gap-ui-6;
+}
+
+.studio-loading h1 {
+  @apply text-ui-lg;
+}
+
+.studio-loading p {
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+@variant max-xl {
+  .terminal-chart-tools {
+    @apply flex-wrap;
+  }
+  .terminal-scope-select select {
+    @apply max-w-(--terminal-compact-field-width);
+  }
+  .terminal-chart-tools>.terminal-scope-select {
+    @apply flex-1;
+  }
+}
+
+@variant max-md {
+  .studio-content {
+    @apply p-ui-5;
+  }
+  .studio-trading-content {
+    @apply p-ui-2;
+  }
+  .studio-page-head {
+    @apply flex-wrap;
+    @apply gap-ui-4;
+  }
+  .studio-query-bar {
+    @apply flex-wrap;
+    @apply gap-ui-4;
+  }
+  .studio-table {
+    @apply min-w-(--terminal-table-min-width);
+  }
+  .studio-sheet-head {
+    @apply flex-wrap;
+  }
+  .studio-service-status {
+    @apply hidden;
+  }
+  .terminal-scope-select {
+    @apply basis-full!;
+  }
+  .terminal-scope-select select {
+    @apply max-w-none;
+    @apply w-full;
+  }
+}
+
+.terminal-instruments td:last-child small:not(.terminal-negative):not(.terminal-positive) {
+  @apply text-secondary;
+}
+
+@variant sm {
+  .terminal-chart-tools {
+    @apply flex;
+    @apply flex-wrap;
+    @apply gap-ui-3;
+  }
+  .terminal-chart-tools>.terminal-scope-select {
+    @apply grow-0 shrink-0 basis-full;
+    @apply min-w-0;
+  }
+  .terminal-scope-select select {
+    @apply w-full;
+    @apply max-w-none;
+  }
+  .terminal-source-select select {
+    @apply max-w-(--terminal-compact-field-width);
+  }
+  .terminal-chart-tools>[data-terminal-action=fit] {
+    @apply hidden;
+  }
+}
+
+.terminal-instruments td:last-child small {
+  @apply text-secondary!;
+  @apply text-ui-xs;
+}
+
+.terminal-instruments td:last-child .terminal-positive,.terminal-instruments td:last-child .terminal-negative {
+  @apply text-secondary!;
+}
+
+.terminal-account-line {
+  @apply flex;
+  @apply flex-wrap;
+  @apply justify-between;
+  @apply gap-ui-4;
+  @apply m-0;
+  @apply pt-ui-3 pr-ui-5 pb-ui-3 pl-ui-5;
+  @apply border-b border-solid border-b-default;
+  @apply shrink-0;
+}
+
+.terminal-account-line>div {
+  @apply flex;
+  @apply items-baseline;
+  @apply gap-ui-3;
+}
+
+.terminal-account-line dt {
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+.terminal-account-line dd {
+  @apply m-0;
+  @apply text-ui-xs;
+  @apply font-ui-medium;
+  @apply tabular-nums;
+}
+
+.terminal-account-line dd small {
+  @apply text-ui-xs;
+  @apply font-ui-regular;
+}
+
+.terminal-aggregate-pending {
+  @apply m-0;
+  @apply pt-ui-3 pr-ui-5 pb-ui-3 pl-ui-5;
+  @apply text-secondary;
+  @apply text-ui-xs;
+  @apply border-b border-solid border-b-default;
+}
+
+.terminal-mind-context {
+  @apply text-ui-xs!;
+  @apply text-secondary;
+  @apply mt-ui-2! mr-0! mb-ui-4! ml-0!;
+}
+
+.terminal-mind-verdict {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-4;
+  @apply mt-ui-3 mr-0 mb-ui-3 ml-0;
+}
+
+.terminal-mind-verdict>span {
+  @apply text-ui-xs text-secondary min-w-0 wrap-anywhere;
+}
+
+.terminal-mind-receipt {
+  @apply text-ui-xs!;
+  @apply mt-ui-3! mr-0! mb-ui-3! ml-0!;
+}
+
+.terminal-mind-asof {
+  @apply text-ui-xs!;
+  @apply text-secondary;
+}
+
+.terminal-mind-actions {
+  @apply flex-wrap;
+  @apply gap-y-ui-2 gap-x-ui-4;
+}
+
+.terminal-mind-inputs {
+  @apply mt-ui-4! mr-0! mb-ui-3! ml-0!;
+}
+
+.terminal-run-target {
+  @apply max-w-(--ds-infobox-width);
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+  @apply text-secondary;
+  @apply whitespace-normal;
+  @apply text-right;
+  @apply self-center;
+}
+
+.terminal-tooltip-choice {
+  @apply text-ui-xs!;
+  @apply text-foreground!;
+}
+
+@variant max-xl {
+  .terminal-run-target {
+    @apply max-w-(--terminal-watchlist-compact-width);
+  }
+}
+
+@variant max-md {
+  .terminal-run-target {
+    @apply hidden;
+  }
+}
+
+.studio-pagination label {
+  @apply ml-auto;
+  @apply mr-ui-5;
+  @apply text-secondary;
+}
+
+.studio-pagination select {
+  @apply ml-ui-2;
+  @apply min-h-control-sm;
+  @apply border border-solid border-default;
+  @apply rounded-ui-sm;
+  @apply bg-surface;
+  @apply text-inherit;
+  @apply text-ui-xs;
+  @apply pt-ui-1 pr-ui-3 pb-ui-1 pl-ui-3;
+}
+
+.studio-shell .brand {
+  @apply gap-ui-4;
+  @apply pl-ui-4;
+  @apply pr-ui-4;
+}
+
+.studio-shell .brand-mark {
+  @apply font-ui-sans;
+  @apply text-ui-sm;
+  @apply font-ui-semibold;
+  letter-spacing: var(--ds-tracking-tight);
+}
+
+.studio-shell .brand-name {
+  @apply min-w-0;
+  @apply whitespace-nowrap;
+  @apply overflow-hidden;
+  @apply text-ellipsis;
+  @apply text-ui-lg;
+  @apply leading-ui-xs;
+}
+
+.studio-shell .brand-name small {
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+  letter-spacing: var(--ds-tracking-tight);
+}
+
+.studio-shell .workspace .avatar {
+  @apply text-ui-xs;
+  @apply font-ui-semibold;
+  letter-spacing: var(--ds-tracking-tight);
+}
+
+@variant md {
+  :root[data-sidebar-state="collapsed"] .studio-shell .brand {
+    @apply pl-ui-2;
+    @apply pr-ui-2;
+  }
+}
+
+.terminal-run-requirement {
+  @apply flex;
+  @apply items-center;
+  @apply justify-between;
+  @apply gap-ui-4;
+  @apply pt-ui-3 pr-ui-5 pb-ui-3 pl-ui-5;
+  @apply border-b border-solid border-b-default;
+  background: var(--ds-bg-panel);
+  @apply text-secondary;
+  @apply text-ui-xs;
+  @apply shrink-0;
+}
+
+.terminal-run-requirement button {
+  @apply pt-ui-2 pr-ui-3 pb-ui-2 pl-ui-3;
+  @apply border border-solid border-default;
+  @apply bg-surface;
+  @apply text-foreground;
+  @apply text-ui-xs;
+  @apply whitespace-nowrap;
+}
+
+.terminal-decision-times {
+  @apply grid;
+  @apply gap-ui-1;
+  @apply mt-ui-4;
+  @apply text-secondary;
+  @apply text-ui-xs;
+  @apply tabular-nums;
+}
+
+.terminal-time-unrecorded {
+  @apply block;
+  @apply text-secondary;
+  @apply text-ui-xs;
+}
+
+.terminal-record-time {
+  @apply mt-ui-1;
+  @apply text-secondary;
+  @apply text-ui-xs;
+  @apply whitespace-normal;
+  @apply leading-ui-md;
+}
+
+.terminal-equity-asof {
+  @apply mt-ui-2;
+  @apply text-secondary;
+  @apply text-ui-xs;
+}
+
+.terminal-account-line .terminal-account-asof {
+  @apply basis-full;
+  @apply justify-end;
+}
+
+.terminal-account-line .terminal-account-asof dd {
+  @apply text-ui-xs;
+  @apply font-ui-regular;
+  @apply text-secondary;
+}
+
+.terminal-tooltip-time {
+  @apply text-ui-xs!;
+  @apply mt-ui-2! mr-0! mb-ui-2! ml-0!;
+  @apply text-secondary!;
+}
+
+.terminal-tooltip-time .terminal-time-unrecorded {
+  @apply inline;
+  @apply ml-ui-2;
+}
+
+@variant max-md {
+  .terminal-account-line .terminal-account-asof {
+    @apply justify-start;
+  }
+}
+
+/* Workspace rail and contextual menu share the existing Wiki sidebar provider. */
+
+.studio-sidebar {
+  @apply p-0;
+  @apply overflow-hidden;
+  @apply border-r border-solid border-r-subtle;
+}
+
+.studio-sidebar>.brand {
+  @apply min-h-(--terminal-brand-height);
+  @apply pt-ui-5 pr-ui-6 pb-ui-5 pl-ui-6;
+  @apply border-b border-solid border-b-subtle;
+  @apply gap-ui-5;
+}
+
+.studio-sidebar>.brand .brand-name {
+  @apply text-ui-base;
+}
+
+.studio-sidebar>.brand .brand-mark {
+  @apply font-ui-sans;
+  @apply text-ui-md;
+  @apply w-ui-9;
+  @apply h-ui-9;
+}
+
+.studio-sidebar-columns {
+  @apply grid;
+  grid-template-columns: var(--terminal-sidebar-rail-width) minmax(0, 1fr);
+  @apply min-h-0;
+  @apply flex-1;
+}
+
+.studio-primary-nav {
+  @apply flex;
+  @apply flex-col;
+  @apply gap-ui-4;
+  @apply items-stretch;
+  @apply border-r border-solid border-r-subtle;
+  @apply pt-ui-5 pr-ui-2 pb-ui-5 pl-ui-2;
+}
+
+.studio-primary-nav>:is(button,a[data-nav]) {
+  @apply flex;
+  @apply flex-col;
+  @apply items-center;
+  @apply justify-center;
+  @apply gap-ui-3;
+  @apply min-h-ui-11;
+  @apply pt-ui-4 pr-ui-1 pb-ui-4 pl-ui-1;
+  @apply rounded-ui-md;
+  @apply text-(color:--ds-sidebar-label);
+  @apply text-ui-xs;
+  @apply leading-ui-xs;
+}
+
+.studio-primary-nav>:is(button,a[data-nav]):hover {
+  background: var(--ds-fill-sidebar-hover);
+}
+
+.studio-primary-nav>:is(button,a[data-nav]).active {
+  @apply text-(color:--ds-sidebar-active-icon);
+  background: var(--ds-sidebar-active-bg);
+}
+
+.studio-primary-nav>:is(button,a[data-nav])>svg {
+  @apply w-ui-6;
+  @apply h-ui-6;
+}
+
+.studio-primary-account {
+  @apply flex;
+  @apply justify-center;
+  @apply mt-auto;
+  @apply pt-ui-6 pr-0 pb-ui-2 pl-0;
+}
+
+.studio-primary-account .avatar {
+  @apply w-ui-8;
+  @apply h-ui-8;
+  @apply text-ui-xs;
+}
+
+.studio-context-nav {
+  @apply min-w-0;
+  @apply flex;
+  @apply flex-col;
+  @apply pt-ui-7 pr-ui-5 pb-ui-5 pl-ui-5;
+  @apply overflow-auto;
+}
+
+.studio-context-nav>h2 {
+  @apply text-ui-md;
+  @apply leading-ui-md;
+  @apply font-ui-semibold;
+  @apply mt-0 mr-ui-4 mb-ui-7 ml-ui-4;
+}
+
+.studio-mind-scope {
+  @apply grid;
+  @apply gap-ui-3;
+  @apply pt-0 pr-ui-2 pb-ui-7 pl-ui-2;
+  @apply text-ui-xs;
+  @apply text-(color:--ds-sidebar-label);
+}
+
+.studio-mind-scope>select {
+  @apply min-w-0;
+  @apply w-full;
+  @apply h-ui-9;
+  @apply pt-ui-2 pr-ui-3 pb-ui-2 pl-ui-3;
+  @apply text-ui-xs;
+  @apply bg-surface;
+  @apply text-foreground;
+  @apply border border-solid border-default;
+  @apply rounded-ui-sm;
+}
+
+.studio-secondary-nav {
+  @apply grid;
+  @apply gap-ui-1;
+}
+
+.studio-secondary-nav>a,.studio-secondary-nav>.disabled {
+  @apply block;
+  @apply min-h-ui-9;
+  @apply p-ui-4;
+  @apply text-ui-xs;
+  @apply rounded-ui-sm;
+  @apply no-underline;
+  @apply text-(color:--ds-sidebar-text);
+  @apply leading-ui-xs;
+}
+
+.studio-secondary-nav>a:hover {
+  background: var(--ds-fill-sidebar-hover);
+}
+
+.studio-secondary-nav>a[aria-current=page] {
+  background: var(--ds-sidebar-active-bg);
+  @apply font-ui-semibold;
+  @apply text-foreground;
+}
+
+.studio-secondary-nav>.disabled {
+  @apply text-(color:--ds-sidebar-label);
+  @apply opacity-50;
+}
+
+.studio-context-footer {
+  @apply text-ui-xs;
+  @apply mt-auto;
+  @apply pt-ui-8 pr-ui-4 pb-0 pl-ui-4;
+  @apply text-(color:--ds-sidebar-text);
+  @apply leading-ui-md;
+}
+
+.studio-context-footer>span {
+  @apply block;
+  @apply text-ui-xs;
+  @apply text-(color:--ds-sidebar-label);
+}
+
+.studio-shell .breadcrumb>ol {
+  @apply flex;
+  @apply items-center;
+  @apply list-none;
+  @apply m-0;
+  @apply p-0;
+  @apply min-w-0;
+  @apply gap-ui-4;
+  @apply text-ui-xs;
+}
+
+.studio-shell .breadcrumb>ol>li {
+  @apply overflow-hidden;
+  @apply text-ellipsis;
+  @apply max-w-(--terminal-picker-min-width);
+  @apply whitespace-nowrap;
+}
+
+.studio-shell .breadcrumb>ol>li+li:before {
+  content: '/';
+  @apply mr-ui-4;
+  @apply text-secondary;
+}
+
+.studio-shell .breadcrumb>ol>li[aria-current=page] {
+  @apply text-foreground;
+  @apply font-ui-medium;
+}
+
+.studio-page-head>div:first-child {
+  @apply min-w-0;
+}
+
+.studio-page-context {
+  @apply block;
+  @apply text-ui-xs;
+  @apply font-ui-regular;
+  @apply text-secondary;
+  @apply mt-ui-2;
+}
+
+.studio-local-tabs {
+  @apply inline-flex max-w-full flex-wrap gap-ui-2 mb-ui-6 p-ui-1 rounded-ui-lg bg-hover;
+}
+
+.studio-local-tabs > .button {
+  @apply bg-transparent text-secondary;
+  box-shadow: none;
+}
+
+.studio-local-tabs > button[aria-pressed=true],
+.studio-local-tabs > a[aria-current=page] {
+  @apply bg-surface text-foreground;
+  box-shadow: var(--ds-shadow-control);
+}
+
+.studio-query-bar select {
+  @apply max-w-(--terminal-picker-max-width);
+}
+
+.studio-reading-content {
+  @apply max-w-(--ds-page-width);
+}
+
+.studio-overview-grid {
+  @apply grid;
+  @apply grid-cols-2;
+  @apply gap-ui-7;
+}
+
+.studio-overview-grid .studio-sheet {
+  @apply m-0;
+}
+
+.studio-body-copy {
+  @apply text-ui-read;
+  @apply leading-ui-read;
+  @apply whitespace-pre-wrap;
+}
+
+.studio-tag-list {
+  @apply flex;
+  @apply flex-wrap;
+  @apply gap-ui-3;
+}
+
+.studio-tag-list>span {
+  @apply pt-ui-1 pr-ui-3 pb-ui-1 pl-ui-3;
+  @apply border border-solid border-subtle;
+  @apply rounded-ui-sm;
+  @apply text-ui-xs;
+}
+
+.studio-empty-actions {
+  @apply flex;
+  @apply justify-center;
+  @apply gap-ui-4;
+  @apply mt-ui-5;
+}
+
+@variant md {
+  :root[data-sidebar-state=collapsed] .studio-sidebar-columns {
+    @apply grid-cols-1;
+  }
+  :root[data-sidebar-state=collapsed] .studio-context-nav {
+    @apply hidden;
+  }
+  :root[data-sidebar-state=collapsed] .studio-sidebar>.brand {
+    @apply pt-ui-5 pr-0 pb-ui-5 pl-0;
+    @apply justify-center;
+  }
+  :root[data-sidebar-state=collapsed] .studio-primary-nav {
+    @apply border-0;
+    @apply pl-ui-2;
+    @apply pr-ui-2;
+  }
+  :root[data-sidebar-state=collapsed] .studio-primary-label {
+    @apply hidden;
+  }
+  :root[data-sidebar-state=collapsed] .studio-primary-nav>:is(button,a[data-nav]) {
+    @apply min-h-ui-10;
+  }
+}
+
+@variant max-md {
+  .studio-sidebar>.brand {
+    @apply pr-ui-10;
+  }
+  .studio-sidebar-columns {
+    grid-template-columns: var(--terminal-sidebar-rail-width) minmax(0, 1fr);
+  }
+  .studio-sidebar .sidebar-close {
+    @apply top-ui-5;
+    @apply right-ui-4;
+  }
+  .studio-context-nav {
+    @apply pt-ui-6;
+  }
+  .studio-overview-grid {
+    @apply grid-cols-1;
+  }
+  .studio-shell .breadcrumb>ol>li:not(:last-child) {
+    @apply hidden;
+  }
+  .studio-shell .breadcrumb>ol>li:last-child:before {
+    @apply hidden;
+  }
+  .studio-page-head {
+    @apply items-start;
+  }
+  .studio-page-head .actions {
+    @apply gap-ui-3;
+  }
+  .studio-query-bar {
+    @apply items-end;
+  }
+}
+
+.studio-row-link {
+  @apply block;
+  @apply text-left;
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+  @apply text-foreground;
+  @apply font-ui-medium;
+  @apply p-0;
+  @apply max-w-(--terminal-copy-width);
+  @apply whitespace-normal;
+}
+
+.studio-row-link:hover {
+  @apply underline;
+  @apply text-(color:--ds-text-link);
+}
+
+.studio-cell-secondary {
+  @apply block;
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply mt-ui-2;
+}
+
+.studio-library-advanced {
+  @apply -mt-ui-2 mr-0 mb-ui-5 ml-0;
+  @apply text-secondary;
+  @apply text-ui-xs;
+}
+
+.studio-library-advanced>summary {
+  @apply cursor-pointer;
+  @apply list-item;
+  @apply ml-ui-5;
+  @apply pt-ui-3 pr-0 pb-ui-3 pl-0;
+}
+
+.studio-library-advanced .studio-query-bar {
+  @apply mt-ui-4;
+}
+
+.studio-claims {
+  @apply pl-ui-7;
+  @apply grid;
+  @apply gap-ui-5;
+  @apply text-ui-sm;
+  @apply leading-ui-read;
+}
+
+.studio-claims small {
+  @apply block;
+  @apply text-secondary;
+  @apply text-ui-xs;
+}
+
+.studio-empty-state {
+  @apply pt-ui-9 pr-ui-8 pb-ui-9 pl-ui-8;
+  @apply text-center;
+}
+
+.studio-empty-state>h2 {
+  @apply text-ui-sm;
+  @apply mb-ui-6;
+}
+
+.studio-empty-state>p {
+  @apply text-ui-xs;
+  @apply text-secondary;
+  @apply mt-ui-5;
+}
+
+.studio-empty-state select {
+  @apply ml-ui-4;
+}
+
+@variant md {
+  :root[data-sidebar-state=collapsed] .studio-shell {
+    --shell-sidebar-width: var(--terminal-sidebar-rail-width);
+  }
+}
+
+/* Trading workspace hierarchy: explicit context, one execution action, contextual details. */
+
+.trading-terminal {
+  @apply text-ui-md;
+  min-height: min(var(--terminal-workspace-min-height), var(--terminal-workspace-height));
+}
+
+.trading-terminal .terminal-layout {
+  grid-template-columns: var(--terminal-watchlist-width) minmax(0,1fr) var(--terminal-mind-panel-width);
+}
+
+.trading-terminal .terminal-primary-action:disabled {
+  @apply opacity-50;
+  @apply cursor-not-allowed;
+}
+
+.terminal-actions-menu {
+  @apply relative;
+  @apply flex-none;
+}
+
+.terminal-actions-menu>summary {
+  @apply list-none;
+  @apply flex;
+  @apply items-center;
+  @apply justify-center;
+  @apply w-ui-9;
+  @apply h-ui-9;
+  @apply border border-solid border-default;
+  @apply rounded-ui-md;
+  @apply text-ui-2xl;
+  @apply leading-ui-xs;
+  @apply cursor-pointer;
+  @apply select-none;
+}
+
+.terminal-actions-menu>summary::-webkit-details-marker {
+  @apply hidden;
+}
+
+.terminal-actions-menu[open]>summary,.terminal-actions-menu>summary:hover {
+  background: var(--ds-bg-panel);
+}
+
+.terminal-actions-panel {
+  @apply absolute;
+  @apply right-0;
+  top: calc(100% + var(--ds-space-3));
+  @apply z-30;
+  @apply min-w-(--terminal-picker-min-width);
+  @apply p-ui-2;
+  @apply border border-solid border-default;
+  @apply rounded-ui-lg;
+  background: var(--ds-bg-overlay);
+  box-shadow: var(--ds-shadow-popover);
+}
+
+.terminal-actions-panel>button {
+  @apply block;
+  @apply w-full;
+  @apply pt-ui-4 pr-ui-4 pb-ui-4 pl-ui-4;
+  @apply text-left;
+  @apply text-ui-xs;
+  @apply rounded-ui-sm;
+  @apply whitespace-nowrap;
+}
+
+.terminal-actions-panel>button:hover {
+  background: var(--ds-bg-panel);
+}
+
+.trading-terminal .terminal-run-requirement {
+  @apply text-ui-xs;
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply gap-ui-6;
+}
+
+.trading-terminal .terminal-run-requirement button {
+  @apply text-ui-xs;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+  @apply rounded-ui-sm;
+}
+
+.trading-terminal .terminal-list-heading h2,.trading-terminal .terminal-section-heading h2 {
+  @apply text-ui-md;
+}
+
+.trading-terminal .terminal-list-heading>span,.trading-terminal .terminal-section-heading>span {
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+.trading-terminal .terminal-section-heading>span {
+  @apply max-w-(--terminal-picker-min-width);
+  @apply overflow-hidden;
+  @apply text-ellipsis;
+  @apply whitespace-nowrap;
+}
+
+.trading-terminal .terminal-instrument-tabs>button {
+  @apply text-ui-xs;
+  @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+}
+
+.trading-terminal .terminal-search input {
+  @apply text-ui-xs;
+  @apply min-h-ui-9;
+}
+
+.trading-terminal .terminal-instruments th {
+  @apply text-ui-xs;
+  @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+}
+
+.trading-terminal .terminal-instruments td {
+  @apply h-ui-12;
+  @apply pt-ui-4 pr-ui-4 pb-ui-4 pl-ui-4;
+}
+
+.trading-terminal .terminal-instrument-name strong {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-instrument-name small {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-instruments td:last-child>span {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-instruments td:last-child small {
+  @apply text-ui-xs!;
+  @apply leading-ui-xs;
+}
+
+.trading-terminal .terminal-instruments tr[aria-selected=true] {
+  background: var(--ds-accent-soft);
+  box-shadow: var(--terminal-selected-row-shadow);
+}
+
+.trading-terminal .terminal-chart-tools {
+  @apply pt-ui-4 pr-ui-4 pb-ui-4 pl-ui-4;
+  @apply gap-ui-4;
+  @apply min-h-ui-11;
+  @apply flex-wrap;
+  @apply items-center;
+}
+
+.trading-terminal .terminal-timeframes>button {
+  @apply text-ui-xs;
+  @apply pt-ui-2 pr-ui-4 pb-ui-2 pl-ui-4;
+}
+
+.trading-terminal .terminal-source-name {
+  @apply text-secondary;
+  @apply text-ui-xs;
+  @apply whitespace-nowrap;
+}
+
+.trading-terminal .terminal-chart-tools>.terminal-scope-select {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-3;
+  @apply flex-initial;
+  @apply min-w-0;
+  @apply max-w-(--ds-infobox-width);
+  @apply text-ui-xs;
+  @apply text-secondary;
+}
+
+.trading-terminal .terminal-scope-select select {
+  @apply w-auto;
+  @apply max-w-(--terminal-watchlist-width);
+  @apply h-ui-9;
+  @apply min-h-ui-9;
+  @apply text-ui-xs;
+}
+
+.terminal-chart-layout-actions {
+  @apply flex;
+  @apply items-center;
+  @apply gap-ui-1;
+  @apply ml-auto;
+}
+
+.terminal-chart-layout-actions>button {
+  @apply text-ui-xs;
+  @apply pt-ui-2 pr-ui-3 pb-ui-2 pl-ui-3;
+  @apply text-secondary;
+}
+
+.terminal-chart-layout-actions>button[aria-pressed=true] {
+  @apply text-(color:--ds-accent-text);
+  background: var(--ds-accent-soft);
+}
+
+.trading-terminal .terminal-ohlc {
+  @apply min-w-0 h-auto shrink-0 overflow-visible;
+  @apply text-ui-xs;
+  @apply min-h-ui-9;
+  @apply gap-x-ui-5;
+  @apply gap-y-(--terminal-ohlc-row-gap);
+  @apply pt-ui-3 pr-ui-5 pb-ui-1 pl-ui-5;
+  @apply flex-wrap;
+  @apply whitespace-normal;
+}
+
+.trading-terminal .terminal-ohlc time {
+  @apply text-ui-xs;
+  @apply inline;
+}
+
+.trading-terminal .terminal-chart-frame {
+  @apply min-h-(--terminal-chart-min-height);
+}
+
+.trading-terminal .terminal-chart-message {
+  @apply flex;
+  @apply flex-col;
+  @apply items-center;
+  @apply justify-center;
+  @apply gap-ui-4;
+  @apply p-ui-8;
+  @apply max-w-full;
+  @apply leading-ui-md;
+  @apply text-ui-xs;
+  @apply text-center;
+}
+
+.trading-terminal .terminal-chart-message[hidden] {
+  @apply hidden;
+}
+
+.trading-terminal .terminal-chart-message>strong {
+  @apply font-ui-semibold;
+  @apply text-ui-sm;
+  @apply text-foreground;
+}
+
+.trading-terminal .terminal-chart-message>span {
+  @apply max-w-(--terminal-copy-width);
+  @apply text-secondary;
+}
+
+.trading-terminal .terminal-chart-message>button {
+  @apply mt-ui-1;
+  @apply pt-ui-3 pr-ui-5 pb-ui-3 pl-ui-5;
+  @apply border border-solid border-default;
+  @apply rounded-ui-md;
+  @apply bg-surface;
+  @apply text-ui-xs;
+  @apply text-foreground;
+}
+
+.trading-terminal .terminal-chart-footer {
+  @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+  @apply min-h-ui-9;
+}
+
+.trading-terminal .terminal-chart-footer>.help-tooltip {
+  @apply ml-auto;
+}
+
+.trading-terminal .terminal-ranges>button,.trading-terminal .terminal-marker-legend {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-records {
+  @apply h-(--terminal-ledger-share);
+  @apply min-h-(--terminal-ledger-min-height);
+  @apply max-h-(--terminal-ledger-max-height);
+}
+
+.trading-terminal.is-chart-expanded .terminal-records {
+  @apply h-ui-10;
+  @apply min-h-ui-10;
+  @apply max-h-ui-10;
+}
+
+.trading-terminal.is-chart-expanded .terminal-records-body,.trading-terminal.is-chart-expanded .terminal-record-footer {
+  @apply hidden;
+}
+
+.trading-terminal .terminal-record-tabs {
+  @apply min-h-ui-10;
+}
+
+.trading-terminal .terminal-record-tabs>button {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-table {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-table th {
+  @apply text-ui-xs;
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+}
+
+.trading-terminal .terminal-table td {
+  @apply h-ui-10;
+  @apply pt-ui-3 pr-ui-5 pb-ui-3 pl-ui-5;
+}
+
+.trading-terminal .terminal-table td small,.trading-terminal .terminal-table td>button {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-record-time {
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+}
+
+.trading-terminal .terminal-empty {
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+  @apply min-h-(--terminal-empty-min-height);
+}
+
+.trading-terminal .terminal-mind-row {
+  @apply p-ui-5;
+}
+
+.terminal-mind-row h3 {
+  @apply text-ui-md;
+  @apply leading-ui-md;
+  @apply font-ui-semibold;
+  @apply m-0;
+  @apply wrap-anywhere;
+}
+
+.trading-terminal .terminal-mind-row p {
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+}
+
+.trading-terminal .terminal-mind-verdict>span {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-mind-receipt {
+  @apply text-ui-xs!;
+}
+
+.trading-terminal .terminal-mind-account {
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+  @apply gap-ui-3;
+}
+
+.trading-terminal .terminal-mind-account dd {
+  @apply font-ui-semibold;
+}
+
+.trading-terminal .terminal-equity-asof,.trading-terminal .terminal-mind-asof,.trading-terminal .terminal-decision-times,.trading-terminal .terminal-time-unrecorded {
+  @apply text-ui-xs!;
+  @apply leading-ui-md;
+}
+
+.trading-terminal .terminal-mind-actions {
+  @apply gap-y-ui-3 gap-x-ui-5;
+  @apply mt-ui-4;
+}
+
+.trading-terminal .terminal-mind-actions>button,
+.terminal-popover-decision>div>button,
+.terminal-popover-decision>button {
+  @apply text-ui-xs px-ui-4 py-ui-3 min-h-ui-9 border border-solid border-default rounded-ui-md bg-surface;
+}
+
+.terminal-decision-details {
+  @apply mt-ui-5;
+  @apply border-t border-solid border-t-subtle;
+  @apply pt-ui-4;
+}
+
+.terminal-decision-details>summary {
+  @apply cursor-pointer;
+  @apply text-secondary;
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+}
+
+.trading-terminal .terminal-decision-details .terminal-mind-inputs {
+  @apply text-ui-xs!;
+}
+
+.trading-terminal .terminal-account-line {
+  @apply pt-ui-4 pr-ui-5 pb-ui-4 pl-ui-5;
+  @apply gap-y-ui-4 gap-x-ui-6;
+}
+
+.trading-terminal .terminal-account-line dt {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-account-line dd {
+  @apply text-ui-md;
+}
+
+.trading-terminal .terminal-account-line dd small,.trading-terminal .terminal-account-line .terminal-account-asof dd {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-aggregate-pending {
+  @apply text-ui-xs;
+  @apply leading-ui-md;
+}
+
+.trading-terminal .terminal-status {
+  @apply text-ui-xs;
+  @apply min-h-ui-9;
+  @apply pt-ui-3 pr-ui-5 pb-ui-3 pl-ui-5;
+}
+
+.trading-terminal .terminal-attribution {
+  @apply text-ui-xs;
+}
+
+.trading-terminal .terminal-center {
+  @apply overflow-auto;
+}
+
+.trading-terminal .terminal-instruments td:last-child {
+  @apply relative pr-ui-9;
+}
+
+.trading-terminal .terminal-instruments .entity-menu-more {
+  @apply absolute;
+  @apply right-ui-1;
+  @apply top-1/2 -translate-y-1/2;
+  @apply w-ui-8;
+  @apply h-ui-8;
+  @apply m-0;
+  @apply bg-surface;
+  box-shadow: var(--terminal-row-menu-shadow);
+  @apply opacity-0;
+  @apply pointer-events-none;
+}
+
+.trading-terminal .terminal-instruments tr:hover .entity-menu-more,.trading-terminal .terminal-instruments tr:focus-within .entity-menu-more {
+  @apply opacity-100;
+  @apply pointer-events-auto;
+}
+
+.trading-terminal .terminal-mind-list>.terminal-empty {
+  @apply min-h-(--terminal-empty-panel-height);
+  @apply pt-ui-8 pr-ui-6 pb-ui-8 pl-ui-6;
+  @apply text-ui-xs;
+  @apply leading-ui-read;
+}
+
+.trading-terminal .terminal-records-body>.terminal-empty {
+  @apply min-h-0;
+  @apply h-full;
+  @apply pt-ui-5 pr-ui-6 pb-ui-5 pl-ui-6;
+}
+
+.trading-terminal .terminal-run-requirement time {
+  @apply shrink-0;
+  @apply tabular-nums;
+}
+
+@variant terminal-short-desktop {
+  .trading-terminal .terminal-chart-frame,.trading-terminal .terminal-chart {
+    @apply min-h-(--terminal-chart-compact-height);
+  }
+  .trading-terminal .terminal-records {
+    @apply min-h-(--terminal-ledger-compact-height);
+    @apply h-(--terminal-ledger-share);
+  }
+  .trading-terminal.is-chart-expanded .terminal-records {
+    @apply min-h-ui-10;
+    @apply h-ui-10;
+  }
+}
+
+@media(hover:none) {
+  .trading-terminal .terminal-instruments .entity-menu-more {
+    @apply opacity-100;
+    @apply pointer-events-auto;
+  }
+}
+
+.trading-terminal .terminal-popover-decision dl,.trading-terminal .terminal-popover-decision p,.trading-terminal .terminal-tooltip-choice,.trading-terminal .terminal-tooltip-time {
+  @apply text-ui-xs!;
+}
+
+@variant max-2xl {
+  .trading-terminal .terminal-layout {
+    grid-template-columns: var(--terminal-watchlist-width) minmax(0,1fr) var(--terminal-mind-panel-compact-width);
+  }
+  .trading-terminal .terminal-instruments td {
+    @apply p-ui-3;
+  }
+  .trading-terminal .terminal-instrument-name small {
+    @apply max-w-(--terminal-symbol-name-width);
+  }
+  .trading-terminal .terminal-ohlc time {
+    @apply basis-full;
+  }
+}
+
+@variant max-xl {
+  .trading-terminal .terminal-layout {
+    grid-template-columns: var(--terminal-watchlist-compact-width) minmax(0,1fr);
+  }
+  .trading-terminal .terminal-minds {
+    @apply col-span-full;
+    @apply border-l-0;
+    @apply border-t border-solid border-t-default;
+    @apply max-h-(--terminal-panel-preview-height);
+  }
+  .trading-terminal .terminal-mind-list {
+    @apply grid;
+    @apply grid-cols-3;
+  }
+  .trading-terminal .terminal-mind-row {
+    @apply border-r border-solid border-r-subtle;
+  }
+  .trading-terminal .terminal-chart-frame {
+    @apply min-h-(--terminal-panel-preview-height);
+  }
+  .trading-terminal {
+    @apply h-auto;
+    @apply min-h-0;
+  }
+  .trading-terminal .terminal-center {
+    @apply min-h-(--terminal-center-min-height);
+  }
+  .trading-terminal .terminal-records {
+    @apply h-(--terminal-ledger-mobile-height);
+  }
+}
+
+@variant max-md {
+  .trading-terminal .terminal-primary-action {
+    @apply min-w-(--terminal-primary-min-width);
+  }
+  .trading-terminal .terminal-layout {
+    @apply flex;
+    @apply flex-col;
+  }
+  .trading-terminal .terminal-watchlist {
+    @apply max-h-(--terminal-discovery-mobile-height);
+    @apply border-r-0;
+    @apply border-b border-solid border-b-default;
+  }
+  .trading-terminal .terminal-instruments-scroll {
+    @apply max-h-(--terminal-short-list-height);
+  }
+  .trading-terminal .terminal-list-heading { @apply flex; }
+  .trading-terminal .terminal-instruments td {
+    @apply h-ui-10;
+    @apply pt-ui-3 pr-ui-4 pb-ui-3 pl-ui-4;
+  }
+  .trading-terminal .terminal-instrument-name {
+    @apply flex;
+    @apply gap-ui-4;
+    @apply items-baseline;
+  }
+  .trading-terminal .terminal-instrument-name small {
+    @apply max-w-(--terminal-symbol-label-width);
+  }
+  .trading-terminal .terminal-instruments td:last-child>small {
+    @apply block;
+    @apply mt-ui-1 mr-0 mb-0 ml-0;
+  }
+  .trading-terminal .terminal-center {
+    @apply min-h-0;
+  }
+  .trading-terminal .terminal-chart-frame {
+    @apply h-(--terminal-chart-mobile-height);
+    @apply min-h-(--terminal-chart-mobile-height);
+    @apply flex-none;
+  }
+  .trading-terminal .terminal-chart {
+    @apply min-h-(--terminal-chart-mobile-height);
+  }
+  .trading-terminal .terminal-chart-tools>.terminal-scope-select {
+    @apply flex-initial!;
+    @apply max-w-full;
+    @apply text-ui-xs;
+  }
+  .trading-terminal .terminal-scope-select select {
+    @apply w-auto;
+    @apply max-w-(--terminal-picker-min-width);
+  }
+  .trading-terminal .terminal-chart-tools {
+    @apply gap-ui-3;
+  }
+  .trading-terminal .terminal-chart-layout-actions {
+    @apply ml-auto;
+  }
+  .trading-terminal .terminal-chart-layout-actions>[data-terminal-action=fit] {
+    @apply hidden;
+  }
+  .trading-terminal .terminal-ohlc {
+    @apply gap-x-ui-4;
+    @apply gap-y-(--terminal-ohlc-row-gap);
+  }
+  .trading-terminal .terminal-ohlc time {
+    @apply inline;
+  }
+  .trading-terminal .terminal-minds {
+    @apply max-h-none;
+  }
+  .trading-terminal .terminal-mind-list {
+    @apply block;
+  }
+  .trading-terminal .terminal-mind-row {
+    @apply border-r-0;
+  }
+  .trading-terminal .terminal-records {
+    @apply h-(--terminal-ledger-mobile-height);
+  }
+  .trading-terminal .terminal-account-line .terminal-account-asof {
+    @apply justify-start;
+  }
+  .trading-terminal .terminal-chart-footer {
+    @apply gap-ui-4;
+  }
+  .trading-terminal .terminal-marker-legend {
+    @apply gap-ui-3;
+  }
+  .trading-terminal .terminal-status {
+    @apply gap-ui-4;
+  }
+}
+
+/* Constrain each grid/flex child before truncating its label. Numeric tables keep scrolling. */
+.trading-terminal, .terminal-layout, .terminal-chart-tools > *, .terminal-watchlist, .terminal-center, .terminal-minds, .terminal-list-heading > *, .terminal-section-heading > *, .terminal-mind-row > *, .terminal-popover-heading > *, .terminal-popover-decision > div > *, .studio-sidebar-columns > *, .studio-context-nav > *, .studio-page-head > *, .studio-sheet-head > *, .studio-query-bar > *, .studio-local-tabs > * {
+  @apply min-w-0;
+}
+.terminal-instrument-name, .terminal-instrument-name strong, .terminal-instrument-name small, .terminal-section-heading > span, .studio-context-nav > h2, .studio-secondary-nav > a, .studio-primary-label, .studio-sheet-head h2, .studio-page-head h1 {
+  @apply min-w-0 truncate;
+}
+.trading-terminal .terminal-instruments td:first-child {
+  @apply table-cell;
+}
+.terminal-instrument-cell {
+  @apply flex min-w-0 items-center gap-ui-2;
+}
+.trading-terminal .terminal-instruments td:last-child > span {
+  @apply block min-w-0 truncate text-right tabular-nums;
+}
+.trading-terminal .terminal-instruments td:last-child > small {
+  @apply block min-w-0 max-w-full truncate;
+}
+.terminal-account-line dd, .terminal-mind-account dd {
+  @apply min-w-0 text-right tabular-nums whitespace-normal wrap-anywhere;
+}
+.terminal-account-line > div {
+  @apply min-w-0 max-w-full flex-wrap;
+}
+.terminal-account-line dt, .terminal-account-asof dd {
+  @apply min-w-0;
+}
+.terminal-account-line .terminal-account-asof {
+  @apply flex-wrap;
+}
+.terminal-mind-account {
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+}
+.trading-terminal .terminal-table {
+  @apply min-w-(--terminal-table-min-width);
+}
+.terminal-name-cell {
+  @apply truncate;
+  @apply max-w-(--terminal-picker-max-width);
+}
+.trading-terminal .terminal-records-body {
+  @apply min-h-0 min-w-0;
+}
+.trading-terminal .terminal-records-body:has(> .terminal-empty:only-child) {
+  @apply overflow-hidden;
+}
+.terminal-chart-tools, .terminal-chart-footer, .terminal-run-requirement,
+.studio-sheet-head, .studio-local-tabs, .studio-query-bar, .studio-pagination {
+  @apply flex-wrap;
+}
+.studio-query-bar input, .studio-query-bar select, .studio-mind-scope > select {
+  @apply min-w-0 max-w-full;
+}
+.studio-table-scroll, .studio-table td, .studio-row-link {
+  @apply min-w-0;
+}
+.studio-row-link {
+  @apply wrap-anywhere;
+}
+@variant max-md {
+  .terminal-chart-tools > .terminal-scope-select {
+    @apply min-w-0 max-w-full;
+  }
+  .terminal-instrument-cell {
+    @apply gap-ui-4;
+  }
+}
+
+/* Match the asset, quote and selected mind to one caption/value baseline. */
+
+.terminal-instrument-picker { @apply hidden; }
+@variant max-md {
+  .trading-terminal .terminal-instrument-picker { @apply block border-b border-solid border-default; }
+  .terminal-instrument-picker > button {
+    @apply flex items-center justify-between w-full m-0 px-ui-5 py-ui-3 text-ui-sm font-ui-medium text-left;
+    @apply min-h-control-touch;
+  }
+  .terminal-instrument-picker > button::after { content:'⌄'; }
+  .terminal-instrument-picker > button[aria-expanded=true]::after { @apply rotate-180; }
+  .trading-terminal:not(.is-instrument-picker-open) .terminal-watchlist { @apply hidden; }
+}
+
+@import './studio-shell.css';
+@import './action-menu.css';
+@import './vibe-workspace.css';
+
+/* Keep the active reading task in the same market and mind context. */
+.trading-terminal .terminal-record-tabs > .terminal-record-layout { @apply ml-auto shrink-0; }
+.trading-terminal.is-records-expanded .terminal-chart-tools,
+.trading-terminal.is-records-expanded .terminal-ohlc,
+.trading-terminal.is-records-expanded .terminal-chart-frame,
+.trading-terminal.is-records-expanded .terminal-chart-footer { @apply hidden; }
+.trading-terminal.is-records-expanded .terminal-records { @apply h-full min-h-0 max-h-none flex-1; }
+
+.trading-terminal .terminal-records-body > .mind-activity-feed > .terminal-empty {
+  @apply min-h-0 px-0 py-ui-4 justify-start text-left;
+}
+
+.trading-terminal .terminal-mind-verdict { @apply flex-wrap gap-ui-3; }
+.terminal-verdict-badge { @apply text-ui-xs font-ui-medium shrink-0; }
+.terminal-verdict-badge.terminal-buy { background: var(--ds-success-bg); @apply text-positive; }
+.terminal-verdict-badge.terminal-sell,
+.terminal-verdict-badge.terminal-failed { background: var(--ds-danger-bg); @apply text-negative; }
+.trading-terminal .terminal-target-weight { @apply m-0 mt-ui-4 text-ui-xs; }
+.trading-terminal .terminal-target-weight > div { @apply flex items-center justify-between gap-ui-3; }
+.trading-terminal .terminal-target-weight dt { @apply text-secondary; }
+.trading-terminal .terminal-target-weight dd { @apply m-0 font-ui-medium tabular-nums; }
+.trading-terminal .terminal-weight-meter { @apply block w-full h-ui-2 mt-ui-2 text-ui-xs; }
+.trading-terminal .terminal-weight-meter::-webkit-meter-bar { @apply rounded-ui-full bg-field border-0; }
+.trading-terminal .terminal-weight-meter::-webkit-meter-optimum-value { @apply rounded-ui-full bg-accent; }
+
+.terminal-universe-recovery { @apply flex flex-col gap-ui-4 text-left; }
+.terminal-universe-recovery > strong { @apply text-ui-xs font-ui-medium text-foreground; }
+.terminal-universe-recovery > span { @apply text-ui-xs leading-ui-md text-secondary; }
+.terminal-universe-recovery > div { @apply flex flex-col items-stretch gap-ui-3; }
+.trading-terminal .terminal-universe-recovery button { @apply text-ui-xs px-ui-4 py-ui-3 border border-solid border-default rounded-ui-md bg-surface min-h-ui-9 whitespace-normal; }
+.trading-terminal .terminal-universe-recovery [data-terminal-action="universe-collect-catalog"] { @apply bg-accent text-(color:--ds-text-on-accent); }
+
+.trading-terminal .terminal-records-body > .terminal-record-feedback {
+  @apply h-auto flex-col gap-ui-3 p-ui-3;
+}
+
+.trading-terminal .terminal-record-feedback > button {
+  @apply min-h-control-touch px-ui-5 border border-solid border-default rounded-ui-md text-foreground;
+}
+
+.studio-live-record-query { @apply min-w-0 mb-ui-5; }
+.terminal-filter-summary { @apply min-w-0 px-ui-3; }
+.terminal-filter-summary:empty { @apply hidden; }
+.terminal-filter-summary .workflow-filter-summary { @apply my-ui-2 gap-ui-2; }
+.terminal-filter-summary .workflow-filter-summary > span { @apply pl-ui-2; }
+.terminal-filter-summary [data-terminal-action] { @apply min-h-control-touch; }
+.studio-live-record-query .studio-query-bar { @apply flex-wrap justify-start gap-ui-3 mb-ui-2; }
+.studio-live-record-query .studio-record-search { @apply flex flex-1 items-center min-w-0 gap-ui-3 max-w-(--ui-panel-medium); }
+.studio-live-record-query .studio-record-search > span { @apply shrink-0; }
+.studio-live-record-query .studio-record-search input { @apply w-full min-w-0 m-0 min-h-control-touch; @apply max-w-(--ui-panel-medium); }
+.studio-live-record-query .workflow-filter-summary { @apply min-w-0 max-w-full m-0; }
+.studio-live-record-query > p { @apply m-0 leading-ui-read; }
+@media (width < theme(--breakpoint-md)) {
+ .studio-live-record-query .studio-record-search { @apply basis-full; }
+}
+
+@variant max-md {
+  .terminal-market-filter select,.terminal-universe-filters select,.terminal-universe-recovery button,.terminal-universe-pager button { @apply min-h-control-touch; }
+}
+
+.terminal-universe-pager[hidden],.terminal-universe-footer[hidden],.terminal-instruments[hidden] { @apply hidden; }
+
+.trading-terminal [data-terminal-action="universe-page"][hidden] { @apply hidden; }
+
+.studio-library-pagination {
+  @apply flex-wrap gap-ui-3;
+}
+.studio-library-pagination label {
+  @apply m-0 ml-auto;
+}
+.studio-library-pagination button,
+.studio-library-pagination select {
+  @apply min-h-ui-11;
+  @apply min-w-ui-11;
+}
+[data-library-reader-nav] .button.small {
+  @apply min-h-ui-11 min-w-ui-11;
+}
+.button.library-editor-action {
+  @apply min-h-control-touch min-w-control-touch;
+}
+.library-editor-dismiss {
+  @apply mr-auto;
+}
+[data-library-form="create"] label:has(> input[name="title"]),
+[data-library-form="create"] label:has(> input[name="uri"]) {
+  @apply col-span-full;
+}
+[data-library-publication-hint] {
+  @apply m-0;
+}
+
+[data-library-publication] > .form-grid { @apply items-start; }
+.library-timezone-control { @apply flex items-start gap-ui-2; }
+.library-timezone-control > input { @apply min-w-0 flex-1; }
+.library-timezone-control .ui-action-menu-trigger { @apply min-h-control-touch min-w-control-touch; }

@@ -1,0 +1,42 @@
+{
+  "registeredAt": "2026-10-23T00:02:44.388Z",
+  "markets": [
+    "KRW-AXIS",
+    "KRW-XRP",
+    "KRW-BTC",
+    "KRW-IRYS",
+    "KRW-ETH",
+    "KRW-DOOD",
+    "KRW-GTC",
+    "KRW-HP"
+  ],
+  "costs": {
+    "feePerSideBps": 5,
+    "feeAuthority": "PAPER_ASSUMPTION_PRIOR_ACCOUNT_RATE_REFERENCE_NOT_PER_MARKET_REFRESH",
+    "observedSpread": true,
+    "depthParticipation": 0.1,
+    "maxSlippageBps": 20,
+    "orderType": "LIMIT_FOK",
+    "modelInputUsdPerMillion": 0.042,
+    "modelOutputUsdPerMillion": 0,
+    "fxKrwPerUsd": 1324.63,
+    "initialFunding": "EXCLUDED"
+  },
+  "initialCash": "130512.11537583265",
+  "cadence": {
+    "universe": "FROZEN",
+    "regimeAndRank": "1h closed bars refreshed at each hour",
+    "quant": "1h reference evaluated once per new shared hourly frame",
+    "ai": "1m including independent entry on nominated liquid leader when quant waits"
+  },
+  "provider": {
+    "model": "jev-1.14.0",
+    "maxCalls": 362,
+    "maxInputTokens": 6000000,
+    "maxOutputTokens": 1000000,
+    "invalidResponse": "Retain raw billed response; no resample on same frame. Continue at next new frame.",
+    "context": "Hourly bars and 1m native microstructure with explicit paper-cost provenance."
+  },
+  "scopeChange": "Previous retrospective top50 dynamically selected from298 markets; this bounded forward experiment freezes8 at inception. Results apply to this new universe and cadence.",
+  "protocolHash": "b01b166a57c81368b154950e2b3e3f4f16d6abf3bf1b5f1f7c3d5c8e536fb7e4"
+}

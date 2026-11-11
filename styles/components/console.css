@@ -1,0 +1,327 @@
+@reference '../theme.css';
+
+.investment-console { @apply min-w-0;  }
+.investment-console h3 { @apply text-ui-lg leading-ui-lg;  }
+.investment-console h4 { @apply text-ui-sm leading-ui-md;  }
+.investment-console p { overflow-wrap:anywhere; }
+.investment-console button:focus-visible,.investment-console select:focus-visible,.investment-console input:focus-visible { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.console-filters { @apply flex flex-wrap gap-ui-5 mb-ui-6;  }
+.console-filters .field { @apply flex-1; min-width:min(100%,var(--console-filter-width)); }
+.console-bot-grid { @apply grid grid-cols-3 gap-ui-6 items-start;  }
+.console-bot-card { @apply min-w-0;  }
+.console-bot-card .panel-head { @apply items-start;  }
+.console-bot-card .panel-head h3 { @apply mt-ui-2; overflow-wrap:anywhere; }
+.console-profile-principle { @apply text-ui-xs leading-ui-read text-secondary; @apply min-h-(--console-principle-min-height); }
+.console-equity { @apply flex items-baseline flex-wrap gap-ui-3 my-ui-6 mx-0;  }
+.console-equity>strong { @apply text-ui-2xl tabular-nums leading-ui-2xl;  }
+.console-equity>span { @apply text-ui-xs;  }
+.console-equity>span:last-child { @apply ml-auto;  }
+.console-balances { @apply grid gap-ui-3 text-ui-xs m-0;  }
+.console-balances>div { @apply flex justify-between gap-ui-4;  }
+.console-balances dt { @apply text-secondary;  }
+.console-balances dd { @apply m-0 tabular-nums text-right;  }
+.console-last-decision { @apply grid gap-ui-3 w-full text-left p-ui-5 mt-ui-6 border border-default rounded-ui-lg text-foreground; background:var(--ds-bg-panel); }
+.console-last-decision:hover { @apply bg-hover;  }
+.console-last-decision>span:first-child { @apply text-ui-xs text-secondary;  }
+.console-last-decision>strong { @apply flex items-center gap-ui-3 text-ui-lg;  }
+.console-link-text { @apply text-ui-xs text-accent;  }
+.console-versions { @apply flex flex-wrap gap-y-ui-2 gap-x-ui-4 mt-ui-5 text-ui-xs text-secondary;  }
+.console-waiting { @apply p-ui-5 rounded-ui-lg text-ui-xs mt-ui-6; background:var(--ds-bg-panel); }
+.console-summary { @apply grid grid-cols-4 gap-ui-5;  }
+.console-summary>div { @apply grid content-start gap-ui-3;  }
+.console-summary>div>span { @apply text-ui-xs text-secondary;  }
+.console-summary strong { @apply text-ui-sm leading-ui-md;  }
+.console-chart { @apply w-full overflow-hidden;  }
+.console-chart svg { @apply block w-full h-auto; @apply min-h-(--console-chart-min-height); }
+.console-chart text { @apply font-ui-sans text-ui-xs; fill:var(--ds-chart-tick); }
+.console-chart-grid line { stroke:var(--ds-chart-grid); stroke-width:var(--ui-border-width); }
+.console-price-line { fill:none; stroke:var(--ds-series-1); stroke-width:var(--ui-border-emphasis); stroke-linecap:round; stroke-linejoin:round; }
+.console-fill-buy circle { fill:var(--ds-success); stroke:var(--ds-bg-raised); stroke-width:var(--ui-border-emphasis); }
+.console-fill-sell circle { fill:var(--ds-danger); stroke:var(--ds-bg-raised); stroke-width:var(--ui-border-emphasis); }
+.console-chart-caption { @apply flex items-center gap-ui-4 mt-ui-4;  }
+.console-price-single { @apply p-ui-6 text-center;  }
+.console-price-single>strong { @apply text-ui-2xl tabular-nums;  }
+.console-price-single small { @apply text-ui-xs;  }
+.console-table small { @apply mt-ui-2;  }
+.console-onboarding { @apply grid grid-cols-3 gap-ui-8 pl-ui-7 text-ui-sm leading-ui-read;  }
+.console-onboarding p { @apply text-secondary text-ui-xs mt-ui-3;  }
+.console-profile-picker { @apply border border-default rounded-ui-lg p-ui-5 grid gap-ui-4 min-w-0;  }
+.console-profile-picker legend { @apply py-0 px-ui-2 text-ui-xs;  }
+.console-profile-picker>label { @apply flex items-start gap-ui-4 cursor-pointer;  }
+.console-profile-picker input[type=checkbox] { @apply w-ui-6 h-ui-6 min-h-ui-6 mt-ui-1 shrink-0; accent-color:var(--ds-accent); }
+.console-profile-picker label>span { @apply grid gap-ui-2;  }
+.console-profile-picker small { @apply text-secondary leading-ui-read;  }
+.console-detail .panel { @apply shadow-none border border-default rounded-ui-lg mt-ui-6;  }
+.console-detail .panel-head { @apply p-ui-5;  }
+.console-detail .panel-body { @apply pt-0 px-ui-5 pb-ui-5;  }
+.console-detail-heading { @apply flex justify-between gap-ui-5 items-start;  }
+.console-detail-heading h3 { @apply my-ui-3 mx-0;  }
+.console-choice-grid { @apply grid grid-cols-2 gap-ui-5;  }
+.console-choice { @apply rounded-ui-lg p-ui-5 min-w-0; background:var(--ds-bg-panel); }
+.console-choice h4 { @apply mb-ui-3 text-secondary;  }
+.console-choice>strong { @apply text-ui-sm leading-ui-read;  }
+.console-choice>p { @apply mt-ui-3;  }
+.console-distribution { @apply grid grid-cols-3 gap-ui-3 mt-ui-5;  }
+.console-distribution>div { @apply grid gap-ui-2 min-w-0;  }
+.console-distribution>div>span:first-child { @apply text-ui-xs leading-ui-xs; overflow-wrap:anywhere; }
+.console-distribution strong { @apply text-ui-sm tabular-nums;  }
+.console-meter { @apply block h-ui-2 rounded-ui-md overflow-hidden; background:var(--ds-border-default); }
+.console-meter i { @apply block h-full; background:var(--ds-series-1); }
+.console-evidence { @apply py-ui-5 px-0 border-b border-subtle;  }
+.console-evidence:last-child { @apply border-b-0;  }
+.console-evidence-head { @apply flex items-center gap-ui-3 flex-wrap mb-ui-3;  }
+.console-evidence p { @apply whitespace-pre-wrap text-ui-xs leading-ui-read;  }
+.console-reasons { @apply pl-ui-6 text-ui-xs leading-ui-read;  }
+.console-reasons li+li { @apply mt-ui-3;  }
+.console-guard { @apply flex flex-wrap justify-between gap-ui-3 py-ui-4 px-0 border-b border-subtle text-ui-xs;  }
+.console-guard p { @apply w-full;  }
+.console-fill-detail+.console-fill-detail { @apply border-t border-default mt-ui-6 pt-ui-5;  }
+.console-experience-link { @apply py-ui-4 px-0 grid justify-items-start gap-ui-3;  }
+.console-raw { @apply max-w-full;  }
+.console-replay-status { @apply sticky bottom-ui-5 flex items-center justify-between gap-ui-5 p-ui-5 rounded-ui-lg text-ui-xs; background:var(--ds-bg-overlay); box-shadow:var(--ds-shadow-popover); z-index:var(--console-replay-layer); }
+
+@media (width < theme(--breakpoint-xl)){
+.console-bot-grid { @apply grid-cols-2;  }
+.console-summary { @apply grid-cols-2;  }
+}
+
+@media (width < theme(--breakpoint-md)){
+.console-bot-grid,.console-onboarding { @apply grid-cols-1;  }
+.console-profile-principle { @apply min-h-0;  }
+.console-summary { @apply gap-ui-5;  }
+.console-detail .table { @apply min-w-(--console-detail-table-width); }
+.console-choice-grid { @apply grid-cols-1;  }
+.console-detail-heading { @apply flex-wrap;  }
+.console-chart svg { @apply min-h-(--console-chart-mobile-min-height); }
+.console-replay-status { @apply flex-wrap;  }
+.console-filters { @apply items-stretch;  }
+}
+
+@media(prefers-reduced-motion:reduce){.investment-console * { scroll-behavior:auto; }
+}/* A shared work area: scope, account, chart, then exactly one record view. */
+.console-workspace { @apply flex flex-col min-w-0 max-w-full bg-surface border border-default text-ui-md leading-ui-md; height:calc(var(--ui-dynamic-screen-height) - var(--console-workspace-offset)); @apply min-h-(--console-workspace-min-height); }
+.console-workspace>* { @apply min-w-0;  }
+.console-workspace button,.console-workspace input,.console-workspace select { @apply font-ui-sans;  }
+.console-toolbar { @apply flex items-center gap-ui-4 py-ui-4 px-ui-5 border-b border-default shrink-0; @apply min-h-control-touch; }
+.console-toolbar h1 { @apply m-0 text-ui-xl leading-ui-lg whitespace-nowrap;  }
+.console-scope-select { @apply min-w-0;  }
+.console-scope-select select { @apply w-full py-0 px-ui-4 text-ui-md; @apply max-w-(--console-scope-width); @apply h-control-sm; @apply min-h-control-sm; }
+.console-source-label { @apply text-ui-xs text-secondary whitespace-nowrap;  }
+.console-toolbar-actions { @apply flex gap-ui-3 ml-auto shrink-0;  }
+.console-workspace .button.small { @apply py-0 px-ui-4 text-ui-xs rounded-ui-md; @apply h-control-sm; @apply min-h-control-sm; }
+.console-status-line { @apply flex items-center gap-ui-4 py-ui-3 px-ui-5 border-b border-subtle shrink-0; @apply min-h-control-lg; }
+.console-status-line>span:first-child { @apply flex items-center gap-ui-3 text-ui-xs;  }
+.console-status-line>span:nth-child(2) { @apply whitespace-nowrap overflow-hidden text-ellipsis;  }
+.console-run-controls { @apply flex gap-ui-3 ml-auto shrink-0;  }
+.console-mind-tabs,.console-view-tabs { @apply flex items-center gap-0 overflow-x-auto shrink-0 border-b border-default; @apply min-h-control-lg; scrollbar-width:thin; }
+.console-mind-tabs { background:var(--ds-bg-panel); }
+.console-mind-tabs>button,.console-view-tabs>button { @apply shrink-0 border-0 rounded-none bg-transparent py-0 px-ui-6 text-ui-md font-ui-medium text-secondary cursor-pointer whitespace-nowrap; @apply min-h-control-lg; border-bottom:var(--ui-border-emphasis) solid transparent; }
+.console-mind-tabs>button:hover,.console-view-tabs>button:hover { @apply bg-hover text-foreground;  }
+.console-mind-tabs>button[aria-current],.console-view-tabs>button[aria-current] { @apply text-accent bg-surface font-ui-semibold; border-bottom-color:var(--ds-accent); }
+.console-mind-tabs>span { @apply ml-auto py-0 px-ui-5 text-ui-xs text-secondary whitespace-nowrap;  }
+.console-view-tabs>button { @apply py-0 px-ui-5 text-ui-xs; @apply min-h-control-md; }
+.console-account-band { @apply grid grid-cols-6 m-0 py-ui-4 px-ui-5 gap-ui-5 border-b border-default shrink-0 items-center; @apply min-h-(--console-account-min-height); }
+.console-account-band>div { @apply min-w-0 grid gap-ui-1;  }
+.console-account-band dt { @apply text-ui-xs text-secondary whitespace-nowrap;  }
+.console-account-band dt small { font-size:inherit; }
+.console-account-band dd { @apply m-0 tabular-nums text-ui-lg leading-ui-lg font-ui-semibold text-right; letter-spacing:var(--ds-tracking-tight); overflow-wrap:anywhere; }
+.console-account-aggregate { @apply grid-cols-4;  }
+.console-account-band>div>small,.console-account-band dd small { @apply text-ui-xs font-ui-regular text-secondary tabular-nums text-right;  }
+.console-account-band dd small { color:inherit; }
+.console-round-notice { @apply flex items-center justify-between gap-ui-4 py-ui-3 px-ui-5 text-ui-xs border-b border-default shrink-0; background:var(--ds-bg-panel); }
+.console-round-notice strong { @apply font-ui-medium;  }
+.console-aggregate-workbench { @apply shrink-0 py-ui-4 px-ui-5 border-b border-default; @apply h-(--console-aggregate-height); }
+.console-chart-heading { @apply flex items-center justify-between gap-ui-4; @apply min-h-control-xs; }
+.console-chart-heading h2 { @apply text-ui-md leading-ui-md font-ui-semibold m-0;  }
+.console-chart-heading h2 small,.console-chart-heading>span { @apply text-ui-xs font-ui-regular text-secondary;  }
+.console-performance-chart { @apply h-(--console-equity-height); }
+.console-performance-chart svg { @apply h-full min-h-0;  }
+.console-equity-line { stroke:var(--ds-series-1); fill:none; stroke-width:var(--ui-border-emphasis); stroke-linecap:round; stroke-linejoin:round; }
+.console-individual-workbench { @apply grid shrink-0 border-b border-default; grid-template-columns:minmax(0,1fr) var(--console-order-width); @apply h-(--console-individual-height); }
+.console-price-workspace { @apply min-w-0 py-ui-4 px-ui-5;  }
+.console-price-workspace .console-chart { @apply h-(--console-chart-height); }
+.console-price-workspace .console-chart svg { @apply h-full min-h-0;  }
+.console-price-workspace .console-chart-caption { @apply mt-ui-1 text-ui-xs;  }
+.console-order-pane { @apply min-w-0 overflow-y-auto py-ui-4 px-ui-5 border-l border-default;  }
+.console-pane-heading { @apply flex items-center justify-between gap-ui-4;  }
+.console-pane-heading h2 { @apply text-ui-md font-ui-semibold m-0;  }
+.console-selected-action { @apply flex items-center flex-wrap gap-ui-3 my-ui-3 mx-0;  }
+.console-selected-action>strong { @apply text-ui-lg font-ui-semibold;  }
+.console-selected-action>span { @apply text-ui-xs;  }
+.console-inline-distribution { @apply grid grid-cols-3 gap-ui-3 py-ui-4 px-0;  }
+.console-inline-distribution>span { @apply grid gap-ui-1 text-ui-xs text-secondary;  }
+.console-inline-distribution strong { @apply tabular-nums text-foreground font-ui-medium;  }
+.console-order-pane details,.console-memory-state { @apply text-ui-xs mt-ui-3;  }
+.console-pane-controls { @apply flex flex-wrap gap-ui-3 mt-ui-4;  }
+.console-execution-count { @apply text-ui-xs tabular-nums my-ui-3 mx-0;  }
+.console-position { @apply ml-auto tabular-nums;  }
+.console-distribution-line { @apply mt-ui-3 whitespace-nowrap tabular-nums;  }
+.console-observation-state { @apply text-ui-xs mt-ui-3;  }
+.console-tab-workspace { @apply flex flex-1 flex-col min-w-0; @apply min-h-(--console-records-min-height); }
+.console-tab-content { @apply flex-1 min-h-0 min-w-0 overflow-auto;  }
+.console-tab-content>.table-scroll { @apply overflow-visible;  }
+.console-workspace .console-table { @apply w-full text-ui-md min-w-0;  }
+.console-workspace .console-table th { @apply sticky top-0 text-ui-xs py-ui-2 px-ui-4 whitespace-nowrap font-ui-medium; background:var(--ds-bg-panel); @apply h-(--ds-row-height); z-index:var(--console-sticky-layer); }
+.console-workspace .console-table td { @apply py-ui-2 px-ui-4 align-middle border-b border-subtle whitespace-nowrap; @apply h-(--ds-row-height-comfortable); }
+.console-workspace .console-table small { @apply block text-ui-xs text-secondary mt-0 overflow-hidden text-ellipsis whitespace-nowrap; @apply max-w-(--console-name-width); }
+.console-numeric,.console-number { @apply text-right tabular-nums;  }
+.console-number { @apply block;  }
+.console-text-button { @apply p-0 border-0 rounded-none bg-transparent cursor-pointer text-left; font-size:inherit; line-height:inherit; @apply text-(color:--ds-text-link); }
+.console-text-button:hover { @apply underline;  }
+.console-query-empty { @apply flex items-center justify-center p-ui-6 text-ui-md text-secondary text-center; @apply min-h-(--console-empty-min-height); }
+.console-comparison-details { @apply border-t border-default text-ui-xs;  }
+.console-comparison-details>summary { @apply py-ui-4 px-ui-5;  }
+.console-comparison-details>.panel { @apply m-0 border-0 rounded-none shadow-none;  }
+.console-comparison-details .console-table { @apply min-w-(--console-comparison-table-width); }
+.console-comparison-details .panel-head { @apply py-ui-4 px-ui-5;  }
+.console-comparison-details .panel-body { @apply pt-0 px-ui-5 pb-ui-5;  }
+.console-list-workspace { @apply flex flex-col h-full min-w-0; @apply min-h-(--console-records-min-height); }
+.console-list-scroll { @apply overflow-auto flex-1 min-h-0 min-w-0;  }
+.console-query-tools { @apply flex items-center gap-ui-3 shrink-0 py-ui-3 px-ui-5 border-b border-subtle;  }
+.console-query-tools input,.console-query-tools select { @apply py-0 px-ui-4 text-ui-xs rounded-ui-md; @apply h-control-sm; @apply min-h-control-sm; }
+.console-search { @apply min-w-0 flex-1; @apply max-w-(--console-search-width); }
+.console-search input { @apply w-full;  }
+.console-query-tools>span { @apply ml-auto whitespace-nowrap;  }
+.console-page-footer { @apply flex items-center justify-between gap-ui-4 py-ui-3 px-ui-5 border-t border-default shrink-0; @apply min-h-control-lg; }
+.console-page-footer>div { @apply flex gap-ui-3;  }
+.console-settings-grid { @apply grid gap-ui-6 p-ui-5; grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--console-settings-min-width)),1fr)); }
+.console-settings-grid h2 { @apply mt-0 mx-0 mb-ui-4 text-ui-md;  }
+.console-settings-grid .detail-row { @apply py-ui-3 px-0 text-ui-xs;  }
+.console-settings-grid .actions { @apply gap-ui-3 mt-ui-4;  }
+.console-independent-note { @apply p-ui-5;  }
+.console-inline-error { @apply py-ui-3 px-ui-5 text-ui-xs text-negative border-b border-default; background:var(--ds-danger-bg); }
+.console-valuation-meta { @apply flex items-center gap-ui-5 py-ui-2 px-ui-5 text-ui-xs text-secondary border-b border-subtle shrink-0 relative;  }
+.console-valuation-meta>details { @apply ml-auto;  }
+.console-valuation-meta>details[open] { @apply absolute right-ui-5 top-0 overflow-auto p-ui-4 border border-default; max-width:min(var(--console-valuation-viewport-width),var(--console-valuation-width)); @apply max-h-(--console-valuation-max-height); background:var(--ds-bg-overlay); box-shadow:var(--ds-shadow-popover); z-index:var(--console-valuation-layer); }
+.console-valuation-meta details p { @apply mt-ui-3;  }
+
+@media (width < theme(--breakpoint-xl)){
+.console-source-label { @apply hidden;  }
+.console-status-line>span:nth-child(2) { @apply max-w-(--console-name-width); }
+.console-toolbar-actions { @apply gap-ui-2;  }
+.console-scope-select select { @apply max-w-(--console-scope-compact-width); }
+.console-account-band { @apply gap-ui-4;  }
+.console-account-band dd { @apply text-ui-sm;  }
+}
+
+@media (width < theme(--breakpoint-md)){
+.console-workspace { @apply h-auto min-h-0;  }
+.console-toolbar { @apply grid; grid-template-columns:auto minmax(0,1fr); }
+.console-toolbar-actions { @apply col-span-full ml-0 flex-wrap;  }
+.console-scope-select select { @apply max-w-none min-w-0;  }
+.console-source-label { @apply block col-span-full;  }
+.console-status-line { @apply flex-wrap gap-ui-3;  }
+.console-status-line>span:nth-child(2) { @apply max-w-none whitespace-normal;  }
+.console-run-controls { @apply w-full ml-0 flex-wrap;  }
+.console-mind-tabs>span { @apply hidden;  }
+.console-account-band { @apply grid-cols-3 gap-ui-4;  }
+.console-account-band dd { @apply text-ui-sm;  }
+.console-valuation-meta { @apply flex-wrap gap-y-ui-2 gap-x-ui-4;  }
+.console-aggregate-workbench { @apply h-(--console-aggregate-mobile-height); }
+.console-individual-workbench { @apply h-auto grid-cols-1;  }
+.console-price-workspace { @apply h-(--console-price-mobile-height); }
+.console-order-pane { @apply border-l-0 border-t border-subtle; @apply max-h-(--console-order-mobile-max-height); }
+.console-tab-workspace { @apply min-h-(--console-records-mobile-min-height); }
+.console-tab-content { @apply max-h-(--console-content-mobile-max-height); @apply min-h-(--console-content-mobile-min-height); }
+.console-tab-content>.table-scroll { @apply overflow-auto;  }
+.console-workspace .console-table { @apply min-w-(--console-record-table-width); }
+.console-list-scroll { @apply max-h-(--console-list-mobile-max-height); }
+.console-query-tools { @apply flex-wrap;  }
+.console-search { @apply max-w-none; flex-basis:calc(100% - var(--console-search-mobile-reserve)); }
+.console-query-tools>span { @apply text-ui-xs;  }
+.console-comparison-details .console-table { @apply min-w-(--console-comparison-table-width); }
+}
+
+@media (width < theme(--breakpoint-md)){
+.console-account-aggregate { @apply grid-cols-2;  }
+.console-round-notice { @apply flex-wrap gap-ui-2;  }
+}
+
+@media (width < theme(--breakpoint-md)){
+.console-performance-chart { @apply h-(--console-equity-mobile-height); }
+}/* Investment scope uses the same policy editor and review path. */
+.universe-fieldset { @apply border border-default rounded-ui-lg p-ui-6 mt-0 mx-0 mb-ui-4 min-w-0;  }
+.universe-fieldset>fieldset { @apply border-0 m-0 p-0 min-w-0; }
+.universe-fieldset>summary { @apply font-ui-semibold cursor-pointer; }
+.universe-fieldset[open]>fieldset { @apply mt-ui-5; }
+.universe-fieldset legend { @apply font-ui-semibold py-0 px-ui-3;  }
+.universe-fieldset .field { @apply my-ui-5 mx-0;  }
+.universe-checks { @apply flex gap-y-ui-5 gap-x-ui-6 flex-wrap my-ui-4 mx-0;  }
+.universe-check { @apply inline-flex items-center gap-ui-4 text-ui-md;  }
+.universe-check input { @apply w-ui-6 h-ui-6;  }
+.universe-grid { @apply grid grid-cols-2 gap-ui-5;  }
+.universe-source { @apply flex items-center justify-between gap-ui-5 text-ui-xs text-secondary mt-ui-5;  }
+.universe-fieldset select[multiple] { @apply w-full; @apply min-h-(--console-universe-list-min-height); }
+.universe-fieldset select option { @apply py-ui-3 px-ui-4;  }
+.universe-catalog-picker { @apply min-w-0 mt-ui-6; }
+.catalog-search-row { @apply flex items-center gap-ui-4 min-w-0; }
+.catalog-search-row > .field { @apply flex-1 min-w-0; }
+.catalog-search-row > .button,.catalog-result > .button { @apply shrink-0; }
+.catalog-filters { @apply grid grid-cols-3 gap-ui-4 min-w-0; }
+.catalog-filters > .field,.catalog-filters select { @apply min-w-0 w-full; }
+.catalog-selection { @apply flex flex-wrap items-center gap-ui-3 my-ui-4 overflow-auto; @apply max-h-(--console-catalog-selected-max-height); }
+.catalog-selection-count { @apply text-ui-xs text-secondary shrink-0; }
+.catalog-selection-chip { @apply inline-flex items-center gap-ui-3 min-w-0 border border-default rounded-ui-md py-ui-2 px-ui-3; @apply max-w-(--console-catalog-chip-max-width); }
+.catalog-selection-chip > span { @apply min-w-0 truncate text-ui-sm; }
+.catalog-remove { @apply shrink-0 border-0 bg-transparent text-secondary cursor-pointer p-ui-1; }
+.catalog-result-summary { @apply text-ui-xs text-secondary mb-ui-3; }
+.catalog-results-region { @apply min-w-0 border border-default rounded-ui-md overflow-auto; @apply max-h-(--console-catalog-results-max-height); }
+.catalog-results { @apply list-none m-0 p-0; }
+.catalog-result { @apply flex items-center gap-ui-5 py-ui-4 px-ui-5 border-b border-default; }
+.catalog-result:last-child { @apply border-b-0; }
+.catalog-result-name { @apply flex-1 min-w-0; }
+.catalog-result-name strong { @apply block min-w-0 truncate text-ui-sm font-ui-medium; }
+.catalog-result-name span { @apply block min-w-0 truncate text-ui-xs text-secondary mt-ui-1; }
+.catalog-result button[aria-pressed="true"] { @apply border-accent text-accent; }
+.catalog-pager { @apply flex justify-end items-center gap-ui-4 mt-ui-4 text-ui-xs text-secondary; }
+.catalog-empty { @apply py-ui-7 px-ui-5 text-ui-sm text-secondary; }
+@media (width < theme(--breakpoint-sm)) { .catalog-filters { @apply grid-cols-1 gap-0; } }
+
+@media (width < theme(--breakpoint-sm)){
+.universe-grid { @apply grid-cols-1;  }
+.universe-source { @apply items-start flex-col;  }
+}#detail-dialog:has([data-studio-form="universe-policy"]) { @apply max-w-(--ds-page-width); }
+[data-studio-form="universe-policy"]>.form-grid { @apply items-start; }
+[data-studio-form="universe-policy"]>.form-grid>.universe-fieldset:nth-of-type(-n+2) { @apply col-auto;  }
+[data-studio-form="universe-policy"] .universe-fieldset { @apply border-default;  }
+
+@media (width < theme(--breakpoint-md)){[data-studio-form="universe-policy"]>.form-grid { @apply grid-cols-1;  }
+}
+
+/* Keep names and numeric columns inside their allocated work area. */
+.console-bot-card .panel-head > div,.console-summary > div,.console-balances > div,.console-profile-picker label > span { @apply min-w-0; }
+.console-bot-card .panel-head h3,.console-toolbar h1,.console-chart-heading h2,.console-pane-heading h2 { @apply min-w-0 truncate; }
+.console-toolbar,.console-status-line,.console-chart-heading,.console-pane-heading,.console-page-footer,.console-query-tools { @apply min-w-0; }
+.console-scope-select { @apply flex-1; }
+.console-scope-select select { @apply min-w-0 truncate; }
+.console-mind-tabs > button { @apply max-w-(--console-name-width); @apply truncate; }
+.console-status-line > span:first-child,.console-status-line > span:nth-child(2) { @apply min-w-0; }
+.console-balances dt,.console-account-band dt { @apply min-w-0 truncate; }
+.console-balances dd { @apply min-w-0; overflow-wrap:anywhere; }
+.console-workspace .console-table .console-text-button { @apply inline-block max-w-full truncate align-middle; @apply max-w-(--console-name-width); }
+.console-workspace .console-table th,.console-workspace .console-table td { @apply tabular-nums; }
+.console-query-tools > span,.console-page-footer > span { @apply min-w-0 truncate; }
+.console-profile-picker > label,.universe-check { @apply min-w-0; }
+.universe-source > span { @apply min-w-0; overflow-wrap:anywhere; }
+
+/* The source library keeps one row height and a bounded, scrollable column layout. */
+.studio-library-table-scroll { @apply min-w-0 max-w-full overflow-auto; }
+.studio-table.studio-library-table { @apply w-full table-fixed; @apply min-w-(--console-library-table-min-width); }
+.studio-library-table .studio-library-col-source { @apply w-(--console-library-source-width); }
+.studio-library-table .studio-library-col-scope { @apply w-(--console-library-scope-width); }
+.studio-library-table .studio-library-col-classification { @apply w-(--console-library-classification-width); }
+.studio-library-table .studio-library-col-publication { @apply w-(--console-library-publication-width); }
+.studio-library-table .studio-library-col-status { @apply w-(--console-library-status-width); }
+.studio-library-table td { @apply min-w-0 truncate; }
+.studio-library-table .studio-library-source { @apply min-w-0 max-w-full; }
+.studio-library-table .studio-library-title,.studio-library-table .studio-library-publisher { @apply block min-w-0 w-full truncate; @apply max-w-(--console-library-source-width); overflow-wrap:normal; }
+
+.broker-snapshot-notice { @apply grid gap-ui-1 mx-ui-6 my-ui-4 px-ui-4 py-ui-3 border-l-2 border-warning bg-field text-ui-sm text-secondary; overflow-wrap:anywhere; }
+.broker-snapshot-notice > strong { @apply text-warning font-ui-medium; }
+
+.universe-local-option { @apply min-h-control-touch cursor-pointer; }
+.universe-local-option > span { @apply min-w-0 text-ui-sm break-words; }
+.universe-local-option:has(input:checked) { @apply bg-surface text-accent; }
+.universe-local-picker .catalog-remove { @apply min-h-control-touch min-w-control-touch; }
+
+.universe-picker-skip { @apply sr-only focus:not-sr-only; }

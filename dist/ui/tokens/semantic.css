@@ -1,0 +1,264 @@
+/*
+ * 의미 토큰 - 화면과 부품은 이 이름만 쓴다(원색 --kw-* 를 직접 쓰지 않는다).
+ * 밝기 전환은 [data-theme] 한 번이다. 다크 블록에는 값이 다른 것만 다시 적는다 -
+ * 별칭(var(--ds-*))은 같은 요소에서 다시 풀리므로 다크 값을 따라간다.
+ * 반투명(rgba)은 대비를 재지 않는다. 잴 것은 불투명 hex 로 따로 둔다(명세 §2.1).
+ */
+:root {
+  /* 바탕 */
+  --ds-bg-canvas: var(--kw-paper-50);
+  --ds-bg-raised: var(--kw-paper-0);
+  --ds-bg-default: var(--ds-bg-raised);
+  --ds-bg-overlay: var(--kw-paper-0);
+  --ds-bg-panel: var(--kw-paper-100);
+  --ds-bg-field: var(--kw-paper-0);
+  --ds-bg-sidebar: var(--kw-paper-150);
+  --ds-bg-hover: var(--kw-paper-200);
+  --ds-bg-pressed: var(--kw-paper-350);
+  --ds-bg-selected: var(--kw-ink-50);
+  --ds-bg-disabled: var(--kw-paper-100);
+  --ds-bg-skeleton: var(--kw-paper-250);
+  --ds-bg-skeleton-hi: var(--kw-paper-275);
+  --ds-bg-inverse: var(--kw-paper-inverse);
+  --ds-fill-hover: rgba(58, 47, 28, 0.055);
+  --ds-fill-pressed: rgba(58, 47, 28, 0.09);
+  --ds-fill-sidebar-hover: rgba(58, 47, 28, 0.06);
+  --ds-scrim: rgba(36, 30, 20, 0.32);
+  --ds-selection: rgba(47, 79, 140, 0.18);
+  --ds-scrollbar: rgba(58, 44, 20, 0.22);
+  --ds-scrollbar-hover: rgba(58, 44, 20, 0.36);
+
+  /* 글자 - tertiary 는 아이콘·기호 전용이다. 낱말에 쓰지 않는다 */
+  --ds-text-default: var(--kw-paper-950);
+  --ds-text-secondary: var(--kw-paper-800);
+  --ds-text-tertiary: var(--kw-paper-700);
+  --ds-text-placeholder: var(--kw-paper-750);
+  --ds-text-disabled: var(--kw-paper-600);
+  --ds-text-on-accent: var(--kw-white);
+  --ds-text-link: var(--kw-ink-650);
+  --ds-text-inverse: var(--kw-paper-inverse-text);
+
+  /* 선과 초점 - control 이 입력칸 경계의 3:1 을 진다 */
+  --ds-border-subtle: var(--kw-paper-300);
+  --ds-border-default: var(--kw-paper-450);
+  --ds-border-strong: var(--kw-paper-500);
+  --ds-border-control: var(--kw-paper-700);
+  --ds-border-disabled: var(--kw-paper-300);
+  --ds-focus: var(--kw-ink-500);
+  --ds-border-focus: var(--ds-focus);
+  --ds-focus-halo: rgba(58, 95, 168, 0.22);
+
+  /* 강조 */
+  --ds-accent: var(--kw-paper-950);
+  --ds-accent-hover: var(--kw-paper-850);
+  --ds-accent-pressed: var(--kw-paper-900);
+  --ds-accent-soft: var(--kw-ink-50);
+  --ds-accent-soft-border: var(--kw-ink-200);
+  --ds-accent-text: var(--kw-ink-650);
+  --ds-accent-mark: var(--kw-ink-600);
+
+  /* 상태 - 글자 · 바탕 · 테두리 · 표식(점·선 전용, 글자 아님) */
+  --ds-success: var(--kw-forest-700);
+  --ds-success-bg: var(--kw-forest-50);
+  --ds-success-border: var(--kw-forest-200);
+  --ds-success-mark: var(--kw-forest-500);
+  --ds-warning: var(--kw-ochre-700);
+  --ds-warning-bg: var(--kw-ochre-50);
+  --ds-warning-border: var(--kw-ochre-200);
+  --ds-warning-mark: var(--kw-ochre-500);
+  --ds-danger: var(--kw-brick-700);
+  --ds-danger-bg: var(--kw-brick-50);
+  --ds-danger-border: var(--kw-brick-200);
+  --ds-danger-mark: var(--kw-brick-500);
+  --ds-danger-fill: var(--kw-brick-600);
+  --ds-danger-fill-hover: var(--kw-brick-750);
+  --ds-danger-fill-pressed: var(--kw-brick-800);
+  --ds-danger-soft-hover: var(--kw-brick-100);
+  --ds-danger-halo: rgba(198, 68, 58, 0.18);
+  --ds-info: var(--kw-teal-700);
+  --ds-info-bg: var(--kw-teal-50);
+  --ds-info-border: var(--kw-teal-200);
+  --ds-info-mark: var(--kw-teal-500);
+  --ds-neutral: var(--kw-paper-850);
+  --ds-neutral-bg: var(--kw-paper-250);
+  --ds-neutral-border: var(--kw-stone-200);
+  --ds-neutral-mark: var(--kw-paper-700);
+  --ds-ai: var(--kw-plum-700);
+  --ds-ai-bg: var(--kw-plum-50);
+  --ds-ai-border: var(--kw-plum-200);
+  --ds-ai-mark: var(--kw-plum-500);
+  --ds-highlight-bg: var(--kw-ochre-50);
+  --ds-highlight-underline: rgba(166, 122, 6, 0.45);
+  --ds-seal: var(--kw-brick-500);
+
+  /* 사이드바 */
+  --ds-sidebar-bg: var(--ds-bg-sidebar);
+  --ds-sidebar-text: var(--kw-paper-900);
+  --ds-sidebar-label: var(--ds-text-secondary);
+  --ds-sidebar-hover: var(--kw-paper-400);
+  --ds-sidebar-active-bg: var(--ds-bg-raised);
+  --ds-sidebar-active-text: var(--ds-text-default);
+  --ds-sidebar-active-icon: var(--ds-accent-mark);
+  --ds-sidebar-count-bg: var(--ds-accent-soft);
+  --ds-sidebar-count-text: var(--ds-accent-text);
+
+  /* 색조 - 아바타 · 봇 타일 · 프로젝트 칩 */
+  --ds-tint-ink-bg: var(--kw-ink-100);
+  --ds-tint-ink-fg: var(--kw-ink-650);
+  --ds-tint-sage-bg: var(--kw-forest-75);
+  --ds-tint-sage-fg: var(--kw-forest-700);
+  --ds-tint-ochre-bg: var(--kw-ochre-75);
+  --ds-tint-ochre-fg: var(--kw-ochre-700);
+  --ds-tint-clay-bg: var(--kw-brick-75);
+  --ds-tint-clay-fg: var(--kw-brick-700);
+  --ds-tint-plum-bg: var(--kw-plum-75);
+  --ds-tint-plum-fg: var(--kw-plum-700);
+  --ds-tint-stone-bg: var(--kw-stone-75);
+  --ds-tint-stone-fg: var(--kw-paper-850);
+  --ds-tint-teal-bg: var(--kw-teal-75);
+  --ds-tint-teal-fg: var(--kw-teal-700);
+
+  /* 잉크 선화 */
+  --ds-ill-line: var(--kw-paper-700);
+  --ds-ill-wash: var(--kw-ink-50);
+  --ds-ill-detail: var(--kw-ink-600);
+
+  /* 차트 계열 - 좋고 나쁨이 아니라서 상태색과 가른다 */
+  --ds-series-1: var(--kw-ink-500);
+  --ds-series-2: var(--kw-clay-500);
+  --ds-series-3: var(--kw-forest-500);
+  --ds-series-4: var(--kw-plum-550);
+  --ds-series-5: var(--kw-mustard-500);
+  --ds-series-6: var(--kw-rose-500);
+  --ds-chart-grid: var(--kw-paper-300);
+  --ds-chart-axis: var(--ds-border-strong);
+  --ds-chart-tick: var(--ds-text-secondary);
+
+  --ds-shadow-ink: rgb(58, 44, 20);
+}
+
+[data-theme="dark"] {
+  --ds-bg-canvas: var(--kw-night-100);
+  --ds-bg-raised: var(--kw-night-200);
+  --ds-bg-overlay: var(--kw-night-350);
+  --ds-bg-panel: var(--kw-night-50);
+  --ds-bg-field: var(--kw-night-50);
+  --ds-bg-sidebar: var(--kw-night-0);
+  --ds-bg-hover: var(--kw-night-300);
+  --ds-bg-pressed: var(--kw-night-500);
+  --ds-bg-selected: var(--kw-inkd-soft);
+  --ds-bg-disabled: var(--kw-night-50);
+  --ds-bg-skeleton: var(--kw-night-250);
+  --ds-bg-skeleton-hi: var(--kw-night-375);
+  --ds-bg-inverse: var(--kw-night-inverse);
+  --ds-fill-hover: rgba(255, 246, 230, 0.06);
+  --ds-fill-pressed: rgba(255, 246, 230, 0.1);
+  --ds-fill-sidebar-hover: rgba(255, 246, 230, 0.06);
+  --ds-scrim: rgba(0, 0, 0, 0.56);
+  --ds-selection: rgba(152, 179, 234, 0.28);
+  --ds-scrollbar: rgba(255, 244, 224, 0.18);
+  --ds-scrollbar-hover: rgba(255, 244, 224, 0.36);
+
+  --ds-text-default: var(--kw-night-950);
+  --ds-text-secondary: var(--kw-night-800);
+  --ds-text-tertiary: var(--kw-night-725);
+  --ds-text-placeholder: var(--kw-night-750);
+  --ds-text-disabled: var(--kw-night-600);
+  --ds-text-link: var(--kw-inkd-link);
+  --ds-text-inverse: var(--kw-night-inverse-text);
+
+  --ds-border-subtle: var(--kw-night-250);
+  --ds-border-default: var(--kw-night-450);
+  --ds-border-strong: var(--kw-night-550);
+  --ds-border-control: var(--kw-night-700);
+  --ds-border-disabled: var(--kw-night-250);
+  --ds-focus: var(--kw-inkd-focus);
+  --ds-focus-halo: rgba(138, 168, 230, 0.28);
+
+  /* 흰 글자가 AA 를 지키도록 hover 는 더 짙어진다 */
+  --ds-accent: var(--kw-inkd-fill);
+  --ds-accent-hover: var(--kw-inkd-hover);
+  --ds-accent-pressed: var(--kw-inkd-pressed);
+  --ds-accent-soft: var(--kw-inkd-soft);
+  --ds-accent-soft-border: var(--kw-inkd-border);
+  --ds-accent-text: var(--kw-inkd-text);
+  --ds-accent-mark: var(--kw-inkd-mark);
+
+  --ds-success: var(--kw-forestd-text);
+  --ds-success-bg: var(--kw-forestd-bg);
+  --ds-success-border: var(--kw-forestd-border);
+  --ds-success-mark: var(--kw-forestd-mark);
+  --ds-warning: var(--kw-ochred-text);
+  --ds-warning-bg: var(--kw-ochred-bg);
+  --ds-warning-border: var(--kw-ochred-border);
+  --ds-warning-mark: var(--kw-ochred-mark);
+  --ds-danger: var(--kw-brickd-text);
+  --ds-danger-bg: var(--kw-brickd-bg);
+  --ds-danger-border: var(--kw-brickd-border);
+  --ds-danger-mark: var(--kw-brickd-mark);
+  --ds-danger-fill: var(--kw-brickd-fill);
+  --ds-danger-fill-hover: var(--kw-brickd-fill-hover);
+  --ds-danger-fill-pressed: var(--kw-brickd-fill-pressed);
+  --ds-danger-soft-hover: var(--kw-brickd-hover);
+  --ds-danger-halo: rgba(217, 105, 91, 0.24);
+  --ds-info: var(--kw-teald-text);
+  --ds-info-bg: var(--kw-teald-bg);
+  --ds-info-border: var(--kw-teald-border);
+  --ds-info-mark: var(--kw-teald-mark);
+  --ds-neutral: var(--kw-night-825);
+  --ds-neutral-bg: var(--kw-night-350);
+  --ds-neutral-border: var(--kw-night-525);
+  --ds-neutral-mark: var(--kw-night-725);
+  --ds-ai: var(--kw-plumd-text);
+  --ds-ai-bg: var(--kw-plumd-bg);
+  --ds-ai-border: var(--kw-plumd-border);
+  --ds-ai-mark: var(--kw-plumd-mark);
+  --ds-highlight-bg: var(--kw-ochred-bg);
+  --ds-highlight-underline: rgba(210, 158, 62, 0.45);
+  --ds-seal: var(--kw-brickd-mark);
+
+  --ds-sidebar-text: var(--kw-night-900);
+  --ds-sidebar-label: var(--kw-night-750);
+  --ds-sidebar-hover: var(--kw-night-150);
+
+  --ds-tint-ink-bg: var(--kw-inkd-tint);
+  --ds-tint-ink-fg: var(--kw-inkd-text);
+  --ds-tint-sage-bg: var(--kw-forestd-tint);
+  --ds-tint-sage-fg: var(--kw-forestd-text);
+  --ds-tint-ochre-bg: var(--kw-ochred-tint);
+  --ds-tint-ochre-fg: var(--kw-ochred-text);
+  --ds-tint-clay-bg: var(--kw-brickd-tint);
+  --ds-tint-clay-fg: var(--kw-brickd-text);
+  --ds-tint-plum-bg: var(--kw-plumd-tint);
+  --ds-tint-plum-fg: var(--kw-plumd-text);
+  --ds-tint-stone-bg: var(--kw-stoned-tint);
+  --ds-tint-stone-fg: var(--kw-night-825);
+  --ds-tint-teal-bg: var(--kw-teald-tint);
+  --ds-tint-teal-fg: var(--kw-teald-text);
+
+  --ds-ill-line: var(--kw-night-725);
+  --ds-ill-wash: var(--kw-inkd-soft);
+  --ds-ill-detail: var(--kw-inkd-mark);
+
+  /* 검은 판에서는 한 단계 밝은 쪽으로 옮긴다 - 짙은 막대는 사라진다 */
+  --ds-series-1: var(--kw-inkd-series);
+  --ds-series-2: var(--kw-clayd-series);
+  --ds-series-3: var(--kw-forestd-series);
+  --ds-series-4: var(--kw-plumd-series);
+  --ds-series-5: var(--kw-ochred-series);
+  --ds-series-6: var(--kw-rosed-series);
+  --ds-chart-grid: var(--kw-night-375);
+
+  --ds-shadow-ink: rgb(0, 0, 0);
+}
+
+/* 선택 사항: P3 화면의 강조색. 두 테마 블록 뒤에 두어 대비 검사가 읽지 않는다 */
+@media (color-gamut: p3) {
+  :root {
+    --ds-accent: color(display-p3 0.19 0.31 0.57);
+  }
+  [data-theme="dark"] {
+    --ds-accent: color(display-p3 0.31 0.42 0.7);
+  }
+}
+

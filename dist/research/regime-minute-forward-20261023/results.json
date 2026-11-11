@@ -1,0 +1,123 @@
+{
+  "at": "2026-10-23T01:06:01.621Z",
+  "role": "RUNNING_SINGLE_FORWARD_COHORT",
+  "results": [
+    {
+      "id": "quant",
+      "netReturn": -0.0031854969670326305,
+      "maxDrawdown": 0.011929483835687926,
+      "maxObservedDrawdown": 0.011929483835687926,
+      "missingMarks": 0,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 5.963883333333333,
+      "orders": 2,
+      "endingQuantity": "285.44177665"
+    },
+    {
+      "id": "ai",
+      "netReturn": 0.05656181415658024,
+      "maxDrawdown": 0.062449721758799925,
+      "maxObservedDrawdown": 0.062449721758799925,
+      "missingMarks": 0,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 47.00031666666667,
+      "orders": 2,
+      "endingQuantity": "302.66100215"
+    },
+    {
+      "id": "hold-KRW-AXIS",
+      "netReturn": -0.02088010720979039,
+      "maxDrawdown": 0.06388206388119833,
+      "maxObservedDrawdown": 0.06388206388119833,
+      "missingMarks": 0,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 58.000883333333334,
+      "orders": 1,
+      "endingQuantity": "324.49475604"
+    },
+    {
+      "id": "hold-KRW-XRP",
+      "netReturn": -0.0015666995658103477,
+      "maxDrawdown": 0.003842327127703049,
+      "maxObservedDrawdown": 0.003842327127703049,
+      "missingMarks": 0,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 43.919666666666664,
+      "orders": 1,
+      "endingQuantity": "74.28638492"
+    },
+    {
+      "id": "hold-KRW-BTC",
+      "netReturn": -0.0010249740322942902,
+      "maxDrawdown": 0.004137684097793803,
+      "maxObservedDrawdown": 0.004137684097793803,
+      "missingMarks": 0,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 62.9078,
+      "orders": 1,
+      "endingQuantity": "0.00119544"
+    },
+    {
+      "id": "hold-KRW-IRYS",
+      "netReturn": 0.0314589997420025,
+      "maxDrawdown": 0.02150537634408356,
+      "maxObservedDrawdown": 0.02150537634408356,
+      "missingMarks": 0,
+      "recoveredAtEnd": true,
+      "longestUnderwaterMinutes": 28.899816666666666,
+      "orders": 1,
+      "endingQuantity": "4709.27407689"
+    },
+    {
+      "id": "hold-KRW-ETH",
+      "netReturn": 0.0002511244148148961,
+      "maxDrawdown": 0.002558564233775651,
+      "maxObservedDrawdown": 0.002558564233775651,
+      "missingMarks": 0,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 31.89175,
+      "orders": 1,
+      "endingQuantity": "0.04076465"
+    },
+    {
+      "id": "hold-KRW-DOOD",
+      "netReturn": -0.05413782470465989,
+      "maxDrawdown": null,
+      "maxObservedDrawdown": 0.0647654895956169,
+      "missingMarks": 2,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 62.88263333333333,
+      "orders": 1,
+      "endingQuantity": "46257.76309569"
+    },
+    {
+      "id": "hold-KRW-GTC",
+      "netReturn": 0.06435567263096043,
+      "maxDrawdown": 0.06236559139783737,
+      "maxObservedDrawdown": 0.06236559139783737,
+      "missingMarks": 0,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 34.00116666666667,
+      "orders": 1,
+      "endingQuantity": "304.78245778"
+    },
+    {
+      "id": "hold-KRW-HP",
+      "netReturn": -0.09181772749982686,
+      "maxDrawdown": null,
+      "maxObservedDrawdown": 0.1513157894735916,
+      "missingMarks": 5,
+      "recoveredAtEnd": false,
+      "longestUnderwaterMinutes": 23.000633333333333,
+      "orders": 1,
+      "endingQuantity": "9122.16027481"
+    }
+  ],
+  "calls": {
+    "count": 64,
+    "input": 903988,
+    "output": 3262,
+    "costKrw": 50.29288422648
+  },
+  "liveOrders": 0
+}

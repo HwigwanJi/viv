@@ -1,0 +1,17 @@
+:root {
+  --help-tooltip-max-width: 20rem;
+  --help-tooltip-layer: 10000;
+  --help-tooltip-arrow-size: var(--ds-space-4);
+  --help-tooltip-arrow-offset: calc(var(--ds-space-2) * -1);
+  --help-tooltip-arrow-rotation: 45deg;
+  --help-tooltip-center: 50%;
+  --help-tooltip-center-offset: -50%;
+  --help-tooltip-enter-distance: var(--ds-space-1);
+  --help-tooltip-background: var(--ds-bg-inverse);
+  --help-tooltip-foreground: var(--ds-text-inverse);
+  --help-tooltip-anchor-gap: var(--ds-space-4);
+  --help-tooltip-viewport-inset: var(--ds-space-4);
+  --help-tooltip-arrow-inset: 10px;
+  --help-tooltip-hover-delay-ms: 300;
+  --help-tooltip-leave-delay-ms: 120;
+}

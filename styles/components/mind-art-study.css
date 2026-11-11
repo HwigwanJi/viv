@@ -1,0 +1,66 @@
+@reference '../theme.css';
+
+.art-study { @apply m-0 bg-art-canvas text-art-foreground font-ui-sans text-ui-base leading-ui-read; color-scheme:dark; }
+.art-study main { @apply max-w-report-wide mx-auto px-ui-9 pt-ui-10 pb-ui-12; }
+.art-study header { @apply flex justify-between items-center gap-ui-8 mb-ui-10; }
+.art-study .brand { @apply font-ui-bold tracking-widest; }
+.art-study .eyebrow { @apply text-art-accent text-ui-xs uppercase tracking-widest; }
+.art-study nav { @apply flex flex-wrap gap-ui-7 text-ui-sm; }
+.art-study h1 { @apply text-ui-4xl leading-ui-3xl font-ui-semibold tracking-tight mt-ui-5 mb-ui-8; }
+.art-study h2 { @apply text-ui-2xl leading-ui-2xl font-ui-semibold tracking-tight mt-0 mb-ui-5; }
+.art-study h3 { @apply text-ui-xl leading-ui-xl font-ui-medium mt-ui-5 mb-ui-4; }
+.art-study p { @apply mt-0 mb-ui-6; }
+.art-study a { @apply text-art-accent underline underline-offset-4; }
+.art-study :is(a,summary):focus-visible { @apply outline-2 outline-offset-4 outline-art-accent; }
+.art-study :is(.muted,figcaption) { @apply text-art-muted text-ui-sm; }
+.art-study .hero { @apply grid grid-cols-(--art-study-columns) gap-ui-10 items-center; }
+.art-study figure { @apply m-0; }
+.art-study .hero img { @apply block w-full rounded-ui-2xl; image-rendering:pixelated; }
+.art-study .tag { @apply inline-block px-ui-5 py-ui-3 border border-art-line rounded-ui-full text-ui-xs text-art-accent mr-ui-4 mb-ui-4; }
+.art-study details { @apply border border-art-line rounded-ui-2xl overflow-hidden; }
+.art-study summary { @apply cursor-pointer px-ui-6 py-ui-5 bg-art-surface text-art-accent text-ui-sm; }
+.art-study figcaption { @apply py-ui-4; }
+.art-study .hero figcaption { @apply px-ui-6 py-ui-5; }
+.art-study .section { @apply mt-ui-12 scroll-mt-ui-8; }
+.art-study .intro { @apply max-w-report-prose; }
+.art-study :is(.grid,.motion-grid) { @apply grid grid-cols-3 gap-ui-8 mt-ui-8; }
+.art-study :is(.card,.motion) { @apply min-w-0 bg-art-surface border border-art-line rounded-ui-2xl overflow-hidden; }
+.art-study .media { @apply h-report-chart bg-art-media flex items-center justify-center; }
+.art-study .media img { @apply w-full h-full object-contain; image-rendering:pixelated; }
+.art-study .body { @apply p-ui-8; }
+.art-study .number { @apply text-ui-xs leading-ui-xs font-ui-mono text-art-accent; }
+.art-study .body ul { @apply pl-ui-7 my-ui-5 list-disc; }
+.art-study .body li { @apply my-ui-4; }
+.art-study .motion img { @apply w-full h-report-chart object-contain bg-art-media; image-rendering:pixelated; }
+.art-study .motion figcaption { @apply px-ui-7 py-ui-5 text-art-foreground; }
+.art-study .recommendation { @apply bg-art-highlight border border-art-highlight-line rounded-ui-2xl p-ui-8 mt-ui-8; }
+.art-study .split { @apply grid grid-cols-2 gap-ui-8 mt-ui-8; }
+.art-study .box { @apply bg-art-surface p-ui-8 border border-art-line rounded-ui-2xl; }
+.art-study .box ol { @apply pl-ui-8 list-decimal; }
+.art-study .box li { @apply my-ui-5; }
+.art-study .table-wrap { @apply overflow-x-auto border border-art-line rounded-ui-2xl mt-ui-8; }
+.art-study table { @apply border-collapse w-full min-w-report-table text-ui-sm; }
+.art-study th,.art-study td { @apply text-left px-ui-7 py-ui-6 border-b border-art-line align-top; }
+.art-study th { @apply bg-art-surface text-art-accent; }
+.art-study tr:last-child td { @apply border-b-0; }
+.art-study .six { @apply flex flex-wrap gap-ui-4 my-ui-6; }
+.art-study .six span { @apply border border-art-line px-ui-5 py-ui-4 rounded-ui-lg; }
+.art-study .reduced { @apply hidden; }
+.art-study footer { @apply mt-ui-12 border-t border-art-line pt-ui-8 text-art-muted text-ui-sm; }
+.art-study .source-links { @apply flex flex-wrap gap-x-ui-8 gap-y-ui-5 mt-ui-6; }
+@media (width < theme(--breakpoint-lg)) {
+ .art-study main { @apply px-ui-6 pt-ui-8 pb-ui-11; }
+ .art-study header { @apply items-start mb-ui-9; }
+ .art-study .hero,.art-study .grid,.art-study .motion-grid,.art-study .split { @apply grid-cols-1; }
+ .art-study .hero { @apply gap-ui-7; }
+ .art-study .section { @apply mt-ui-11; }
+ .art-study nav { @apply gap-ui-5; }
+ .art-study header .brand { @apply max-w-art-brand; }
+ .art-study .hero img { @apply max-h-art-hero object-contain; }
+ .art-study .recommendation { @apply p-ui-7; }
+}
+@media (prefers-reduced-motion:reduce) {
+ html:has(.art-study) { @apply scroll-auto; }
+ .art-study .animated { @apply hidden!; }
+ .art-study .reduced { @apply block p-ui-8 bg-art-surface; }
+}

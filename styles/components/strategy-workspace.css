@@ -1,0 +1,81 @@
+/* A bounded workspace: the canvas never becomes a document scroll surface. */
+html:has(dialog.strategy-dialog[open]),body:has(dialog.strategy-dialog[open]) { @apply overflow-hidden; overscroll-behavior:none; }
+dialog.strategy-dialog { @apply fixed inset-0 m-0 h-full w-full max-w-none max-h-none overflow-hidden rounded-none border-0 p-0; height:var(--ui-dynamic-screen-height); scrollbar-gutter:auto; }
+dialog.strategy-dialog[open] { @apply flex flex-col; }
+dialog.strategy-dialog .dialog-head { @apply flex shrink-0 min-w-0 items-center justify-between border-b border-default bg-surface px-ui-6 py-ui-3; }
+dialog.strategy-dialog .dialog-head h2 { @apply m-0 text-ui-md font-ui-semibold; }
+dialog.strategy-dialog .dialog-body { @apply flex min-h-0 flex-1 overflow-hidden p-0; }
+dialog.strategy-dialog .dialog-body > div { @apply h-full min-h-0 w-full flex-1 overflow-hidden; }
+.strategy-editor { @apply flex h-full min-h-0 min-w-0 flex-col overflow-hidden bg-surface text-ui-md leading-ui-md text-foreground; }
+.strategy-editor-toolbar { @apply relative z-20 flex min-w-0 shrink-0 items-center justify-between gap-ui-4 border-b border-subtle bg-surface px-ui-6 py-ui-4; }
+.strategy-editor-context { @apply flex min-w-0 flex-1 flex-col gap-ui-1; }
+.strategy-editor-context > strong { @apply min-w-0 truncate text-ui-sm font-ui-semibold; }
+.strategy-editor-context .strategy-scope { @apply truncate text-ui-xs text-secondary; }
+.strategy-editor-tools { @apply flex shrink-0 items-center gap-ui-2 rounded-ui-full bg-(--ds-bg-panel) p-ui-1; }
+.strategy-editor-tools > .button { @apply rounded-ui-full bg-transparent; box-shadow:none; }
+.strategy-editor-tools > .button:hover { @apply bg-hover; }
+.strategy-tool-button { @apply inline-flex min-w-0 shrink-0 items-center justify-center gap-ui-2; }
+.strategy-tool-button .strategy-glyph { @apply size-ui-5; }
+.strategy-toolbar-more { @apply relative shrink-0; }
+.strategy-toolbar-more > summary { @apply flex cursor-pointer list-none items-center gap-ui-2 rounded-ui-md border border-default bg-surface px-ui-3 py-ui-2 text-ui-xs; min-height:var(--ds-control-height-sm); }
+.strategy-toolbar-more > summary::-webkit-details-marker { display:none; }
+.strategy-toolbar-popover { @apply absolute right-0 top-full z-30 mt-ui-2 grid gap-ui-1 rounded-ui-lg border border-default bg-surface p-ui-2; min-width:var(--graph-toolbar-menu-width); box-shadow:var(--ds-shadow-control); }
+.strategy-toolbar-popover button,.strategy-toolbar-popover a { @apply flex w-full items-center justify-start gap-ui-2 rounded-ui-sm border-0 bg-transparent px-ui-4 py-ui-3 text-left text-ui-sm text-foreground no-underline; }
+.strategy-toolbar-popover button:hover,.strategy-toolbar-popover a:hover { @apply bg-hover; }
+.strategy-editor-body { @apply relative grid min-h-0 min-w-0 flex-1 overflow-hidden; grid-template-columns:var(--graph-palette-width) minmax(0,1fr) var(--graph-inspector-width); }
+.strategy-editor:not(.inspector-open) .strategy-editor-body { grid-template-columns:var(--graph-palette-width) minmax(0,1fr); }
+.strategy-palette { @apply flex min-h-0 min-w-0 flex-col overflow-hidden border-r border-default bg-surface p-0; }
+.strategy-palette-tabs { @apply m-0 flex shrink-0 items-center gap-ui-2 border-b border-default bg-surface px-ui-4 py-ui-3; }
+.strategy-palette-tabs > button { @apply flex-1; }
+.strategy-palette-tabs .strategy-palette-close { @apply hidden shrink-0 flex-none items-center justify-center; }
+.strategy-palette-content { @apply min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden p-ui-4; overscroll-behavior:contain; scrollbar-gutter:stable; }
+.strategy-palette-content .strategy-palette-footer { @apply mt-ui-5 pt-ui-3; }
+.strategy-canvas { @apply relative h-full min-h-0 min-w-0 overflow-hidden bg-canvas; }
+.strategy-inspector { @apply relative flex min-h-0 min-w-0 flex-col overflow-x-hidden overflow-y-auto border-l border-default bg-surface px-ui-5 pb-ui-5; overscroll-behavior:contain; scrollbar-gutter:stable; }
+.strategy-editor:not(.inspector-open) .strategy-inspector { @apply hidden; }
+.strategy-inspector-top { @apply sticky top-0 z-10 mb-ui-5 flex min-w-0 shrink-0 items-center justify-between gap-ui-3 border-b border-default bg-surface py-ui-4; }
+.strategy-inspector-top > div { @apply flex min-w-0 flex-col gap-ui-1; }
+.strategy-inspector-top small { @apply text-ui-xs text-muted; }
+.strategy-inspector-top strong { @apply truncate text-ui-md font-ui-semibold; }
+.strategy-inspector-close { @apply m-0 flex shrink-0 items-center justify-center; }
+.strategy-inspector-close span { @apply hidden; }
+.strategy-inspector .field { @apply mb-ui-4 gap-ui-2; }
+.strategy-inspector .strategy-inspector-head { @apply mb-ui-4; }
+.strategy-inspector .strategy-library-binding { @apply mb-ui-4; }
+.strategy-inspector .strategy-parameters,.strategy-inspector .strategy-connect { @apply my-ui-4; }
+.strategy-inspector .strategy-parameters pre { @apply max-w-full overflow-x-auto; }
+.strategy-editor-footer { @apply z-20 flex min-w-0 shrink-0 flex-wrap items-center justify-between gap-ui-3 border-t border-default bg-surface px-ui-5 py-ui-3; }
+.strategy-editor-footer .strategy-run-settings { @apply min-w-0 flex-1 gap-ui-3; }
+.strategy-editor-footer .actions { @apply flex shrink-0 flex-nowrap items-center gap-ui-2; }
+.strategy-editor-footer .strategy-validation { @apply text-ui-xs; }
+.strategy-editor.strategy-editor-embedded .strategy-editor-body,.strategy-editor.strategy-editor-embedded:not(.inspector-open) .strategy-editor-body { grid-template-columns:minmax(0,1fr); }
+.strategy-editor-embedded .strategy-palette { @apply absolute inset-y-0 left-0 z-20 hidden; width:var(--graph-palette-width); box-shadow:var(--ds-shadow-control); }
+.strategy-editor-embedded.palette-open .strategy-palette { @apply flex; }
+.strategy-editor-embedded .strategy-inspector { @apply absolute inset-y-0 right-0 z-20 hidden; width:var(--graph-inspector-width); box-shadow:var(--ds-shadow-control); }
+.strategy-editor-embedded.inspector-open .strategy-inspector { @apply flex; }
+.strategy-editor-embedded .strategy-palette-tabs .strategy-palette-close { @apply flex; }
+@variant max-lg {
+ .strategy-editor-body { grid-template-columns:var(--graph-compact-palette-width) minmax(0,1fr) var(--graph-compact-inspector-width); }
+ .strategy-editor:not(.inspector-open) .strategy-editor-body { grid-template-columns:var(--graph-compact-palette-width) minmax(0,1fr); }
+ .strategy-canvas .react-flow__minimap { @apply hidden; }
+}
+@variant max-md {
+ dialog.strategy-dialog .dialog-head { @apply px-ui-4 py-ui-2; }
+ .strategy-editor-toolbar { @apply flex-wrap gap-ui-3 px-ui-4 py-ui-3; }
+ .strategy-editor-context { @apply basis-full; }
+ .strategy-editor-context .strategy-scope { @apply hidden; }
+ .strategy-editor-tools { @apply w-full justify-between; }
+ .strategy-tool-compact span { @apply hidden; }
+ .strategy-editor .strategy-editor-body { @apply block; }
+ .strategy-editor .strategy-palette { @apply absolute inset-0 z-30 hidden w-full border-0; max-height:none; box-shadow:none; }
+ .strategy-editor.palette-open .strategy-palette { @apply flex; }
+ .strategy-editor .strategy-palette-tabs .strategy-palette-close { @apply flex; }
+ .strategy-editor .strategy-inspector { @apply absolute inset-0 z-20 hidden w-full max-h-none border-0; box-shadow:none; }
+ .strategy-editor.inspector-open .strategy-inspector { @apply flex; }
+ .strategy-editor.inspector-open .strategy-canvas { visibility:hidden; }
+ .strategy-inspector-close { @apply gap-ui-2; }
+ .strategy-inspector-close span { @apply inline; }
+ .strategy-editor-footer { @apply gap-ui-2 px-ui-4 py-ui-3; }
+ .strategy-editor-footer .strategy-run-settings { @apply basis-full; }
+ .strategy-editor-footer .actions { @apply ml-auto; }
+}

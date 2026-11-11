@@ -1,0 +1,190 @@
+@reference '../theme.css';
+
+.benchmark-picker { @apply min-w-0 border-b border-default bg-surface px-ui-8 py-ui-8; }
+.benchmark-heading, .benchmark-selection-meta { @apply flex min-w-0 items-center justify-between gap-ui-6; }
+.benchmark-heading > div { @apply min-w-0; }
+.benchmark-heading h2 { @apply m-0 mb-ui-2 flex items-center gap-ui-3 text-ui-md leading-ui-md; }
+.benchmark-heading > div > span, .benchmark-selection-meta { @apply text-ui-xs leading-ui-xs text-secondary; }
+.benchmark-presets { @apply my-ui-7 grid grid-cols-3 gap-ui-3; }
+.benchmark-presets button { @apply min-w-0 cursor-pointer rounded-ui-lg border border-default bg-canvas px-ui-5 py-ui-5 text-left font-ui-sans text-ui-xs leading-ui-xs font-ui-semibold text-foreground; overflow-wrap:anywhere; }
+.benchmark-presets button small { @apply mt-ui-2 block text-ui-xs leading-ui-xs font-ui-regular text-secondary; }
+.benchmark-presets button[aria-pressed=true] { border-color:var(--benchmark-price-color); box-shadow:var(--benchmark-selection-ring); background:var(--benchmark-preset-color); }
+.benchmark-presets button:disabled { @apply cursor-default; @apply opacity-(--benchmark-disabled-opacity); }
+.benchmark-selection-meta { @apply mb-ui-5 flex-wrap justify-start; }
+.benchmark-selection-meta strong { @apply min-w-0 text-ui-xs font-ui-semibold text-foreground; overflow-wrap:anywhere; }
+.benchmark-selection-meta > span { @apply min-w-0; }
+.benchmark-selection-meta > span:last-child { @apply ml-auto tabular-nums; }
+.benchmark-stage { @apply relative isolate border-b border-default; @apply h-(--benchmark-stage-height); touch-action:none; background:var(--benchmark-grid-background); }
+.benchmark-stage svg { @apply block h-full w-full overflow-visible; }
+.benchmark-price-line { stroke:var(--benchmark-price-color); stroke-width:var(--benchmark-line-width); fill:none; vector-effect:non-scaling-stroke; }
+.benchmark-price-area { fill:var(--benchmark-area-color); }
+.benchmark-selection { @apply absolute inset-y-0 cursor-grab border; border-color:var(--benchmark-price-color); background:var(--benchmark-selection-color); }
+.benchmark-selection:active { @apply cursor-grabbing; }
+.benchmark-unselected { @apply pointer-events-none absolute inset-y-0; background:var(--benchmark-dim-color); }
+.benchmark-unselected-start { @apply left-0; }
+.benchmark-handle { @apply absolute inset-y-0 flex cursor-ew-resize items-center justify-center border-0 bg-transparent p-0; @apply w-(--benchmark-handle-width); transform:translateX(var(--benchmark-handle-offset)); z-index:var(--benchmark-handle-layer); }
+.benchmark-handle span { @apply block rounded-ui-sm border bg-surface; @apply w-(--benchmark-handle-grip-width); @apply h-(--benchmark-handle-grip-height); border-color:var(--benchmark-price-color); box-shadow:var(--ds-shadow-control); }
+.benchmark-handle:focus-visible { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.benchmark-axis { @apply mt-ui-4 flex min-w-0 justify-between gap-ui-4 text-ui-xs leading-ui-xs text-secondary; }
+.benchmark-range-inputs { @apply mt-ui-6 grid grid-cols-2 gap-ui-8; }
+.benchmark-range-inputs label { @apply flex min-w-0 items-center gap-ui-4 whitespace-nowrap text-ui-xs text-secondary; }
+.benchmark-range-inputs input { @apply min-w-0 w-full cursor-ew-resize; @apply h-(--ds-icon-size-sm); accent-color:var(--benchmark-price-color); }
+.simulation-benchmark-badge { @apply mt-ui-2 inline-flex min-w-0 items-center gap-ui-2 text-ui-xs leading-ui-xs font-ui-medium text-secondary; }
+.simulation-benchmark-kpis { @apply grid grid-cols-4 gap-ui-7 border-b border-default px-ui-8 py-ui-7; }
+.simulation-benchmark-kpis dt { @apply flex min-w-0 items-center gap-ui-2 text-ui-xs leading-ui-xs text-secondary; }
+.simulation-benchmark-kpis dd { @apply m-0 mt-ui-3 text-ui-2xl font-ui-semibold tabular-nums; letter-spacing:var(--ds-tracking-tight); }
+.simulation-preflight-help { @apply mr-ui-4 mt-ui-4 inline-flex items-center; }
+.simulation-execution-identity { @apply grid min-w-0 gap-ui-4 py-ui-6 text-ui-xs leading-ui-xs text-secondary; }
+.simulation-execution-identity > div { @apply flex min-w-0 flex-wrap items-center gap-x-ui-6 gap-y-ui-4; }
+.simulation-execution-identity strong { @apply text-ui-md leading-ui-md text-foreground; overflow-wrap:anywhere; }
+.simulation-execution-identity .actions { @apply mt-ui-1 flex-wrap; }
+.simulation-repeat-context { @apply flex min-w-0 flex-wrap items-center gap-ui-4 border-b border-default px-ui-8 py-ui-6 text-ui-xs leading-ui-xs; }
+.simulation-repeat-context strong { @apply min-w-0; overflow-wrap:anywhere; }
+.simulation-model-readiness { @apply mb-ui-5 flex min-w-0 flex-wrap items-center gap-x-ui-6 gap-y-ui-4 rounded-ui-md border border-default px-ui-6 py-ui-5 text-ui-xs leading-ui-xs text-secondary; }
+.simulation-model-readiness strong { @apply text-foreground; }
+.simulation-evaluation-summary > .simulation-model-readiness { @apply m-0 rounded-none border-0 border-b px-ui-8; }
+.simulation-evaluation-actions { @apply flex flex-wrap px-ui-8 py-ui-5; }
+.simulation-model-readiness.unavailable { border-color:var(--ds-warning-border); background:var(--ds-warning-bg); }
+
+.simulation-focused-editor .simulation-setup-section { @apply min-w-0 border-b border-default px-ui-8 py-ui-7; }
+.simulation-focused-editor .simulation-section-heading { @apply mb-ui-6 flex min-w-0 flex-wrap items-center justify-between gap-ui-6; }
+.simulation-focused-editor .simulation-section-heading h2 { @apply m-0 text-ui-sm leading-ui-sm font-ui-semibold; }
+.simulation-focused-editor .simulation-section-heading > span { @apply text-ui-xs leading-ui-xs text-secondary; }
+.simulation-target-fields, .simulation-date-fields { @apply grid min-w-0 grid-cols-2 gap-ui-6; }
+.simulation-target-fields .field, .simulation-date-fields .field { @apply min-w-0 text-ui-xs leading-ui-xs; }
+.simulation-target-fields .field > span { @apply flex min-w-0 items-center gap-ui-2; }
+.simulation-target-fields .field > select, .simulation-date-fields .field > input { @apply min-w-0 w-full; }
+.simulation-focused-editor [hidden] { @apply hidden!; }
+.simulation-focused-editor .simulation-period-modes { @apply inline-flex max-w-full flex-wrap gap-ui-1 rounded-ui-md bg-canvas p-ui-1; }
+.simulation-period-modes button { @apply cursor-pointer rounded-ui-sm border-0 bg-transparent px-ui-5 py-ui-3 font-ui-sans text-ui-xs leading-ui-xs text-secondary; }
+.simulation-period-modes button[aria-pressed=true] { @apply bg-surface font-ui-semibold text-foreground; box-shadow:var(--ds-shadow-control); }
+.simulation-period-modes button:focus-visible { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.simulation-focused-editor .benchmark-picker-focused { @apply mt-ui-6 border-0 p-0; }
+.benchmark-picker-focused .benchmark-graph-tools { @apply mb-ui-4 flex min-w-0 flex-wrap items-center gap-ui-3 text-ui-xs leading-ui-xs text-secondary; }
+.benchmark-picker-focused .benchmark-graph-tools > .button { @apply ml-auto; }
+.benchmark-picker-focused .benchmark-presets { @apply m-0 mb-ui-5 grid grid-cols-3 gap-ui-3; }
+.benchmark-picker-focused .benchmark-presets button { @apply bg-surface px-ui-5 py-ui-4 text-center font-ui-medium; }
+.benchmark-picker-focused .benchmark-presets button[aria-pressed=true] { @apply font-ui-semibold; background:var(--benchmark-preset-color); }
+.benchmark-picker-focused .benchmark-stage { @apply h-(--benchmark-stage-focused-height); }
+.benchmark-picker-focused .benchmark-selection-meta { @apply mb-ui-4 gap-ui-4 text-ui-xs leading-ui-xs; }
+.benchmark-picker-focused .benchmark-selection-meta strong { @apply text-ui-xs; }
+.benchmark-precise-controls { @apply mt-ui-4 text-ui-xs leading-ui-xs text-secondary; }
+.benchmark-precise-controls summary { @apply max-w-full cursor-pointer; @apply w-fit; }
+.benchmark-precise-controls .benchmark-range-inputs { @apply mt-ui-4; }
+.simulation-advanced-options { @apply min-w-0 border-b border-default px-ui-8 py-ui-6 text-ui-xs leading-ui-xs; }
+.simulation-advanced-options > summary { @apply cursor-pointer text-foreground; overflow-wrap:anywhere; }
+.simulation-advanced-options > summary > span:first-child { @apply mr-ui-5 font-ui-medium; }
+.simulation-advanced-options > summary > span:last-child { @apply text-ui-xs text-secondary; }
+.simulation-focused-editor .simulation-advanced-options .simulation-form-grid { @apply min-w-0 gap-x-ui-7 gap-y-ui-6 px-0 pb-0 pt-ui-6; }
+.simulation-focused-editor .simulation-preflight { @apply m-0 grid min-w-0 grid-cols-2 gap-x-ui-8 gap-y-ui-5 rounded-none border-0 border-b border-default bg-surface px-ui-8 py-ui-7; }
+.simulation-focused-editor .simulation-preflight-heading { @apply col-span-full mb-ui-1 flex min-w-0 flex-wrap items-center justify-between gap-ui-4 text-ui-md leading-ui-md; }
+.simulation-preflight-heading > span { @apply text-ui-xs text-secondary; }
+.simulation-focused-editor .simulation-preflight > .detail-row { @apply flex min-w-0 flex-wrap items-baseline justify-between gap-x-ui-5 gap-y-ui-2 border-0 p-0 text-ui-xs leading-ui-xs; }
+.simulation-focused-editor .simulation-preflight > .detail-row > strong { @apply min-w-0 text-right text-ui-xs font-ui-medium; overflow-wrap:anywhere; }
+.simulation-focused-editor .simulation-preflight > .detail-row:first-of-type { @apply col-span-full; }
+.simulation-focused-editor .simulation-preflight > details, .simulation-focused-editor .simulation-preflight > .error-text, .simulation-recovery-actions { @apply col-span-full m-0 min-w-0; }
+.simulation-focused-editor .simulation-preflight-help { @apply m-0; }
+.simulation-focused-editor .simulation-preflight > details { @apply text-ui-xs leading-ui-xs text-secondary; }
+.simulation-focused-editor .simulation-preflight > details > summary { @apply max-w-full cursor-pointer; @apply w-fit; }
+.simulation-recovery-actions { @apply flex flex-wrap items-center gap-ui-4; }
+.simulation-paid-controls { @apply grid min-w-0 items-end gap-ui-6 border-b border-default px-ui-8 py-ui-6; grid-template-columns:var(--benchmark-paid-control-width) minmax(0,1fr); }
+.simulation-paid-consent { @apply min-w-0 pb-ui-3 text-ui-xs leading-ui-md; overflow-wrap:anywhere; }
+.simulation-focused-editor .form-actions { @apply flex-wrap items-center justify-between gap-ui-5 px-ui-8 py-ui-7; }
+.simulation-focused-editor .form-actions > span { @apply min-w-0 text-ui-xs leading-ui-xs text-secondary; }
+.simulation-focused-editor [data-simulation-form-error]:empty { @apply hidden; }
+.simulation-focused-editor [data-simulation-form-error]:not(:empty) { @apply m-0 px-ui-8 py-ui-5; }
+.simulation-result-shortcuts { @apply flex flex-wrap gap-ui-4 border-b border-default px-ui-8 py-ui-5; }
+.simulation-focused-editor .simulation-repeat-context { @apply px-ui-8 py-ui-6; }
+.simulation-repeat-context > .button { @apply ml-auto; }
+.simulation-decision-section { @apply mt-ui-8 min-w-0; }
+.simulation-decision-section h3 { @apply m-0 mb-ui-4 flex min-w-0 items-center gap-ui-3 text-ui-md leading-ui-md; }
+.simulation-decision-probabilities { @apply m-0 grid min-w-0 grid-cols-3 gap-ui-4; }
+.simulation-decision-probabilities > div { @apply min-w-0 rounded-ui-md border border-default p-ui-5; }
+.simulation-decision-probabilities > div.selected { @apply border-strong bg-canvas; }
+.simulation-decision-probabilities dt { @apply text-ui-xs leading-ui-xs text-secondary; }
+.simulation-decision-probabilities dd { @apply m-0 mt-ui-2 text-ui-lg font-ui-semibold tabular-nums; }
+.simulation-decision-reason { @apply m-0 mb-ui-5 text-ui-xs leading-ui-md; overflow-wrap:anywhere; }
+.simulation-decision-section .studio-table { @apply text-ui-xs; }
+.simulation-list-scroll { @apply min-w-0 max-w-full overflow-x-auto; }
+.simulation-list-scroll:focus-visible { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:calc(-1 * var(--ds-focus-width)); }
+.simulation-list-table { @apply w-full table-auto; @apply min-w-(--simulation-list-min-width); }
+.simulation-list-table small { @apply mt-ui-1 block text-ui-xs leading-ui-xs text-secondary; }
+.simulation-list-table .simulation-list-name { @apply min-w-(--simulation-list-title-min-width); @apply w-(--simulation-list-title-max-width); }
+.simulation-list-table .simulation-list-title { @apply m-0 block min-w-0 truncate text-left; @apply max-w-(--simulation-list-title-max-width); }
+.simulation-list-table .simulation-list-mind { @apply min-w-(--simulation-list-mind-width); }
+.simulation-list-table .simulation-list-primary { @apply block min-w-0 truncate; @apply max-w-(--simulation-list-title-max-width); }
+.simulation-list-table .simulation-list-window { @apply min-w-(--simulation-list-period-width); }
+.simulation-list-table .simulation-list-period > span { @apply block whitespace-nowrap tabular-nums; }
+.simulation-list-table .simulation-list-status { @apply whitespace-nowrap; @apply min-w-(--simulation-list-status-width); }
+.simulation-list-table .simulation-list-numeric { @apply whitespace-nowrap text-right tabular-nums; @apply min-w-(--simulation-list-numeric-width); }
+.simulation-list-table .simulation-list-actions { @apply whitespace-nowrap text-right; @apply min-w-(--simulation-list-action-width); }
+.simulation-list-table .simulation-list-actions > .button { @apply m-0; }
+
+@variant max-md {
+  .benchmark-picker { @apply px-ui-6 py-ui-7; }
+  .benchmark-presets { @apply grid-cols-2; }
+  .benchmark-heading { @apply items-start; }
+  .benchmark-selection-meta > span:last-child { @apply ml-0; }
+  .simulation-benchmark-kpis { @apply grid-cols-2 p-ui-6; }
+  .simulation-evaluation-summary > .simulation-model-readiness,.simulation-evaluation-actions { @apply px-ui-6; }
+  .simulation-benchmark-kpis dd { @apply text-ui-xl; }
+  .simulation-focused-editor .simulation-setup-section, .simulation-advanced-options, .simulation-focused-editor .simulation-preflight, .simulation-focused-editor .form-actions, .simulation-paid-controls { @apply p-ui-6; }
+  .simulation-focused-editor .simulation-section-heading { @apply gap-ui-4; }
+  .simulation-target-fields, .simulation-date-fields, .simulation-paid-controls, .benchmark-range-inputs { @apply grid-cols-1; }
+  .simulation-focused-editor .simulation-preflight { @apply grid-cols-1 gap-ui-5; }
+  .simulation-advanced-options > summary > span:last-child { @apply ml-ui-5 mt-ui-3 block; }
+  .simulation-focused-editor .form-actions { @apply flex-col items-start; }
+  .simulation-focused-editor .form-actions > button { @apply w-full; }
+  .benchmark-picker-focused .benchmark-presets { @apply grid-cols-2; }
+}
+
+@import './experience-flow.css';
+
+.simulation-lab-grid { @apply grid grid-cols-1 gap-ui-7 mt-ui-7 xl:grid-cols-2; }
+.simulation-lab-controls { @apply grid grid-cols-1 gap-ui-6 md:grid-cols-3; }
+.simulation-lab-arm { @apply min-w-0; }
+.simulation-lab-metrics { @apply mt-ui-7 grid grid-cols-3 gap-ui-4 border-t border-default pt-ui-6; }
+.simulation-lab-metrics div { @apply flex flex-col gap-ui-3; }
+.simulation-lab-metrics span { @apply text-ui-xs text-secondary; }
+.simulation-lab-metrics strong { @apply text-ui-lg tabular-nums; }
+.simulation-baseline-comparison { @apply mt-ui-7; }
+.simulation-baseline-comparison table { @apply table-fixed; @apply min-w-(--ds-sheet-width); }
+.simulation-baseline-comparison th:not(:first-child), .simulation-baseline-comparison td { @apply text-right tabular-nums whitespace-nowrap; }
+.simulation-baseline-comparison th:first-child { @apply min-w-0 truncate text-left; @apply w-(--ui-column-detail); }
+.simulation-baseline-comparison tbody th { @apply font-ui-medium; @apply text-(color:--ds-text-primary); background:var(--ds-bg-raised); }
+
+[data-lab-conditions] > summary { @apply cursor-pointer px-ui-6 py-ui-5 text-ui-sm font-ui-medium; }
+.simulation-lab-grid { @apply gap-ui-4; }
+
+.simulation-lab-toolbar { @apply flex flex-wrap items-center gap-ui-6; }
+.simulation-lab-toolbar > .field { @apply m-0 flex flex-col gap-ui-2; }
+.simulation-lab-toolbar > details { @apply min-w-0 flex-1; }
+.simulation-lab-toolbar > details[open] { @apply basis-full order-last; }
+.simulation-lab-consent { @apply my-ui-6 flex items-center gap-ui-3 text-ui-sm; }
+.simulation-lab-consent input { @apply w-auto shrink-0; }
+.simulation-lab-comparison { @apply mt-ui-6 flex flex-wrap items-center justify-between gap-ui-5 border-t border-default pt-ui-5 text-ui-sm; }
+
+.simulation-lab-arm-tools { @apply flex justify-end border-b border-default px-ui-3 py-ui-2; }
+.simulation-lab-recommendations { @apply border-b border-default px-ui-4 py-ui-3 text-ui-xs; }
+.simulation-lab-recommendations summary { @apply cursor-pointer; }
+.simulation-lab-recommendations > div { @apply mt-ui-3 flex flex-wrap gap-ui-3; }
+[data-simulation-lab][data-focus="0"] .simulation-lab-grid,[data-simulation-lab][data-focus="1"] .simulation-lab-grid { @apply grid-cols-1; }
+[data-simulation-lab][data-focus="0"] [data-lab-arm="1"],[data-simulation-lab][data-focus="1"] [data-lab-arm="0"] { @apply hidden; }
+
+[data-lab-frame-result] { @apply flex flex-wrap gap-ui-6 text-ui-sm; }
+
+.simulation-lab-period { @apply mt-ui-6; }
+.simulation-lab-period h3 { @apply m-0 text-ui-md font-ui-semibold; }
+.simulation-lab-period fieldset { @apply m-0 min-w-0 border-0 p-0; }
+.simulation-lab-arm-tools { @apply items-center justify-between; }
+.simulation-lab-arm-tools > .simulation-lab-recommendations { @apply order-first border-0; }
+
+.strategy-learning-change { @apply block min-w-0 truncate; @apply max-w-(--ui-column-detail); }
+.strategy-learning-progress,.strategy-learning-feedback { @apply flex min-w-0 flex-wrap items-center gap-x-ui-6 gap-y-ui-3 text-ui-sm; }
+.strategy-learning-progress progress { @apply block w-full shrink-0 overflow-hidden rounded-full border-0 bg-field; @apply max-w-(--benchmark-paid-control-width); @apply h-ui-3; appearance:none; accent-color:var(--ds-accent); }
+.strategy-learning-progress progress::-webkit-progress-bar { @apply rounded-full bg-field; }
+.strategy-learning-progress progress::-webkit-progress-value { @apply rounded-full bg-accent; }
+.strategy-learning-progress progress::-moz-progress-bar { @apply rounded-full bg-accent; }
+@import './lab-workspace.css';
+@import './experiment-collection.css';
+@import './strategy-learning.css';

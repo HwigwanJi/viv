@@ -1,0 +1,110 @@
+@reference "../theme.css";
+.mind-game-scoreboard { @apply flex flex-wrap items-center justify-between gap-6;
+ @apply p-(--game-score-padding);@apply my-(--game-one);@apply rounded-(--game-card-radius);background:var(--game-score-bg);@apply text-(color:--game-score-ink);box-shadow:var(--game-shadow);
+}
+.mind-game-scoreboard h2 { @apply font-ui-semibold; @apply text-(length:--game-title-size);color:inherit;@apply my-(--game-half); }
+.mind-game-scoreboard p,.mind-game-scoreboard small,.mind-game-scoreboard .text-button { @apply text-(color:--game-score-muted); }
+.mind-game-eyebrow { @apply text-ui-xs font-ui-semibold; letter-spacing:var(--game-tracking); }
+.mind-game-scores { @apply flex flex-wrap items-center gap-6; }
+.mind-game-score { @apply flex flex-col gap-1; }
+.mind-game-score>strong,.mind-game-preview-score strong { @apply font-ui-semibold; @apply text-(length:--game-score-size);font-variant-numeric:tabular-nums; }
+.mind-game-toolbar { @apply flex items-center gap-3;flex-basis:100%;border-top:var(--game-border) solid var(--game-score-muted);@apply pt-(--game-half); }
+.mind-companion-grid:has(.mind-game-stage) { @apply grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5; }
+.mind-companion-card:has(.mind-game-stage) { @apply relative overflow-hidden; @apply rounded-(--game-card-radius);box-shadow:var(--game-shadow);background:var(--game-white); }
+.mind-companion-card .mind-companion-open { @apply p-0; }
+.mind-companion-open>h2,.mind-companion-open>.mind-companion-state,.mind-companion-open>.mind-companion-holdings,.mind-companion-open>.mind-companion-performance,.mind-companion-open>.mind-companion-activity,.mind-companion-open>.mind-game-today { @apply mx-(--game-one); }
+.mind-companion-open>h2 { @apply mt-(--game-one); }
+.mind-game-stage { @apply relative overflow-hidden; @apply h-(--game-stage-height);background:var(--game-sky-calm);isolation:isolate; }
+.mind-game-stage[data-weather="sunny"] { background:var(--game-sky-sunny); }
+.mind-game-stage[data-weather="rainy"] { background:var(--game-sky-rainy); }
+.mind-game-stage[data-weather="unknown"] { background:var(--game-sky-unknown); }
+.mind-game-weather { @apply absolute inset-0 overflow-hidden; pointer-events:none; }
+.mind-game-sun { @apply absolute;top:12%;right:14%;@apply w-(--game-sun-size);@apply h-(--game-sun-size);border-radius:50%;background:var(--game-gold-light);box-shadow:0 0 0 var(--game-half) var(--game-gold-light); }
+.mind-game-stage:not([data-weather="sunny"]) .mind-game-sun { visibility:hidden; }
+.mind-game-cloud { @apply absolute; top:17%;left:11%;@apply w-(--game-cloud-size);@apply h-(--game-cloud-height);background:var(--game-white);@apply rounded-(--game-round);animation:game-cloud var(--game-weather-speed) ease-in-out infinite alternate; }
+.mind-game-cloud::before,.mind-game-cloud::after { content:"";@apply absolute;background:inherit;border-radius:50%;width:45%;height:160%;bottom:12%;left:16%; }
+.mind-game-cloud::after { left:44%;height:130%;width:37%; }
+.mind-game-cloud-back { left:65%;top:27%;transform:scale(.65);@apply opacity-(--game-hill-opacity);animation-delay:var(--game-delay-3); }
+.mind-game-stage[data-weather="rainy"] .mind-game-cloud { width:30%; }
+.mind-game-rain { @apply absolute inset-0; background:var(--game-rain);@apply opacity-(--game-rain-opacity);animation:game-rain var(--game-rain-speed) linear infinite; }
+.mind-game-stage:not([data-weather="rainy"]) .mind-game-rain { @apply hidden; }
+.mind-game-hill { @apply absolute; width:130%;height:52%;left:-30%;bottom:-16%;border-radius:50%;background:var(--game-grass); }
+.mind-game-hill-back { background:var(--game-grass-back);left:30%;bottom:-9%; }
+.mind-game-ground { @apply absolute; bottom:0;left:20%;width:68%;height:23%;border-radius:50%;background:var(--game-floor); }
+.mind-game-workstation { @apply absolute;inset:15% 0 0;@apply w-full;height:85%;overflow:visible; }
+.mind-game-monitor rect { fill:var(--game-monitor);stroke:var(--game-desk);stroke-width:3; }
+.mind-game-monitor path,.mind-game-desk path,.mind-game-lamp path { fill:none;stroke:var(--game-desk);stroke-width:4;stroke-linecap:round; }
+.mind-game-monitor .mind-game-chart { stroke:var(--game-plant);stroke-width:3;stroke-dasharray:100;animation:game-chart var(--game-look-speed) ease-in-out infinite; }
+.mind-game-plant path { fill:var(--game-plant);stroke:var(--game-plant);stroke-width:2; }
+.mind-game-lamp { @apply opacity-(--game-hill-opacity); }
+.mind-game-character { @apply absolute;left:37%;bottom:9%;width:46%;height:76%; }
+.mind-game-character .mind-avatar { @apply w-full;@apply h-full; }
+.mind-game-character .mind-avatar-body { transform-origin:50% 80%;animation:game-breathe var(--game-breathe-speed) var(--game-motion-ease) infinite;animation-delay:var(--game-motion-delay); }
+.mind-game-character .mind-avatar-hand { transform-box:fill-box;transform-origin:50% 15%; }
+.mind-game-character .mind-avatar-eyes { transform-box:fill-box;transform-origin:center;animation:game-blink var(--game-blink-speed) linear infinite;animation-delay:var(--game-motion-delay); }
+.mind-game-stage[data-character-rhythm="1"] { --game-motion-delay:var(--game-delay-1); }
+.mind-game-stage[data-character-rhythm="2"] { --game-motion-delay:var(--game-delay-2); }
+.mind-game-stage[data-character-rhythm="3"] { --game-motion-delay:var(--game-delay-3); }
+.mind-game-stage[data-character-rhythm="4"] { --game-motion-delay:var(--game-delay-4); }
+.mind-game-stage[data-character-rhythm="5"] { --game-motion-delay:var(--game-delay-5); }
+.mind-game-action-label,.mind-game-weather-caption { @apply absolute text-ui-xs font-ui-medium;bottom:var(--game-stage-label-bottom);left:var(--game-one);@apply text-(color:--game-ink); }
+.mind-game-weather-caption { left:auto;right:var(--game-one); }
+.mind-game-thought { @apply absolute flex gap-1;top:26%;left:57%;background:var(--game-white);@apply p-(--game-half);@apply rounded-(--game-round);opacity:0; }
+.mind-game-thought i { @apply block;@apply w-(--game-half);@apply h-(--game-half);background:var(--game-muted);border-radius:50%;animation:game-thought var(--game-think-speed) infinite; }
+.mind-game-thought i:nth-child(2) { animation-delay:var(--game-delay-1); }.mind-game-thought i:nth-child(3) { animation-delay:var(--game-delay-2); }
+.mind-game-envelope { @apply absolute font-ui-semibold;left:44%;top:44%;@apply text-(length:--game-cue-size);@apply text-(color:--game-profit);opacity:0; }
+.mind-game-sparkles { @apply absolute;left:32%;top:20%;width:52%;@apply text-(length:--game-sparkle-size);@apply text-(color:--game-gold);opacity:0; }
+.mind-game-sparkles span { @apply relative;top:-20%; }
+.mind-game-stage[data-motion-state="rest"] .mind-avatar-body { animation:game-rest var(--game-hold-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="rest"] .mind-avatar-eyes { opacity:0;animation:none; }.mind-game-stage[data-motion-state="rest"] .mind-avatar-sleep-eyes { opacity:1; }
+.mind-game-stage[data-motion-state="scan"] .mind-avatar-face { animation:game-look var(--game-look-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="scan"] .mind-avatar-hand-right { animation:game-point var(--game-look-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="think"] .mind-game-thought { opacity:1; }
+.mind-game-stage[data-motion-state="think"] .mind-avatar-hand-right { animation:game-think-hand var(--game-think-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="entry"] .mind-avatar-body,.mind-game-stage[data-motion-state="exit"] .mind-avatar-body { animation:game-step var(--game-step-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="entry"] .mind-game-envelope,.mind-game-stage[data-motion-state="exit"] .mind-game-envelope { animation:game-send var(--game-think-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="exit"] .mind-game-envelope { animation-direction:reverse; }
+.mind-game-stage[data-motion-state="hold"] .mind-avatar-face { animation:game-monitor var(--game-hold-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="hold"] .mind-avatar-hand-left { animation:game-point var(--game-hold-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="add"] .mind-avatar-hand,.mind-game-stage[data-motion-state="reduce"] .mind-avatar-hand { animation:game-gather var(--game-think-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="add"] .mind-game-envelope,.mind-game-stage[data-motion-state="reduce"] .mind-game-envelope { opacity:1;animation:game-gather var(--game-think-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="reduce"] .mind-avatar-hand-right { animation-direction:reverse; }
+.mind-game-stage[data-motion-state="settle"] .mind-avatar-body { animation:game-celebrate var(--game-settle-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="settle"] .mind-avatar-hand { transform:rotate(var(--game-arm-up)); }.mind-game-stage[data-motion-state="settle"] .mind-avatar-hand-left { transform:rotate(var(--game-arm-down)); }
+.mind-game-stage[data-motion-state="settle"] .mind-game-sparkles { animation:game-sparkle var(--game-settle-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="attention"] .mind-avatar-body,.mind-game-stage[data-motion-state="stale"] .mind-avatar-body { animation:game-inspect var(--game-look-speed) ease-in-out infinite; }
+.mind-game-stage[data-motion-state="attention"] .mind-game-thought,.mind-game-stage[data-motion-state="stale"] .mind-game-thought { opacity:1; }
+.mind-game-stage[data-motion-state="attention"] .mind-avatar-mouth,.mind-game-stage[data-motion-state="stale"] .mind-avatar-mouth { transform:var(--companion-attention-mouth); }
+.mind-game-today { @apply grid grid-cols-2 items-center gap-1 py-3 text-ui-xs; border-top:var(--game-border) solid var(--ds-border-default); }
+.mind-game-today strong { @apply text-right text-ui-sm font-ui-semibold; @apply text-(color:--game-ink);font-variant-numeric:tabular-nums; }
+.mind-game-today[data-weather="sunny"] strong { @apply text-(color:--game-profit); }.mind-game-today[data-weather="rainy"] strong { @apply text-(color:--game-loss); }
+.mind-game-today small { @apply col-span-2; @apply text-(color:--game-muted);@apply text-(length:--game-caption-size); }
+.mind-game-profit-fly { @apply fixed pointer-events-none whitespace-nowrap font-ui-bold;z-index:var(--game-layer-effect);@apply py-(--game-half) px-(--game-one);@apply rounded-(--game-round);background:var(--game-gold-light);@apply text-(color:--game-ink);@apply text-(length:--game-fly-size);box-shadow:var(--game-fly-shadow); }
+.is-crediting { animation:game-credit var(--game-pop-duration) ease-out; }
+.mind-motion-gallery header { @apply py-5; }.mind-motion-gallery h1 { @apply text-ui-2xl font-ui-semibold; }
+.mind-motion-picker,.mind-motion-weather-picker { @apply flex flex-wrap gap-2 py-3; }
+.mind-motion-picker button,.mind-motion-weather-picker button { @apply px-3 py-2 text-ui-xs font-ui-medium; background:var(--game-white);border:var(--game-border) solid var(--ds-border-default);@apply rounded-(--game-round); }
+.mind-motion-picker button[aria-pressed="true"] { background:var(--game-score-bg);@apply text-(color:--game-score-ink); }
+.mind-motion-grid h2,.mind-motion-grid p,.mind-motion-weather-picker { @apply px-4; }.mind-motion-grid p { @apply text-ui-xs; }
+.mind-motion-grid .mind-game-stage { @apply h-(--game-gallery-stage-height); }.mind-game-preview-score { @apply py-4; }
+@keyframes game-cloud { to { translate:12% 0; } }
+@keyframes game-rain { to { background-position:0 80%; } }
+@keyframes game-breathe { 50% { transform:translateY(-1.8%) scale(1.012,.988); } }
+@keyframes game-rest { 0%,100% { transform:translateY(4%) rotate(var(--game-tilt-small)) scale(1.04,.94); } 50% { transform:translateY(3%) rotate(var(--game-tilt-small)) scale(1.05,.93); } }
+@keyframes game-blink { 0%,43%,47%,100% { transform:scaleY(1); }45% { transform:scaleY(.08); } }
+@keyframes game-look { 0%,100% { transform:translateX(-3%); }50% { transform:translateX(3%); } }
+@keyframes game-monitor { 0%,75%,100% { transform:translateX(-4%); }80%,95% { transform:translateX(1%); } }
+@keyframes game-point { 0%,65%,100% { transform:rotate(var(--game-small-angle)); }35%,50% { transform:rotate(var(--game-arm-down)); } }
+@keyframes game-think-hand { 0%,100% { transform:translateY(-15%) rotate(var(--game-arm-up)); }50% { transform:translateY(-20%) rotate(var(--game-arm-up)); } }
+@keyframes game-thought { 50% { transform:translateY(-35%);opacity:var(--game-rain-opacity); } }
+@keyframes game-step { 0%,100% { transform:translateX(0) rotate(var(--game-negative-angle)); }50% { transform:translateX(9%) translateY(-4%) rotate(var(--game-small-angle)); } }
+@keyframes game-send { 0% { opacity:0;transform:translate(0,0) scale(.7); }30% { opacity:1; }100% { opacity:0;transform:translate(-100%,-85%) scale(.5); } }
+@keyframes game-gather { 0%,100% { transform:translateX(-12%) rotate(var(--game-small-angle)); }50% { transform:translateX(12%) rotate(var(--game-negative-angle)); } }
+@keyframes game-celebrate { 0%,100% { transform:translateY(0) scale(1.04,.96); }40% { transform:translateY(-12%) scale(.97,1.03); }60% { transform:translateY(-3%) scale(1.05,.95); } }
+@keyframes game-inspect { 0%,100% { transform:rotate(var(--game-negative-angle)); }50% { transform:rotate(var(--game-small-angle)); } }
+@keyframes game-sparkle { 0%,100% { opacity:0;transform:translateY(0) scale(.7); }40% { opacity:1; }80% { opacity:0;transform:translateY(-30%) scale(1.2); } }
+@keyframes game-chart { 0%,10% { stroke-dashoffset:100; }70%,100% { stroke-dashoffset:0; } }
+@keyframes game-credit { 40% { color:var(--game-gold);text-shadow:var(--game-credit-shadow);transform:scale(1.07); } }
+@media (prefers-reduced-motion:reduce) { .mind-game-stage *,.mind-game-stage *::before,.mind-game-stage *::after,.is-crediting { animation:none!important; } }
+[data-motion="off"] .mind-game-stage * { animation:none!important; }
+html[data-document-hidden] .mind-game-stage * { animation-play-state:paused; }

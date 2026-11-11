@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "characters": [
+    "blob",
+    "pear",
+    "heart",
+    "frog",
+    "cat",
+    "rabbit"
+  ],
+  "actions": [
+    "idle",
+    "walk",
+    "read",
+    "carry",
+    "sell",
+    "loss",
+    "profit"
+  ],
+  "frames": 252,
+  "source": "Built-in image_gen",
+  "layout": "atlas-layout.json",
+  "assets": [
+    {
+      "name": "atlas-layout.json",
+      "bytes": 92173,
+      "sha256": "7c23a37be7a26ace2779e20e7e3f0bfc9bd952524ac52c7b9c1ddab7647e680f"
+    },
+    {
+      "name": "environment.png",
+      "bytes": 1876997,
+      "sha256": "63e8325c4b79649aec14add8eb06e0e409f0c84d6d27e6e9796f611af1ce55f8"
+    },
+    {
+      "name": "characters/blob.png",
+      "bytes": 1861242,
+      "sha256": "b0a237db345dc702c2eb692a9c81265b8deff4ae0bbfbc5bc035590a10b4cdd2"
+    },
+    {
+      "name": "characters/pear.png",
+      "bytes": 1967945,
+      "sha256": "f2534945160cac1892d13a6311c9c9e546c03b5849bb063b6dfa58e89ebc72fe"
+    },
+    {
+      "name": "characters/heart.png",
+      "bytes": 1970418,
+      "sha256": "d4cf8977b3324a84c81bf43721c3a83e2e394b7c238c85204957bfab02125bc4"
+    },
+    {
+      "name": "characters/frog.png",
+      "bytes": 2054933,
+      "sha256": "6d86f57cc3b453ce25228a6943eaf45c9f682781772fa4de6c3681b1a8ba0493"
+    },
+    {
+      "name": "characters/cat.png",
+      "bytes": 2166693,
+      "sha256": "a01722218eed33f2300930ba194fedc8dde8a96ceaa664166ca5b439aa055bbc"
+    },
+    {
+      "name": "characters/rabbit.png",
+      "bytes": 2077115,
+      "sha256": "f9f7eab228aed8baa2add91aca5d55b88e1c0b09e3f492419953368e2414057d"
+    },
+    {
+      "name": "garden-storm.png",
+      "bytes": 2386552,
+      "sha256": "c8b6473355228051f5d73ee081e6d4e59059ff9b7e782075f80b7c4dcc31d8c3"
+    }
+  ],
+  "backgrounds": {
+    "sunny": "../mind-garden-v2/garden-sunny-cute.png",
+    "rainy": "../mind-garden-v2/garden-rainy-cute.png"
+  },
+  "prompts": "../../../artifacts/cji-mind-living-cards-20261022/prompts.json",
+  "weather": {
+    "storm": "garden-storm.png",
+    "provenance": "artifacts/cji-mind-rain-20261022/research.json"
+  }
+}

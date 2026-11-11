@@ -1,0 +1,26 @@
+:root {
+  --ui-motion-press-ms: 80;
+  --ui-motion-control-ms: 120;
+  --ui-motion-popup-ms: 160;
+  --ui-motion-page-ms: 220;
+  --ui-motion-dialog-ms: 240;
+  --ui-motion-press-duration: calc(var(--ui-motion-press-ms) * 1ms);
+  --ui-motion-control-duration: calc(var(--ui-motion-control-ms) * 1ms);
+  --ui-motion-popup-duration: calc(var(--ui-motion-popup-ms) * 1ms);
+  --ui-motion-page-duration: calc(var(--ui-motion-page-ms) * 1ms);
+  --ui-motion-dialog-duration: calc(var(--ui-motion-dialog-ms) * 1ms);
+  --ui-motion-distance-sm: 4px;
+  --ui-motion-distance-md: 8px;
+  --ui-motion-lift: -2px;
+  --ui-motion-ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --ui-motion-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ui-motion-pressed-scale: .985;
+  --ui-motion-backdrop-from: rgba(0, 0, 0, 0);
+  --ui-motion-loading-low: .5;
+  --ui-motion-loading-ms: 1200;
+  --ui-motion-loading-duration: calc(var(--ui-motion-loading-ms) * 1ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --graph-fit-duration: 0; }
+}

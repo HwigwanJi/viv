@@ -1,0 +1,61 @@
+.strategy-node { @apply box-border h-auto min-w-0 rounded-ui-lg border border-default bg-surface p-ui-4 text-foreground; width:var(--graph-node-width); min-height:var(--graph-node-height); box-shadow:var(--ds-shadow-control); }
+.strategy-node-has-parameters { width:var(--graph-parameter-node-width); }
+.strategy-node.selected { border-color:var(--ds-focus); box-shadow:var(--graph-node-selected-shadow); }
+.strategy-node[data-node-cohort=VALUE] { --graph-cohort-color:var(--graph-cohort-value); }
+.strategy-node[data-node-cohort=DATA] { --graph-cohort-color:var(--graph-cohort-data); }
+.strategy-node[data-node-cohort=COMPUTE] { --graph-cohort-color:var(--graph-cohort-compute); }
+.strategy-node[data-node-cohort=CONDITION] { --graph-cohort-color:var(--graph-cohort-condition); }
+.strategy-node[data-node-cohort=FLOW] { --graph-cohort-color:var(--graph-cohort-flow); }
+.strategy-node[data-node-cohort=DECISION] { --graph-cohort-color:var(--graph-cohort-decision); }
+.strategy-node[data-node-cohort=GUARD] { --graph-cohort-color:var(--graph-cohort-guard); }
+.strategy-node[data-node-cohort=EXECUTE] { --graph-cohort-color:var(--graph-cohort-execute); }
+.strategy-part-heading { @apply -mx-ui-4 -mt-ui-4 mb-ui-3 flex min-w-0 items-center gap-ui-3 rounded-t-ui-lg border-b border-subtle px-ui-4 py-ui-3; background:color-mix(in srgb,var(--graph-cohort-color,var(--ds-text-secondary)) 6%,var(--ds-bg-raised)); }
+.strategy-node-heading { @apply min-w-0 flex-1; }
+.strategy-node-heading strong { @apply block min-w-0 truncate text-ui-md font-ui-semibold leading-ui-md; }
+.strategy-node-kind { @apply mb-ui-1 block truncate text-ui-xs leading-ui-xs; color:var(--graph-cohort-color,var(--ds-text-secondary)); }
+.strategy-node-symbol { @apply grid shrink-0 place-items-center rounded-ui-md; width:var(--graph-node-symbol-size); height:var(--graph-node-symbol-size); color:var(--graph-cohort-color,var(--ds-text-primary)); background:color-mix(in srgb,var(--graph-cohort-color,var(--ds-text-secondary)) 9%,var(--ds-bg-raised)); }
+.strategy-glyph { @apply block shrink-0; width:var(--graph-glyph-size); height:var(--graph-glyph-size); stroke-width:var(--ds-icon-stroke); }
+.strategy-part-status { @apply size-ui-2 shrink-0 rounded-full bg-positive; }
+.connection-incomplete .strategy-part-status { @apply bg-warning; }
+.connection-invalid .strategy-part-status { @apply bg-negative; }
+.strategy-node-excluded .strategy-part-status { @apply bg-muted; }
+.strategy-node-title { @apply flex min-w-0 items-center gap-ui-3 text-ui-md; }
+.strategy-node-title strong { @apply min-w-0 truncate; }
+.strategy-part-heading + .strategy-node-meta { @apply mb-0 mt-ui-3 truncate text-ui-xs leading-ui-xs text-secondary; }
+.strategy-parameter-pins { @apply mt-ui-3 grid min-w-0 gap-0 border-t border-subtle; }
+.strategy-parameter-row { @apply relative grid min-w-0 items-center gap-ui-2 border-b border-subtle py-ui-1; grid-template-columns:var(--graph-pin-label-width) minmax(0,1fr); min-height:var(--graph-parameter-row-height); }
+.strategy-parameter-row:last-child { @apply border-b-0; }
+.strategy-parameter-caption { @apply flex min-w-0 items-baseline gap-ui-1 text-ui-xs leading-ui-xs; }
+.strategy-parameter-caption > span { @apply min-w-0 truncate; }
+.strategy-parameter-caption small { @apply shrink-0 text-muted; }
+.strategy-parameter-values { @apply grid min-w-0 items-center gap-ui-1; grid-template-columns:minmax(0,1fr) var(--graph-pin-action-width); }
+.strategy-parameter-values > input,.strategy-parameter-values > select,.strategy-variable-value > input,.strategy-variable-value > select { @apply min-w-0 w-full rounded-ui-sm border border-transparent bg-transparent px-ui-2 py-ui-2 text-ui-xs text-foreground; min-height:var(--graph-pin-control-height); }
+.strategy-parameter-values > input:hover,.strategy-parameter-values > select:hover,.strategy-variable-value > input:hover,.strategy-variable-value > select:hover { @apply border-default bg-field; }
+.strategy-parameter-values input:focus,.strategy-parameter-values select:focus,.strategy-variable-value input:focus,.strategy-variable-value select:focus { @apply border-accent bg-field; }
+.strategy-parameter-source { @apply flex min-w-0 items-center justify-between gap-ui-1 truncate rounded-ui-sm border border-transparent bg-accent-soft px-ui-2 py-ui-2 text-left text-ui-xs text-accent; min-height:var(--graph-pin-control-height); }
+.strategy-parameter-source > span { @apply min-w-0 truncate; }
+.strategy-parameter-source > small { @apply min-w-0 truncate text-secondary; }
+.strategy-binding-select { @apply relative grid min-w-0 place-items-center rounded-ui-sm border border-default bg-surface; height:var(--graph-pin-control-height); }
+.strategy-binding-select > .strategy-glyph { @apply pointer-events-none absolute text-secondary; }
+.strategy-parameter-values .strategy-binding-select select { @apply absolute inset-0 h-full w-full cursor-pointer appearance-none border-0 bg-transparent p-0; color:transparent; }
+.strategy-binding-select select option { @apply text-foreground bg-surface; }
+.strategy-binding-select[data-connected=true] { @apply border-accent bg-accent-soft; }
+.strategy-binding-select[data-connected=true] > .strategy-glyph { @apply text-accent; }
+.strategy-binding-select:focus-within { @apply outline outline-accent; }
+.strategy-parameter-values [aria-invalid=true],.strategy-variable-value [aria-invalid=true] { @apply border-negative; }
+.strategy-node .strategy-parameter-port { left:calc(-1 * var(--ds-space-4)); top:50%; border-color:var(--graph-cohort-color,var(--ds-accent)); }
+.strategy-variable-value { @apply mt-ui-3 flex min-w-0 items-center gap-ui-2 border-t border-subtle pt-ui-2; }
+.strategy-variable-value > input,.strategy-variable-value > select { @apply flex-1 border-default bg-field; }
+.strategy-variable-value small { @apply shrink-0 text-ui-xs text-secondary; }
+.strategy-node .strategy-node-summary { @apply my-ui-3 gap-ui-1 border-t-0 p-0; }
+.strategy-node .strategy-connection-state { @apply border-t-0; }
+.strategy-part-heading ~ .strategy-node-instance { @apply mt-ui-2 mb-0; }
+.strategy-inspector .strategy-parameter-row { min-height:var(--ds-control-height-touch); }
+.strategy-inspector .strategy-parameter-values input,.strategy-inspector .strategy-parameter-values select { @apply p-ui-2 text-ui-sm; }
+.strategy-inspector .strategy-binding-select { height:var(--ds-control-height-touch); }
+.strategy-data-ports { @apply mt-ui-2 grid min-w-0 gap-ui-1 border-t border-subtle pt-ui-2; }
+.strategy-data-port-row { @apply relative flex min-w-0 items-center justify-between gap-ui-4 text-ui-xs leading-ui-xs text-secondary; min-height:var(--graph-data-port-row-height); }
+.strategy-data-port-label { @apply min-w-0 truncate; }
+.strategy-data-port-row .react-flow__handle-left { left:calc(-1 * var(--ds-space-4)); top:50%; }
+.strategy-data-port-row .react-flow__handle-right { right:calc(-1 * var(--ds-space-4)); top:50%; }
+@media (pointer:coarse) { .strategy-binding-select { min-width:var(--ds-control-height-touch); height:var(--ds-control-height-touch); } .strategy-parameter-values { grid-template-columns:minmax(0,1fr) var(--ds-control-height-touch); } }

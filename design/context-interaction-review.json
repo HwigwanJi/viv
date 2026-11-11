@@ -1,0 +1,3750 @@
+{
+  "schemaVersion": 1,
+  "request": "우클릭 대상 전수 식별, 상태별 액션 매트릭스, 실제 UI 검토 및 신규 누락 개발 게이트",
+  "sourceReviewScope": "현재 작성 UI 소스의 상호작용 선언 전체. 실제 브라우저 사용은 별도 evidence 기록으로 구별한다.",
+  "sources": [
+    {
+      "file": "dist/app.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-09T22:18:49.871Z",
+      "reason": "088: 현재 목록 검색의 업무 경계. 기존 공용 studioRouteHash에서 화면 전환 시 이전 검색/필터 제거, 대상·모드·실험 변경 시 원래 cursor 제거. 명시 목적지 조건과 정식 returnTo 보존. 마인드 변경의 새 제목 초점을 기존 routeFocus에 연결. 새 메뉴/금융 명령 없음.",
+      "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
+      "controls": [
+        [
+          "data-studio-action=\"close-dialog\"",
+          2
+        ],
+        [
+          "data-studio-jump-open",
+          2
+        ],
+        [
+          "element:a",
+          2
+        ],
+        [
+          "element:button",
+          3
+        ],
+        [
+          "helper:button(",
+          2
+        ],
+        [
+          "helper:renderActionMenu(",
+          1
+        ]
+      ],
+      "sourceHash": "77af015146d76eabc979adbf9bdbc7e54e8c3036199c24d9dadf9408a97e862f",
+      "matrix": "design/context-action-matrix.json"
+    },
+    {
+      "file": "dist/index.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "a460ada50d340fe369257218a90c594e678d4d2d25a5ca7f45b6d6200fd1eff6",
+      "controls": [
+        [
+          "element:dialog",
+          1
+        ]
+      ],
+      "sourceHash": "c3e73a0b443fd69df02b8bd9a899a1b77261fbd38e952900554ac0f9210d0126"
+    },
+    {
+      "file": "dist/install.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "650c2238c6f7803955abee136052ed350f7aba58a3d57565ff456a7408e924a1",
+      "controls": [
+        [
+          "element:a",
+          2
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:dialog",
+          1
+        ]
+      ],
+      "sourceHash": "95cbbd6d8276f9ed748cef3afa90e1aa892ae0bbfe7c9560c5e1feb97cc4e442"
+    },
+    {
+      "file": "dist/knowledge.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "904eb02caf0284c020158dfe13ca1e2dd9d01e10c51841e80f43b14c45f82b3c"
+    },
+    {
+      "file": "dist/mind-art-preview.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "f44b095a68b74f9256f6045f0f68de7d56414bf014aaa0c398c43f4b97b7a5f3"
+    },
+    {
+      "file": "dist/mind-art-study.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "6ea724d60b2656de10ef2caa55a1ca521629c77205907fd3f22f1ad6473f5028",
+      "controls": [
+        [
+          "element:a",
+          21
+        ],
+        [
+          "element:article",
+          3
+        ],
+        [
+          "element:summary",
+          6
+        ],
+        [
+          "element:table",
+          2
+        ]
+      ],
+      "sourceHash": "5a89cd08d47124f7c6144d872a63266a1ac75e451da05cc59cb8a16d15248322"
+    },
+    {
+      "file": "dist/mind-motion-gallery.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "f44b095a68b74f9256f6045f0f68de7d56414bf014aaa0c398c43f4b97b7a5f3"
+    },
+    {
+      "file": "dist/notification-worker.js",
+      "owners": [
+        "notification",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "알림 원문·현재 처리 상태와 연결한 동일 명령을 재사용한다. 완료 삭제/진행 중 비활성/휴지통 복원을 공용 서버 규칙과 대조한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "1d35ded6754d20076c351fed6b356d13d56fe655395490119bfb60992aa25797"
+    },
+    {
+      "file": "dist/research/overseas-rebuild-20261023/index.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "672f150a3f38dcb902a8be964226a172910805355b4470779f2f7b49054126d6",
+      "controls": [
+        [
+          "element:a",
+          12
+        ],
+        [
+          "element:table",
+          3
+        ]
+      ],
+      "sourceHash": "dbdd444f084b060137ce2fcfabab69c27e603fad7a5e55ac4eb7ed894c568ee8"
+    },
+    {
+      "file": "dist/research/regime-minute-forward-20261023/index.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "9ea54f190709210fd74f7c4067d8343d9980a8a7c9ae1b90f20558ae79e3cf1a",
+      "controls": [
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:table",
+          1
+        ]
+      ],
+      "sourceHash": "10f9c31a8e38d398b2f55046868b52bcae4dde56c35b98a4a0eeb28ce1687412"
+    },
+    {
+      "file": "dist/research/weekly-three-minds-20261023.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "16a0991ee9e0853e5a05bcb05a0191d0b694b5ad98b9344ecfe1653a81432d9f",
+      "controls": [
+        [
+          "element:a",
+          8
+        ],
+        [
+          "element:button",
+          4
+        ],
+        [
+          "element:table",
+          3
+        ]
+      ],
+      "sourceHash": "3197f4aabbe71ee406c3429614e7f463567454657b73bd15477f165d498096c9"
+    },
+    {
+      "file": "dist/store.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "84787ceda4e66b49e9149a41f217acaf4140e815a1e2bb02d6fc71918de7d6af"
+    },
+    {
+      "file": "dist/strategy-ui-library.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "270516407e1eed49bc658fd7f557d66ee9b7cac49f0dba6d2350405d592e5045"
+    },
+    {
+      "file": "dist/strategy-view.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "aa0c8a0b6748cc10785f8a92fc3022d27c9666cca51af116532aeb9de6315f4c"
+    },
+    {
+      "file": "dist/ui/action-menu.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T08:45:20.517Z",
+      "reason": "108: 기존 공용 작업 메뉴에 선택형 검색 입력을 추가하고 시간대 선택에만 사용. 기본 호출부 마크업 동일, 도시/IANA 검색·빈 결과·키보드·직접 입력·초안/Undo·오류 보존·모바일/운영을 실제 검토. 검색 입력 Enter는 저장하지 않고 메뉴 Escape/Tab은 작성 폼을 유지.",
+      "signature": "6d3f407064fc4f9491f0d102611b53e7894cbb04367982f6093bd2dea70d6129",
+      "controls": [
+        [
+          "data-ui-menu-trigger",
+          3
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "helper:renderActionMenu(",
+          1
+        ]
+      ],
+      "sourceHash": "cad855e0a231f49b17007564a6490be21ed2f20d6b0e870560f5db87e0f855b4"
+    },
+    {
+      "file": "dist/ui/app-install.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "855a8476991a7abdd75d32f972c945ac64b1f17bb09135167fc4a52e8509389e",
+      "controls": [
+        [
+          "element:a",
+          2
+        ],
+        [
+          "element:button",
+          2
+        ]
+      ],
+      "sourceHash": "0f64205c43488f3379daf600646414d7cba91ab8dbe67ce76e275bc42dc54596"
+    },
+    {
+      "file": "dist/ui/app-notifications.mjs",
+      "owners": [
+        "notification",
+        "primitive",
+        "navigation"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T13:44:49.618Z",
+      "reason": "118: 알림 변경 ack와 후속 GET 실패 분리. 오래된 읽음/삭제/복원/승인 동작 방지·복사/내용/닫기 유지. 기존 재조회 버튼으로 복구하고 상세 읽지 않음 선택 보존. 알림함/요청/휴지통/개별 상세/원본 상태 보호와 메뉴 호출부 검토.",
+      "signature": "adcf96ec6c68661b79152111486d952681bc41b1d59f8e27b3c150eeed8b124e",
+      "sourceHash": "235fc385c459107e504481735dd7c3ab0bf55473423efd29e79da53830cedfdb",
+      "matrix": "design/context-action-matrix.json",
+      "controls": [
+        [
+          "data-context-command",
+          1
+        ],
+        [
+          "data-context-controls",
+          2
+        ],
+        [
+          "data-context-entity=\"notification\"",
+          4
+        ],
+        [
+          "data-notification-open",
+          3
+        ],
+        [
+          "data-studio-action=\"close-dialog\"",
+          1
+        ],
+        [
+          "element:a",
+          2
+        ],
+        [
+          "element:article",
+          1
+        ],
+        [
+          "element:button",
+          17
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:summary",
+          2
+        ],
+        [
+          "helper:button(",
+          6
+        ]
+      ]
+    },
+    {
+      "file": "dist/ui/automated-trading.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly",
+        "operation",
+        "activity"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T05:31:55.853Z",
+      "reason": "공용 거래소 연결·시세 재시도 계약에 맞춰 일시 연결 중단과 과거 호가를 자동 대기로 구분. 실제 권한·미래 호가 오류의 확인 상태와 기존 금융 액션 보존. 최종 대조: 연결 단절과 늦은 시세를 상태 영역에서 구분하며 기존 운용 컨트롤 보존. 보고서 로딩·닫기·경합·오류 재조회 및 내보내기 링크의 현행 구현과 회귀 검사 통과를 대조. 병행 작업 현행 소스 대조: 운용 제어의 조건부 도구막대·자료 대기·빈 활동 표시, 기존 controller action과 capability 연결 보존. 관련 현행129회귀 검사 통과. 투자 설정과 신규 주문 경로 추가 없음. 055: 날짜별 보고서의 native 링크/생성 시각과 같은 대상 메뉴 재연결·제거/비활성/대상 변경 닫기·현재 초점 보존을 실제 화면 및 소스에서 검토.",
+      "signature": "bc3528527e53fd8229b20d9368e77c1144cfa3f1e9c2696c4943d7c8be6cb1cf",
+      "controls": [
+        [
+          "data-auto-action",
+          2
+        ],
+        [
+          "data-auto-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-auto-action=\"orders\"",
+          1
+        ],
+        [
+          "data-studio-action=\"close-dialog\"",
+          2
+        ],
+        [
+          "data-studio-action=\"strategy-graph\"",
+          1
+        ],
+        [
+          "element:a",
+          5
+        ],
+        [
+          "element:button",
+          10
+        ],
+        [
+          "element:input",
+          4
+        ],
+        [
+          "element:summary",
+          7
+        ],
+        [
+          "helper:button(",
+          22
+        ],
+        [
+          "helper:renderDataTable(",
+          2
+        ]
+      ],
+      "sourceHash": "f354bf5d019f2bd6adfd30f298d01bb1ff4bf5524d7c821c2cb083961aa47b44",
+      "matrix": "design/context-action-matrix.json"
+    },
+    {
+      "file": "dist/ui/benchmark-picker.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "2cc1e6d31ae15fd3ee50e5efa30072eea7a1c17b4f7f343548c629a037a62ed9",
+      "controls": [
+        [
+          "data-simulation-action=\"benchmark-preset\"",
+          3
+        ],
+        [
+          "data-simulation-action=\"benchmark-zoom\"",
+          2
+        ],
+        [
+          "element:button",
+          6
+        ],
+        [
+          "element:input",
+          2
+        ],
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "d231f3547c6676115c1703645778a7711dd43fe400888e58eaaf3fd8d982f256"
+    },
+    {
+      "file": "dist/ui/brand.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "fda700e4ecaaa4d4ec86378be448c49560ec31aba25068b6f4f508ace43377ec",
+      "controls": [
+        [
+          "element:a",
+          1
+        ]
+      ],
+      "sourceHash": "2305dd4b2940c27baccd90a5cec677dc5830d57fe04a73a6359cea5d21dde3bc"
+    },
+    {
+      "file": "dist/ui/broker-connections.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-09T15:42:19.549Z",
+      "reason": "075: 기관명·저장시각·잔고와 실패/재조회 근접성, 정확한 brokerAction/provider 초점·다른 과업 존중, 기존 연결/잔고 POST·보호 의미 보존. 전체 앱 키보드/닫기·격리 지연/실패/재조회·320px(303px) 44px 버튼·415자 원문 줄바꿈 관측. 기본 버튼/도움말/표/입력의 공용 문맥 유지.",
+      "signature": "bb4998ccd930e285740a8ee5297165ad8faeb0d13ca5e008bb384b6953245ec4",
+      "controls": [
+        [
+          "data-broker-action",
+          1
+        ],
+        [
+          "data-broker-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-studio-action=\"close-dialog\"",
+          2
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          3
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "helper:button(",
+          3
+        ],
+        [
+          "helper:renderDataTable(",
+          1
+        ]
+      ],
+      "sourceHash": "76146371d0b05e47189d29f6187843f53ae14e9debb72bd9c92faf6d4fbb0404",
+      "customContainers": []
+    },
+    {
+      "file": "dist/ui/capability-catalog.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T10:47:00.947Z",
+      "reason": "112: 기능 목록의 다단어·유니코드 검색, 명시적 지우기, 수동 펼침 보존, 갱신 오류 시 이전 자료·검색 유지와 검색/갱신 초점 복원. 목록 읽기와 UI 상태만 변경하며 실행 계약·금융 설정·권한 보존.",
+      "signature": "a4af599493f376cf68b795498f58c072b3cd34f597c14103909a7dcf6554656b",
+      "controls": [
+        [
+          "data-default-open=\"true\"",
+          1
+        ],
+        [
+          "data-studio-action=\"capability-search-clear\"",
+          1
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:summary",
+          7
+        ],
+        [
+          "element:table",
+          1
+        ]
+      ],
+      "sourceHash": "e25198fc56d84d667d6ad067317d88e48ca3cd64a38fe66321ee4d6595daa959"
+    },
+    {
+      "file": "dist/ui/context-interactions.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "알림·마인드·운용·행·활동·일반 카드의 실행 선택자와 기본 메뉴 보존 그룹을 등록했다.",
+      "signature": "8880764730d0909ee8a94877ce2813e278a92cc9eed5e1d45b03dc908c95d049",
+      "controls": [
+        [
+          "data-context-entity",
+          1
+        ],
+        [
+          "data-context-entity=\"activity\"",
+          1
+        ],
+        [
+          "data-context-entity=\"notification\"",
+          1
+        ],
+        [
+          "data-context-entity=\"operation\"",
+          1
+        ],
+        [
+          "data-mind-entity",
+          1
+        ]
+      ],
+      "sourceHash": "62042d2a6d63b782b73d71b360eaf4465a0fb5ec0f291531513a9902ebf223f0",
+      "matrix": "design/context-action-matrix.json"
+    },
+    {
+      "file": "dist/ui/currency-format.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T02:37:30.710Z",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "508f8c69ec9580ae54e144d1b8756e16a74521282ec51fd8ff9538ed7f55a4de"
+    },
+    {
+      "file": "dist/ui/cursor-navigation.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "39ea52df2f5678e882c0dd161d4e793a1796b52cf283c9d4ede1481f38fa199d"
+    },
+    {
+      "file": "dist/ui/data-table.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "d6a72967822e8e7f7640347175c2b242d791c89c418e3c0ca7eb82bec7ca5fba",
+      "controls": [
+        [
+          "element:table",
+          1
+        ],
+        [
+          "helper:renderDataTable(",
+          1
+        ]
+      ],
+      "sourceHash": "ff42178dc9904a386e087912e7c9f76cd4c87be7d95f67f72f967be4b768fb34"
+    },
+    {
+      "file": "dist/ui/decision-method.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "a67baf81949f54b1882d205c71e6af0d6415d2c11ea1c1e6529a334efc510dd5"
+    },
+    {
+      "file": "dist/ui/design-tokens.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "5e948c66e0e4101389cca727d3f94111001e2fc251edb4dfd93a43923478faaa"
+    },
+    {
+      "file": "dist/ui/dialog-focus.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T06:05:54.243Z",
+      "reason": "103: 두 가져오기 화면의 읽기 설정/원문과 검증 구역·결과와 입력의 ID 연결·검증/저장 실패의 현재 창 초점과 가시성·중복 오류 축소·초안/복구/양식 및 저장 계약을 실제 검토.",
+      "signature": "ce80a9f3a809564ba2351dae2a262994c545631e1ccf25d72752a7871cbc28b7",
+      "controls": [
+        [
+          "data-studio-action=\"close-dialog\"",
+          1
+        ]
+      ],
+      "sourceHash": "3554d117cd75a28097a69a7cc5f067d53fa7293d369779d8703bf29f23f02474",
+      "customContainers": []
+    },
+    {
+      "file": "dist/ui/dialog-layout.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "98fec2a12d971d7b800d9004316446f6bf40917fa11ef7294196da0ed15baa81"
+    },
+    {
+      "file": "dist/ui/entity-menu.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-09T05:06:38.757Z",
+      "reason": "028: full source reviewed; shared typeahead/IME guard, context name and exact actions, usable viewport bounds and canonical route focus tested; existing execution handlers preserved. 054: open menus reconcile in-place labels, disabled reasons, identity, computed href and copy payload; focus follows the same control through reorder, and removed/retargeted selections close safely. 320/1200px native browser tasks and production notification/activity/ledger bindings verified; execution handlers unchanged.",
+      "signature": "a24c6b2e107399bf41e3c0e8838c2bd43386aa05f0a289d3e288452e907735ab",
+      "controls": [
+        [
+          "data-companion-action=\"archive\"",
+          1
+        ],
+        [
+          "data-companion-action=\"automation\"",
+          1
+        ],
+        [
+          "data-companion-action=\"customize\"",
+          1
+        ],
+        [
+          "data-companion-action=\"edit\"",
+          1
+        ],
+        [
+          "data-companion-action=\"manage\"",
+          1
+        ],
+        [
+          "data-context-entity=\"activity\"",
+          1
+        ],
+        [
+          "data-context-entity=\"notification\"",
+          1
+        ],
+        [
+          "data-context-entity=\"operation\"",
+          1
+        ],
+        [
+          "data-help-trigger",
+          1
+        ],
+        [
+          "data-library-action=\"detail\"",
+          2
+        ],
+        [
+          "data-mind-companion-open",
+          2
+        ],
+        [
+          "data-mind-entity",
+          1
+        ],
+        [
+          "data-mind-entity-open",
+          2
+        ],
+        [
+          "data-simulation-action=\"open\"",
+          2
+        ],
+        [
+          "data-simulation-action=\"row-detail\"",
+          2
+        ],
+        [
+          "data-studio-action=\"candidate\"",
+          1
+        ],
+        [
+          "data-studio-action=\"decision\"",
+          1
+        ],
+        [
+          "data-studio-action=\"document-detail\"",
+          1
+        ],
+        [
+          "data-studio-action=\"experience\"",
+          1
+        ],
+        [
+          "data-studio-action=\"mind-observation\"",
+          1
+        ],
+        [
+          "data-terminal-action=\"decision\"",
+          1
+        ],
+        [
+          "data-terminal-action=\"instrument\"",
+          2
+        ],
+        [
+          "data-terminal-action=\"watchlist\"",
+          1
+        ],
+        [
+          "data-ui-menu-trigger",
+          2
+        ]
+      ],
+      "sourceHash": "5488aae5f212209f0f724a9157bb1e44c5bab74e1244b5f90f20286e26cccf61",
+      "matrix": "design/context-action-matrix.json",
+      "reviewAmendment": "aria-disabled 컨트롤도 native disabled와 동일하게 제목 또는 기본 상태 이유를 표시한다.",
+      "customContainers": []
+    },
+    {
+      "file": "dist/ui/event-paper-resource.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "31d3ca4cd1c00c530a392df6a80045df747ccf1819b6a6b4129832b0733a9e7b"
+    },
+    {
+      "file": "dist/ui/event-paper-trading.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08T22:39:19.641Z",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다. 병행 작업 현행 소스 대조: 운용 제어의 조건부 도구막대·자료 대기·빈 활동 표시, 기존 controller action과 capability 연결 보존. 관련 현행129회귀 검사 통과. 투자 설정과 신규 주문 경로 추가 없음.",
+      "signature": "aaa7daa55d19db433982d1f21a055e4cd36fd97fa3aae855672e5ac5e1675330",
+      "controls": [
+        [
+          "data-event-paper-action",
+          2
+        ],
+        [
+          "data-event-paper-action=\"'+action+'\"",
+          1
+        ],
+        [
+          "data-studio-action=\"close-dialog\"",
+          1
+        ],
+        [
+          "element:button",
+          3
+        ],
+        [
+          "element:input",
+          8
+        ],
+        [
+          "element:summary",
+          1
+        ],
+        [
+          "element:table",
+          2
+        ],
+        [
+          "helper:button(",
+          14
+        ]
+      ],
+      "sourceHash": "255c61db65fb0a39282f4ed0501086446dbd3d63c7413ba79ebef0fca4f9293a"
+    },
+    {
+      "file": "dist/ui/experiment-collection.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T14:55:24.112Z",
+      "reason": "120: 실험 공용 목록 보관 영수증의 실제 구성원 버전으로 직접 되돌리기. 명시적 복원·멱등 재시도·모드/필터/화면 수명 경계·사용자 이동 존중 초점·조회 실패 복구 검토. 기존 API·보관함·금융 실행 경계 유지.",
+      "signature": "db05821a061743b46d69b104954ac35f05ec7f9005110356b38efb1e27926b8b",
+      "controls": [
+        [
+          "data-experiment-action",
+          3
+        ],
+        [
+          "data-experiment-action=\"'+saved.action+'\"",
+          1
+        ],
+        [
+          "data-experiment-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-experiment-action=\"archive-view\"",
+          1
+        ],
+        [
+          "data-experiment-action=\"first\"",
+          2
+        ],
+        [
+          "data-experiment-action=\"new\"",
+          1
+        ],
+        [
+          "data-experiment-action=\"open\"",
+          1
+        ],
+        [
+          "data-experiment-action=\"refresh\"",
+          2
+        ],
+        [
+          "data-experiment-action=\"undo-archive\"",
+          1
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          3
+        ],
+        [
+          "element:input",
+          2
+        ],
+        [
+          "element:select",
+          3
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "helper:button(",
+          11
+        ],
+        [
+          "helper:renderActionMenu(",
+          1
+        ]
+      ],
+      "sourceHash": "0646653c5195c49737c5df0097ee1272dd1d0db5c1b3c88846539f5472980c2d"
+    },
+    {
+      "file": "dist/ui/form-draft.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T12:21:38.422Z",
+      "reason": "115: 퀀트 설정과 JSON 원문의 저장 권한을 한 모드 영역으로 묶고 선택한 입력만 활성화. 기존 checkbox 이름·원문·노드 입력·초안 및 버리기/되돌리기 계약 보존. 실패 인라인 오류에 공용 초점·스크롤 적용. 기존 quant 임시 저장 키의 checkbox 순서·fieldset 목록 보존. 신규/초안수정/새버전 공용 편집기, 제출·오류·키보드·닫기 및 모든 기존 작업 문맥 검토.",
+      "signature": "a1f46858e787d263533ef9cec92f8e595c3410a9b76a02c6e2efbec0456c44f6",
+      "controls": [
+        [
+          "data-draft-action",
+          2
+        ],
+        [
+          "data-draft-action=\"discard\"",
+          2
+        ],
+        [
+          "data-draft-action=\"undo\"",
+          2
+        ],
+        [
+          "element:button",
+          2
+        ],
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "047e9ce789be9f32b13eb1898802cc1356716fbd740648a1ee7b4990333ce93e"
+    },
+    {
+      "file": "dist/ui/help-tooltip.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T10:17:23.362Z",
+      "reason": "111: 공용 가져오기 편집기의 읽기 설정/파일과 원문/검증 도구/결과를 묶음. 도구만 sticky, 긴 결과는 흐름 유지·실측 높이로 가림 보정. 형식/원문·초안 Undo·검토 저장·오류 초점·단계 구분·전체 호출부를 실제 검토. 초점으로 열린 공용 도움말의 스크롤 위치 추적·화면 밖 닫기·Escape·읽기전용 기본 동작 보존.",
+      "signature": "ea32da7b05dff5211cf0f6c9da6d0944a88f1e651be220931af5ffde4a48f5b5",
+      "controls": [
+        [
+          "data-help-trigger",
+          3
+        ],
+        [
+          "element:button",
+          1
+        ]
+      ],
+      "sourceHash": "19627d60f3c99b2ef8243bc076608ddcbd06289ca450feaf8de9d0c17f75e13c"
+    },
+    {
+      "file": "dist/ui/home-showcase.mjs",
+      "owners": [
+        "mind",
+        "activity",
+        "navigation",
+        "primitive"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T01:30:11.384Z",
+      "reason": "094: 市場 자료 STALE·기준 시각·저장 시각 구분을 공용 홈/출처에 적용. 기존 요청/주문/추천 실행 경로와 클릭 동작은 보존.",
+      "signature": "f356f4a669cf01cccfaa7e85b1b722e36de3f5ede59851e1866c6a2de97e2c3c",
+      "controls": [
+        [
+          "data-home-action",
+          1
+        ],
+        [
+          "data-home-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-home-action=\"market-details\"",
+          1
+        ],
+        [
+          "data-home-action=\"market-refresh\"",
+          1
+        ],
+        [
+          "data-home-action=\"pause\"",
+          2
+        ],
+        [
+          "data-home-action=\"portfolio\"",
+          1
+        ],
+        [
+          "data-home-action=\"recommend\"",
+          2
+        ],
+        [
+          "data-home-action=\"recommendation-details\"",
+          2
+        ],
+        [
+          "data-home-action=\"save-card\"",
+          2
+        ],
+        [
+          "data-home-context=\"holdings\"",
+          1
+        ],
+        [
+          "data-home-context=\"operation\"",
+          1
+        ],
+        [
+          "data-home-context=\"performance\"",
+          1
+        ],
+        [
+          "data-mind-entity",
+          1
+        ],
+        [
+          "data-mind-entity-open",
+          1
+        ],
+        [
+          "data-studio-action=\"home-recommendation-details\"",
+          1
+        ],
+        [
+          "element:a",
+          5
+        ],
+        [
+          "element:article",
+          3
+        ],
+        [
+          "element:button",
+          11
+        ],
+        [
+          "element:select",
+          1
+        ],
+        [
+          "element:summary",
+          1
+        ],
+        [
+          "helper:routeLink(",
+          16
+        ]
+      ],
+      "sourceHash": "c5e2c256e2adee1298900dd5180a91ad6d7ee1fb90a0aa4963bd236795af8ed5"
+    },
+    {
+      "file": "dist/ui/hourly-model-component-editor.jsx",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08T13:18:05.819Z",
+      "reason": "분봉 급등 모델 종류·입력 주기·정수 매개변수·모델 불러오기 계약을 검토했다. 기존 속성 패널과 내부 탐색 동선을 재사용한다. 모델/계좌/비용/시각 계약과 정식 라이브 갱신은 cji-surge-capture-20261108의 관련 검사로 대조했다.",
+      "signature": "c4ab81d8fbc01f018bbc4d4bf2cf58e2928d17fc1f7b7f92a0b1bae1faf9b2b8",
+      "controls": [
+        [
+          "element:button",
+          12
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          6
+        ],
+        [
+          "element:summary",
+          2
+        ],
+        [
+          "handler:onClick=",
+          14
+        ],
+        [
+          "handler:onPointerDown=",
+          1
+        ]
+      ],
+      "sourceHash": "4503dd3e883d15c881e29a8a273dea1867fe8256a34e3aa9b077181ca36cea62"
+    },
+    {
+      "file": "dist/ui/hourly-model-learning.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08",
+      "reason": "공용 학습 제어 또는 통합 조회 원본 전체와 호출부 검토. 방향 고정·revision/대상·중복 요청·단계별 닫기·늦은 응답·오류/재시도 검사 및 실제 모듈의 전후 브라우저 조작. 금융 승인/학습설정 변경은 격리 응답에서만 실행. 증거022-dark-ai-patterns.",
+      "signature": "bdd45caed51f1e634109ccf2d068afd289a5aebfd36c1f42f6b0d340dc64c999",
+      "controls": [
+        [
+          "data-auto-action=\"learning-details\"",
+          1
+        ],
+        [
+          "data-auto-action=\"learning-toggle\"",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:summary",
+          1
+        ],
+        [
+          "element:table",
+          1
+        ]
+      ],
+      "sourceHash": "f757e907dbc6ee3c8a1a2875a0e6b53506c6e3154226b117787aa13f43c9e9f4"
+    },
+    {
+      "file": "dist/ui/hourly-model-view.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08T13:18:05.820Z",
+      "reason": "분봉 급등 모델 종류·입력 주기·정수 매개변수·모델 불러오기 계약을 검토했다. 기존 속성 패널과 내부 탐색 동선을 재사용한다. 모델/계좌/비용/시각 계약과 정식 라이브 갱신은 cji-surge-capture-20261108의 관련 검사로 대조했다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "23dca718daa416feb9ade042fbba0d502af25e5c2f2a86d645cbe941569b8e72"
+    },
+    {
+      "file": "dist/ui/hourly-path-controls.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08T13:18:05.821Z",
+      "reason": "분봉 급등 모델 종류·입력 주기·정수 매개변수·모델 불러오기 계약을 검토했다. 기존 속성 패널과 내부 탐색 동선을 재사용한다. 모델/계좌/비용/시각 계약과 정식 라이브 갱신은 cji-surge-capture-20261108의 관련 검사로 대조했다.",
+      "signature": "828b7f6eeb10458c8bb9817bcb7dbe377636a8730d7eef16b17722002d955d81",
+      "controls": [
+        [
+          "element:button",
+          2
+        ],
+        [
+          "element:input",
+          2
+        ],
+        [
+          "element:select",
+          1
+        ],
+        [
+          "element:summary",
+          2
+        ],
+        [
+          "handler:onClick=",
+          2
+        ]
+      ],
+      "sourceHash": "6e65550f0d3b4d6e83d3bcc36d62af8a183db458c16cf22ee85f43a2487315a4"
+    },
+    {
+      "file": "dist/ui/install-page.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "6a8902c5d59853205132923be3ee769a2028d098796f349b10b8130c8bf13845",
+      "controls": [
+        [
+          "element:button",
+          1
+        ],
+        [
+          "helper:button(",
+          1
+        ]
+      ],
+      "sourceHash": "b00cd4d042b597532db21b2d8318ee60cef33b58e9870a57d17cb02963f7b910"
+    },
+    {
+      "file": "dist/ui/interface-motion.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "d56f4bffad9c9e188ba8280c3e0a9e39d6f4b19fa98430c1c6dcc464f153aa58"
+    },
+    {
+      "file": "dist/ui/investment-console.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "signature": "56cf14e3cd2b95c083cc5e9db04f271eb03ee2640e1605c4e42e2d2ac132647c",
+      "controls": [
+        [
+          "data-console-action",
+          1
+        ],
+        [
+          "data-console-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-console-action=\"${experience?'experience':'view-select'}\"",
+          1
+        ],
+        [
+          "data-console-action=\"decision\"",
+          2
+        ],
+        [
+          "data-console-action=\"mind-select\"",
+          2
+        ],
+        [
+          "data-console-action=\"view-select\"",
+          1
+        ],
+        [
+          "element:article",
+          5
+        ],
+        [
+          "element:button",
+          10
+        ],
+        [
+          "element:input",
+          4
+        ],
+        [
+          "element:select",
+          5
+        ],
+        [
+          "element:summary",
+          7
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "element:textarea",
+          1
+        ],
+        [
+          "helper:button(",
+          56
+        ]
+      ],
+      "sourceHash": "432552068f87c2ab7392e4c00fb0552a4e71ef3b8e9809d9532f5d62ce805e27"
+    },
+    {
+      "file": "dist/ui/judgment-model-controls.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "f37bf5edf8f5832f432e90903f4b15a6aa8ebeb029512fb3163a2976e272b825",
+      "controls": [
+        [
+          "element:input",
+          1
+        ]
+      ],
+      "sourceHash": "1d3ee41dc63e46825f344e39d22e8d955fb1cf829cef57018d885ed89a6ccc76"
+    },
+    {
+      "file": "dist/ui/lab-focus-view.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "b9540a383469ec842a31a1a8b04f28cb10c4f109fbdb10565441c5d7e4d04e31"
+    },
+    {
+      "file": "dist/ui/lab-graph-diff.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T20:47:42.423Z",
+      "reason": "085: 완료 처리량만 짧은 완료 표시로 축약. 진행·실패·불완전 처리량, 실제 그래프 차이·외부 지식 차이와 원래 실행 동선 보존. 미선택은 같은 구성으로 표시하지 않음. 공용 범위 변환의 null 준비 정보 처리로 빈 검토→전략 구성 복귀 오류 수정. 운영 조건·320px·격리 상태별 읽기 검증.",
+      "signature": "d4a5de0f6c37b84be2f6eadb70fc987a5672c4bf8ab93b7d96eb09db454e20ed",
+      "controls": [
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "65069d0a5d815bba5e93b041016ab2ab388e7c7397113408865721b303d3d36a"
+    },
+    {
+      "file": "dist/ui/lab-workspace.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T15:23:11.410Z",
+      "reason": "121: 비교 결과의 전략 이름을 원래 보고서 진입점으로 통합하고 반복 결과 보기 버튼 제거. 기존 href와 동일한 canonical 목적지·현재 마인드/모드/필터 보존·수정 클릭의 브라우저 기본 동작·A/B 구분·조회 실패 복구·원래 이름/편집 행동 초점 복귀와 자동 렌더 보존 검토. 금융 원장/평가 범위와 노드 편집·실행 승인 경계 유지.",
+      "signature": "c20426a12b56557f7750db91d2e333a11b2fdad5fce203e9e8f61c2047c87d41",
+      "controls": [
+        [
+          "data-lab-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-lab-action=\"report\"",
+          2
+        ],
+        [
+          "data-lab-action=\"step\"",
+          1
+        ],
+        [
+          "data-lab-action=\"view\"",
+          1
+        ],
+        [
+          "data-lab-comparison-controls",
+          1
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          4
+        ],
+        [
+          "element:input",
+          2
+        ],
+        [
+          "element:select",
+          4
+        ],
+        [
+          "element:summary",
+          3
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "helper:button(",
+          16
+        ],
+        [
+          "helper:renderActionMenu(",
+          1
+        ]
+      ],
+      "sourceHash": "d26841a8969bcb19f316fa73d032bfe51e55ed510fcb3c4306073e17b0bc0c6b"
+    },
+    {
+      "file": "dist/ui/live-change-review.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "d4a5de0f6c37b84be2f6eadb70fc987a5672c4bf8ab93b7d96eb09db454e20ed",
+      "controls": [
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "635e83d63c67afefa45ed35bc22c6050418f680cbca8b6b50023e2581c99f217"
+    },
+    {
+      "file": "dist/ui/market-library.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T11:47:50.251Z",
+      "reason": "114: 문서AI분류/후속관측/JEV선정 결과·오류를 시작한 창에 한정하는 공용 처리. 뉴스AI비교 실행 뒤 늦은 실패의 새 작업 개입 차단. 분류·뉴스 진행 중 닫아도 요청 계속 처리 명시. 현재 창 AI 오류는 인라인1회·오류 스타일/재시도 보존. 기존 요청값·저장·호출 한도·금융 승인 조건 보존. 닫기/다른 선택/종료/실패·복구/문맥 전체 검토.",
+      "signature": "90b448c9c7974a11f737555483bb6985a9abd96b5020dd073b4d45349c3037d5",
+      "controls": [
+        [
+          "data-library-action",
+          8
+        ],
+        [
+          "data-library-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-library-action=\"clear-filter\"",
+          3
+        ],
+        [
+          "data-library-action=\"detail\"",
+          2
+        ],
+        [
+          "data-library-action=\"first\"",
+          1
+        ],
+        [
+          "data-library-action=\"mind\"",
+          1
+        ],
+        [
+          "data-library-command-status",
+          3
+        ],
+        [
+          "data-studio-action",
+          1
+        ],
+        [
+          "data-studio-action=\"close-dialog\"",
+          1
+        ],
+        [
+          "element:a",
+          2
+        ],
+        [
+          "element:button",
+          6
+        ],
+        [
+          "element:input",
+          6
+        ],
+        [
+          "element:select",
+          9
+        ],
+        [
+          "element:summary",
+          8
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "element:textarea",
+          1
+        ],
+        [
+          "helper:button(",
+          19
+        ],
+        [
+          "helper:renderActionMenu(",
+          3
+        ],
+        [
+          "helper:renderDataTable(",
+          1
+        ]
+      ],
+      "sourceHash": "0ff51eb61d7cfc1b757af1f339414ceb29f2695b55983feaf6036233ef7dfae5"
+    },
+    {
+      "file": "dist/ui/mind-activity-resource.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08T22:06:45.603Z",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "87f7e2a2492860c93f58ca993c6c81b68bf4d74b445a7cd8420e83b985a03e54"
+    },
+    {
+      "file": "dist/ui/mind-activity.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation",
+        "operation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T21:47:04.390Z",
+      "reason": "087: 공용 활동 피드의 KST 날짜 경계·같은 날 관망 접기·종류 필터의 빈 날짜 표제 숨김. 원래 거래 우선 순서·정확한 체결값·원문 경로·현재 초점과 기존 명령 보존. 운영·320px·비동기/빈/실패 복구 관측.",
+      "signature": "f78596de365b6eb5eda00a9f1f59171d367de19d62d8c99345e04196b5f8bb5e",
+      "controls": [
+        [
+          "data-auto-action=\"'+(record?.kind==='RUNTIME'?'history-settings':'orders')+'\"",
+          1
+        ],
+        [
+          "data-context-entity=\"activity\"",
+          2
+        ],
+        [
+          "data-context-entity=\"operation\"",
+          1
+        ],
+        [
+          "data-event-paper-action=\"'+(record?.kind==='RUNTIME'?'settings':'records')+'\"",
+          1
+        ],
+        [
+          "data-managed-controls",
+          1
+        ],
+        [
+          "data-mind-companion-open",
+          3
+        ],
+        [
+          "data-mind-path-trigger",
+          3
+        ],
+        [
+          "data-notification-cta",
+          3
+        ],
+        [
+          "data-operation-actions",
+          1
+        ],
+        [
+          "data-studio-action=\"activity-strategy-draft\"",
+          1
+        ],
+        [
+          "data-studio-action=\"decision\"",
+          1
+        ],
+        [
+          "data-studio-action=\"mind-automation\"",
+          1
+        ],
+        [
+          "data-studio-action=\"mind-execution\"",
+          2
+        ],
+        [
+          "data-studio-action=\"mind-view\"",
+          1
+        ],
+        [
+          "data-studio-action=\"strategy-parameter\"",
+          1
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          6
+        ],
+        [
+          "element:select",
+          1
+        ],
+        [
+          "element:summary",
+          3
+        ]
+      ],
+      "sourceHash": "4e1cebe478d64405c018d8944ca058d99a7fecba2cf5a04c0229d37263ab0b6b",
+      "matrix": "design/context-action-matrix.json",
+      "customContainers": []
+    },
+    {
+      "file": "dist/ui/mind-art-preview.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "ef1e50857c9a21f492dd89ebcd27ac2ab3baf8458e366184e1e12915fc6fc724"
+    },
+    {
+      "file": "dist/ui/mind-art-scene.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "1d15243b9f380e2fde8fca2b6a54a8a5a6da27f500bcd384b2cbfae98e577776"
+    },
+    {
+      "file": "dist/ui/mind-avatar.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "02c131993758a8e8bfa924c20fb3eac0a60bc7c24d470bc278ae770b9e33f3ad"
+    },
+    {
+      "file": "dist/ui/mind-companion.mjs",
+      "owners": [
+        "mind",
+        "activity",
+        "navigation",
+        "primitive"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T08:33:02.009Z",
+      "reason": "마인드 객체의 운용·기록·노드·외형·보관 명령과 HUD의 화면 전환 조작을 구별한다. 객체 명령은 공용 메뉴가 기존 컨트롤에서 읽는다. 현재/RELEASED 과거 운용의 영역과 HUD 초기·지연 지표 범위를 구분. 링크/관리/키보드 계약 유지. 현재/RELEASED 과거 운용의 영역과 HUD 초기·지연 지표 범위를 구분. 링크/관리/키보드 계약 유지. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. RELEASED 과거 운용의 확인된0 안내만 제거. 잔여자금·보유·당일 비영 손익과 현재/미확인 원장 보존. 현재 자금 설명의 실제 ID 연결 검토.",
+      "signature": "879e3ba78fb8a78df57092bf2cdfa0b0c93b47439ac4ec452637c1464f5502da",
+      "controls": [
+        [
+          "data-companion-action=\"archive\"",
+          1
+        ],
+        [
+          "data-companion-action=\"automation\"",
+          1
+        ],
+        [
+          "data-companion-action=\"connect\"",
+          1
+        ],
+        [
+          "data-companion-action=\"customize\"",
+          1
+        ],
+        [
+          "data-companion-action=\"edit\"",
+          1
+        ],
+        [
+          "data-mind-companion-open",
+          1
+        ],
+        [
+          "data-studio-action",
+          2
+        ],
+        [
+          "data-studio-action=\"'+mindAutomationAction(card)+'\"",
+          1
+        ],
+        [
+          "data-studio-action=\"companion-refresh\"",
+          2
+        ],
+        [
+          "data-studio-action=\"companion-valuation-refresh\"",
+          1
+        ],
+        [
+          "data-studio-action=\"execution-mode\"",
+          1
+        ],
+        [
+          "data-studio-action=\"mind-customize\"",
+          1
+        ],
+        [
+          "data-studio-action=\"profile-'+(card.archived?'restore':'archive')+'\"",
+          1
+        ],
+        [
+          "data-studio-action=\"profile-new\"",
+          1
+        ],
+        [
+          "data-studio-action=\"strategy-graph\"",
+          1
+        ],
+        [
+          "element:a",
+          3
+        ],
+        [
+          "element:article",
+          1
+        ],
+        [
+          "element:button",
+          9
+        ],
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "3d40d44084bae21c280ca505215810f312e0a9193c1a3f39987f45da1499b5bc"
+    },
+    {
+      "file": "dist/ui/mind-game-resource.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "62253f8efd1af94cdfe4ad9dafff508c64b3b0bffc21f915605533ceadfa879d"
+    },
+    {
+      "file": "dist/ui/mind-game.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T07:20:59.660Z",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다. 자산 합계는 RELEASED 배정의 역사 평가액만 제외하며 두 공용 호출부와 기존 조작을 보존함.",
+      "signature": "907dc42d0ec167a2a546203fd19e9cede6fb8e534014c679f7e1adfa7781325b",
+      "controls": [
+        [
+          "element:a",
+          2
+        ],
+        [
+          "element:article",
+          1
+        ],
+        [
+          "element:button",
+          8
+        ]
+      ],
+      "sourceHash": "9a1ad3df16d630946a80e054ea8f1bdf4f21f4d62791b659694af75fc1041d26"
+    },
+    {
+      "file": "dist/ui/mind-hud.mjs",
+      "owners": [
+        "mind",
+        "activity",
+        "navigation",
+        "primitive"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T07:40:56.806Z",
+      "reason": "마인드 객체의 운용·기록·노드·외형·보관 명령과 HUD의 화면 전환 조작을 구별한다. 객체 명령은 공용 메뉴가 기존 컨트롤에서 읽는다. 현재/RELEASED 과거 운용의 영역과 HUD 초기·지연 지표 범위를 구분. 링크/관리/키보드 계약 유지. 현재/RELEASED 과거 운용의 영역과 HUD 초기·지연 지표 범위를 구분. 링크/관리/키보드 계약 유지.",
+      "signature": "757aec88969e788c5d591571cfca057a25fbb4ad524acbb8700f63853d5e865f",
+      "controls": [
+        [
+          "data-hud-open",
+          2
+        ],
+        [
+          "element:button",
+          4
+        ]
+      ],
+      "sourceHash": "1fa98e96d14dec82cae4173d37c51144f300041e18b4dd51dd7be0250232ec33"
+    },
+    {
+      "file": "dist/ui/mind-life-anchors.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "0c5be5b665a76f326b5ec03394f14eb3ee63a47c8c732ab5b75f663ff8a64f61"
+    },
+    {
+      "file": "dist/ui/mind-life-appearance.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "be772fc12352d8e5d7bf040c8f68d6ec35004b7ae4459e4faf8d410551e9f759"
+    },
+    {
+      "file": "dist/ui/mind-life-gallery.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "c5b4e40fa031453aa3cccc14bd95d1f3b436482ade1ec72bd7ff3d88e637fda0"
+    },
+    {
+      "file": "dist/ui/mind-life-scene.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "9ae124ff6cee568f3e7388d3eb85fa3f07fb044dac7f6323563b0a6f08f464ce"
+    },
+    {
+      "file": "dist/ui/mind-life.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T09:18:09.581Z",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다. RELEASED 과거 운용의 확인된0 안내만 제거. 잔여자금·보유·당일 비영 손익과 현재/미확인 원장 보존. 현재 자금 설명의 실제 ID 연결 검토. 장면 설정 native details·Escape/바깥/초점 이탈·동일 경로 초점 복원·fallback 제어와 listener 해제 검토. 장면 설정 native details·Escape/바깥/초점 이탈·동일 경로 초점 복원·fallback 제어와 listener 해제 검토. 장면 설정 native details·Escape/바깥/초점 이탈·동일 경로 초점 복원·fallback 제어와 listener 해제 검토.",
+      "signature": "a811a480c9c7c0ca32bf2071cc7e903f9dba62e6839fce5b5e000fb2421a1869",
+      "controls": [
+        [
+          "data-life-action",
+          3
+        ],
+        [
+          "element:article",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:input",
+          2
+        ],
+        [
+          "element:select",
+          2
+        ],
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "b874376debbe7a061d15c1af038762e7c5e65c7784192dea0d99c6b91f5e9f12"
+    },
+    {
+      "file": "dist/ui/mind-motion-gallery.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "37374e63c8d47e6eda7505c3249f4c3bc4a7f5c3dda931253f38bd79ad464a61"
+    },
+    {
+      "file": "dist/ui/mind-output-3d-scene.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "616c5f5006ce3d6639314d74357b596ee40dba96aaf0a2f30aefac954fa60b13"
+    },
+    {
+      "file": "dist/ui/mind-output-3d.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "2e131ae95651ba39c7d73b5abcf899e4a0a7929f42967ac8777439a53490a5b6"
+    },
+    {
+      "file": "dist/ui/news-comparison.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T11:47:50.251Z",
+      "reason": "114: 문서AI분류/후속관측/JEV선정 결과·오류를 시작한 창에 한정하는 공용 처리. 뉴스AI비교 실행 뒤 늦은 실패의 새 작업 개입 차단. 분류·뉴스 진행 중 닫아도 요청 계속 처리 명시. 현재 창 AI 오류는 인라인1회·오류 스타일/재시도 보존. 기존 요청값·저장·호출 한도·금융 승인 조건 보존. 닫기/다른 선택/종료/실패·복구/문맥 전체 검토.",
+      "signature": "f4a874f984e450b773f2e1e14ab3b1159e10d8c258ed026ce299009ba31a090f",
+      "controls": [
+        [
+          "data-studio-action=\"news-${action}\"",
+          1
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          1
+        ],
+        [
+          "element:summary",
+          1
+        ],
+        [
+          "element:textarea",
+          2
+        ],
+        [
+          "helper:button(",
+          8
+        ],
+        [
+          "helper:renderDataTable(",
+          2
+        ]
+      ],
+      "sourceHash": "ac837affb63bad6e4e8de54dd022b7d54634ae363cc0efb6a2d54c40d1aab51f"
+    },
+    {
+      "file": "dist/ui/operation-controls.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08T22:39:19.637Z",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다. 병행 작업 현행 소스 대조: 운용 제어의 조건부 도구막대·자료 대기·빈 활동 표시, 기존 controller action과 capability 연결 보존. 관련 현행129회귀 검사 통과. 투자 설정과 신규 주문 경로 추가 없음.",
+      "signature": "a570129faa88b9db41fb05888e5f4e28c4bc92cfbdf80f6929bcb06ea99c487b",
+      "controls": [
+        [
+          "data-operation-actions",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "helper:renderActionMenu(",
+          1
+        ]
+      ],
+      "sourceHash": "4473a55bfd5698c47966fdffbab95ff05d42a7909714cff570ec8fca43419583"
+    },
+    {
+      "file": "dist/ui/operation-window.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "e0a69d872e37f80d78867b472fedc97189e6602053d28c6330f5eb960238293b",
+      "controls": [
+        [
+          "element:input",
+          2
+        ]
+      ],
+      "sourceHash": "db8185e38cbb5026c3f72b0cae509396c7de3fe5251cb00131b90527411061d8"
+    },
+    {
+      "file": "dist/ui/operations.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "signature": "0245de6447d053f497a0c3994e2b91a7da3496d140a205179ea81956d6125e7e",
+      "controls": [
+        [
+          "element:article",
+          3
+        ],
+        [
+          "element:button",
+          2
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          3
+        ],
+        [
+          "element:summary",
+          2
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "element:textarea",
+          1
+        ],
+        [
+          "helper:button(",
+          44
+        ]
+      ],
+      "sourceHash": "8f038f9affe2bcb054ecf9c507f6f80e876e5efbc2d9cd2bc61600e747547557"
+    },
+    {
+      "file": "dist/ui/paper-activity-resource.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "891a890702ddd32c5cf88d1961056d194ee75254492e3e587f20f823008e7a95"
+    },
+    {
+      "file": "dist/ui/paper-funding-request.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "b8193bbfbe47ae86b6853454f456641847366e79147b5d4e6be3536c08fbbcf7"
+    },
+    {
+      "file": "dist/ui/portfolio-route.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "6b8095a6f5d3aa590bdeda5c5cbd11d0cd98d3319ee7c69b556501525c61a8ef"
+    },
+    {
+      "file": "dist/ui/position-cooldown-controls.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "195006d2fedf71e74d49feb907169e55234d5f0c223c038e7c52822bf54e9372",
+      "controls": [
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          2
+        ]
+      ],
+      "sourceHash": "e3567913a4ee557ac4951719f1be84b784d2b82c8d80adac7fffa02e2d580bc5"
+    },
+    {
+      "file": "dist/ui/quant-strategy-library.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T12:21:38.420Z",
+      "reason": "115: 퀀트 설정과 JSON 원문의 저장 권한을 한 모드 영역으로 묶고 선택한 입력만 활성화. 기존 checkbox 이름·원문·노드 입력·초안 및 버리기/되돌리기 계약 보존. 실패 인라인 오류에 공용 초점·스크롤 적용. 기존 quant 임시 저장 키의 checkbox 순서·fieldset 목록 보존. 신규/초안수정/새버전 공용 편집기, 제출·오류·키보드·닫기 및 모든 기존 작업 문맥 검토.",
+      "signature": "cdc7fc1e2ae65ca509e22537b1fe94c5be48b0d73b65c38e4284cffe2ec98ce0",
+      "controls": [
+        [
+          "data-draft-identity=\"'+esc(strategyId||document.id||document.name)+'\"",
+          1
+        ],
+        [
+          "data-quant-action",
+          2
+        ],
+        [
+          "data-quant-action=\"'+action+'\"",
+          1
+        ],
+        [
+          "data-quant-action=\"detail\"",
+          1
+        ],
+        [
+          "element:button",
+          8
+        ],
+        [
+          "element:input",
+          4
+        ],
+        [
+          "element:select",
+          6
+        ],
+        [
+          "element:summary",
+          4
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "element:textarea",
+          4
+        ],
+        [
+          "helper:button(",
+          9
+        ],
+        [
+          "helper:renderActionMenu(",
+          3
+        ]
+      ],
+      "sourceHash": "bba09d4abc0b58b57cb89ef0ae75882baf712698f9f4c3d09786a46cc211c922"
+    },
+    {
+      "file": "dist/ui/regime-node-controls.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-04",
+      "reason": "전략 참조의 묶음 선택·원문 핀 저장·재열기 확인. router-reopened.png. 기본 select와 텍스트 입력 조작 유지.",
+      "signature": "3dc1e523c130cd3d33b49ac23ba311f65d2b57c7318752e17c04dd9304292e07",
+      "controls": [
+        [
+          "element:button",
+          4
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:textarea",
+          1
+        ],
+        [
+          "handler:onClick=",
+          4
+        ]
+      ],
+      "sourceHash": "ecf0daf6bba6db55a03299adb41af3790257d3c8907b7609169c9fc4346220be",
+      "matrix": "design/context-action-matrix.json"
+    },
+    {
+      "file": "dist/ui/shell.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "006c86954ee962f0591b4570b1c4882903fc0f2aba340cd7aae49a85e1769714"
+    },
+    {
+      "file": "dist/ui/simulation-asset-scope.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T20:47:42.424Z",
+      "reason": "085: 완료 처리량만 짧은 완료 표시로 축약. 진행·실패·불완전 처리량, 실제 그래프 차이·외부 지식 차이와 원래 실행 동선 보존. 미선택은 같은 구성으로 표시하지 않음. 공용 범위 변환의 null 준비 정보 처리로 빈 검토→전략 구성 복귀 오류 수정. 운영 조건·320px·격리 상태별 읽기 검증.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "1e4d987767f0ebd322ec6874a6120606b6c187fa36c98e7f7cb0af6d4b4a8449"
+    },
+    {
+      "file": "dist/ui/simulation-baseline-comparison.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "signature": "e7af5062d55cb8c42286576b17a26403a703dda5587bed6ad328953f21b8a1c6",
+      "controls": [
+        [
+          "element:table",
+          1
+        ]
+      ],
+      "sourceHash": "57c2a1b4442bd613a7aa48cf105ee0fc22bb9f9127881822f02dd19eaf1b9c8a"
+    },
+    {
+      "file": "dist/ui/simulation-editor-state.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "2342b17fad91a85380b9796c76199b5f167ccc9db7a1e18e38a17a9e6ad0159e"
+    },
+    {
+      "file": "dist/ui/simulation-lab.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T15:23:11.412Z",
+      "reason": "121: 비교 결과의 전략 이름을 원래 보고서 진입점으로 통합하고 반복 결과 보기 버튼 제거. 기존 href와 동일한 canonical 목적지·현재 마인드/모드/필터 보존·수정 클릭의 브라우저 기본 동작·A/B 구분·조회 실패 복구·원래 이름/편집 행동 초점 복귀와 자동 렌더 보존 검토. 금융 원장/평가 범위와 노드 편집·실행 승인 경계 유지.",
+      "signature": "4cef63444a88f74e283ad6dd03d832711dd2768b8f5f65d69980eb06e07246ee",
+      "controls": [
+        [
+          "data-lab-action",
+          2
+        ],
+        [
+          "data-lab-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-lab-action=\"focus\"",
+          4
+        ],
+        [
+          "data-lab-action=\"reload\"",
+          1
+        ],
+        [
+          "data-lab-comparison-controls",
+          1
+        ],
+        [
+          "data-simulation-action",
+          1
+        ],
+        [
+          "data-studio-action=\"close-dialog\"",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          1
+        ],
+        [
+          "element:summary",
+          1
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "helper:button(",
+          15
+        ]
+      ],
+      "sourceHash": "dc92331f70cd52edd57fe0d8e3c1de1797a1af676d5710822185444224ded10a"
+    },
+    {
+      "file": "dist/ui/simulation-playground.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T15:23:11.415Z",
+      "reason": "121: 비교 결과의 전략 이름을 원래 보고서 진입점으로 통합하고 반복 결과 보기 버튼 제거. 기존 href와 동일한 canonical 목적지·현재 마인드/모드/필터 보존·수정 클릭의 브라우저 기본 동작·A/B 구분·조회 실패 복구·원래 이름/편집 행동 초점 복귀와 자동 렌더 보존 검토. 금융 원장/평가 범위와 노드 편집·실행 승인 경계 유지.",
+      "signature": "4da984df7258f1dfbdebe0f5b6fb9652e20fb4b71a171f791535278e7d4270f5",
+      "controls": [
+        [
+          "data-simulation-action",
+          1
+        ],
+        [
+          "data-simulation-action=\"'+saved.action+'\"",
+          1
+        ],
+        [
+          "data-simulation-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-simulation-action=\"detail-tab\"",
+          4
+        ],
+        [
+          "data-simulation-action=\"setup-step\"",
+          1
+        ],
+        [
+          "data-studio-action=\"close-dialog\"",
+          3
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          4
+        ],
+        [
+          "element:input",
+          4
+        ],
+        [
+          "element:select",
+          2
+        ],
+        [
+          "element:summary",
+          10
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "helper:button(",
+          55
+        ],
+        [
+          "helper:renderActionMenu(",
+          2
+        ]
+      ],
+      "sourceHash": "9a466379a06e13020d3c31c652937a671a9843af1f4f9b5f73f93a37fcabf55f"
+    },
+    {
+      "file": "dist/ui/simulation-pre-provider-recovery.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "signature": "d4a5de0f6c37b84be2f6eadb70fc987a5672c4bf8ab93b7d96eb09db454e20ed",
+      "controls": [
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "b8395f651845e95c98284f51ac15877221d27a27e00e20144676a7a05ad56768"
+    },
+    {
+      "file": "dist/ui/simulation-valuation.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "signature": "6bbb8dec1d3e9ff73f14bcafa9d84e12de78b52ff2195341d25403be1ca32ad6",
+      "controls": [
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:summary",
+          2
+        ]
+      ],
+      "sourceHash": "f2806b8ef8c85ff04954ab0bc63098d78c7b4eb0b1a84e944c3f80acb85f491f"
+    },
+    {
+      "file": "dist/ui/strategy-context-menu.jsx",
+      "owners": [
+        "graph",
+        "editing",
+        "primitive"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "노드·연결·캔버스 공용 팝오버. 현재 포인터·화면 경계에 배치하고 비활성 이유·방향키·취소·외부 클릭 닫기를 제공한다.",
+      "signature": "cf4f0b862c4ff48ddcd4d936fb40ee26e4eae67e6f427b0701fe8ea017f54614",
+      "controls": [
+        [
+          "data-strategy-context-menu",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "handler:onClick=",
+          1
+        ],
+        [
+          "handler:onKeyDown=",
+          1
+        ]
+      ],
+      "sourceHash": "d18d374ec991692a8ae534892efaf209c41dc68474d7530d1d5d4950f38f0d5e",
+      "matrix": "design/context-action-matrix.json"
+    },
+    {
+      "file": "dist/ui/strategy-explorer.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "790c74bb419a72fd964dec1acf641996fec29ab711c988c87fb077c1e104bb3d",
+      "controls": [
+        [
+          "element:button",
+          5
+        ],
+        [
+          "element:select",
+          2
+        ],
+        [
+          "element:summary",
+          2
+        ],
+        [
+          "handler:onClick=",
+          5
+        ],
+        [
+          "handler:onKeyDown=",
+          1
+        ]
+      ],
+      "sourceHash": "9410853b785ea2a5758d919be1da50419207d55acff77996d306d755c13da0c2"
+    },
+    {
+      "file": "dist/ui/strategy-graph-editor.jsx",
+      "owners": [
+        "graph",
+        "editing",
+        "primitive"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T05:12:40.570414+00:00",
+      "reason": "MODEL-to-ORDER execution review: existing ORDER controls persist recheckModelValue in canonical graph; selection hash, current ask and fees reach exactPlan. Same100percent sizing and existing price budget; no extra confirmation. Source/controller regressions and actual UI verification recorded in cji-surge-action-upgrade-20261110. Actual production ORDER panel inspected with Playwright: model-value radio ON, TP3percent/fraction60percent; no writes, no page errors. Screenshot and DOM evidence in artifacts/cji-surge-action-upgrade-20261110/ui-radio-verification.json.",
+      "signature": "c15ddd0e47eeeb40ac5a4144ef341ebd9f0790b4731e126393ed53fef8102a31",
+      "controls": [
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          61
+        ],
+        [
+          "element:input",
+          25
+        ],
+        [
+          "element:select",
+          13
+        ],
+        [
+          "element:summary",
+          14
+        ],
+        [
+          "element:textarea",
+          5
+        ],
+        [
+          "handler:onClick=",
+          67
+        ],
+        [
+          "handler:onKeyDown=",
+          4
+        ],
+        [
+          "handler:onPointerDown=",
+          1
+        ]
+      ],
+      "nativeContainerReason": "popover-event-boundary",
+      "sourceHash": "3d5aee681335434f7a25ab40f80c90d7b698b756ab6b9e05e1b83c9cb2b3dd19",
+      "matrix": "design/context-action-matrix.json",
+      "reviewAmendment": "동시 작업의 그래프 탐험 중 선택/비선택 노드·연결 시각 클래스 추가를 검토. 기존 inert 경계와 문맥 메뉴 액션 및 상태 조건은 동일하다.",
+      "customContainers": [
+        "<div className=\"strategy-toolbar-popover\" onClick="
+      ]
+    },
+    {
+      "file": "dist/ui/strategy-icons.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08",
+      "reason": "021 후속: 모든 아이콘 정의·아이콘 선택·SVG 내보내기와 JSX 호출부 대조. 현행 등록 노드 매핑 누락/상속 이름 오인 수정,35개 SVG 및symbol 형상 일치 검사, 운영 라이브러리 갤러리·SVG200 확인. 모델·그래프 정의는 변경하지 않음.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "cee0105017cfa122ca3139e8c20b1fd6594fdde4a17d5c291531f2d090c10fe8",
+      "customContainers": []
+    },
+    {
+      "file": "dist/ui/strategy-learning.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-09T18:14:07.590Z",
+      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다. 080: 기존 실험 목록 복귀를 공용 출발 범위/profileId/검색/페이지/같은 ID 초점으로 연결. 직접 링크 fallback·기존 실행/저장/중지 경로 유지.",
+      "signature": "c1a749459cda5a6a28f88bd812d90b65cbdff51f3501e867e3837c2c7b629275",
+      "controls": [
+        [
+          "data-learning-action",
+          1
+        ],
+        [
+          "data-learning-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-learning-action=\"result-view\"",
+          1
+        ],
+        [
+          "data-learning-action=\"setup-step\"",
+          1
+        ],
+        [
+          "data-learning-graph-context",
+          1
+        ],
+        [
+          "data-simulation-action",
+          1
+        ],
+        [
+          "element:button",
+          4
+        ],
+        [
+          "element:input",
+          5
+        ],
+        [
+          "element:select",
+          3
+        ],
+        [
+          "element:summary",
+          3
+        ],
+        [
+          "element:table",
+          1
+        ],
+        [
+          "element:textarea",
+          1
+        ],
+        [
+          "helper:renderActionMenu(",
+          1
+        ]
+      ],
+      "sourceHash": "bb4b1cd761249a6b9bef2253f016055ff0f73b7bc3cc4e30686b24db9e6694d9"
+    },
+    {
+      "file": "dist/ui/strategy-model-library.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T13:17:29.917Z",
+      "reason": "117: 전략/묶음 저장 뒤 중복 완료창과 원본 중지 선택을 제거하고 목록의 실제 저장 항목으로 복귀. 기존 명시적 중지/보관 경로·보유/미확정 주문 안내 보존. 저장과 후속 조회 실패 분리·목록 조회만 재시도·완료 폼 중복 제출 방지·새 작업 초점 보존·관련 공용 동선 전체 검토.",
+      "signature": "12df0144c78e2039149cc483974ce821a8320703c5456c11383338833ec1caba",
+      "controls": [
+        [
+          "data-draft-identity=\"'+esc(draftIdentity)+'\"",
+          1
+        ],
+        [
+          "data-strategy-library-action",
+          2
+        ],
+        [
+          "data-strategy-library-action=\"'+action+'\"",
+          1
+        ],
+        [
+          "data-strategy-library-action=\"model\"",
+          2
+        ],
+        [
+          "data-strategy-library-action=\"refresh\"",
+          2
+        ],
+        [
+          "element:a",
+          3
+        ],
+        [
+          "element:button",
+          3
+        ],
+        [
+          "element:input",
+          7
+        ],
+        [
+          "helper:renderActionMenu(",
+          1
+        ],
+        [
+          "helper:renderDataTable(",
+          1
+        ]
+      ],
+      "sourceHash": "b70765d43b9496fa56cb3ac24f966a8200149ff0cbd9120fedd068413b0a7619"
+    },
+    {
+      "file": "dist/ui/strategy-parameter-controls.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08",
+      "reason": "전체 공용 입력 소스와 편집기/라이브러리 호출부 검토. 누락/0/미등록 저장값/연결 종목 누락 SSR 및 읽기전용 검사, 운영 라이브러리 샘플 ETH→BTC 연결 표시와 초기화 확인. 저장·연결 변경은 기존 사용자 이벤트/disabled 가드 유지. 실제 금융 모델 쓰기는 실행하지 않음. 증거 runs/021-subtraction/followup-parameters.json.",
+      "signature": "f55203180f5943d9c77295f2b45261ab2b4e9ce8aedf0b3f44729d51cffcb67a",
+      "controls": [
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          3
+        ],
+        [
+          "element:summary",
+          1
+        ],
+        [
+          "element:textarea",
+          1
+        ],
+        [
+          "handler:onClick=",
+          1
+        ],
+        [
+          "handler:onKeyDown=",
+          1
+        ]
+      ],
+      "sourceHash": "d840cc72a85e906ddfaa2d1d4d37b2875975607ff1f231827ac22a64762fcbc1"
+    },
+    {
+      "file": "dist/ui/strategy-part-card.jsx",
+      "owners": [
+        "graph",
+        "editing",
+        "primitive"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "노드·그룹·연결·캔버스는 전용 메뉴, 속성 입력과 툴바는 기본 편집 동작을 사용한다. 읽기 전용·저장 중·출력 노드 조건을 유지한다.",
+      "signature": "70e2131005bd89b07265c26d360932d7e1c1b990f8e195901115ccbafbc3b49f",
+      "controls": [
+        [
+          "element:button",
+          1
+        ]
+      ],
+      "sourceHash": "a8b8eb47f514dff94f8086b14d9a830109c43b8aeafcb9ece70f38587f34d920"
+    },
+    {
+      "file": "dist/ui/strategy-ui-library.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "028b5f025324e809a173a1c7ef8e992de49b943980be203f1ac7af5f71cec360",
+      "controls": [
+        [
+          "element:a",
+          7
+        ],
+        [
+          "element:article",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          2
+        ],
+        [
+          "handler:onClick=",
+          1
+        ]
+      ],
+      "sourceHash": "232ed859cda9fd3411c80413ca48d8810d44bbd56bb211daca5b5f75e5fed1dd"
+    },
+    {
+      "file": "dist/ui/strategy-ui-samples.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "0e09c3da45d7b72d6302a9ac158e1ab70d22e38c195f9caf118ba92ecb296418"
+    },
+    {
+      "file": "dist/ui/studio-controller.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T14:10:52.060Z",
+      "reason": "119: 모의 예산의 실제 금액/설정 상태와 미설정 통화 설정을 구분하고 배정 행동을 마인드별 자금에 배치. 최초 원장 미조회/실패와 직전 정상 자료 구분, 기존 GET 새로고침으로 복구. 실전 분기·배정/회수/예산 입력·API·개별 운용 링크/원문 수치 보존. 공용 클릭/폼/문맥 호출부와 키보드 동선 검토.",
+      "signature": "e990d4dd848734dda3779f4ef461762e6b1b0b2fa9ea1392d75e2610ae0c6031",
+      "controls": [
+        [
+          "data-auto-action",
+          1
+        ],
+        [
+          "data-broker-action",
+          2
+        ],
+        [
+          "data-event-paper-action",
+          1
+        ],
+        [
+          "data-library-action=\"detail\"",
+          4
+        ],
+        [
+          "data-mind-companion-open",
+          2
+        ],
+        [
+          "data-saved-decision-context",
+          1
+        ],
+        [
+          "data-saved-policy-context",
+          1
+        ],
+        [
+          "data-studio-action",
+          2
+        ],
+        [
+          "data-studio-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-studio-action=\"close-dialog\"",
+          1
+        ],
+        [
+          "data-studio-action=\"connections\"",
+          1
+        ],
+        [
+          "data-studio-action=\"document-new\"",
+          1
+        ],
+        [
+          "data-studio-action=\"refresh\"",
+          3
+        ],
+        [
+          "data-studio-action=\"subscription-account\"",
+          1
+        ],
+        [
+          "data-studio-action=\"subscription-pause\"",
+          1
+        ],
+        [
+          "data-studio-command-status",
+          2
+        ],
+        [
+          "element:a",
+          19
+        ],
+        [
+          "element:button",
+          9
+        ],
+        [
+          "element:input",
+          29
+        ],
+        [
+          "element:select",
+          10
+        ],
+        [
+          "element:summary",
+          18
+        ],
+        [
+          "element:textarea",
+          3
+        ],
+        [
+          "helper:button(",
+          175
+        ],
+        [
+          "helper:renderActionMenu(",
+          4
+        ],
+        [
+          "helper:renderDataTable(",
+          1
+        ]
+      ],
+      "sourceHash": "1d1e7050fcd9a4f70362a93d39b8c33294814410fcf8f29de628f5795e2ef24a",
+      "matrix": "design/context-action-matrix.json",
+      "customContainers": []
+    },
+    {
+      "file": "dist/ui/studio-shell.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-09T10:15:32.297Z",
+      "reason": "020 최신 UI·UX: 공용 빠른 이동의 문맥별 그룹·검색·빈 결과 복구·조회 실패 재시도·늦은 목록 반영·닫기 및 목적지 제목 초점 확인. 금융 실행 액션 추가 없음. 064: 공용 화면 찾기에 전체 기록/시뮬레이션과 다른 마인드 기록을 정식 라우트로 연결. 이름/작업 분리 표시, 체결 검색 별칭, 오래된 검색/판단 유형 제거, native 링크/combobox/listbox/키보드 및 실패 복구 보존. 실제 운영 Enter·Esc·305px 결과 확인.",
+      "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
+      "controls": [
+        [
+          "element:a",
+          8
+        ],
+        [
+          "element:button",
+          2
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          2
+        ]
+      ],
+      "sourceHash": "def75690a2496c89464371604c756c69f20d11d952cf2b390f021546e25c5ef5",
+      "customContainers": []
+    },
+    {
+      "file": "dist/ui/terminal-universe.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T00:54:40.826Z",
+      "reason": "093: 空 표 머리글/이동 불가 페이지 바·로컬 관심 출처 중복을 숨기고 결과와 유효한 이동/외부 출처를 보존. 페이지 읽기 완료 뒤 같은 문맥의 유효한 이동 또는 검색/오류 재시도로 초점 연결. 기존 주문·설정·관심 변경 검증 보존.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "74e6edb33afcc25dbb4c63029ec70fc8874a31bedbb11b4354acafa5044c8905"
+    },
+    {
+      "file": "dist/ui/terminal-workspace-controls.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "04384a950e17f8afdf823f0eb4d47209fe1f1603a35acc1a3b8d3b899821df69"
+    },
+    {
+      "file": "dist/ui/theme-init.js",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "4d8e771c1dcf3b72e2b281a85f6667e6e6783d6631ffc481516a9da634f89f8a"
+    },
+    {
+      "file": "dist/ui/trading-terminal.mjs",
+      "owners": [
+        "row",
+        "card",
+        "activity",
+        "editing",
+        "primitive",
+        "navigation"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-10T00:54:40.825Z",
+      "reason": "093: 空 표 머리글/이동 불가 페이지 바·로컬 관심 출처 중복을 숨기고 결과와 유효한 이동/외부 출처를 보존. 페이지 읽기 완료 뒤 같은 문맥의 유효한 이동 또는 검색/오류 재시도로 초점 연결. 기존 주문·설정·관심 변경 검증 보존.",
+      "signature": "f18aacf942cff74e20177fe708a058ed6a0cad9f87325711ba1d86a6d197bd0e",
+      "controls": [
+        [
+          "data-terminal-action",
+          3
+        ],
+        [
+          "data-terminal-action=\"'+errorAction+'\"",
+          1
+        ],
+        [
+          "data-terminal-action=\"${action}\"",
+          1
+        ],
+        [
+          "data-terminal-action=\"chart-layout\"",
+          1
+        ],
+        [
+          "data-terminal-action=\"instrument-picker\"",
+          2
+        ],
+        [
+          "data-terminal-action=\"instrument-tab\"",
+          3
+        ],
+        [
+          "data-terminal-action=\"instrument\"",
+          3
+        ],
+        [
+          "data-terminal-action=\"range\"",
+          1
+        ],
+        [
+          "data-terminal-action=\"records-layout\"",
+          1
+        ],
+        [
+          "data-terminal-action=\"refresh\"",
+          2
+        ],
+        [
+          "data-terminal-action=\"tab\"",
+          4
+        ],
+        [
+          "data-terminal-action=\"universe-page\"",
+          4
+        ],
+        [
+          "data-terminal-action=\"universe-retry\"",
+          2
+        ],
+        [
+          "data-terminal-action=\"watchlist\"",
+          3
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          4
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          8
+        ],
+        [
+          "element:summary",
+          3
+        ],
+        [
+          "element:table",
+          2
+        ],
+        [
+          "helper:button(",
+          38
+        ]
+      ],
+      "sourceHash": "351d563192c5b56029499a6ce719968e2b2ca93e082151420521c6eef58f692c",
+      "customContainers": []
+    },
+    {
+      "file": "dist/ui/universe-catalog-picker.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "0d4f4f0c38a5d14609d1837501f00779a5d8c6d9bb105b6fa3548ec8837f84fd",
+      "controls": [
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          8
+        ],
+        [
+          "element:input",
+          2
+        ],
+        [
+          "element:select",
+          3
+        ]
+      ],
+      "sourceHash": "224623b49d8f5c1224bf5a78fb098b88744511144311cec8828540501f6f4d60"
+    },
+    {
+      "file": "dist/ui/universe-editor.mjs",
+      "owners": [
+        "primitive",
+        "editing",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T06:42:32.555Z",
+      "reason": "104: 로컬 코인/주식/제외 선택의 checkbox·선택 칩·검색 결과 분리/0건·추가·해제/전체 해제·native FormData/초안 이벤트·현재 입력 초점. 금융 조건/저장 경로 보존.",
+      "signature": "769c897a9577b1479f3f3eee42a0e32131cc5d3cad31865477918174c28068f9",
+      "controls": [
+        [
+          "data-studio-action=\"sector-collect\"",
+          1
+        ],
+        [
+          "data-studio-action=\"sector-import\"",
+          1
+        ],
+        [
+          "data-studio-action=\"stocks-collect\"",
+          1
+        ],
+        [
+          "data-studio-action=\"universe-clear\"",
+          1
+        ],
+        [
+          "data-studio-action=\"universe-collect\"",
+          1
+        ],
+        [
+          "data-studio-action=\"universe-remove\"",
+          1
+        ],
+        [
+          "data-studio-action=\"universe-skip\"",
+          1
+        ],
+        [
+          "data-universe-edit-context",
+          1
+        ],
+        [
+          "element:button",
+          7
+        ],
+        [
+          "element:input",
+          8
+        ],
+        [
+          "element:select",
+          2
+        ],
+        [
+          "element:summary",
+          4
+        ]
+      ],
+      "sourceHash": "6cea1fed612415794fdb819d2a2da135d2e2291b9f854c6770c2b32fbe5f2458"
+    },
+    {
+      "file": "dist/ui/vamp-model-controls.jsx",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "d9647d6445a597167002710fc4dce651e8e2e2c77dde2f4c74f931afaa8a1e8c",
+      "controls": [
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:input",
+          2
+        ],
+        [
+          "element:select",
+          1
+        ],
+        [
+          "handler:onClick=",
+          1
+        ]
+      ],
+      "sourceHash": "24105fc6ccdd8e5e9e5a01968173182eb1a731e026d3ededbfeada031db9a728"
+    },
+    {
+      "file": "dist/ui/workflow-state.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T09:22:31.916Z",
+      "reason": "109: 공용 학습 자료의 범위/조회 도구·중복 설명과 빈 제목/0개 통합. 원래 행·열·적격/제외·정책/원본/전달 그대로, standalone h2/연결 h3 계층과 새로고침/범위 변경의 초점 복귀·실패/지연 응답을 실제 검토.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "8747bac9e31f920ef1c3467b902e975dbfe6a84b4094607ae650819725317034"
+    },
+    {
+      "file": "scripts/server-update-view.html",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "e6861bd04471a8240c61ecd228a49b29c68992e57f4fa66bbc75edd31af582e3",
+      "controls": [
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "b137238a81c340c74ad81d79d5034267130ed47c348441ad9ae3707330e79c14"
+    },
+    {
+      "file": "scripts/server-update/view-entry.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-04",
+      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "101087719aa88c312247ef846daf72f1b959ea0dc7e65821788714fc2b945428"
+    },
+    {
+      "file": "scripts/server-update/view.mjs",
+      "owners": [
+        "row",
+        "card",
+        "editing",
+        "primitive",
+        "navigation",
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-10T09:56:42.403Z",
+      "reason": "110 후속: 서버 갱신 entry·공용 live-change-review·공식 build-vendor 생성물 일치 실제 검토. optional summary는 HTML escape되고 누락 시 빈 문단 없음; 기존 다중 모델·원문 상세/보존액·상태/기술상세·오류 재조회와 인증/기대 fingerprint 경계를 보존. 격리 updater35검사 통과. 금융 적용/실제 서버 재시작을 수행한 증거로 사용하지 않음.",
+      "signature": "d4a5de0f6c37b84be2f6eadb70fc987a5672c4bf8ab93b7d96eb09db454e20ed",
+      "controls": [
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "db9b07615866f79ce5915ff69b81c90ce7ae0c957f30ceb60b7f9c8cc0ee7d35"
+    },
+    {
+      "file": "dist/ui/brokerage-report.mjs",
+      "owners": [
+        "readonly",
+        "navigation",
+        "primitive"
+      ],
+      "controls": [
+        [
+          "element:a",
+          6
+        ],
+        [
+          "element:summary",
+          3
+        ],
+        [
+          "helper:renderDataTable(",
+          1
+        ]
+      ],
+      "signature": "f0da04e992781fa3170a596a30e9363b1839417c7e1c9b194875884c93fbb107",
+      "sourceHash": "c693e041f69443e893125c137017b0cf82972f691611ce6f1626b46825d89229",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-08T23:41:37.517Z",
+      "reason": "운영 서버의 실제 운용 더보기→운용보고서→보고서 새 창, 알림함→정정 보고서→보고서 새 창, CSV 실제 다운로드, 1280px/390px 화면, 표·12개 항목과 PDF를 대조했다. 증거 artifacts/cji-brokerage-report-20261108/browser-verification.json 및 report-*.png, app-report-*.png."
+    },
+    {
+      "file": "dist/ui/managed-portfolio.mjs",
+      "owners": [
+        "editing",
+        "navigation",
+        "primitive",
+        "readonly"
+      ],
+      "controls": [
+        [
+          "element:a",
+          2
+        ],
+        [
+          "element:button",
+          2
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          1
+        ]
+      ],
+      "signature": "6453c3aca1724b79116ae3fbb4eaec829c74a3f67483e82412019455e1d51ac4",
+      "sourceHash": "661c8ba2610778e345afe2873d261dcf3697f381a50078e5b6e04253fce3f53e",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08",
+      "reason": "공용 학습 제어 또는 통합 조회 원본 전체와 호출부 검토. 방향 고정·revision/대상·중복 요청·단계별 닫기·늦은 응답·오류/재시도 검사 및 실제 모듈의 전후 브라우저 조작. 금융 승인/학습설정 변경은 격리 응답에서만 실행. 증거022-dark-ai-patterns."
+    },
+    {
+      "file": "dist/ui/trade-fill-summary.mjs",
+      "owners": [
+        "readonly",
+        "primitive"
+      ],
+      "controls": [],
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "sourceHash": "f2e787c2045eee27d1f20de8d4829a6748cc2e432ed0f1203b796b7d61e8e848",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-08T18:36:05.754Z",
+      "reason": "033: 실제 체결 금액/수량의 평균 가격·금액·수수료 표시, native 개별체결 details/응답형 공용 표, 누락/미체결 분리. 주문 생성/승인 액션 추가 없음. 공용 입력/링크/기존 객체 메뉴 보존."
+    }
+  ],
+  "actionMatrix": "design/context-action-matrix.json",
+  "browserEvidence": "artifacts/cji-context-interactions-20261103/browser-reviews.json"
+}

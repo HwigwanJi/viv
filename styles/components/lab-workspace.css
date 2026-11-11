@@ -1,0 +1,140 @@
+@reference '../theme.css';
+
+.lab-workspace,.simulation-report-workspace,.lab-staged-setup { @apply min-w-0 font-ui-sans; }
+.lab-workspace { @apply mx-auto; @apply max-w-(--lab-content-width); }
+.lab-workspace-heading { @apply flex min-w-0 flex-wrap items-center justify-between gap-ui-5 mb-ui-7; }
+.lab-workspace-heading > div:first-child { @apply flex min-w-0 items-center gap-ui-6; }
+.lab-workspace-heading h2 { @apply m-0 truncate text-ui-xl font-ui-semibold; }
+.lab-workspace-heading > div:first-child > button { @apply border-0 bg-transparent px-0 text-secondary shadow-none; }
+.lab-stepper { @apply mb-ui-8 flex min-w-0 items-center border-b border-default; }
+.lab-stepper button { @apply flex flex-1 items-center justify-center gap-ui-3 border-0 border-b-2 border-transparent bg-transparent px-ui-4 py-ui-5 text-ui-sm text-secondary; }
+.lab-stepper button span { @apply inline-flex items-center justify-center rounded-full bg-field text-ui-xs font-ui-semibold; @apply w-control-sm; @apply h-control-sm; }
+.lab-stepper button[aria-current="step"] { @apply border-accent text-foreground font-ui-semibold; }
+.lab-stepper button[aria-current="step"] span { @apply bg-accent text-white; }
+.lab-context-line { @apply mb-ui-6 flex min-w-0 flex-wrap items-center gap-x-ui-7 gap-y-ui-2 text-ui-xs text-secondary; }
+.lab-context-line span { @apply min-w-0 truncate; @apply max-w-(--lab-context-max-width); }
+.lab-choose-minds { @apply grid min-w-0 grid-cols-1 gap-ui-6 md:grid-cols-2; }
+.lab-choose-minds .field { @apply m-0; }
+.lab-arm-label { @apply block text-ui-xs text-secondary font-ui-medium; }
+.lab-template-picker { @apply mt-ui-4 text-ui-xs text-secondary; }
+.lab-template-picker summary { @apply cursor-pointer; }
+.lab-template-picker .field { @apply mt-ui-4; @apply max-w-(--lab-context-max-width); }
+.lab-workspace .simulation-lab-grid { @apply mt-ui-5; }
+.lab-workspace .simulation-lab-arm { @apply overflow-hidden rounded-ui-lg; }
+.lab-workspace .simulation-lab-arm-tools { @apply bg-surface px-ui-5 py-ui-3; }
+.lab-workspace .simulation-lab-arm-tools .field { @apply m-0; }
+.lab-workspace .simulation-lab-arm-tools > .field { @apply text-ui-xs; }
+.lab-workspace .simulation-lab-arm > .studio-sheet-body:empty { @apply hidden; }
+.lab-workspace .simulation-lab-arm .strategy-editor { @apply h-(--lab-graph-height); }
+.lab-workspace .simulation-lab-arm .strategy-editor-embedded { @apply min-h-(--lab-graph-height); }
+.lab-step-footer { @apply mt-ui-7 flex min-w-0 flex-wrap items-center justify-between gap-ui-5 border-t border-default py-ui-6; }
+.lab-step-footer > span { @apply text-ui-xs text-secondary; }
+.lab-review-layout { @apply grid grid-cols-1 items-start gap-ui-7 lg:grid-cols-3; }
+.lab-review-layout > .studio-sheet { @apply lg:col-span-2; }
+.lab-review-layout:not(:has(.lab-change-summary)) { @apply lg:grid-cols-1; }
+.lab-review-layout:not(:has(.lab-change-summary)) > .studio-sheet { @apply lg:col-span-1; }
+.lab-pair-names { @apply grid grid-cols-2 gap-ui-6 mb-ui-7; }
+.lab-pair-names > div { @apply min-w-0 flex flex-col gap-ui-3; }
+.lab-pair-names span { @apply text-ui-xs text-secondary; }
+.lab-pair-names strong { @apply truncate text-ui-md font-ui-semibold; }
+.lab-change-summary { @apply min-w-0 rounded-ui-lg border border-default bg-surface p-ui-7; }
+.lab-change-summary h3 { @apply m-0 mb-ui-5 text-ui-sm font-ui-semibold; }
+.lab-change-summary p { @apply m-0 text-ui-xs text-secondary; }
+.lab-change-summary ul { @apply m-0 list-none p-0; }
+.lab-change-summary li { @apply flex min-w-0 justify-between gap-ui-4 py-ui-3 text-ui-xs; }
+.lab-change-summary li span { @apply truncate; }
+.lab-change-summary li strong { @apply shrink-0 text-secondary font-ui-medium; }
+.lab-view-tabs { @apply flex min-w-0 overflow-x-auto gap-ui-7 border-b border-default mb-ui-7; }
+.lab-view-tabs > button { @apply shrink-0 border-0 border-b-2 border-transparent bg-transparent px-0 py-ui-5 text-ui-sm text-secondary; }
+.lab-view-tabs > button[aria-current="page"] { @apply border-accent text-foreground font-ui-semibold; }
+.lab-progress-strip { @apply flex flex-wrap items-center gap-ui-5 mb-ui-6 text-ui-xs text-secondary; }
+.lab-progress-strip progress { @apply min-w-0 flex-1 rounded-full; @apply h-ui-2; accent-color:var(--ds-accent); }
+.lab-result-delta { @apply grid grid-cols-1 items-start gap-ui-7 px-ui-7 py-ui-8 md:grid-cols-2; background:var(--lab-selection-bg); }
+.lab-comparison-value > span { @apply text-ui-sm text-secondary; }
+.lab-comparison-value > strong { @apply tabular-nums tracking-tight font-ui-semibold; @apply text-(length:--lab-result-value-size); }
+.lab-comparison-value { @apply flex min-w-0 flex-col gap-ui-3; }
+.lab-comparison-readiness { @apply flex min-w-0 flex-col items-start gap-ui-3 text-ui-sm; }
+.lab-comparison-readiness > span { @apply text-secondary; }
+.lab-account-results { @apply mt-ui-7; }
+.lab-account-result-note { @apply m-0 px-ui-7 pb-ui-5 text-ui-xs text-secondary; }
+.lab-result-table { @apply w-full table-fixed border-collapse; @apply min-w-(--ui-table-min); }
+.lab-result-table th { @apply bg-canvas px-ui-5 py-ui-3 text-ui-xs text-secondary font-ui-medium whitespace-nowrap; }
+.lab-result-table td,.lab-result-table tbody th { @apply border-t border-subtle px-ui-5 py-ui-5 text-ui-sm; }
+.lab-result-table tbody th { @apply bg-transparent text-foreground font-ui-medium; }
+.lab-result-table .lab-arm-label { @apply mb-ui-2; }
+.lab-result-table th:first-child { @apply text-left; @apply w-(--ui-column-detail); }
+.lab-result-table th:not(:first-child),.lab-result-table td { @apply text-right tabular-nums; }
+.lab-result-table th > span { @apply block truncate; }
+.lab-result-table th:last-child,.lab-result-table td:last-child { @apply whitespace-nowrap; @apply w-(--ui-column-name); }
+.lab-result-table .ui-action-menu { @apply ml-ui-3; }
+.lab-benchmark-detail { @apply mt-ui-7; }
+.lab-benchmark-detail > summary { @apply cursor-pointer rounded-ui-md border border-default px-ui-6 py-ui-5 text-ui-sm font-ui-medium; }
+.lab-benchmark-detail[open] > summary { @apply mb-ui-5; }
+.lab-execution-toolbar { @apply flex flex-wrap items-center gap-ui-5 mb-ui-5; }
+.lab-execution-toolbar .field { @apply m-0; }
+.lab-execution-toolbar [data-lab-comparison-controls] { @apply basis-full; }
+.lab-execution-toolbar:empty { @apply hidden; }
+.simulation-lab-focus-status,.simulation-lab-focus-control { @apply hidden; }
+[data-simulation-lab][data-focus="0"] [data-lab-arm="0"],
+[data-simulation-lab][data-focus="1"] [data-lab-arm="1"] {
+ @apply fixed inset-0 z-50 m-0 flex min-h-0 min-w-0 flex-col rounded-none border-0 bg-surface;
+ @apply h-(--ui-dynamic-screen-height);
+ @apply w-(--ui-screen-width);
+}
+.simulation-lab-arm[aria-modal="true"] > .simulation-lab-arm-tools { @apply shrink-0 flex-wrap gap-ui-4; }
+.simulation-lab-arm[aria-modal="true"] .simulation-lab-focus-status { @apply mr-auto flex min-w-0 items-center gap-ui-5 text-ui-sm; }
+.simulation-lab-arm[aria-modal="true"] .simulation-lab-focus-status > span { @apply truncate text-ui-xs text-secondary; }
+.simulation-lab-arm[aria-modal="true"] .simulation-lab-focus-control { @apply inline-flex; }
+.simulation-lab-arm[aria-modal="true"] > [data-lab-graph] { @apply min-h-0 min-w-0 flex-1 overflow-hidden; }
+.lab-workspace .simulation-lab-arm[aria-modal="true"] .strategy-editor { @apply flex h-full min-h-0 flex-col; }
+.lab-workspace .simulation-lab-arm[aria-modal="true"] .strategy-editor-body { @apply h-auto min-h-0 flex-1; }
+.simulation-lab-arm[aria-modal="true"] .strategy-editor-toolbar,.simulation-lab-arm[aria-modal="true"] .strategy-editor-footer { @apply shrink-0; }
+.simulation-lab-arm[aria-modal="true"] > .studio-sheet-body { @apply hidden; }
+.lab-saved-conditions dl { @apply m-0 mb-ui-7; }
+.lab-saved-conditions dl > div { @apply flex flex-wrap justify-between gap-ui-5 border-b border-default py-ui-5 text-ui-sm; }
+.lab-saved-conditions dt { @apply text-secondary; }
+.lab-saved-conditions dd { @apply m-0 tabular-nums; }
+.lab-inline-error { @apply my-ui-5 rounded-ui-md border border-default px-ui-6 py-ui-5 text-ui-sm text-negative; }
+.lab-staged-setup { @apply mx-auto; @apply max-w-(--lab-setup-width); }
+.lab-staged-setup > form { @apply block; }
+.lab-staged-setup .simulation-setup-main { @apply mb-ui-5; }
+.lab-staged-setup[data-setup-step="review"] .simulation-setup-main { @apply border-0 bg-transparent; }
+.lab-staged-setup .simulation-setup-review { @apply static; }
+.lab-staged-setup [hidden] { @apply hidden; }
+.simulation-detail-context { @apply mb-ui-5 min-w-0 rounded-ui-md bg-field px-ui-4 py-ui-3; }
+.simulation-detail-context .detail-row { @apply border-0 py-ui-2 text-ui-xs; }
+.simulation-detail-context .detail-row > span { @apply shrink-0; }
+.simulation-detail-context .detail-row strong { @apply min-w-0 wrap-anywhere font-ui-medium; }
+.simulation-detail-context .detail-row:first-child { @apply text-ui-sm; }
+.lab-decision-navigation { @apply my-ui-5 flex min-w-0 items-center justify-between gap-ui-4; }
+.lab-decision-navigation > div { @apply flex min-w-0 flex-col items-center gap-ui-1 text-center; }
+.lab-decision-navigation time { @apply text-ui-sm font-ui-semibold tabular-nums wrap-anywhere; }
+.lab-decision-navigation span,.lab-decision-navigation small { @apply text-ui-xs text-secondary; }
+.lab-decision-navigation .button.small { @apply min-h-control-touch shrink-0; }
+@media (width < theme(--breakpoint-sm)) {
+ .lab-decision-navigation { @apply grid grid-cols-2; }
+ .lab-decision-navigation > div { @apply order-first col-span-2; }
+}
+[data-decision-panel] { @apply min-w-0; }
+[data-decision-panel][hidden] { @apply hidden; }
+.simulation-report-workspace > .studio-page-head h1,.simulation-report-workspace > .studio-page-head h2 { @apply min-w-0 truncate; @apply max-w-(--lab-context-max-width); }
+.simulation-report-workspace .simulation-execution-identity { @apply hidden; }
+.simulation-report-workspace .simulation-chart-meta { @apply flex justify-end; }
+.simulation-report-workspace .simulation-result-phase { @apply hidden; }
+@variant max-md {
+ .lab-stepper button { @apply gap-ui-2 px-ui-2 text-ui-xs; }
+ .lab-stepper button span { @apply hidden; }
+ .lab-result-table { @apply table-auto; }
+ .lab-workspace-heading h2 { @apply text-ui-lg; }
+}
+
+.lab-change-summary .lab-change-value { @apply flex-col gap-ui-2; }
+.lab-change-summary .lab-change-value strong { @apply min-w-0 shrink break-words; overflow-wrap:anywhere; }
+.lab-change-summary details { @apply mt-ui-4 text-ui-xs; }
+.lab-change-summary summary { @apply cursor-pointer text-secondary; }
+
+.lab-result-name { @apply inline-flex min-h-control-touch max-w-full items-center border-0 bg-transparent p-0 text-left text-ui-sm font-ui-medium text-foreground underline; white-space:normal; overflow-wrap:anywhere; }
+
+.lab-result-name:focus-visible { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+
+.lab-result-name > span { @apply min-w-0 line-clamp-2; white-space:normal; overflow-wrap:anywhere; }

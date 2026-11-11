@@ -1,0 +1,90 @@
+@reference '../theme.css';
+
+.learning-workspace { @apply min-w-0; }
+.learning-page-head { @apply mb-ui-6; }
+.learning-stepper { @apply mb-ui-7 flex min-w-0 border-b border-default; }
+.learning-stepper button { @apply flex min-w-0 flex-1 items-center justify-center gap-ui-3 border-b-2 border-transparent px-ui-4 py-ui-5 text-ui-sm text-secondary; }
+.learning-stepper button span { @apply inline-flex shrink-0 items-center justify-center rounded-full bg-field text-ui-xs font-ui-semibold; @apply w-control-sm; @apply h-control-sm; }
+.learning-stepper button[aria-current="step"] { @apply border-accent font-ui-semibold text-accent; }
+.learning-stepper button[aria-current="step"] span { @apply bg-accent; @apply text-(color:--ds-text-on-accent); }
+.learning-stepper button:hover { @apply bg-hover; }
+.learning-basis { @apply mb-ui-5 text-ui-xs text-secondary; }
+.learning-setup-panel[hidden] { @apply hidden; }
+.learning-setup-panel .studio-sheet-head h2 { @apply text-ui-lg font-ui-semibold; }
+.learning-setup-panel .studio-sheet-head > div { @apply min-w-0; }
+.learning-setup-panel .studio-sheet-head > div > span { @apply mt-ui-2 block text-ui-xs text-secondary; }
+.learning-field-pair { @apply grid min-w-0 grid-cols-1 gap-ui-6 md:grid-cols-2; }
+.learning-parameter-add { @apply mt-ui-7 flex min-w-0 items-end gap-ui-4 border-t border-subtle pt-ui-7; }
+.learning-parameter-add .field { @apply m-0 min-w-0 flex-1; }
+.learning-parameter-add > button { @apply mb-0 shrink-0; }
+.learning-parameters { @apply mt-ui-6 grid min-w-0 gap-ui-5; }
+.learning-parameter { @apply min-w-0 rounded-ui-lg border border-default bg-canvas p-ui-6; }
+.learning-parameter-title { @apply mb-ui-5 flex min-w-0 items-center justify-between gap-ui-4; }
+.learning-parameter-title > div { @apply min-w-0; }
+.learning-parameter-title strong { @apply block truncate text-ui-sm font-ui-semibold; }
+.learning-parameter-title span { @apply mt-ui-1 block text-ui-xs text-secondary; }
+.learning-parameter .field { @apply m-0; }
+.learning-parameter textarea { @apply bg-surface; @apply min-h-control-lg; }
+.learning-empty { @apply p-ui-8 text-center text-ui-sm text-secondary; }
+.learning-empty > span { @apply mt-ui-3 block text-ui-xs; }
+.learning-period-intro { @apply mb-ui-5 flex items-center gap-ui-3; }
+.learning-period-intro h2 { @apply m-0 text-ui-lg font-ui-semibold; }
+.learning-period-grid { @apply grid min-w-0 grid-cols-1 gap-ui-6 xl:grid-cols-2; }
+.learning-period-grid > section { @apply min-w-0 overflow-hidden; }
+.learning-period-grid .studio-sheet-head h3 { @apply text-ui-md font-ui-semibold; }
+.learning-review-facts { @apply m-0 grid grid-cols-1 px-ui-7 md:grid-cols-2; }
+.learning-review-facts > div { @apply min-w-0 border-b border-subtle py-ui-5; }
+.learning-review-facts > div:nth-child(odd) { @apply md:pr-ui-7; }
+.learning-review-facts dt { @apply mb-ui-2 text-ui-xs text-secondary; }
+.learning-review-facts dd { @apply m-0 break-words text-ui-sm font-ui-medium; }
+.learning-options { @apply min-w-0; }
+.learning-options summary { @apply cursor-pointer py-ui-4 text-ui-sm text-secondary; }
+.learning-options .learning-field-pair { @apply mt-ui-4; }
+.learning-paid-controls { @apply mt-ui-6 flex flex-wrap items-end gap-ui-6 border-t border-subtle pt-ui-6; }
+.learning-paid-controls > .field { @apply m-0; }
+.learning-consent { @apply flex items-center gap-ui-3 pb-ui-3 text-ui-sm; }
+.learning-consent input { @apply w-auto; }
+.learning-setup-footer { @apply mt-ui-6 flex items-center justify-between gap-ui-4 border-t border-default py-ui-6; }
+.learning-setup-footer > span { @apply text-ui-xs text-secondary tabular-nums; }
+.learning-support { @apply mt-ui-7 min-w-0 rounded-ui-lg border border-default; }
+.learning-support > summary { @apply cursor-pointer px-ui-6 py-ui-5 text-ui-sm font-ui-medium; }
+.learning-support .studio-sheet { @apply m-0 border-0; }
+.learning-result-head { @apply mb-ui-6 flex min-w-0 items-start justify-between gap-ui-6; }
+.learning-result-head > div:first-child { @apply min-w-0 flex-1; }
+.learning-result-head h2 { @apply my-ui-2 min-w-0 truncate text-ui-xl font-ui-semibold; }
+.learning-state { @apply text-ui-xs font-ui-medium text-secondary; }
+.learning-result-period { @apply block text-ui-xs text-secondary tabular-nums; }
+.learning-result-head > .actions { @apply shrink-0; }
+.learning-result-tabs { @apply mb-ui-7 mt-ui-6 flex min-w-0 overflow-x-auto border-b border-default; }
+.learning-result-tabs button { @apply shrink-0 border-b-2 border-transparent px-ui-6 py-ui-5 text-ui-sm text-secondary; }
+.learning-result-tabs button[aria-current="page"] { @apply border-accent font-ui-semibold text-accent; }
+.learning-result-tabs button:hover { @apply bg-hover; }
+.learning-result-content { @apply grid min-w-0 gap-ui-6; }
+.learning-result-content > .studio-sheet { @apply m-0 min-w-0 overflow-hidden; }
+.learning-verdict .studio-sheet-head > div { @apply flex min-w-0 flex-col gap-ui-2; }
+.learning-verdict .studio-sheet-head > div > span { @apply text-ui-xs text-secondary; }
+.learning-verdict .studio-sheet-head strong { @apply text-ui-lg font-ui-semibold; }
+.learning-verdict-metrics { @apply m-0 grid min-w-0 grid-cols-3 gap-ui-5 px-ui-7 py-ui-7; }
+.learning-verdict-metrics dt { @apply text-ui-xs text-secondary; }
+.learning-verdict-metrics dd { @apply m-0 mt-ui-2 text-ui-2xl font-ui-semibold tabular-nums; }
+.learning-verdict-metrics small { @apply ml-ui-2 text-ui-sm font-ui-regular text-secondary; }
+.learning-result-content .studio-sheet-head h3 { @apply text-ui-md font-ui-semibold; }
+.learning-result-content .studio-sheet-head > span,.learning-result-content .studio-sheet-head > div > span { @apply text-ui-xs text-secondary; }
+.learning-result-content .studio-table { @apply w-full; }
+.learning-result-content .studio-table td:not(:first-child),.learning-result-content .studio-table th:not(:first-child) { @apply tabular-nums; }
+.learning-comparison .studio-table td:not(:first-child),.learning-comparison .studio-table th:not(:first-child) { @apply text-right; }
+.learning-report-links { @apply flex flex-wrap justify-end gap-ui-3 border-t border-subtle px-ui-6 py-ui-4; }
+.learning-value { @apply block min-w-0 truncate; @apply max-w-(--ui-column-detail); }
+.learning-execution [data-learning-graph] { @apply min-w-0; }
+@variant max-md {
+ .learning-result-head { @apply flex-col gap-ui-4; }
+ .learning-result-head > .actions { @apply w-full justify-end; }
+ .learning-result-head h2 { @apply text-ui-lg; }
+ .learning-verdict-metrics { @apply gap-ui-3 px-ui-5; }
+ .learning-verdict-metrics dd { @apply text-ui-xl; }
+ .learning-stepper button { @apply flex-col gap-ui-2 px-ui-2 text-ui-xs; }
+ .learning-result-tabs button { @apply px-ui-4; }
+ .learning-parameter-add { @apply flex-col items-stretch; }
+ .learning-parameter-add > button { @apply self-end; }
+ .learning-result-content .studio-sheet-head { @apply flex-wrap; }
+}

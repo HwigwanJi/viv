@@ -1,0 +1,9 @@
+:root {
+  --lab-content-width: 76rem;
+  --lab-setup-width: 54rem;
+  --lab-graph-height: 32rem;
+  --lab-label-width: 12rem;
+  --lab-context-max-width: 38rem;
+  --lab-result-value-size: var(--ds-font-size-3xl);
+  --lab-selection-bg: color-mix(in srgb, var(--ds-accent) 7%, var(--ds-bg-raised));
+}

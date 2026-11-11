@@ -1,0 +1,76 @@
+@reference '../theme.css';
+
+.experiment-collection { @apply min-w-0; }
+.experiment-collection .experiment-page-head { @apply mb-ui-7 items-start; }
+.experiment-page-head > div:first-child { @apply min-w-0; }
+.experiment-page-head h1, .experiment-page-head h2 { @apply m-0 font-ui-sans text-ui-xl leading-ui-xl font-ui-semibold; }
+.experiment-page-head p { @apply m-0 mt-ui-2 text-ui-sm leading-ui-sm text-secondary; }
+.experiment-archive-link { @apply border-transparent bg-transparent shadow-none text-secondary; }
+.experiment-filters { @apply mb-ui-5 flex min-w-0 flex-wrap items-center gap-ui-3; }
+.experiment-search { @apply flex min-w-0 flex-1 items-center gap-ui-3 rounded-ui-md border border-default bg-surface px-ui-4; }
+.experiment-search > svg { @apply shrink-0 text-secondary; @apply w-(--ds-icon-size-sm); @apply h-(--ds-icon-size-sm); }
+.experiment-search > input { @apply min-w-0 flex-1 border-0 bg-transparent px-0 py-ui-3 font-ui-sans text-ui-sm leading-ui-sm shadow-none; }
+.experiment-search > input:focus { @apply outline-none; }
+.experiment-search:focus-within { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.experiment-search > .button { @apply shrink-0 min-w-control-touch border-0 bg-transparent px-ui-2 shadow-none text-secondary; }
+.experiment-filter select { @apply rounded-ui-md border border-default bg-surface px-ui-4 py-ui-3 font-ui-sans text-ui-sm leading-ui-sm; @apply min-h-control-md; }
+.experiment-filter-clear { @apply border-transparent bg-transparent text-secondary shadow-none; }
+.experiment-table-scroll { @apply relative min-w-0 overflow-x-auto rounded-ui-lg border border-default bg-surface; }
+.experiment-table { @apply w-full table-fixed border-collapse; @apply min-w-(--ui-table-min); }
+.experiment-table th { @apply border-b border-subtle bg-canvas px-ui-5 py-ui-3 text-left text-ui-xs leading-ui-xs font-ui-medium text-secondary; }
+.experiment-table td { @apply min-w-0 border-b border-subtle px-ui-5 py-ui-5 align-middle; }
+.experiment-table tbody tr:last-child td { @apply border-b-0; }
+.experiment-table tbody tr:hover { @apply bg-canvas; }
+.experiment-table th.experiment-name-cell { @apply w-(--ui-column-detail); }
+.experiment-table th.experiment-kind-cell { @apply w-(--ui-column-compact); }
+.experiment-table th.experiment-period-cell { @apply w-(--ui-column-name); }
+.experiment-table th.experiment-status-cell { @apply w-(--ui-column-compact); }
+.experiment-table th.experiment-outcome-cell { @apply w-(--ui-column-compact); }
+.experiment-table th.experiment-menu-cell { @apply w-ui-12; }
+.experiment-collection .button.small.experiment-name { @apply block min-w-0 max-w-full min-h-control-touch whitespace-normal wrap-anywhere rounded-ui-sm border-0 bg-transparent p-0 text-left font-ui-medium text-foreground shadow-none; }
+.experiment-collection .button.small.experiment-name:focus { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.experiment-collection .button.small.experiment-name:hover { @apply text-accent underline; }
+.experiment-mind { @apply mt-ui-2 block min-w-0 max-w-full truncate text-ui-xs leading-ui-xs text-secondary; }
+.experiment-kind { @apply whitespace-nowrap text-ui-xs leading-ui-xs text-secondary; }
+.experiment-period-cell { @apply whitespace-nowrap text-ui-xs leading-ui-xs text-secondary tabular-nums; }
+.experiment-period-cell small, .experiment-status-cell small, .experiment-outcome-cell small { @apply mt-ui-2 block text-ui-xs leading-ui-xs text-secondary; }
+.experiment-status { @apply inline-flex whitespace-nowrap rounded-ui-sm bg-canvas px-ui-3 py-ui-1 text-ui-xs leading-ui-xs font-ui-medium text-secondary; }
+.experiment-status[data-state=RUNNING], .experiment-status[data-state=TRAINING], .experiment-status[data-state=VALIDATING] { @apply text-(color:--ds-accent); background:var(--ds-bg-selected); }
+.experiment-status[data-state=ACTION_REQUIRED], .experiment-status[data-state=FAILED] { @apply text-(color:--ds-danger); background:var(--ds-danger-bg); }
+.experiment-table .experiment-outcome-cell { @apply text-right tabular-nums; }
+.experiment-return { @apply whitespace-nowrap text-ui-sm leading-ui-sm font-ui-semibold; }
+.experiment-return[data-direction=positive] { @apply text-positive; }
+.experiment-return[data-direction=negative] { @apply text-negative; }
+.experiment-outcome-empty { @apply text-secondary; }
+.experiment-menu-cell { @apply text-right; }
+.experiment-pagination { @apply mt-ui-4 flex items-center justify-between gap-ui-4 text-ui-xs leading-ui-xs text-secondary; }
+.experiment-pagination > div { @apply flex items-center gap-ui-3; }
+.experiment-empty { @apply flex min-w-0 flex-col items-center justify-center rounded-ui-lg border border-default bg-surface px-ui-7 py-ui-12 text-center; }
+.experiment-empty h3 { @apply m-0 text-ui-md leading-ui-md font-ui-semibold; }
+.experiment-empty p { @apply mt-ui-3 mb-ui-6 text-ui-sm leading-ui-sm text-secondary; }
+.experiment-loading-mark { @apply rounded-ui-full bg-accent; @apply w-ui-3; @apply h-ui-3; }
+.experiment-notice { @apply mb-ui-4 rounded-ui-md px-ui-4 py-ui-3 text-ui-sm leading-ui-sm; @apply text-(color:--ds-success); background:var(--ds-success-bg); }
+.experiment-create-form { @apply grid min-w-0 gap-ui-7; }
+.experiment-create-form .field { @apply m-0; }
+.experiment-purpose { @apply m-0 grid min-w-0 gap-ui-3 border-0 p-0; }
+.experiment-purpose legend { @apply mb-ui-3 text-ui-sm leading-ui-sm font-ui-medium; }
+.experiment-purpose-option { @apply flex min-w-0 cursor-pointer items-center gap-ui-4 rounded-ui-lg border border-default bg-surface px-ui-5 py-ui-5; }
+.experiment-purpose-option:has(input:checked) { @apply border-accent; background:var(--ds-bg-selected); }
+.experiment-purpose-option:has(input:focus-visible) { outline:var(--ds-focus-width) solid var(--ds-focus); outline-offset:var(--ds-focus-offset); }
+.experiment-purpose-option > input { @apply m-0 shrink-0; accent-color:var(--ds-accent); }
+.experiment-purpose-option > span { @apply min-w-0 flex-1; }
+.experiment-purpose-option strong { @apply block text-ui-sm leading-ui-sm font-ui-semibold; }
+.experiment-purpose-option small { @apply mt-ui-2 block text-ui-xs leading-ui-xs text-secondary; }
+.experiment-purpose-option > svg { @apply shrink-0 text-secondary; @apply w-(--ds-icon-size-sm); @apply h-(--ds-icon-size-sm); }
+@variant max-md {
+ .experiment-collection .experiment-page-head { @apply flex-col gap-ui-5; }
+ .experiment-search { @apply w-full flex-auto; }
+ .experiment-filter { @apply min-w-0 flex-1; }
+ .experiment-filter select { @apply w-full; }
+ .experiment-page-head p { @apply text-ui-xs leading-ui-xs; }
+ .experiment-empty { @apply px-ui-5 py-ui-9; }
+}
+
+.experiment-notice { @apply flex flex-wrap items-center justify-between gap-ui-3; }
+.experiment-notice > span { @apply min-w-0; overflow-wrap:anywhere; }
+.experiment-collection .experiment-notice .button.small { @apply min-h-control-touch; }
