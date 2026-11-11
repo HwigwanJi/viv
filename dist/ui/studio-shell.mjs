@@ -1,7 +1,7 @@
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const COLLECTION_TASKS = [['overview','마인드 목록'],['records','전체 기록'],['simulations','전체 시뮬레이션']];
-const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',simulations:'실험실 시뮬레이션',capabilities:'도움말 사용 안내 가이드 문서'};
+const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',simulations:'실험실 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서'};
 
 const TASK_GROUPS = Object.freeze({
   library: [['자료', ['documents', 'quant']], ['운용 지식', ['experiences', 'review', 'memory']], ['가져오기', ['forms']]]

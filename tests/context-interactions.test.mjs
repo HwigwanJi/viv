@@ -11,7 +11,7 @@ import {studioJumpItems,studioJumpMatches} from '../dist/ui/studio-shell.mjs';
 test('help queries find the capability catalog in the current viewing mode',()=>{
  const route=parseStudioRoute('#settings?view=connections&executionMode=live');
  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
- for(const query of ['도움말','사용 안내','가이드']){
+ for(const query of ['도움말','사용 안내','가이드','사용법','VIV 도움말']){
   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
   assert.equal(matches.length,1);
   const destination=parseStudioRoute(matches[0].href);

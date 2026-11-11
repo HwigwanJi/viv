@@ -3281,8 +3281,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T15:27:27.851Z",
-      "reason": "도움말·사용 안내·가이드 검색과 320px 터치, 데스크톱 키보드 이동, 뒤로 가기의 기존 상태를 확인했습니다.",
+      "reviewedAt": "2026-11-11T15:32:47.125Z",
+      "reason": "도움말·사용 안내·가이드·사용법·VIV 도움말 검색과 320px 터치, 데스크톱 키보드 이동, 뒤로 가기의 기존 상태를 확인했습니다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3302,7 +3302,7 @@
           2
         ]
       ],
-      "sourceHash": "495b44b56fd52b6e662ac1e4f2057d5f13da40bf8cabbb699fb88278ac117446",
+      "sourceHash": "d6c866432f780157044e983d395fe7afdc07004b76f509102f451ce1a8a276bc",
       "customContainers": []
     },
     {
