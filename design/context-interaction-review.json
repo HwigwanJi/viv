@@ -2672,8 +2672,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T23:05:03.630Z",
-      "reason": "비교 펼침과 보고서·원본을 같은 실험에서 읽고, 기존 실험 목록의 검색·필터·선택 행으로 복귀했다.",
+      "reviewedAt": "2026-11-11T23:11:48.699Z",
+      "reason": "비교를 키보드로 열고 320px 표 영역을 가로 이동했다. 보고서·원본 열기와 같은 검색·필터·행으로 복귀를 확인했다.",
       "signature": "4a6a7acd965b4e834735f7a54f75cb313758841d36fd791a441ccf0891ee6a0f",
       "controls": [
         [
@@ -2733,7 +2733,7 @@
           2
         ]
       ],
-      "sourceHash": "6a5f28f970d6201677a8e3ca63a7951847b57c57c81e3511d6f5154f68b943a7",
+      "sourceHash": "b82cb2adb54a8296c7e25c652e2bedcc8a29607020092a14cd4928cce6cc78b4",
       "customContainers": []
     },
     {
