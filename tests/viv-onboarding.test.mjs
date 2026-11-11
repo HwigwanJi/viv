@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {handleMcp} from '../server/mcp.mjs';
+import {querySimulationCollection} from '../server/simulation-collection.mjs';
 import {terminalErrorRecovery} from '../server/terminal-readiness.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
 
@@ -98,6 +99,30 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(quant.entry.status,'DRAFT');
     assert.match(quant.openUrl,/#library\?view=quant&section=components/);
   }finally{local.close();}
+});
+
+test('MCP finds the exact saved experiment and links to the owner’s paper workspace',async()=>{
+  const owner='viv-test-owner',id='simulation-first',createdAt='2026-11-11T01:00:00.000Z';
+  const row={id,kind:'simulation',name:'기준 퀀트 전략',status:'COMPLETED',createdAt,mindIds:['mind-a'],
+    route:{profileId:'mind-a',simulationId:id,lab:null,tab:'overview'}};
+  const rpc=async(q,caller=owner)=>{
+    const response=await handleMcp(new Request('http://localhost:4370/mcp',{
+      method:'POST',headers:{'oai-authenticated-user-id':caller},
+      body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_simulation_collection',arguments:{q,status:'completed'}}}),
+    }),{}, {studioHandler:request=>{
+      assert.equal(request.method,'GET');
+      const caller=request.headers.get('oai-authenticated-user-id');
+      return Response.json(querySimulationCollection(caller===owner?[row]:[],new URL(request.url).searchParams,
+        {owner:caller,now:'2026-11-11T02:00:00.000Z'}));
+    }});
+    const {result}=await response.json();
+    assert.equal(result.isError,false);
+    return result.structuredContent.items;
+  };
+  const [saved]=await rpc(id);
+  assert.equal(saved.openUrl,'http://localhost:4370/#minds?view=simulations&executionMode=paper&profileId=mind-a&simulationId=simulation-first&tab=overview');
+  assert.equal((await rpc(row.name))[0].openUrl,saved.openUrl);
+  assert.deepEqual(await rpc(id,'other-owner'),[]);
 });
 
 test('explicit JEV access rejection opens key recovery and unknown outcomes keep the evidence action',()=>{

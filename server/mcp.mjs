@@ -76,7 +76,7 @@ const descriptions={
   release_event_paper:'일시중지한 분봉 모의 운용의 보유와 예약 주문이 없고 판단 결과가 확정되었을 때 같은 원장 현금을 공용 예산에 회수합니다. 서버가 원금·실현손익·반환액을 대조합니다.',
   read_simulation_draft:'저장한 A/B 편집 초안을 조회합니다. id를 생략하면 초안 목록을 반환합니다.',
   save_simulation_draft:'A/B 그래프와 각 원본 정책·기간·비용을 서버 초안으로 저장합니다. 새 초안 expectedRevision은 0, 수정은 문서 revision을 사용합니다. JEV 호출 동의와 투자 실행은 포함하지 않습니다.',
-  read_simulation_collection:'시뮬레이션·A/B 비교·전략 튜닝을 과업별 한 행으로 검색합니다. 자식 실행은 각 실험 상세에서 읽으며 원본 결과를 보존합니다. 수익률은 performance.label의 기준을 함께 사용하세요.',
+  read_simulation_collection:'시뮬레이션·A/B 비교·전략 튜닝을 과업별 한 행으로 검색합니다. 이름 또는 정확한 실험 ID로 찾아 각 항목의 openUrl을 열 수 있습니다. 수익률은 performance.label의 기준과 함께 읽으세요. 값 0.05는 5%입니다.',
   organize_simulation_collection:'조회한 실험을 보관하거나 복원합니다. memberRevisions는 목록의 members를 그대로 전달하세요. A/B 비교의 구성 실행은 같은 작업으로 정리하고 진행 중인 판단의 저장을 먼저 기다립니다.',
   read_strategy_learning:'catalog에서 현재 정책·편집 가능 경로·고정 자료·실제 체결과 손실의 연구 근거를 조회합니다. 전략 튜닝을 조회합니다. view:list는 마인드별 목록, catalog는 mindId의 발행 그래프와 학습 가능한 매개변수, item은 id의 고정 조건·진행·원실험·평가·초안 연결을 제공합니다. 조회 중 JEV를 호출하지 않습니다.',
   create_strategy_learning:'source로 보관 이벤트 자료를 선택하고 research로 뉴스·논문·기억·실행 원문의 해시와 연구 기준 시각을 고정합니다. 학습과 이후 검증 구간, 후보 프롬프트·가중치, 비용, 평가 목표와 전체 JEV 호출 한도를 고정해 튜닝 세션을 생성합니다. 먼저 catalog를 조회하세요. expectedRevision은 현재 workspace revision입니다. 생성은 운용 정책을 변경하지 않습니다.',
@@ -219,7 +219,15 @@ async function callMindTool(request,env,options,name,args){
   if(name==='read_event_paper'){const {view='status',...query}=args,result=await studioCall(request,env,options,'/api/workspace/event-paper'+(view==='records'?'/records':'')+'?'+new URLSearchParams(query));return toolResult(result.value,!result.ok);}
   if(['prepare_event_paper','pause_event_paper','release_event_paper'].includes(name)){const operation=name.split('_')[0],result=await studioCall(request,env,options,'/api/workspace/event-paper/'+operation,{method:'POST',body:args});return toolResult(result.value,!result.ok);}
   if(name==='read_simulation_draft'||name==='save_simulation_draft'){const read=name==='read_simulation_draft',path='/api/workspace/simulations/draft'+(read&&args.id?'?'+new URLSearchParams(args):''),result=await studioCall(request,env,options,path,read?{}:{method:'POST',body:args});return toolResult(result.value,!result.ok);}
-  if(name==='read_simulation_collection'){const result=await studioCall(request,env,options,'/api/workspace/simulations/collection?'+new URLSearchParams(args));return toolResult(result.value,!result.ok);}
+  if(name==='read_simulation_collection'){
+    const result=await studioCall(request,env,options,'/api/workspace/simulations/collection?'+new URLSearchParams(args));
+    if(result.ok)result.value.items=result.value.items.map(item=>{
+      const params=new URLSearchParams({view:'simulations',executionMode:'paper'});
+      for(const [key,value] of Object.entries(item.route))if(value!=null)params.set(key,value);
+      return {...item,openUrl:new URL('#minds?'+params,new URL('/',request.url)).href};
+    });
+    return toolResult(result.value,!result.ok);
+  }
   if(name==='organize_simulation_collection'){const {action,...body}=args,result=await studioCall(request,env,options,'/api/workspace/simulations/collection/'+action,{method:'POST',body});return toolResult(result.value,!result.ok);}
   if(name==='read_strategy_learning'){
     const {view='list',...query}=args,path='/api/workspace/strategy-learning'+(view==='list'?'':'/'+view)+(Object.keys(query).length?'?'+new URLSearchParams(query):'');
