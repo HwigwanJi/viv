@@ -27,6 +27,11 @@ jobs:
           set -euo pipefail
           printf '0\n' | bash scripts/install-viv-mac.sh
           test ! -e .runtime
+          if bash scripts/install-viv-mac.sh --mobile-only; then
+            echo "Mobile recovery unexpectedly worked before installation" >&2
+            exit 1
+          fi
+          test ! -e .runtime
           mac_path=/usr/bin:/bin:/usr/sbin:/sbin
           receipt=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --target pc --client manual)
           node -e 'const r=JSON.parse(process.argv[1]); if(!r.serverPid || r.mcpStatus!=="endpoint-ready" || r.liveRunner!=="disabled") throw Error(JSON.stringify(r))' "$receipt"
@@ -40,6 +45,14 @@ jobs:
           node_bin=( "$PWD"/.runtime/node-v24*-darwin-*/bin )
           test -x "${node_bin[0]}/node"
           export PATH="${node_bin[0]}:$PATH"
+          if [[ ! -x /Applications/Tailscale.app/Contents/MacOS/Tailscale ]]; then
+            mobile_cli="$RUNNER_TEMP/viv-mobile-cli"
+            mkdir -p "$mobile_cli"
+            printf '%s\n' '#!/bin/sh' 'printf "%s\\n" "{\"BackendState\":\"NeedsLogin\"}"' > "$mobile_cli/tailscale"
+            chmod +x "$mobile_cli/tailscale"
+            recovered=$(PATH="$mobile_cli:$PATH" bash scripts/install-viv-mac.sh --mobile-only --client claude)
+            node -e 'const r=JSON.parse(process.argv[1]); if(r.desktopStatus!=="reused" || r.mcpStatus!=="not-requested" || r.mobileStatus!=="needs-action" || !r.mobileRetryCommand.includes("--mobile-only")) throw Error(JSON.stringify(r))' "$recovered"
+          fi
           clients="$RUNNER_TEMP/viv-mcp-clients"
           npm install --prefix "$clients" --ignore-scripts --no-audit --no-fund @openai/codex@0.167.1 @anthropic-ai/claude-code@2.1.322
           node "$clients/node_modules/@anthropic-ai/claude-code/install.cjs"

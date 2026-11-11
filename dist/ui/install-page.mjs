@@ -6,7 +6,7 @@ const platform=installPlatform(navigator),desktop=platform==='desktop',localDesk
 const privateOrigin=/^[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/.test(location.hostname);
 const handoff=document.querySelector('[data-install-handoff]'),connection=document.querySelector('[data-install-connection]');
 const recheck=document.querySelector('[data-install-recheck]'),setup=document.querySelector('[data-install-setup]'),help=document.querySelector('[data-install-handoff-help]');
-const retryCommand=document.querySelector('[data-install-retry-command]');
+const retryCommand=document.querySelector('[data-install-retry-command]'),retryCode=retryCommand.querySelector('code');
 let installUrl=null;
 function showAddress(url){
   installUrl=url;copy.hidden=!url;address.hidden=!url||!desktop;
@@ -27,13 +27,13 @@ async function checkConnection(){
     }else if(localDesktop){
       setup.hidden=false;
       if(typeof value?.retryCommand==='string'){
-        retryCommand.querySelector('code').textContent=value.retryCommand;
+        retryCode.textContent=value.retryCommand;
         retryCommand.hidden=false;
       }
       connection.textContent=value?.status==='public-route'?'Tailscale의 공개 Funnel이 켜져 있습니다. 비공개 Serve를 설정한 뒤 다시 확인하세요.'
         :value?.status==='unreachable'?'저장한 휴대폰 주소에 연결할 수 없습니다. Tailscale과 VIV 서버를 확인한 뒤 다시 시도하세요.'
         :value?.status==='unsupported'?'이 서버에서는 휴대폰 주소를 확인할 수 없습니다. 기존 휴대폰 접속 주소는 서버 관리자에게 확인하세요.'
-        :'이 PC에서 휴대폰 연결을 준비하려면 설치 명령의 모바일 옵션을 실행하세요.';
+        :'이 PC에서 휴대폰 연결을 준비하려면 아래 복구 명령을 실행하세요.';
     }else if(value?.storage==='server'){
       if(location.protocol==='https:')showAddress(new URL('/install.html',location.origin).href);
       help.hidden=!desktop||!privateOrigin;
@@ -52,6 +52,10 @@ recheck.addEventListener('click',checkConnection);
 copy.addEventListener('click',async()=>{
   try{await navigator.clipboard.writeText(installUrl);status.textContent='설치 주소를 복사했습니다.';}
   catch{address.hidden=false;const field=address.querySelector('input');field.focus();field.select();status.textContent='선택한 주소를 복사하세요.';}
+});
+retryCommand.querySelector('[data-install-copy-command]').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(retryCode.textContent);status.textContent='복구 명령을 복사했습니다.';}
+  catch{const range=document.createRange();range.selectNodeContents(retryCode);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);status.textContent='선택한 명령을 복사하세요.';}
 });
 const install=createAppInstall({window,navigator,open(title,body,actions){
   const heading=document.createElement('h2');heading.id='dialog-title';heading.textContent=title;

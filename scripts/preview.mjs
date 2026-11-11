@@ -88,8 +88,8 @@ const server = http.createServer(async (req,res)=>{
       const connection=await installConnection();
       if(selfHostId&&connection.status!=='ready'){
         connection.retryCommand=process.platform==='win32'
-          ?'powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\setup-self-host.ps1 -StartOnly -Mobile -Client Manual -Port '+previewPort
-          :process.platform==='darwin'?'bash scripts/install-viv-mac.sh --target mobile --client manual --port '+previewPort:null;
+          ?'powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\setup-self-host.ps1 -MobileOnly -Port '+previewPort
+          :process.platform==='darwin'?'bash scripts/install-viv-mac.sh --mobile-only --port '+previewPort:null;
       }
       res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});
       res.end(JSON.stringify(connection));return;

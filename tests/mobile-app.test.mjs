@@ -87,6 +87,7 @@ test('the install page waits for a native prompt and Android Chrome links preser
   const link=chromeInstallLink(origin+'/?private=secret#position');assert.match(link,/^intent:\/\/chungji-test\.example-tailnet\.ts\.net\/install\.html#Intent;scheme=https;package=com\.android\.chrome;/);assert.doesNotMatch(link,/secret|position/);
   for(const href of ['http://example.test','javascript:alert(1)','https://user:password@example.test']){try{assert.equal(chromeInstallLink(href),null);}catch(error){assert(error instanceof TypeError);}}
   const page=await readFile('dist/install.html','utf8');assert.match(page,/<button[^>]+data-app-install-native hidden>웹앱으로 설치<\/button>/);assert.match(page,/rel="manifest"/);assert.match(page,/install-page\.mjs/);
+  assert.match(page,/<a[^>]+data-install-open href="\/#home\?executionMode=paper">VIV 열기<\/a>/);
 });
 
 test('manual install uses the device menu, avoids a loop on the install page and recovers after dismissal',async()=>{

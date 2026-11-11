@@ -8,10 +8,12 @@ if [[ "$(uname -s)" != Darwin ]]; then
 fi
 
 target=
+recovery=
 client=codex
 port=4317
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --mobile-only) recovery=mobile-only; shift ;;
     --target|--client|--port)
       [[ $# -ge 2 ]] || { printf 'Missing value for %s\n' "$1" >&2; exit 2; }
       case "$1" in
@@ -23,6 +25,17 @@ while [[ $# -gt 0 ]]; do
     *) printf 'Unknown argument: %s\n' "$1" >&2; exit 2 ;;
   esac
 done
+if [[ "$recovery" == mobile-only ]]; then
+  if [[ -n "$target" && "$target" != mobile ]]; then
+    printf '%s\n' 'Use --mobile-only with the mobile target.' >&2
+    exit 2
+  fi
+  if [[ ! -f .runtime/self-host-id || ! -f .runtime/self-host.sqlite ]]; then
+    printf '%s\n' 'Complete the PC installation in this folder before running mobile recovery.' >&2
+    exit 1
+  fi
+  target=mobile
+fi
 if [[ -z "$target" ]]; then
   printf '%s\n' 'VIV를 어느 환경에서 사용하실 건가요?' '1. Mac만' '2. Mac과 모바일 (Tailscale 로그인 필요)' '0. 취소'
   read -r answer
@@ -71,4 +84,4 @@ if ! node_ready; then
   fi
   export PATH="$node_root/bin:$PATH"
 fi
-exec node scripts/setup-self-host-mac.mjs "$target" "$client" "$port"
+exec node scripts/setup-self-host-mac.mjs "$target" "$client" "$port" "$recovery"

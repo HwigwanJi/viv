@@ -6,11 +6,13 @@ param(
     [switch]$CodexMcp,
     [ValidateSet('Codex','Claude','Manual')][string]$Client = 'Manual',
     [switch]$StartOnly,
+    [switch]$MobileOnly,
     [ValidateRange(1024, 65535)][int]$Port = 4317
 )
 
 $ErrorActionPreference = 'Stop'
 if ($CodexMcp -and !$PSBoundParameters.ContainsKey('Client')) { $Client = 'Codex' }
+if ($MobileOnly) { $Mobile = $true; $StartOnly = $true }
 if ($Port -eq 4905) { throw 'Port 4905 is reserved for the managed trading host.' }
 $project = Split-Path -Parent $PSScriptRoot
 $localUrl = "http://127.0.0.1:$Port"
@@ -66,8 +68,11 @@ try {
     & $node --disable-warning=ExperimentalWarning -e "require('node:sqlite'); if (Number(process.versions.node.split('.')[0]) < 24) process.exit(1)"
     if ($LASTEXITCODE -ne 0) { throw 'Install Node.js 24 LTS with npm and retry.' }
     $runtime = Join-Path $project '.runtime'
-    $null = New-Item -ItemType Directory -Path $runtime -Force
     $idFile = Join-Path $runtime 'self-host-id'
+    if ($MobileOnly -and (!(Test-Path -LiteralPath $idFile) -or !(Test-Path -LiteralPath (Join-Path $runtime 'self-host.sqlite')))) {
+        throw 'Complete the PC installation in this folder before running mobile recovery.'
+    }
+    $null = New-Item -ItemType Directory -Path $runtime -Force
     if (!(Test-Path -LiteralPath $idFile)) {
         $stream = [IO.File]::Open($idFile, 'CreateNew', 'Write')
         try {
@@ -127,9 +132,12 @@ try {
     }
 
     $ready = $true
-    try {
-        $mcpRegistration = & (Join-Path $PSScriptRoot 'install-viv-mcp.ps1') -Port $Port -Client $Client | ConvertFrom-Json
-    } catch { $mcpError = $_.Exception.Message }
+    Write-Host "VIV PC: $localUrl"
+    if (!$MobileOnly) {
+        try {
+            $mcpRegistration = & (Join-Path $PSScriptRoot 'install-viv-mcp.ps1') -Port $Port -Client $Client | ConvertFrom-Json
+        } catch { $mcpError = $_.Exception.Message }
+    }
     if ($Mobile) {
         try {
             $tailscale = (Get-Command tailscale.exe -ErrorAction SilentlyContinue).Source
@@ -146,7 +154,7 @@ try {
             $state = (& $tailscale status --json) | ConvertFrom-Json
             if ($state.BackendState -ne 'Running') {
                 & $tailscale up --timeout=30s | Out-Host
-                if ($LASTEXITCODE -ne 0) { throw 'Complete Tailscale sign-in and rerun this command.' }
+                if ($LASTEXITCODE -ne 0) { throw 'Complete Tailscale sign-in, then run the mobile recovery command.' }
                 $state = (& $tailscale status --json) | ConvertFrom-Json
             }
             $hostname = ([string]$state.Self.DNSName).TrimEnd('.')
@@ -192,10 +200,10 @@ try {
         mobileInstallUrl = if ($mobileUrl) { "$mobileUrl/install.html" } else { $null }
         mobileStatus = if ($mobileError) { 'needs-action' } elseif ($mobileUrl) { 'phone-install-pending' } else { 'not-requested' }
         mobileError = $mobileError
-        mobileRetryCommand = if ($mobileError) { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv.ps1 -Target PCMobile -Client $Client -Port $Port" } else { $null }
+        mobileRetryCommand = if ($mobileError) { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -MobileOnly -Port $Port" } else { $null }
         existingMobileConfig = Test-Path -LiteralPath $mobileConfig
         mcpUrl = "$localUrl/mcp"
-        mcpStatus = if ($mcpRegistration) { $mcpRegistration.status } else { 'needs-action' }
+        mcpStatus = if ($MobileOnly) { 'not-requested' } elseif ($mcpRegistration) { $mcpRegistration.status } else { 'needs-action' }
         mcpError = $mcpError
         mcpRetryCommand = if ($mcpError) { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv-mcp.ps1 -Client $Client -Port $Port" } else { $null }
         onboardingPrompt = if ($mcpRegistration.status -eq 'registered') { $mcpRegistration.startMessage } else { $null }

@@ -5,8 +5,10 @@ import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {validateMobileOrigin,privateMobileRouteStatus} from './preview-origin.mjs';
 
-const [target, client, port] = process.argv.slice(2);
+const [target, client, port, recovery = ''] = process.argv.slice(2);
+const mobileOnly = recovery === 'mobile-only';
 if (!['pc', 'mobile'].includes(target) || !['codex', 'claude', 'manual'].includes(client)
+    || recovery && (!mobileOnly || target !== 'mobile')
     || !/^\d{4,5}$/.test(port ?? '') || Number(port) < 1024 || Number(port) > 65535 || Number(port) === 4905) {
   throw new Error('Invalid VIV installation options.');
 }
@@ -105,7 +107,7 @@ async function connectMobile(setupId) {
   const state = JSON.parse(status.stdout || '{}');
   if (state.BackendState !== 'Running') {
     if (cli === appCli) command('open', ['-a', 'Tailscale']);
-    throw new Error('Sign in to Tailscale on the Mac and rerun the same installation command.');
+    throw new Error('Sign in to Tailscale on the Mac, then run the mobile recovery command.');
   }
   const host = state.Self?.DNSName?.replace(/\.$/, '') ?? '';
   const mobileOrigin = validateMobileOrigin('https://' + host);
@@ -145,6 +147,9 @@ async function connectMobile(setupId) {
   }
 }
 
+if (mobileOnly && (!existsSync('.runtime/self-host-id') || !existsSync(database))) {
+  throw new Error('Complete the PC installation in this folder before running mobile recovery.');
+}
 mkdirSync('.runtime', {recursive: true, mode: 0o700});
 const setupId = initializeFile('.runtime/self-host-id', randomBytes(16).toString('hex'));
 if (!/^[a-f0-9]{32}$/.test(setupId)) throw new Error('Invalid VIV installation ID.');
@@ -155,8 +160,10 @@ const running = await request(origin + '/').catch(error => {
   return null;
 });
 if (!running) {
-  for (const args of [['ci', '--no-audit', '--no-fund'], ['run', 'build:local']]) {
-    if (command('npm', args, {show: true}).status !== 0) throw new Error('VIV dependency installation or build failed.');
+  if (!mobileOnly) {
+    for (const args of [['ci', '--no-audit', '--no-fund'], ['run', 'build:local']]) {
+      if (command('npm', args, {show: true}).status !== 0) throw new Error('VIV dependency installation or build failed.');
+    }
   }
   initializeFile('.env', 'BROKER_VAULT_KEY=' + randomBytes(32).toString('hex') + '\n');
   const log = openSync('.runtime/self-host.log', 'a', 0o600);
@@ -185,11 +192,14 @@ if (!running) {
   }
 } else await verifyApp(origin, setupId);
 
-let mcpStatus = 'needs-action', mcpError = null, mobileInstallUrl = null, mobileError = null;
-try {
-  await verifyMcp();
-  mcpStatus = registerMcp();
-} catch (error) { mcpError = error.message; }
+console.error('VIV PC: ' + origin);
+let mcpStatus = mobileOnly ? 'not-requested' : 'needs-action', mcpError = null, mobileInstallUrl = null, mobileError = null;
+if (!mobileOnly) {
+  try {
+    await verifyMcp();
+    mcpStatus = registerMcp();
+  } catch (error) { mcpError = error.message; }
+}
 if (target === 'mobile') {
   try { mobileInstallUrl = await connectMobile(setupId); }
   catch (error) { mobileError = error.message; }
@@ -200,7 +210,7 @@ console.log(JSON.stringify({
   onboardingPrompt: mcpStatus === 'registered' ? 'VIV 시작하기' : null,
   onboardingTool: mcpStatus === 'registered' ? 'viv_onboarding' : null,
   mobileInstallUrl, mobileError,
-  mobileRetryCommand: mobileError ? ['bash scripts/install-viv-mac.sh --target mobile --client', client, '--port', port].join(' ') : null,
+  mobileRetryCommand: mobileError ? 'bash scripts/install-viv-mac.sh --mobile-only --port ' + port : null,
   mobileStatus: mobileError ? 'needs-action' : mobileInstallUrl ? 'phone-install-pending' : 'not-requested',
   liveRunner: 'disabled',
 }));
