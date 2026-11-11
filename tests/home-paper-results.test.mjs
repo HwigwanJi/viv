@@ -2,11 +2,38 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildHomePerformance,readHomePerformance} from '../server/home-performance.mjs';
 import {createHomeShowcase,renderHomeShowcase} from '../dist/ui/home-showcase.mjs';
+import {createSimulationPlayground} from '../dist/ui/simulation-playground.mjs';
 import {hashInputPackage} from '../dist/domain/workspace.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
 import {WorkspaceRepository} from '../server/repository.mjs';
 import {handleMindStudioAPI} from '../server/mind-studio.mjs';
 import {handleSimulationAPI} from '../server/simulations.mjs';
+
+test('saved keyless practice shows its inputs before the only execute button',async()=>{
+  let simulation={
+    id:'practice-saved',status:'CREATED',config:{
+      mindId:'mind-a',name:'저장한 실습',mode:'MECHANICAL',initialCash:13579,feeBps:13,slippageBps:2,
+      startAt:'2026-09-15T00:00:00.000Z',endAt:'2026-10-15T00:00:00.000Z',
+    },progress:{processed:0},
+  };
+  const app=createSimulationPlayground({
+    getRoute:()=>({page:'minds',params:new URLSearchParams('view=simulations&profileId=all&simulationId=practice-saved&executionMode=paper')}),
+    request:async(path,body)=>{
+      assert.equal(path,'/api/workspace/simulations/item?id=practice-saved');
+      assert.equal(body,undefined);
+      return {simulation};
+    },
+  });
+  await app.load();
+  const html=app.render();
+  assert.match(html,/저장한 실행 조건[^]*13,579\.00 USDT[^]*13\.0bp[^]*2\.0bp[^]*AI 호출[^]*0회[^]*data-simulation-action="run"/);
+  assert.equal([...html.matchAll(/data-simulation-action="run"/g)].length,1);
+  assert.doesNotMatch(html,/data-simulation-equity/);
+
+  simulation={...simulation,modelReadiness:{readyDecisions:0,totalDecisions:5,warmupDecisions:5}};
+  await app.load({force:true});
+  assert.match(app.render(),/모델 준비 자료 필요[^]*저장한 실행 조건[^]*data-simulation-action="run"[^>]*disabled/);
+});
 
 test('paper home links to saved decisions and latest completed experiments independently of rankings',()=>{
   const at=hour=>`2026-11-11T${hour}:00:00.000Z`;

@@ -2672,8 +2672,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T23:11:48.699Z",
-      "reason": "비교를 키보드로 열고 320px 표 영역을 가로 이동했다. 보고서·원본 열기와 같은 검색·필터·행으로 복귀를 확인했다.",
+      "reviewedAt": "2026-11-11T23:33:12.022Z",
+      "reason": "준비 중 비용 수정과 저장을 재현했다. 저장한 실행 조건을 표시하고 같은 실행 버튼을 조건 뒤에 배치했다. 모의 실습에서 결과·보고서·목록 복귀를 확인했다.",
       "signature": "4a6a7acd965b4e834735f7a54f75cb313758841d36fd791a441ccf0891ee6a0f",
       "controls": [
         [
@@ -2733,7 +2733,7 @@
           2
         ]
       ],
-      "sourceHash": "b82cb2adb54a8296c7e25c652e2bedcc8a29607020092a14cd4928cce6cc78b4",
+      "sourceHash": "d8fe3c404302ca20a1e8e4bf43d65530c395b7aafa197fbf939c9106221ae863",
       "customContainers": []
     },
     {
