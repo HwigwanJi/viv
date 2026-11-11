@@ -54,6 +54,6 @@ async function main(){
  fs.mkdirSync(at('dist/downloads'),{recursive:true});fs.copyFileSync(apk,at('dist/downloads/viv-1.0.1.apk.tmp'));fs.renameSync(at('dist/downloads/viv-1.0.1.apk.tmp'),at('dist/downloads/viv-1.0.1.apk'));
  fs.mkdirSync(at('deliverables'),{recursive:true});fs.copyFileSync(apk,at('deliverables/viv-1.0.1.apk'));
  const report={builtAt:new Date().toISOString(),status:'SIGNED_APK_VERIFIED',packageId:config.packageId,version:config.appVersion,bytes:fs.statSync(apk).size,sha256:createHash('sha256').update(fs.readFileSync(apk)).digest('hex'),fingerprint,origin:'https://'+config.host,startUrl:config.startUrl,notificationsDelegated:true,download:'https://'+config.host+'/downloads/viv-1.0.1.apk',assetLinks:'https://'+config.host+'/.well-known/assetlinks.json',signature,badging,physicalPhoneInstallVerified:false};
- write('artifacts/cji-android-apk-20261027/build-verification.json',JSON.stringify(report,null,2));console.log(JSON.stringify({status:report.status,bytes:report.bytes,download:report.download,sha256:report.sha256}));
+ write('artifacts/viv-android-release/build-verification.json',JSON.stringify(report,null,2));console.log(JSON.stringify({status:report.status,bytes:report.bytes,download:report.download,sha256:report.sha256}));
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url))await main();

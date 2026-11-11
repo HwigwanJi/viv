@@ -22,6 +22,6 @@ node scripts/build-android-apk.mjs
 
 서명 키와 암호는 `.runtime/android-signing/`에 별도 보존한다. 앱 업데이트에도 같은 키를 사용하므로 이 폴더를 개인 백업에 포함한다. APK와 공개 소스에는 키·암호·계좌 인증정보를 넣지 않는다. 버전을 올릴 때는 빌드 설정과 다운로드 링크를 함께 갱신한다.
 
-실제 빌드·서명·지원 버전과 APK SHA256은 `artifacts/cji-android-apk-20261027/build-verification.json`에 기록된다. 휴대폰 설치, 비공개 주소의 Digital Asset Links 확인과 푸시 수신은 해당 기기에서 확인한다. 브라우저의 주소 검증이 완료될 때까지는 브라우저 상단 표시가 나올 수 있다.
+실제 빌드·서명·지원 버전과 APK SHA256은 `artifacts/viv-android-release/build-verification.json`에 기록된다. 휴대폰 설치, 비공개 주소의 Digital Asset Links 확인과 푸시 수신은 해당 기기에서 확인한다. 브라우저의 주소 검증이 완료될 때까지는 브라우저 상단 표시가 나올 수 있다.
 
 공식 구현 안내: https://developer.chrome.com/docs/android/trusted-web-activity/quick-start

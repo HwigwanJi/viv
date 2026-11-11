@@ -12,6 +12,7 @@ if(chrome){const link=document.createElement('a');link.className='button';link.h
 const apk=document.querySelector('[data-apk-download]');
 if(chrome&&apk){
   fetch(apk.querySelector('a').href,{method:'HEAD'}).then(response=>{
-    if(response.ok&&response.headers.get('content-type')?.split(';')[0]==='application/vnd.android.package-archive')apk.hidden=false;
+    const type=response.headers.get('content-type')?.split(';')[0];
+    if(response.ok&&['application/vnd.android.package-archive','application/octet-stream'].includes(type))apk.hidden=false;
   }).catch(()=>{});
 }
