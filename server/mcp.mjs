@@ -229,10 +229,10 @@ async function callMindTool(request,env,options,name,args){
   }
   if(name==='draft_mind_policy'){const result=await studioCall(request,env,options,'/api/workspace/mind-documents/policy-draft',{method:'POST',body:args});return toolResult(result.value,!result.ok);}
   if(name==='read_mind_catalog'){
-    const [catalog,forms]=await Promise.all([studioCall(request,env,options,'/api/workspace/minds'),studioCall(request,env,options,'/api/workspace/mind-forms')]);
+    const [catalog,forms,knowledgeForm]=await Promise.all([studioCall(request,env,options,'/api/workspace/minds'),studioCall(request,env,options,'/api/workspace/mind-forms'),studioCall(request,env,options,'/api/workspace/market-knowledge/forms')]);
     if(!catalog.ok||!forms.ok)return toolResult(!catalog.ok?catalog.value:forms.value,true);
     const library=await studioCall(request,env,options,'/api/workspace/market-knowledge?pageSize=8');
-    return toolResult({ok:true,catalog:catalog.value,forms:forms.value,researchProtocol:strategyLearningResearchProtocol(),marketKnowledge:{formsUrl:'/api/workspace/market-knowledge/forms',writeTool:'write_market_knowledge',classifyTool:'classify_market_knowledge',...(library.ok?{page:library.value.page}:{})}});
+    return toolResult({ok:true,catalog:catalog.value,forms:forms.value,researchProtocol:strategyLearningResearchProtocol(),marketKnowledge:{formsUrl:'/api/workspace/market-knowledge/forms',...(knowledgeForm.ok?{form:knowledgeForm.value}:{}),writeTool:'write_market_knowledge',classifyTool:'classify_market_knowledge',...(library.ok?{page:library.value.page,revision:library.value.revision}:{})}});
   }
   if(name==='read_trading_context'){
     const query=new URLSearchParams({...(args.mindId?{profileId:args.mindId}:{}),instrumentId:args.instrumentId,...(args.timeframe?{timeframe:args.timeframe}:{}),...(args.mode?{mode:args.mode}:{})});

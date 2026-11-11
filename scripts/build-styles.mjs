@@ -8,7 +8,7 @@ import {checkCopy} from './check-ui-copy.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 export const APP_STYLE_OUTPUTS=[['styles/theme.css','dist/ui/tailwind.css'],['styles/components/base.css','dist/style.css'],...['console','trading-terminal','mind-avatar','mind-companion-summary','help-tooltip','strategy-graph-editor'].map(name=>[`styles/components/${name}.css`,`dist/ui/${name}.css`]),['styles/components/benchmark.css','dist/benchmark.css']];
-export const STYLE_OUTPUTS=[...APP_STYLE_OUTPUTS,...['research-report','mind-art-study'].map(name=>[`styles/components/${name}.css`,`dist/ui/${name}.css`])];
+export const STYLE_OUTPUTS=[...APP_STYLE_OUTPUTS,...['research-report','mind-art-study','viv-intro'].map(name=>[`styles/components/${name}.css`,`dist/ui/${name}.css`])];
 const outputs=STYLE_OUTPUTS;
 const hash=value=>createHash('sha256').update(value).digest('hex');
 export async function styleInputs({rootDir=root}={}){

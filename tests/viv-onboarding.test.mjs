@@ -27,5 +27,18 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     const repeated=await onboarding({interest:'both',amountKrw:4000000,idempotencyKey:'viv-2'});
     assert.deepEqual(repeated.structuredContent.paperBudget,{amountKrw:2000000,existing:true});
     assert.equal((await onboarding({},'other-viv-user')).structuredContent.next,'ask_interest_and_budget');
+    const tool=async(name,args={})=>{
+      const result=await rpc('tools/call',{name,arguments:args});
+      assert.equal(result.isError,false,JSON.stringify(result.structuredContent));
+      return result.structuredContent;
+    };
+    const {marketKnowledge}=await tool('read_mind_catalog');
+    const document={...marketKnowledge.form.example,title:'VIV 튜토리얼 검사 자료'};
+    const knowledge=await tool('write_market_knowledge',{document,expectedRevision:marketKnowledge.revision,idempotencyKey:'viv-note'});
+    assert.equal(new URLSearchParams(new URL(knowledge.openUrl).hash.split('?')[1]).get('knowledgeId'),document.id);
+    const library=await tool('read_quant_library');
+    const quant=await tool('draft_quant_strategy',{name:'VIV 튜토리얼 검사 전략',definition:library.templates[0].definition,expectedRevision:library.revision,idempotencyKey:'viv-strategy'});
+    assert.equal(quant.entry.status,'DRAFT');
+    assert.match(quant.openUrl,/#library\?view=quant&section=components/);
   }finally{local.close();}
 });

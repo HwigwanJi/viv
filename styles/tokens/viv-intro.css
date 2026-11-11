@@ -1,0 +1,28 @@
+:root {
+  --viv-screen-height: 100dvh;
+  --viv-intro-background: radial-gradient(ellipse at 50% 36%, #232945, #10111a 58%, #0a0b10);
+  --viv-intro-ink: #f4f4ff;
+  --viv-intro-lime: #dbf986;
+  --viv-intro-violet: #ac9bff;
+  --viv-intro-muted: #c0bfd2;
+  --viv-intro-font: "Instrument Sans", system-ui, sans-serif;
+  --viv-orbit-size: clamp(12rem, 49vmin, 26rem);
+  --viv-orbit-line: 1px;
+  --viv-orbit-glow: inset 0 0 24px #d3f66a30, 0 0 30px #d3f66a38;
+  --viv-orbit-duration: 6s;
+  --viv-orbit-delay-second: -2s;
+  --viv-orbit-delay-third: -4s;
+  --viv-orbit-angle: -37deg;
+  --viv-orbit-peak: 143deg;
+  --viv-orbit-still-second: 38deg;
+  --viv-orbit-still-third: 90deg;
+  --viv-orbit-opacity-low: .42;
+  --viv-orbit-opacity-high: .9;
+  --viv-mark-weight: 860;
+  --viv-mark-size: clamp(5rem, 23vmin, 12rem);
+  --viv-mark-tracking: -.1em;
+  --viv-mark-shadow: 0 0 36px #10111a;
+  --viv-slogan-size: clamp(.85rem, 3vmin, 1.25rem);
+  --viv-slogan-tracking: .085em;
+  --viv-status-size: .75rem;
+}

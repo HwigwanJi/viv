@@ -3,7 +3,7 @@ import {paperBudgetFor} from '../dist/domain/paper-budget.mjs';
 export const VIV_INSTRUCTIONS='VIV는 Vibe Investment입니다. 사용자가 처음 시작하거나 설치 직후 대화를 시작하면 viv_onboarding을 조회하고 안내를 따르세요. 사용자의 선택을 기다리고 숫자와 자연어를 모두 받으세요. 결과 확인은 응답의 링크를 호스트의 인앱 브라우저에서 열거나 클릭 가능한 링크로 제공하세요.';
 
 const lessons=[
-  {number:1,title:'오늘의 코인 시장 주요 투자동향을 조사하고 수집해줘',tools:['read_market_knowledge','write_market_knowledge']},
+  {number:1,title:'오늘의 코인 시장 주요 투자동향을 조사하고 수집해줘',tools:['read_mind_catalog','read_market_knowledge','write_market_knowledge']},
   {number:2,title:'유튜브의 거래 기록을 분석해서 전략으로 만들어줘',tools:['read_mind_catalog','read_strategy_ontology','draft_quant_strategy']},
   {number:3,title:'이 링크의 투자법을 내 전략으로 만들어줘',tools:['read_strategy_ontology','read_quant_library','draft_quant_strategy']},
   {number:4,title:'내 모의투자 상태와 최근 판단을 브리핑해줘',tools:['read_investment_status','read_trading_context']},
