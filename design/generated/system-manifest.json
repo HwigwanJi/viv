@@ -983,6 +983,7 @@
       "orders": [
         "LIMIT_FOK",
         "LIMIT_IOC",
+        "LIMIT_GTC",
         "LIMIT_DAY",
         "MARKET_DAY"
       ],
@@ -4226,8 +4227,8 @@
     {
       "type": "ORDER",
       "defaultLabel": "모의 주문",
-      "title": "모의 주문",
-      "description": "실행 모드에 지정된 주문 계획을 출력합니다.",
+      "title": "주문 실행",
+      "description": "목표 비중 주문을 실행합니다. 업비트 분봉 모델은 매수 체결 뒤 일부 수량의 지정가 익절을 등록하고, 모델 청산 시 잔여 지정가를 취소합니다.",
       "cohort": "EXECUTE",
       "defaultPorts": {
         "inputs": [
@@ -12312,6 +12313,50 @@
         "path": "/api/workspace/market-knowledge/write"
       },
       "mcp_tool": "write_market_knowledge",
+      "provenance": {
+        "owner_registry": "dist/system/registry.mjs",
+        "source_file": "server/mind-studio.mjs"
+      },
+      "scope": "mind-studio-v3"
+    },
+    {
+      "id": "market-knowledge.save",
+      "title": "시장 자료 바로 저장",
+      "description": "뉴스와 전략 분석을 개인 라이브러리에 저장합니다.",
+      "inputs": [
+        "expectedRevision",
+        "idempotencyKey"
+      ],
+      "optional_inputs": [
+        "documentId",
+        "document",
+        "text",
+        "format"
+      ],
+      "outputs": [
+        "item",
+        "document",
+        "revision"
+      ],
+      "capability_mode": "write",
+      "policy": "AUDIT",
+      "surfaces": [
+        "ui",
+        "mcp"
+      ],
+      "actors": [
+        "human"
+      ],
+      "runtime": [
+        "server"
+      ],
+      "status": "implemented",
+      "implementation_binding": "server/mind-studio.mjs:handleMindStudioAPI",
+      "api": {
+        "method": "POST",
+        "path": "/api/workspace/market-knowledge/save"
+      },
+      "mcp_tool": "save_market_research",
       "provenance": {
         "owner_registry": "dist/system/registry.mjs",
         "source_file": "server/mind-studio.mjs"

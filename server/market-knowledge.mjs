@@ -27,7 +27,7 @@ export function queryMarketKnowledge(workspace,query={},options={}){
   if(q.versions)check(['latest','all'].includes(q.versions),'KNOWLEDGE_QUERY','자료 버전 보기 방식을 선택하세요.');
   const asOf=options.asOf??new Date().toISOString();check(typeof asOf==='string'&&Number.isFinite(Date.parse(asOf))&&new Date(asOf).toISOString()===asOf,'KNOWLEDGE_QUERY_TIME','자료 조회 기준 시각을 확인하세요.');
   const search=q.search??'',pageSize=Number(q.pageSize??20);check(typeof search==='string'&&search.length<=200&&Number.isInteger(pageSize)&&pageSize>=1&&pageSize<=50,'KNOWLEDGE_QUERY','검색어 200자와 페이지 크기 1~50을 확인하세요.');
-  for(const [key,values] of Object.entries({status:['DRAFT','APPROVED'],sourceType:KNOWLEDGE_SOURCE_TYPES,...KNOWLEDGE_CHOICES}))if(q[key])check(values.includes(q[key]),'KNOWLEDGE_QUERY','자료 필터의 선택값을 확인하세요.');
+  for(const [key,values] of Object.entries({status:['SAVED','DRAFT','APPROVED'],sourceType:KNOWLEDGE_SOURCE_TYPES,...KNOWLEDGE_CHOICES}))if(q[key])check(values.includes(q[key]),'KNOWLEDGE_QUERY','자료 필터의 선택값을 확인하세요.');
   for(const key of ['authorId','instrumentId','profileId'])if(q[key])check(/^[a-zA-Z0-9][a-zA-Z0-9_.:@/-]{0,199}$/.test(q[key]),'KNOWLEDGE_QUERY','자료 범위의 ID를 확인하세요.');
   const scopeHash=hashInputPackage({...Object.fromEntries(Object.entries(q).filter(([k])=>k!=='cursor')),pageSize,search}),revision=workspace.revision;
   check(q.cursor===undefined||typeof q.cursor==='string'&&q.cursor.length<=2000,'KNOWLEDGE_CURSOR','페이지 커서의 길이를 확인하세요.');

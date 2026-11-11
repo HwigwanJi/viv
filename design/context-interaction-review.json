@@ -1586,8 +1586,8 @@
         "navigation"
       ],
       "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-10T11:47:50.251Z",
-      "reason": "114: 문서AI분류/후속관측/JEV선정 결과·오류를 시작한 창에 한정하는 공용 처리. 뉴스AI비교 실행 뒤 늦은 실패의 새 작업 개입 차단. 분류·뉴스 진행 중 닫아도 요청 계속 처리 명시. 현재 창 AI 오류는 인라인1회·오류 스타일/재시도 보존. 기존 요청값·저장·호출 한도·금융 승인 조건 보존. 닫기/다른 선택/종료/실패·복구/문맥 전체 검토.",
+      "reviewedAt": "2026-11-11T11:12:37.020Z",
+      "reason": "자료 저장은 즉시 완료하고 보관 상태를 표시합니다. 읽기와 선택적 마인드 활용 검토 동선을 확인했습니다.",
       "signature": "90b448c9c7974a11f737555483bb6985a9abd96b5020dd073b4d45349c3037d5",
       "controls": [
         [
@@ -1667,7 +1667,7 @@
           1
         ]
       ],
-      "sourceHash": "0ff51eb61d7cfc1b757af1f339414ceb29f2695b55983feaf6036233ef7dfae5"
+      "sourceHash": "aa7b16961f4b69178f759e5403bbcfac159476339e4f2ac212946f291fa1d5f6"
     },
     {
       "file": "dist/ui/mind-activity-resource.mjs",

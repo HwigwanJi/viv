@@ -50,8 +50,9 @@ const schemas={
   read_quant_library:objectSchema({id:identifierSchema,search:{type:'string',maxLength:200},status:{type:'string',enum:['DRAFT','APPROVED']},format:{type:'string',enum:['json','yaml']}}),
   draft_quant_strategy:{...objectSchema({name:{type:'string',minLength:1,maxLength:100},description:{type:'string',maxLength:2000},definition:{type:'object',maxProperties:3},strategyId:identifierSchema,draftId:identifierSchema,expectedContentHash:{type:'string',pattern:'^[a-f0-9]{64}$'},document:{type:'object',maxProperties:60},text:{type:'string',minLength:1,maxLength:160000},format:{type:'string',enum:['json','yaml']},expectedRevision:revisionSchema,idempotencyKey:identifierSchema},['expectedRevision','idempotencyKey']),oneOf:[{required:['name','definition'],not:{anyOf:[{required:['document']},{required:['text']}]}},{required:['document'],not:{anyOf:[{required:['name']},{required:['definition']},{required:['strategyId']},{required:['draftId']},{required:['expectedContentHash']},{required:['text']}]}},{required:['text'],not:{anyOf:[{required:['name']},{required:['definition']},{required:['strategyId']},{required:['draftId']},{required:['expectedContentHash']},{required:['document']}]}}]},
   draft_mind_policy:{...objectSchema({mindId:identifierSchema,expectedSourceManifestHash:hashSchema,externalKnowledge:{type:'object',maxProperties:60},strategyPlanDraft:strategyDraftSchema,universeDraft:{type:'object',maxProperties:12},expectedRevision:revisionSchema,idempotencyKey:identifierSchema},['mindId','expectedRevision','idempotencyKey']),oneOf:[{required:['externalKnowledge'],not:{anyOf:[{required:['strategyPlanDraft']},{required:['universeDraft']}]}},{required:['strategyPlanDraft'],not:{anyOf:[{required:['externalKnowledge']},{required:['universeDraft']}]}},{required:['universeDraft'],not:{anyOf:[{required:['externalKnowledge']},{required:['strategyPlanDraft']}]}}]},
-  read_market_knowledge:objectSchema({documentId:identifierSchema,search:{type:'string',maxLength:200},status:{type:'string',enum:['DRAFT','APPROVED']},sourceType:{type:'string',enum:['news','macro-release','investor-letter','investor-disclosure','research','other']},authorId:identifierSchema,level:{type:'string'},horizon:{type:'string'},sentiment:{type:'string'},novelty:{type:'string'},instrumentId:identifierSchema,pageSize:{type:'integer',minimum:1,maximum:50},cursor:{type:'string',maxLength:2000}}),
+  read_market_knowledge:objectSchema({documentId:identifierSchema,search:{type:'string',maxLength:200},status:{type:'string',enum:['SAVED','DRAFT','APPROVED']},sourceType:{type:'string',enum:['news','macro-release','investor-letter','investor-disclosure','research','other']},authorId:identifierSchema,level:{type:'string'},horizon:{type:'string'},sentiment:{type:'string'},novelty:{type:'string'},instrumentId:identifierSchema,pageSize:{type:'integer',minimum:1,maximum:50},cursor:{type:'string',maxLength:2000}}),
   write_market_knowledge:knowledgeWriteSchema,
+  save_market_research:{...knowledgeWriteSchema,properties:{...knowledgeWriteSchema.properties,documentId:identifierSchema},oneOf:[{required:['document'],not:{anyOf:[{required:['text']},{required:['documentId']}]}},{required:['text'],not:{anyOf:[{required:['document']},{required:['documentId']}]}},{required:['documentId'],not:{anyOf:[{required:['document']},{required:['text']}]}}]},
   classify_market_knowledge:objectSchema({documentId:identifierSchema,expectedRevision:revisionSchema,idempotencyKey:identifierSchema},['documentId','expectedRevision','idempotencyKey']),
   export_market_knowledge:objectSchema({documentId:identifierSchema,format:{type:'string',enum:['json','yaml']}},['documentId','format']),
   read_investment_status:objectSchema(),
@@ -87,6 +88,7 @@ const descriptions={
   draft_quant_strategy:'입력부터 QUANT 최종 판단까지 완성된 공용 전략 초안을 저장합니다. strategyId는 새 버전, draftId와 expectedContentHash는 기존 초안 수정, JSON/YAML 가져오기는 새 전략을 만듭니다. 검토·발행은 라이브러리에서 수행합니다.',
   draft_mind_policy:'자료 연결·투자 범위·등록된 BTC 현물 전략 설정으로 마인드 정책 초안을 만듭니다. 서버가 버전·매개변수 식별값을 생성합니다. 검토와 발행은 앱에서 수행하며 JEV와 주문 API를 호출하지 않습니다.',
   read_market_knowledge:'사용자 소유 시장 라이브러리의 자료·공개 시각·적용 범위·실제 JEV 분류·승인 상태를 검색합니다. documentId로 보관 원문을 조회합니다.',
+  save_market_research:'뉴스 브리핑·전략 리서치를 개인 라이브러리에 바로 저장하고 열기 링크를 반환합니다. 새 문서는 document 또는 text를, 기존 자료를 보관하려면 documentId를 전달하세요. 마인드 활용 승인은 별도입니다.',
   write_market_knowledge:'공개 원문을 조사한 market-knowledge JSON/YAML을 초안으로 보관합니다. 내용 수정은 새 ID와 다음 버전으로 작성하며 승인은 앱에서 수행합니다. 분석 LLM API를 추가 호출하지 않습니다.',
   classify_market_knowledge:'실제 JEV Choice로 거시·미시, 기간, 영향, 우리 승인 라이브러리 대비 신규성, 범위를 분류합니다. 실제 API 원요청·응답을 보존합니다.',
   export_market_knowledge:'시장 지식 원문과 버전·출처·해시를 JSON/YAML로 내보내 새 버전의 분석에 사용합니다.',
@@ -165,6 +167,7 @@ function validArguments(name,args){
     if(key==='text'&&(typeof value!=='string'||!value.trim()||value.length>160000))return false;
     if(key==='document'&&(!plain(value)||!safeDocument(value)))return false;
   }
+  if(name==='save_market_research')return ['document','text','documentId'].filter(key=>Object.hasOwn(args,key)).length===1;
   return !['write_mind_document','write_market_knowledge'].includes(name)||Object.hasOwn(args,'text')!==Object.hasOwn(args,'document');
 }
 function toolResult(output,isError=false){return {isError,content:[{type:'text',text:JSON.stringify(output)}],structuredContent:output};}
@@ -232,7 +235,7 @@ async function callMindTool(request,env,options,name,args){
     const [catalog,forms,knowledgeForm]=await Promise.all([studioCall(request,env,options,'/api/workspace/minds'),studioCall(request,env,options,'/api/workspace/mind-forms'),studioCall(request,env,options,'/api/workspace/market-knowledge/forms')]);
     if(!catalog.ok||!forms.ok)return toolResult(!catalog.ok?catalog.value:forms.value,true);
     const library=await studioCall(request,env,options,'/api/workspace/market-knowledge?pageSize=8');
-    return toolResult({ok:true,catalog:catalog.value,forms:forms.value,researchProtocol:strategyLearningResearchProtocol(),marketKnowledge:{formsUrl:'/api/workspace/market-knowledge/forms',...(knowledgeForm.ok?{form:knowledgeForm.value}:{}),writeTool:'write_market_knowledge',classifyTool:'classify_market_knowledge',...(library.ok?{page:library.value.page,revision:library.value.revision}:{})}});
+    return toolResult({ok:true,catalog:catalog.value,forms:forms.value,researchProtocol:strategyLearningResearchProtocol(),marketKnowledge:{formsUrl:'/api/workspace/market-knowledge/forms',...(knowledgeForm.ok?{form:knowledgeForm.value}:{}),writeTool:'write_market_knowledge',saveTool:'save_market_research',classifyTool:'classify_market_knowledge',...(library.ok?{page:library.value.page,revision:library.value.revision}:{})}});
   }
   if(name==='read_trading_context'){
     const query=new URLSearchParams({...(args.mindId?{profileId:args.mindId}:{}),instrumentId:args.instrumentId,...(args.timeframe?{timeframe:args.timeframe}:{}),...(args.mode?{mode:args.mode}:{})});
@@ -246,16 +249,17 @@ async function callMindTool(request,env,options,name,args){
     const {documentId,...filters}=args;const path=name==='export_market_knowledge'?'/api/workspace/market-knowledge/export?'+new URLSearchParams({id:documentId,format:args.format}):documentId?'/api/workspace/market-knowledge/item?'+new URLSearchParams({id:documentId}):'/api/workspace/market-knowledge?'+new URLSearchParams(filters);
     const result=await studioCall(request,env,options,path);return toolResult(result.value,!result.ok);
   }
-  let shared=name==='write_market_knowledge'||name==='classify_market_knowledge';
+  let shared=['write_market_knowledge','classify_market_knowledge','save_market_research'].includes(name);
   if(name==='write_mind_document'){try{shared=(args.document??parseMindData(args.text,{format:args.format??'auto'})).kind==='market-knowledge';}catch{}}
   if(name==='classify_mind_document'){
     const lookup=await studioCall(request,env,options,'/api/workspace/market-knowledge/item?'+new URLSearchParams({id:args.documentId}));shared=lookup.ok;if(!lookup.ok&&lookup.value.code!=='KNOWLEDGE_NOT_FOUND')return toolResult(lookup.value,true);
   }
   if(shared){
-    const path='/api/workspace/market-knowledge/'+(['classify_market_knowledge','classify_mind_document'].includes(name)?'classify':'write');
+    const operation=name==='save_market_research'?'save':['classify_market_knowledge','classify_mind_document'].includes(name)?'classify':'write';
+    const path='/api/workspace/market-knowledge/'+operation;
     const result=await studioCall(request,env,options,path,{method:'POST',body:args});
     const knowledgeId=result.value.item?.id;
-    if(result.ok&&path.endsWith('/write')&&knowledgeId)result.value.openUrl=new URL('/#library?'+new URLSearchParams({view:'documents',executionMode:'paper',knowledgeId}),request.url).href;
+    if(result.ok&&operation!=='classify'&&knowledgeId)result.value.openUrl=new URL('/#library?'+new URLSearchParams({view:'documents',executionMode:'paper',knowledgeId}),request.url).href;
     return toolResult(result.value,!result.ok);
   }
   const path=name==='write_mind_document'?'/api/workspace/mind-documents':name==='classify_mind_document'?'/api/workspace/mind-documents/classify':'/api/workspace/minds/export?'+new URLSearchParams({mindId:args.mindId,format:args.format});

@@ -60,7 +60,7 @@ import evidenceV2Schema from '../design/mind-forms/principle-evidence-v2.schema.
 import strategyPlanSchema from '../design/mind-forms/strategy-plan.schema.json' with {type:'json'};
 
 const LEGACY_INSTRUMENT='crypto:binance:BTCUSDT', BTC='crypto:okx:BTC-USDT';
-const PATHS=new Set(['/api/workspace/mind-subscriptions/history','/api/workspace/mind-subscriptions/retry-execution','/api/workspace/mind-subscriptions/run-now','/api/workspace/accounts/budget','/api/workspace/accounts/allocate','/api/workspace/mind-subscriptions/recovery','/api/workspace/mind-subscriptions/reconcile','/api/workspace/mind-subscriptions/recover','/api/workspace/mind-subscriptions/abandon','/api/workspace/mind-documents/policy-draft','/api/workspace/mind-subscriptions','/api/workspace/mind-subscriptions/create','/api/workspace/mind-subscriptions/enable','/api/workspace/mind-subscriptions/pause','/api/workspace/mind-subscriptions/apply-version','/api/workspace/market-knowledge','/api/workspace/market-knowledge/item','/api/workspace/market-knowledge/export','/api/workspace/market-knowledge/forms','/api/workspace/market-knowledge/write','/api/workspace/market-knowledge/classify','/api/workspace/market-knowledge/publish','/api/workspace/terminal','/api/workspace/minds','/api/workspace/mind-forms','/api/workspace/minds/export','/api/workspace/mind-documents','/api/workspace/mind-documents/classify','/api/workspace/mind-documents/publish','/api/workspace/terminal/evaluate','/api/workspace/terminal/select','/api/workspace/terminal/universe','/api/workspace/terminal/accounts','/api/workspace/terminal/execute','/api/workspace/terminal/observe','/api/workspace/terminal/observation','/api/workspace/terminal/records','/api/workspace/minds/weights/propose','/api/workspace/minds/weights/approve','/api/workspace/mind-documents/from-experience']);
+const PATHS=new Set(['/api/workspace/mind-subscriptions/history','/api/workspace/mind-subscriptions/retry-execution','/api/workspace/mind-subscriptions/run-now','/api/workspace/accounts/budget','/api/workspace/accounts/allocate','/api/workspace/mind-subscriptions/recovery','/api/workspace/mind-subscriptions/reconcile','/api/workspace/mind-subscriptions/recover','/api/workspace/mind-subscriptions/abandon','/api/workspace/mind-documents/policy-draft','/api/workspace/mind-subscriptions','/api/workspace/mind-subscriptions/create','/api/workspace/mind-subscriptions/enable','/api/workspace/mind-subscriptions/pause','/api/workspace/mind-subscriptions/apply-version','/api/workspace/market-knowledge','/api/workspace/market-knowledge/item','/api/workspace/market-knowledge/export','/api/workspace/market-knowledge/forms','/api/workspace/market-knowledge/write','/api/workspace/market-knowledge/save','/api/workspace/market-knowledge/classify','/api/workspace/market-knowledge/publish','/api/workspace/terminal','/api/workspace/minds','/api/workspace/mind-forms','/api/workspace/minds/export','/api/workspace/mind-documents','/api/workspace/mind-documents/classify','/api/workspace/mind-documents/publish','/api/workspace/terminal/evaluate','/api/workspace/terminal/select','/api/workspace/terminal/universe','/api/workspace/terminal/accounts','/api/workspace/terminal/execute','/api/workspace/terminal/observe','/api/workspace/terminal/observation','/api/workspace/terminal/records','/api/workspace/minds/weights/propose','/api/workspace/minds/weights/approve','/api/workspace/mind-documents/from-experience']);
 const schemas={'mind-policy':policySchema,'trade-review':reviewSchema,'market-context':contextSchema,'principle-evidence':evidenceSchema,'weight-proposal':weightSchema};
 for(const suffix of ['','/source','/create','/run'])PATHS.add('/api/workspace/news-comparisons'+suffix);
 for(const suffix of ['','/item','/usage','/export','/draft','/publish'])PATHS.add('/api/workspace/quant-strategies'+suffix);
@@ -434,17 +434,23 @@ export async function handleMindStudioAPI(request,env={},options={}){
       }
       syncLearningPolicyGraph(document);await applyLearningPolicyProvenance(w,document,{db,owner,pending:options.learningAdoption??null});assertMindDocument(document);verifyKnowledgePins(w.marketKnowledge,document.data.externalKnowledge);verifyQuantStrategyPins(w,document);
       next.mindDocuments.push({id:document.id,document,status:'DRAFT',importedAt:now,importedBy:owner,review:null,classificationRecord:null,sourceValidation:'POLICY_REVIEW_REQUIRED'});result={document};
-    }else if(path==='/api/workspace/market-knowledge/write'){
+    }else if(path==='/api/workspace/market-knowledge/save'&&body.documentId!==undefined){
+      check(body.document===undefined&&body.text===undefined,'DOCUMENT_INPUT','기존 자료 ID 또는 새 문서 하나를 전달하세요.');
+      const entry=next.marketKnowledge.find(e=>e.id===body.documentId);
+      check(entry,'KNOWLEDGE_NOT_FOUND','저장할 자료를 선택하세요.',404);
+      if(entry.status==='DRAFT')entry.status='SAVED';
+      result={item:knowledgeItem(entry),document:entry.document};
+    }else if(['/api/workspace/market-knowledge/write','/api/workspace/market-knowledge/save'].includes(path)){
       check((body.text!==undefined)!==(body.document!==undefined),'DOCUMENT_INPUT','문서 또는 텍스트 하나를 전달하세요.');
       const document=body.text!==undefined?parseMarketKnowledgeDocument(body.text,{format:body.format??'auto'}):clone(assertMarketKnowledgeDocument(body.document));
       check(document.asOf<=now&&document.data.publication.publishedAt<=now&&document.data.publication.retrievedAt<=now,'KNOWLEDGE_FUTURE','현재까지 공개·수집한 자료를 작성하세요.');
       check(/^[a-zA-Z0-9][a-zA-Z0-9_.:@-]{0,199}$/.test(document.id),'KNOWLEDGE_ID','자료 ID는 영문·숫자와 하이픈·밑줄·마침표·콜론·@으로 작성하세요.');
       document.scope.instrumentIds.forEach(id=>check(getInstrument(id).id===id,'KNOWLEDGE_INSTRUMENT','거래소를 포함한 정식 종목 ID를 사용하세요.'));verifyKnowledgeVersion(w.marketKnowledge,document);
-      const entry={id:document.id,document,contentHash:marketKnowledgeHash(document),status:'DRAFT',importedAt:now,importedBy:owner,availableAt:document.availableAt>now?document.availableAt:now,classificationRecord:null,review:null};
+      const entry={id:document.id,document,contentHash:marketKnowledgeHash(document),status:path.endsWith('/save')?'SAVED':'DRAFT',importedAt:now,importedBy:owner,availableAt:document.availableAt>now?document.availableAt:now,classificationRecord:null,review:null};
       next.marketKnowledge.push(entry);result={item:knowledgeItem(entry),document};
     }else if(path==='/api/workspace/market-knowledge/classify'){
       const entry=next.marketKnowledge.find(e=>e.id===body.documentId);check(entry,'KNOWLEDGE_NOT_FOUND','분류할 자료를 선택하세요.',404);
-      check(entry.status==='DRAFT'&&!entry.classificationRecord,'KNOWLEDGE_CLASSIFICATION_LOCKED','새 내용은 새로운 자료 버전으로 작성하세요.',409);
+      check(['DRAFT','SAVED'].includes(entry.status)&&!entry.classificationRecord,'KNOWLEDGE_CLASSIFICATION_LOCKED','새 내용은 새로운 자료 버전으로 작성하세요.',409);
       const resourceId='knowledge-classification:'+entry.id,acquired=await acquireClaim(db,{ownerId:owner,resourceId,key:body.idempotencyKey,fingerprint,baseRevision:w.revision,nowMs:Date.parse(now),leaseMs:90000}),token=acquired.claim?.token??acquired.token;
       try{
         const {callMindJev}=await import('./mind-engine.mjs');
@@ -455,7 +461,7 @@ export async function handleMindStudioAPI(request,env={},options={}){
       }catch(error){await releaseClaim(db,{ownerId:owner,resourceId,token,nowMs:Date.parse(nowISO(options)),status:'FAILED'}).catch(()=>{});throw error;}
     }else if(path==='/api/workspace/market-knowledge/publish'){
       const entry=next.marketKnowledge.find(e=>e.id===body.documentId);check(entry,'KNOWLEDGE_NOT_FOUND','검토할 자료를 선택하세요.',404);
-      check(entry.status==='DRAFT','KNOWLEDGE_REVIEWED','검토 대기 자료를 선택하세요.',409);
+      check(['DRAFT','SAVED'].includes(entry.status),'KNOWLEDGE_REVIEWED','검토 대기 자료를 선택하세요.',409);
       check(typeof body.reason==='string'&&body.reason.trim().length>=10&&body.reason.length<=2000,'REVIEW_REASON','공개 원문·적용 범위·공개 지연을 검토한 사유를 10자 이상 작성하세요.');
       check(entry.classificationRecord&&entry.classificationRecord.contentHash===entry.contentHash&&entry.contentHash===marketKnowledgeHash(entry.document),'KNOWLEDGE_CLASSIFICATION_REQUIRED','저장한 원문에 대한 실제 JEV 분류를 먼저 실행하세요.');
       check(entry.availableAt<=now,'KNOWLEDGE_NOT_AVAILABLE','자료의 사용 가능 시각 이후에 승인하세요.');
