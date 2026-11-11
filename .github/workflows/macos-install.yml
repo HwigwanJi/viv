@@ -1,0 +1,35 @@
+name: macOS installation
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/install-viv-mac.sh'
+      - 'scripts/setup-self-host-mac.mjs'
+      - '.github/workflows/macos-install.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install with the bundled Node bootstrap and verify onboarding
+        shell: bash
+        run: |
+          set -euo pipefail
+          printf '0\n' | bash scripts/install-viv-mac.sh
+          test ! -e .runtime
+          mac_path=/usr/bin:/bin:/usr/sbin:/sbin
+          receipt=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --target pc --client manual)
+          node -e 'const r=JSON.parse(process.argv[1]); if(!r.serverPid || r.mcpStatus!=="endpoint-ready" || r.liveRunner!=="disabled") throw Error(JSON.stringify(r))' "$receipt"
+          pid=$(node -p 'JSON.parse(process.argv[1]).serverPid' "$receipt")
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          rerun=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --target pc --client manual)
+          node -e 'const r=JSON.parse(process.argv[1]); if(r.serverPid!==null || r.mcpStatus!=="endpoint-ready") throw Error(JSON.stringify(r))' "$rerun"
+          curl -fsS http://127.0.0.1:4317/mcp -H 'Content-Type: application/json' \
+            --data '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"viv_onboarding","arguments":{}}}' |
+            node -e 'let s=""; process.stdin.on("data",b=>s+=b).on("end",()=>{const r=JSON.parse(s).result; if(r.isError || r.structuredContent.next!=="ask_interest_and_budget") throw Error("Fresh onboarding failed")})'

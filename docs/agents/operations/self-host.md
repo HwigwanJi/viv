@@ -23,6 +23,14 @@ VIV를 중지하거나 키 입력을 반영하기 위해 다시 시작할 때는
 
 Codex 외의 AI 클라이언트나 앱을 설치한 뒤 MCP만 연결하는 방법은 [VIV MCP 플레이북](viv-mcp-playbook.md)을 따릅니다.
 
+## Mac 서버와 휴대폰
+
+저장소를 복제한 뒤 `bash scripts/install-viv-mac.sh`를 실행합니다. 에이전트는 환경을 먼저 물어보고 `--target pc` 또는 `--target mobile`을 전달합니다. 기본 MCP 클라이언트는 Codex입니다. Claude Code는 `--client claude`, 기타 클라이언트는 `--client manual`을 사용합니다.
+
+설치 스크립트는 필요한 경우 Apple Silicon 또는 Intel용 Node.js 24를 받아 해시를 검증한 뒤 VIV 폴더 안에 설치합니다. PC 앱과 MCP 주소가 출력되면 AI에서 **VIV 시작하기**를 입력합니다. Mac 재시작 뒤에는 같은 명령을 다시 실행합니다. 서버 오류는 `.runtime/self-host.log`에서 확인합니다.
+
+모바일을 선택하면 기존 Tailscale을 사용하거나 Homebrew를 통해 설치합니다. macOS VPN 승인과 Tailscale 로그인은 사용자가 진행합니다. Homebrew가 없는 Mac에서 Tailscale이 필요하면 공식 앱을 설치한 뒤 같은 VIV 명령을 다시 실행합니다. 비공개 HTTPS 연결이 확인되면 `mobileInstallUrl`을 같은 tailnet에 로그인한 휴대폰에서 엽니다. [Tailscale Mac 설치](https://tailscale.com/docs/install/mac)
+
 ## 자기 API 키와 계좌
 
 | 필요한 기능 | 설치 후 설정 |
