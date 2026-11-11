@@ -13,7 +13,11 @@ permissions:
 
 jobs:
   install:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        macos: [macos-latest, macos-15-intel]
+    runs-on: ${{ matrix.macos }}
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
