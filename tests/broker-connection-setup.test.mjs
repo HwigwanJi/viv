@@ -144,7 +144,7 @@ test('broker PC handoff opens the selected card and copies only its setup addres
   const click=(action,extra={})=>connections.click({preventDefault(){},target:{closest:()=>({dataset:{brokerAction:action,brokerProvider:'upbit'},...extra})}});
   await click('connect');
   const address={value:'https://viv.example.test/#settings?view=accounts&executionMode=live&brokerSetup=upbit',hidden:true,focus(){this.focused=true;},select(){this.selected=true;}};
-  assert.ok(modal.includes(address.value.replaceAll('&','&amp;')));
+  assert.ok(modal.includes('readonly hidden>'+address.value.replaceAll('&','&amp;')+'</textarea>'));
   assert.ok(modal.indexOf('새 키는 PC 웹에서 발급')<modal.indexOf('name="secretKey"'));
   Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>copied.push(text)}});
   const findInput={closest:()=>({querySelector:()=>address})};

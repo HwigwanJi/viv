@@ -12,7 +12,7 @@ const table=(headers,rows)=>renderDataTable(headers.map((header,i)=>({...(typeof
 const pcSetup=provider=>'#settings?view=accounts&executionMode=live&brokerSetup='+provider;
 function pcHandoff(provider){
  const address=globalThis.location?.origin&&new URL(pcSetup(provider),globalThis.location.origin).href;
- return `<section class="spaced" data-broker-handoff><h3>새 키는 PC 웹에서 발급</h3><p>PC에서 VIV 연결 화면을 먼저 열고, 발급한 키를 같은 PC의 VIV 입력창에 붙여 넣으세요.</p>${address?`<div class="actions">${button('PC 연결 주소 복사','copy-pc-link',provider)}</div><input type="url" class="input" aria-label="PC 연결 주소" value="${esc(address)}" readonly hidden><p class="tiny muted">다른 기기에는 연결 주소만 보내세요. 주소가 열리지 않으면 설치할 때 표시된 VIV PC 주소에서 계좌·자금을 여세요.</p>`:''}</section>`;
+ return `<section class="spaced" data-broker-handoff><h3>새 키는 PC 웹에서 발급</h3><p>PC에서 VIV 연결 화면을 먼저 열고, 발급한 키를 같은 PC의 VIV 입력창에 붙여 넣으세요.</p>${address?`<div class="actions">${button('PC 연결 주소 복사','copy-pc-link',provider)}</div><textarea class="input" rows="2" aria-label="PC 연결 주소" readonly hidden>${esc(address)}</textarea><p class="tiny muted">다른 기기에는 연결 주소만 보내세요. 주소가 열리지 않으면 설치할 때 표시된 VIV PC 주소에서 계좌·자금을 여세요.</p>`:''}</section>`;
 }
 
 export function brokerPaperReturnLink(route){
@@ -74,7 +74,7 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
   open(names[provider]+' 연결',`<form data-broker-form="${provider}" autocomplete="off">${pcHandoff(provider)}${guide}<p>${rechecked?'VIV 서버 설정을 확인했습니다. ':''}잔고 조회를 요청하면 금융기관이 허용 IP와 키 권한을 확인합니다. 키는 아래 입력창에 넣으세요. 서버에 암호화해 보관합니다.</p><div class="form-grid">${fields.map(([name,label])=>`<label class="field">${label}<input class="input" type="password" name="${name}" autocomplete="off" spellcheck="false" required minlength="10" maxlength="8000" /></label>`).join('')}</div><p data-broker-status role="status" aria-live="polite"></p><p data-broker-error role="alert"></p><div class="form-actions">${paperLink}${cancel}<button class="button primary" type="submit">연결하고 잔고 조회</button></div></form>`,'');
  }
  async function click(event){const node=event.target.closest?.('[data-broker-action]');if(!node||node.disabled)return;event.preventDefault();const action=node.dataset.brokerAction,provider=node.dataset.brokerProvider;if(action==='connect'&&!pending)return connect(provider);if(action==='copy-pc-link'){
-   const address=node.closest('[data-broker-handoff]').querySelector('input');
+   const address=node.closest('[data-broker-handoff]').querySelector('textarea');
    try{await navigator.clipboard.writeText(address.value);toast('PC 연결 주소를 복사했습니다.');}
    catch{address.hidden=false;address.focus();address.select();}
    return;
