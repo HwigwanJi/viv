@@ -10,6 +10,10 @@ const text=(v,max)=>typeof v==='string'&&v.trim().length>0&&v.length<=max,hash=v
 const check=(c,code,msg)=>{if(!c)throw new MindDocumentError(code,msg);};
 const https=v=>{try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password&&!u.hash&&v.length<=2000;}catch{return false;}};
 export function publicationBoundary({precision,sourcePublishedValue,timezone}){
+  if(precision==='undated'){
+    check(sourcePublishedValue===null&&timezone===null,'KNOWLEDGE_PUBLICATION_PRECISION','공개 시점이 미확인인 자료에는 원문 공개 값과 시간대를 비워 두세요.');
+    return null;
+  }
   check(['instant','day'].includes(precision)&&typeof timezone==='string'&&timezone.length<=80,'KNOWLEDGE_PUBLICATION_PRECISION','공개 시각의 정밀도와 원문 시간대를 기록하세요.');
   let fmt;try{fmt=new Intl.DateTimeFormat('en-US',{timeZone:timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});}catch{throw new MindDocumentError('KNOWLEDGE_PUBLICATION_PRECISION','유효한 IANA 시간대를 사용하세요.');}
   if(precision==='instant'){check(typeof sourcePublishedValue==='string'&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,3})?(?:Z|[+-]\d\d:\d\d)$/.test(sourcePublishedValue)&&Number.isFinite(Date.parse(sourcePublishedValue)),'KNOWLEDGE_PUBLICATION_PRECISION','원문에 명시된 실제 공개 시각과 오프셋을 기록하세요.');return new Date(sourcePublishedValue).toISOString();}
@@ -36,9 +40,9 @@ export function assertMarketKnowledgeDocument(doc){
   check(Array.isArray(d.authors)&&d.authors.length<=20&&new Set(d.authors.map(a=>a?.id)).size===d.authors.length&&d.authors.every(a=>exact(a,['id','name'])&&id(a.id)&&text(a.name,160)),'KNOWLEDGE_AUTHORS','공개 자료의 저자 ID와 이름을 작성하세요.');
   check(Array.isArray(d.claims)&&d.claims.length>=1&&d.claims.length<=30&&new Set(d.claims.map(c=>c?.id)).size===d.claims.length&&d.claims.every(c=>exact(c,['id','text','sourceRef'])&&id(c.id)&&text(c.text,2000)&&p.recordRefs.includes(c.sourceRef)),'KNOWLEDGE_CLAIMS','각 주장과 공개 원문의 출처 참조를 연결하세요.');
   const pub=d.publication;
-  check(exact(pub,['publishedAt','precision','sourcePublishedValue','timezone','retrievedAt','reportPeriodEnd','disclosureType','sourceRevision'])&&iso(pub.publishedAt)&&iso(pub.retrievedAt)&&pub.publishedAt<=pub.retrievedAt&&pub.retrievedAt<=doc.availableAt&&(pub.reportPeriodEnd===null||iso(pub.reportPeriodEnd)&&pub.reportPeriodEnd<=pub.publishedAt)&&['none','13f','earnings','letter','other'].includes(pub.disclosureType)&&text(pub.sourceRevision,120),'KNOWLEDGE_PUBLICATION','공개 시각 정밀도·수집 시각·보고 기간·공시 유형·원문 개정 ID를 작성하세요.');
+  check(exact(pub,['publishedAt','precision','sourcePublishedValue','timezone','retrievedAt','reportPeriodEnd','disclosureType','sourceRevision'])&&iso(pub.retrievedAt)&&(pub.precision==='undated'?pub.publishedAt===null:iso(pub.publishedAt)&&pub.publishedAt<=pub.retrievedAt)&&pub.retrievedAt<=doc.availableAt&&(pub.reportPeriodEnd===null||iso(pub.reportPeriodEnd)&&pub.reportPeriodEnd<=(pub.publishedAt??pub.retrievedAt))&&['none','13f','earnings','letter','other'].includes(pub.disclosureType)&&text(pub.sourceRevision,120),'KNOWLEDGE_PUBLICATION','공개 시각 정밀도·수집 시각·보고 기간·공시 유형·원문 개정 ID를 작성하세요.');
   check(publicationBoundary(pub)===pub.publishedAt,'KNOWLEDGE_PUBLICATION_PRECISION','원문 공개일·시간대와 보수적인 사용 판정 경계를 일치시키세요.');
-  check(d.sourceType!=='investor-disclosure'||pub.reportPeriodEnd!==null&&pub.disclosureType!=='none','KNOWLEDGE_DISCLOSURE','투자자 공시는 보고 기간 종료와 공시 유형을 기록하세요.');
+  check(d.sourceType!=='investor-disclosure'||pub.publishedAt!==null&&pub.reportPeriodEnd!==null&&pub.disclosureType!=='none','KNOWLEDGE_DISCLOSURE','투자자 공시는 공개 시점, 보고 기간 종료와 공시 유형을 기록하세요.');
   const c=d.coverage;
   check(exact(c,['global','assetClasses','economies','sectors'])&&typeof c.global==='boolean'&&ids(c.assetClasses)&&c.assetClasses.every(v=>['crypto','equity'].includes(v))&&ids(c.economies)&&ids(c.sectors)&&(!c.global||doc.scope.instrumentIds.length===0&&c.assetClasses.length===0&&c.economies.length===0&&c.sectors.length===0)&&(c.global||doc.scope.instrumentIds.length+c.assetClasses.length+c.economies.length+c.sectors.length>0),'KNOWLEDGE_COVERAGE','전 세계 또는 종목·자산군·경제·산업의 명시 적용 범위를 선택하세요.');
   check(d.validUntil===null||iso(d.validUntil)&&d.validUntil>doc.availableAt,'KNOWLEDGE_EXPIRY','자료의 유효 종료 시각을 사용 가능 시각 이후로 설정하세요.');
@@ -57,7 +61,7 @@ export function knowledgeRelated(doc,instrument,{sectorContext=null,strictScope=
   const sectors=strictScope?(instrument.assetClass==='equity'&&sectorContext?.status==='READY'?[...(sectorContext.stockSectorIds??[]),...(includeRelatedEtfs?sectorContext.relatedEtfSectorIds??[]:[])]:[]):[instrument.sector].filter(Boolean);
   return (!c.assetClasses.length||c.assetClasses.includes(instrument.assetClass))&&(!c.economies.length||!!economy&&c.economies.includes(economy))&&(!c.sectors.length||c.sectors.some(id=>sectors.includes(id)));
 }
-function ready(entry,now){return iso(entry.importedAt)&&entry.importedAt<=now&&iso(entry.availableAt)&&entry.availableAt<=now&&entry.classificationRecord?.contentHash===entry.contentHash&&entry.status==='APPROVED'&&entry.review?.reviewedAt<=now&&entry.classificationRecord?.provider?.answeredAt<=now&&entry.document.availableAt<=now&&entry.document.asOf<=now&&entry.document.data.publication.publishedAt<=now&&entry.document.data.publication.retrievedAt<=now;}
+function ready(entry,now){return iso(entry.document.data.publication.publishedAt)&&iso(entry.importedAt)&&entry.importedAt<=now&&iso(entry.availableAt)&&entry.availableAt<=now&&entry.classificationRecord?.contentHash===entry.contentHash&&entry.status==='APPROVED'&&entry.review?.reviewedAt<=now&&entry.classificationRecord?.provider?.answeredAt<=now&&entry.document.availableAt<=now&&entry.document.asOf<=now&&entry.document.data.publication.publishedAt<=now&&entry.document.data.publication.retrievedAt<=now;}
 function publicKnowledgeAt(doc){return publicationBoundary(doc.data.publication);}
 function replayReady(entry,now,replay){return replay?.contract==='PUBLICATION_TIME_RESEARCH_V1'&&iso(replay.frozenAt)&&ready(entry,replay.frozenAt)&&publicKnowledgeAt(entry.document)<=now;}
 export function selectMarketKnowledge(entries,manifest,instrument,now,{historicalReplay=null}={}){
@@ -70,6 +74,7 @@ export function selectMarketKnowledge(entries,manifest,instrument,now,{historica
   for(const entry of entries){const doc=entry?.document;let reason=null;
     try{assertMarketKnowledgeDocument(doc);if(entry.contentHash!==marketKnowledgeHash(doc))reason='CONTENT_HASH_MISMATCH';}catch{reason='INVALID_DOCUMENT';}
     if(!reason&&!policy.enabled)reason='POLICY_DISABLED';
+    if(!reason&&doc.data.publication.precision==='undated')reason='PUBLICATION_TIME_UNVERIFIED';
     if(!reason&&!(historicalReplay?replayReady(entry,now,historicalReplay):ready(entry,now)))reason='APPROVAL_OR_AVAILABILITY_REQUIRED';
     if(!reason&&doc.data.validUntil!==null&&doc.data.validUntil<=now)reason='EXPIRED';
     if(!reason&&Date.parse(now)-Date.parse(doc.data.publication.publishedAt)>policy.maxAgeHours*3600000)reason='FRESHNESS_LIMIT';

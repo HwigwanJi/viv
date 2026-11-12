@@ -1639,8 +1639,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T14:01:53.179Z",
-      "reason": "모바일 크기와 데스크톱에서 자료 저장 상태, 전송 기록, JEV 전송 안내, 실패 및 취소를 검증했습니다.",
+      "reviewedAt": "2026-11-12T04:39:23.103205+00:00",
+      "reason": "직접 작성의 공개일 미확인 선택과 날짜 입력, 개인 참고 상태, 자료 읽기의 원문·수신 기록을 대조했습니다.",
       "signature": "90b448c9c7974a11f737555483bb6985a9abd96b5020dd073b4d45349c3037d5",
       "controls": [
         [
@@ -1720,7 +1720,7 @@
           1
         ]
       ],
-      "sourceHash": "97637c2df3c021d037469d436832990d88e470ad190b9346e83deade4aba252e"
+      "sourceHash": "8a291a1ed7f28a20becf917f0491ff30acef30a0936c63c7744b92eec28eaae5"
     },
     {
       "file": "dist/ui/mind-activity-resource.mjs",

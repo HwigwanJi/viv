@@ -250,22 +250,32 @@
           "type": "object",
           "properties": {
             "publishedAt": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "format": "date-time"
             },
             "precision": {
               "enum": [
                 "instant",
-                "day"
+                "day",
+                "undated"
               ]
             },
             "sourcePublishedValue": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "minLength": 1,
               "maxLength": 100
             },
             "timezone": {
-              "type": "string",
+              "type": [
+                "string",
+                "null"
+              ],
               "minLength": 1,
               "maxLength": 80
             },
@@ -309,7 +319,40 @@
             "disclosureType",
             "sourceRevision"
           ],
-          "additionalProperties": false
+          "additionalProperties": false,
+          "if": {
+            "properties": {
+              "precision": {
+                "const": "undated"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "publishedAt": {
+                "type": "null"
+              },
+              "sourcePublishedValue": {
+                "type": "null"
+              },
+              "timezone": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "publishedAt": {
+                "type": "string"
+              },
+              "sourcePublishedValue": {
+                "type": "string"
+              },
+              "timezone": {
+                "type": "string"
+              }
+            }
+          }
         },
         "coverage": {
           "type": "object",

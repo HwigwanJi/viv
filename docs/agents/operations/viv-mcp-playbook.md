@@ -83,6 +83,10 @@
 | 이어서 하기 | 0 또는 ‘여기까지’로 멈추면 다음 대화에서도 중단 상태를 유지합니다. ‘튜토리얼 이어하기’라고 하면 완료한 항목의 링크와 남은 번호를 다시 볼 수 있습니다. |
 | 실계좌 | 튜토리얼을 마칠 때 응답의 `liveConnection.offer`가 참이면 한 번 “1 지금 연결 / 2 나중에”를 안내합니다. 건너뛰거나 중단했다면 요청한 모의 과업을 이어갑니다. 지금을 고르거나 직접 요청하면 실전 계좌·자금 화면을 엽니다. 나중에는 `action: defer_connection`으로 저장하고 `links.paperResume`을 엽니다. 발급 중 돌아올 때도 같은 모의 결과를 열 수 있습니다. [계좌 연결과 잔고 확인](self-host.md#계좌-연결과-잔고-확인)에 따라 준비 상태와 조회 결과를 확인합니다. |
 
+**3번 실습 예시**. [TradingView의 전략 문서](https://www.tradingview.com/pine-script-docs/concepts/strategies/)를 붙여 넣고 “체결·거래비용 가정을 요약해 내 자료에 저장해줘”라고 입력하세요. 원문에 공개일이 보이지 않으면 AI는 확인한 시각만 기록해 저장합니다. 원문을 열 수 없다면 다른 링크나 원문 일부를 보내거나 건너뛸 수 있습니다. 저장 링크를 열면 **투자 자료**에서 요약을 읽고 **출처·사용 시점**에서 원문과 수신 기록을 확인할 수 있습니다. 나중에 “튜토리얼 이어하기” 또는 자료 제목 검색으로 같은 결과를 다시 여세요.
+
+MCP에서 공개일이 확인되지 않은 원문은 `publication.precision: "undated"`를 사용하며, `publishedAt`, `sourcePublishedValue`, `timezone`을 모두 `null`로 전송합니다. `retrievedAt`에는 원문을 실제 확인한 시각을 기록합니다. 앱에서 직접 저장할 때는 **공개 시점 기준 → 공개일 미확인**을 선택합니다.
+
 1~3번의 저장 결과를 제공한 뒤 `viv_onboarding`에 `action: complete`, 과업 번호, 라이브러리 영수증의 `documentId`를 보냅니다. 사용자가 보기만 요청했으면 `readOnly: true`로 완료를 표시할 수 있습니다. 현재 확정 시세의 저장 판단을 실행한 4번은 `decisionId`를 보냅니다. 키 없이 완료한 기준 퀀트 백테스트는 `read_simulation_collection`에서 확인한 실험의 `simulationId`를 보내고, 응답의 저장 보고서 `openUrl`을 제공하세요. 진행·중단은 `resume`·`pause`로 기록합니다.
 
 실행용 프롬프트는 MCP의 `viv_start`와 `viv_onboarding` 응답에서 같은 내용을 제공합니다.

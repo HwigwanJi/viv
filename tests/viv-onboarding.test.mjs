@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {handleMcp} from '../server/mcp.mjs';
+import {disabledExternalKnowledge,marketKnowledgeHash,selectMarketKnowledge} from '../dist/domain/market-knowledge.mjs';
 import {querySimulationCollection} from '../server/simulation-collection.mjs';
 import {terminalErrorRecovery} from '../server/terminal-readiness.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
@@ -72,12 +73,47 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(reloaded.entry.classificationRecord,null);
     assert.deepEqual(reloaded.usage.eligibleMinds,[]);
     assert.equal((await tool('read_market_knowledge',{status:'SAVED'})).page.total,2);
+    const undated=structuredClone(analysis);
+    undated.id=undated.data.lineageId='viv-undated-analysis';
+    undated.source.uri='https://example.com/undated';
+    Object.assign(undated.data.publication,{precision:'undated',publishedAt:null,sourcePublishedValue:null,timezone:null});
+    const undatedSave={expectedRevision:result.revision,idempotencyKey:'viv-undated'};
+    const stale=await rpc('tools/call',{name:'save_market_research',arguments:{...undatedSave,document:undated,expectedRevision:existing.revision}});
+    assert.equal(stale.structuredContent.code,'REVISION_CONFLICT');
+    const revision=(await tool('read_market_knowledge')).revision;
+    const undatedResult=await tool('save_market_research',{...undatedSave,document:undated,expectedRevision:revision});
+    assert.equal((await tool('save_market_research',{...undatedSave,document:undated})).item.contentHash,undatedResult.item.contentHash);
+    assert.equal(undatedResult.item.status,'SAVED');
+    assert.equal(undatedResult.item.publishedAt,null);
+    assert.equal((await tool('read_market_knowledge',{status:'SAVED'})).page.total,3);
+    const claimedTime=structuredClone(undated);
+    claimedTime.id=claimedTime.data.lineageId='viv-undated-claimed-time';
+    claimedTime.data.publication.publishedAt=analysis.data.publication.publishedAt;
+    const rejected=await rpc('tools/call',{name:'save_market_research',arguments:{...undatedSave,document:claimedTime,expectedRevision:undatedResult.revision,idempotencyKey:'viv-undated-invalid'}});
+    assert.equal(rejected.structuredContent.code,'KNOWLEDGE_PUBLICATION');
+    const classification=await rpc('tools/call',{name:'classify_market_knowledge',arguments:{documentId:undated.id,expectedRevision:undatedResult.revision,idempotencyKey:'viv-undated-classify'}});
+    assert.equal(classification.structuredContent.code,'KNOWLEDGE_PUBLICATION_REQUIRED');
+    const manifest={data:{universe:{},externalKnowledge:{...disabledExternalKnowledge(),enabled:true,mode:'subscribed',sourceTypes:[undated.data.sourceType]}}};
+    const now=undated.availableAt,asApproved=document=>{
+      const contentHash=marketKnowledgeHash(document);
+      return {id:document.id,document,contentHash,status:'APPROVED',importedAt:now,availableAt:now,review:{reviewedAt:now},classificationRecord:{contentHash,provider:{answeredAt:now},classification:{level:'macro',horizon:'short_term',sentiment:'neutral',novelty:'known',scopeKind:'global'}}};
+    };
+    const approved=[asApproved(analysis),asApproved(undated)];
+    for(const historicalReplay of [null,{contract:'PUBLICATION_TIME_RESEARCH_V1',frozenAt:now}]){
+      const selected=selectMarketKnowledge(approved,manifest,{id:'test'},now,{historicalReplay});
+      assert.deepEqual(selected.selected.map(x=>x.id),[analysis.id]);
+      assert.deepEqual(selected.excluded,[{id:undated.id,reason:'PUBLICATION_TIME_UNVERIFIED'}]);
+    }
+    const linkResult=await onboarding({action:'complete',lesson:3,documentId:undated.id});
+    assert.equal(linkResult.structuredContent.tutorial.completed.find(item=>item.number===3)?.openUrl,undatedResult.openUrl);
+    await onboarding({action:'pause'});
+    assert.equal((await onboarding({action:'resume'})).structuredContent.tutorial.completed.find(item=>item.number===3)?.openUrl,undatedResult.openUrl);
     const other=await rpc('tools/call',{name:'read_market_knowledge',arguments:{documentId:analysis.id}},'other-viv-user');
     assert.equal(other.isError,true);
     assert.ok(saved.structuredContent.lessons.slice(0,3).every(lesson=>lesson.tools.includes('save_market_research')));
     const completed=await onboarding({action:'complete',lesson:1,documentId:analysis.id});
     assert.equal(completed.structuredContent.tutorial.completed[0].openUrl,result.openUrl);
-    assert.deepEqual(completed.structuredContent.lessons.map(item=>item.number),[2,3,4]);
+    assert.deepEqual(completed.structuredContent.lessons.map(item=>item.number),[2,4]);
     await onboarding({action:'complete',lesson:1,readOnly:true});
     assert.equal((await onboarding({})).structuredContent.tutorial.completed[0].documentId,analysis.id);
     await onboarding({action:'pause'});

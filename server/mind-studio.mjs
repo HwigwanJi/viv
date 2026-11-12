@@ -280,7 +280,7 @@ export async function handleMindStudioAPI(request,env={},options={}){
       if(path==='/api/workspace/mind-subscriptions/recovery')return json(await mindSubscriptionRecovery(w,{repository:repo,ownerId:owner,subscriptionId:url.searchParams.get('subscriptionId'),now}));
       if(path==='/api/workspace/mind-subscriptions')return json({...mindSubscriptionCatalog(w,{ownerId:owner,now,mindId:url.searchParams.get('mindId')??'all',manifests}),runner:mindPaperRunnerStatus(db,owner,w,{now})});
       if(path==='/api/workspace/market-knowledge')return json({ok:true,...queryMarketKnowledge(w,url.searchParams,{manifests,asOf:now})});
-      if(path==='/api/workspace/market-knowledge/forms')return json({ok:true,kind:'market-knowledge',schemaVersion:1,schema:marketKnowledgeSchema,example:marketKnowledgeExample(now),choices:KNOWLEDGE_CHOICES,sourceTypes:KNOWLEDGE_SOURCE_TYPES,defaultPolicy:disabledExternalKnowledge(),contract:{revision:'NEW_ID_NEXT_VERSION_IMMUTABLE_SOURCE',classification:'ACTUAL_JEV_OWNER_RELATED_APPROVED_PRIOR',approval:'OWNER_APP_REVIEW',novelty:'OWNER_APPROVED_RELATED_LIBRARY',pricedIn:'unknown',publication:'SOURCE_INSTANT_OR_LOCAL_DAY_END_BOUNDARY_V1',coverage:'GLOBAL_OR_EXPLICIT_INSTRUMENT_LIST_ELSE_ALL_PRESENT_AXES_AND'}});
+      if(path==='/api/workspace/market-knowledge/forms')return json({ok:true,kind:'market-knowledge',schemaVersion:1,schema:marketKnowledgeSchema,example:marketKnowledgeExample(now),choices:KNOWLEDGE_CHOICES,sourceTypes:KNOWLEDGE_SOURCE_TYPES,defaultPolicy:disabledExternalKnowledge(),contract:{revision:'NEW_ID_NEXT_VERSION_IMMUTABLE_SOURCE',classification:'ACTUAL_JEV_OWNER_RELATED_APPROVED_PRIOR',approval:'OWNER_APP_REVIEW',novelty:'OWNER_APPROVED_RELATED_LIBRARY',pricedIn:'unknown',publication:'SOURCE_INSTANT_OR_LOCAL_DAY_END_BOUNDARY_V1',undatedPublication:'PRIVATE_LIBRARY_WITH_RETRIEVAL_TIME',coverage:'GLOBAL_OR_EXPLICIT_INSTRUMENT_LIST_ELSE_ALL_PRESENT_AXES_AND'}});
       if(path==='/api/workspace/market-knowledge/item'||path==='/api/workspace/market-knowledge/export'){
         const entry=w.marketKnowledge.find(e=>e.id===url.searchParams.get('id'));check(entry,'KNOWLEDGE_NOT_FOUND','자료를 선택하세요.',404);
         if(path.endsWith('/export')){const format=url.searchParams.get('format')??'json';return json({ok:true,revision:w.revision,format,text:serializeMarketKnowledgeDocument(entry.document,{format}),document:entry.document,contentHash:entry.contentHash,classificationRecord:entry.classificationRecord,review:entry.review,filename:entry.id+'.'+format});}
@@ -449,7 +449,7 @@ export async function handleMindStudioAPI(request,env={},options={}){
     }else if(['/api/workspace/market-knowledge/write','/api/workspace/market-knowledge/save'].includes(path)){
       check((body.text!==undefined)!==(body.document!==undefined),'DOCUMENT_INPUT','문서 또는 텍스트 하나를 전달하세요.');
       const document=body.text!==undefined?parseMarketKnowledgeDocument(body.text,{format:body.format??'auto'}):clone(assertMarketKnowledgeDocument(body.document));
-      check(document.asOf<=now&&document.data.publication.publishedAt<=now&&document.data.publication.retrievedAt<=now,'KNOWLEDGE_FUTURE','현재까지 공개·수집한 자료를 작성하세요.');
+      check(document.asOf<=now&&(document.data.publication.publishedAt===null||document.data.publication.publishedAt<=now)&&document.data.publication.retrievedAt<=now,'KNOWLEDGE_FUTURE','현재까지 공개·수집한 자료를 작성하세요.');
       check(/^[a-zA-Z0-9][a-zA-Z0-9_.:@-]{0,199}$/.test(document.id),'KNOWLEDGE_ID','자료 ID는 영문·숫자와 하이픈·밑줄·마침표·콜론·@으로 작성하세요.');
       document.scope.instrumentIds.forEach(id=>check(getInstrument(id).id===id,'KNOWLEDGE_INSTRUMENT','거래소를 포함한 정식 종목 ID를 사용하세요.'));verifyKnowledgeVersion(w.marketKnowledge,document);
       const entry={id:document.id,document,contentHash:marketKnowledgeHash(document),status:path.endsWith('/save')?'SAVED':'DRAFT',importedAt:now,importedBy:owner,availableAt:document.availableAt>now?document.availableAt:now,classificationRecord:null,review:null};
@@ -457,6 +457,7 @@ export async function handleMindStudioAPI(request,env={},options={}){
     }else if(path==='/api/workspace/market-knowledge/classify'){
       const entry=next.marketKnowledge.find(e=>e.id===body.documentId);check(entry,'KNOWLEDGE_NOT_FOUND','분류할 자료를 선택하세요.',404);
       check(['DRAFT','SAVED'].includes(entry.status)&&!entry.classificationRecord,'KNOWLEDGE_CLASSIFICATION_LOCKED','새 내용은 새로운 자료 버전으로 작성하세요.',409);
+      check(entry.document.data.publication.publishedAt!==null,'KNOWLEDGE_PUBLICATION_REQUIRED','마인드 판단에 활용하려면 원문 공개 시점이 확인된 버전을 저장하세요.');
       const resourceId='knowledge-classification:'+entry.id,acquired=await acquireClaim(db,{ownerId:owner,resourceId,key:body.idempotencyKey,fingerprint,baseRevision:w.revision,nowMs:Date.parse(now),leaseMs:90000}),token=acquired.claim?.token??acquired.token;
       try{
         const {callMindJev}=await import('./mind-engine.mjs');
@@ -468,6 +469,7 @@ export async function handleMindStudioAPI(request,env={},options={}){
     }else if(path==='/api/workspace/market-knowledge/publish'){
       const entry=next.marketKnowledge.find(e=>e.id===body.documentId);check(entry,'KNOWLEDGE_NOT_FOUND','검토할 자료를 선택하세요.',404);
       check(['DRAFT','SAVED'].includes(entry.status),'KNOWLEDGE_REVIEWED','검토 대기 자료를 선택하세요.',409);
+      check(entry.document.data.publication.publishedAt!==null,'KNOWLEDGE_PUBLICATION_REQUIRED','마인드 판단에 활용하려면 원문 공개 시점이 확인된 버전을 저장하세요.');
       check(typeof body.reason==='string'&&body.reason.trim().length>=10&&body.reason.length<=2000,'REVIEW_REASON','공개 원문·적용 범위·공개 지연을 검토한 사유를 10자 이상 작성하세요.');
       check(entry.classificationRecord&&entry.classificationRecord.contentHash===entry.contentHash&&entry.contentHash===marketKnowledgeHash(entry.document),'KNOWLEDGE_CLASSIFICATION_REQUIRED','저장한 원문에 대한 실제 JEV 분류를 먼저 실행하세요.');
       check(entry.availableAt<=now,'KNOWLEDGE_NOT_AVAILABLE','자료의 사용 가능 시각 이후에 승인하세요.');

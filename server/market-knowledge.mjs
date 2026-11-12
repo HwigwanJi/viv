@@ -45,7 +45,8 @@ export function queryMarketKnowledge(workspace,query={},options={}){
   let relationScopes=null;
   if(q.instrumentId){relationScopes=relatedPolicyScopes(workspace,getInstrument(q.instrumentId).id,{...options,asOf,profileId:q.profileId??'all'});items=items.filter(i=>relationScopes.some(s=>knowledgeRelated({scope:i.scope,data:{coverage:i.scope.coverage}},s.instrument,s.options)));}
   else if(q.profileId&&q.profileId!=='all')check((workspace.investmentProfiles??[]).some(p=>p.id===q.profileId),'PROFILE_NOT_FOUND','현재 작업공간의 마인드를 선택하세요.',404);
-  items.sort((a,b)=>b.publishedAt.localeCompare(a.publishedAt)||a.id.localeCompare(b.id));const total=items.length,index=after?items.findIndex(i=>i.id===after):-1;check(!after||index>=0,'KNOWLEDGE_CURSOR','페이지의 기준 자료를 확인하세요.');const page=items.slice(index+1,index+1+pageSize),hasMore=index+1+page.length<total;
+  const sourceTime=item=>item.publishedAt??item.publication.retrievedAt;
+  items.sort((a,b)=>sourceTime(b).localeCompare(sourceTime(a))||a.id.localeCompare(b.id));const total=items.length,index=after?items.findIndex(i=>i.id===after):-1;check(!after||index>=0,'KNOWLEDGE_CURSOR','페이지의 기준 자료를 확인하세요.');const page=items.slice(index+1,index+1+pageSize),hasMore=index+1+page.length<total;
   const payload={revision,scopeHash,lastId:page.at(-1)?.id??null};return {revision,page:{items:page,total,pageSize,hasMore,nextCursor:hasMore?encode({...payload,checksum:hashInputPackage(payload)}):null},facets:{sourceTypes:KNOWLEDGE_SOURCE_TYPES,...KNOWLEDGE_CHOICES},scope:{owner:'CURRENT_USER',asOf,search,filters:Object.fromEntries(Object.entries(q).filter(([k])=>!['cursor','pageSize','search'].includes(k))),...(relationScopes?{relationPolicy:'CURRENT_PUBLISHED_MIND_PINNED_SCOPE_UNION_V1',policyRefs:relationScopes.map(s=>s.ref).filter(Boolean)}:{})}};
 }
 export function verifyKnowledgeVersion(entries,doc){
