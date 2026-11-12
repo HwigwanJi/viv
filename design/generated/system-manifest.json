@@ -4959,6 +4959,36 @@
       "compatibilityScope": "legacy-btc-v2"
     },
     {
+      "id": "profile.rename",
+      "title": "profile.rename",
+      "description": "사용자 범위의 서버 기록과 실행 계약을 적용합니다.",
+      "inputs": [
+        "command"
+      ],
+      "outputs": [
+        "workspace",
+        "result"
+      ],
+      "capability_mode": "write",
+      "policy": "AUDIT",
+      "surfaces": [
+        "ui"
+      ],
+      "actors": [
+        "human"
+      ],
+      "runtime": [
+        "server"
+      ],
+      "status": "implemented",
+      "implementation_binding": "dist/domain/workspace.mjs:dispatchWorkspaceAction",
+      "provenance": {
+        "owner_registry": "dist/system/registry.mjs",
+        "source_file": "dist/domain/workspace.mjs"
+      },
+      "compatibilityScope": "legacy-btc-v2"
+    },
+    {
       "id": "profile.clone",
       "title": "profile.clone",
       "description": "사용자 범위의 서버 기록과 실행 계약을 적용합니다.",

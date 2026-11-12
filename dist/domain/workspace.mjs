@@ -10,7 +10,7 @@ import {projectWorkspaceForStorage} from './workspace-storage.mjs';
 
 export const WORKSPACE_SCHEMA_VERSION = 1;
 export const MEMORY_KNOWLEDGE_TYPES = Object.freeze(['OBSERVED_FACT','HYPOTHESIS','VALIDATED_HEURISTIC','OPERATING_PROCEDURE']);
-export const WORKSPACE_ACTIONS = Object.freeze(['profile.create', 'profile.revise', 'profile.clone', 'profile.appearance.set', 'profile.archive', 'profile.restore', 'strategy.create', 'strategy.revise', 'preset.create', 'preset.revise', 'deployment.create', 'deployment.status', 'deployment.configure', 'decision.persist', 'audit.append', 'experience.record', 'experience.observe', 'experience.evaluate', 'memory.propose', 'memory.validate', 'memory.approve', 'memory.reject']);
+export const WORKSPACE_ACTIONS = Object.freeze(['profile.create', 'profile.revise', 'profile.rename', 'profile.clone', 'profile.appearance.set', 'profile.archive', 'profile.restore', 'strategy.create', 'strategy.revise', 'preset.create', 'preset.revise', 'deployment.create', 'deployment.status', 'deployment.configure', 'decision.persist', 'audit.append', 'experience.record', 'experience.observe', 'experience.evaluate', 'memory.propose', 'memory.validate', 'memory.approve', 'memory.reject']);
 export const MIND_APPEARANCE_OPTIONS=Object.freeze({bodyVariant:Object.freeze(['blob','pear','heart','frog','cat','rabbit']),colorPalette:Object.freeze(['blue','amber','violet','sage']),eyeVariant:Object.freeze(['natural','focused','sleepy']),accessory:Object.freeze(['none','glasses','sunglasses','bowtie']),motionIntensity:Object.freeze(['subtle','off'])});
 export const PROFILE_TEMPLATES = Object.freeze([
   { key: 'trend', name: '추세형', philosophy: '확인된 가격 방향과 추세 지속 근거를 검토한다. 손실 한도 안에서 큰 추세 참여 기회를 평가한다.', evidencePreferences: ['추세 지속', '확정 고저점', '가격 구조'] },
@@ -200,6 +200,15 @@ function handleAction(state, type, p, now, actorId) {
     }else{profile.status='ACTIVE';delete profile.archivedAt;delete profile.archivedBy;}
     profile.updatedAt=now;event(state,archive?'PROFILE_ARCHIVED':'PROFILE_RESTORED',{type:'profile',id:profile.id},now,actorId,{pausedSubscriptionIds:archive?subscriptions.map(s=>s.id):[]});
     return {profile:clone(profile),archived:archive};
+  }
+  if(type==='profile.rename'){
+    fields(p,['profileId','name'],['profileId','name']);
+    const profile=find(state.investmentProfiles,p.profileId);
+    check(text(p.name,120),'INVALID_NAME','마인드 이름을 120자 이내로 입력하세요.');
+    profile.displayName=p.name.trim();
+    profile.displayNameUpdatedAt=now;
+    event(state,'PROFILE_RENAMED',{type:'profile',id:profile.id},now,actorId,{name:profile.displayName});
+    return {profile:clone(profile)};
   }
   if(type==='profile.appearance.set'){
     fields(p,['profileId','config'],['profileId','config']);find(state.investmentProfiles,p.profileId);const errors=validateMindAppearanceConfig(p.config);check(!errors.length,'INVALID_MIND_APPEARANCE',errors[0]?.message);
@@ -452,6 +461,7 @@ export function validateWorkspace(state) {
       for (const version of state[versions]) { find(state[entities], version.entityId); check(Number.isSafeInteger(version.version) && version.version > 0 && iso(version.createdAt), 'INVALID_VERSION', '정책 버전을 확인하세요.'); const input = clone(version.settings); if (versions === 'strategyVersions') { check(input.mechanicalModelVersionId === MODEL_VERSION, 'INVALID_MODEL_VERSION', '계량 모델 버전을 확인하세요.'); delete input.mechanicalModelVersionId; } validator(input); if (version.previousVersionId) { const previous = find(state[versions], version.previousVersionId); check(previous.entityId === version.entityId && previous.version === version.version - 1 && before(previous.createdAt, version.createdAt), 'VERSION_CHAIN', '버전 순서와 소유 관계를 확인하세요.'); } else check(version.version === 1, 'VERSION_CHAIN', '최초 버전을 확인하세요.'); }
     }
     for (const profile of state.investmentProfiles) {
+      if(profile.displayName!==undefined)check(text(profile.displayName,120)&&iso(profile.displayNameUpdatedAt)&&before(profile.createdAt,profile.displayNameUpdatedAt),'INVALID_NAME','마인드 표시 이름과 변경 시각을 확인하세요.');
       check(find(state.memoryVersions, profile.currentMemoryVersionId).investmentProfileId === profile.id, 'MEMORY_SCOPE', '프로필 기억의 소유 관계를 확인하세요.');
       check(profile.status===undefined||['ACTIVE','ARCHIVED'].includes(profile.status),'INVALID_PROFILE_STATUS','마인드의 운용·보관 상태를 확인하세요.');
       if(profile.status==='ARCHIVED')check(iso(profile.archivedAt)&&before(profile.createdAt,profile.archivedAt)&&before(profile.archivedAt,profile.updatedAt)&&identifier(profile.archivedBy)&&!(state.mindSubscriptions??[]).some(s=>s.profileId===profile.id&&s.status==='ENABLED'),'INVALID_PROFILE_ARCHIVE','보관 시각·사용자와 자동운용 중지 상태를 확인하세요.');

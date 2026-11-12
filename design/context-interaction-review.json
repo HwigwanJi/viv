@@ -1902,10 +1902,10 @@
         "navigation",
         "primitive"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-09T08:33:02.009Z",
-      "reason": "마인드 객체의 운용·기록·노드·외형·보관 명령과 HUD의 화면 전환 조작을 구별한다. 객체 명령은 공용 메뉴가 기존 컨트롤에서 읽는다. 현재/RELEASED 과거 운용의 영역과 HUD 초기·지연 지표 범위를 구분. 링크/관리/키보드 계약 유지. 현재/RELEASED 과거 운용의 영역과 HUD 초기·지연 지표 범위를 구분. 링크/관리/키보드 계약 유지. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. 지난 운용 native details의 active/archived 선택·연결된 toggle 이벤트·배경 갱신 요약 초점 복귀를 기존 경로에서 검토. 금융 실행 경로 변경0. RELEASED 과거 운용의 확인된0 안내만 제거. 잔여자금·보유·당일 비영 손익과 현재/미확인 원장 보존. 현재 자금 설명의 실제 ID 연결 검토.",
-      "signature": "879e3ba78fb8a78df57092bf2cdfa0b0c93b47439ac4ec452637c1464f5502da",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T11:31:08.101Z",
+      "reason": "모바일 카드와 상세에서 이름 변경·입력 검증·저장·새로고침 및 PC 실전 목록 표시를 검증",
+      "signature": "2d99930654dbf66a633fa4acd0efeaeadbf90b98d5dff94f57540a6eebd2c61b",
       "controls": [
         [
           "data-companion-action=\"archive\"",
@@ -1964,6 +1964,10 @@
           1
         ],
         [
+          "data-studio-action=\"profile-rename\"",
+          1
+        ],
+        [
           "data-studio-action=\"strategy-graph\"",
           1
         ],
@@ -1977,14 +1981,14 @@
         ],
         [
           "element:button",
-          9
+          10
         ],
         [
           "element:summary",
           1
         ]
       ],
-      "sourceHash": "3d40d44084bae21c280ca505215810f312e0a9193c1a3f39987f45da1499b5bc"
+      "sourceHash": "0ecde8b7c0f6abdcf88813acc9a1b624031e553b02d8e350105e368c7a6c2dd2"
     },
     {
       "file": "dist/ui/mind-game-resource.mjs",
@@ -3223,8 +3227,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T10:05:33.684Z",
-      "reason": "모의 판단 화면의 근거를 MCP와 공유하면서 기록 조회·계속하기를 대조했습니다.",
+      "reviewedAt": "2026-11-12T11:31:08.100Z",
+      "reason": "모바일 카드와 상세에서 이름 변경·입력 검증·저장·새로고침 및 PC 실전 목록 표시를 검증",
       "signature": "1745e71be5ed9d17ccaba26f637407a1e508c7b613aeec1d73251c150dd1ca99",
       "controls": [
         [
@@ -3328,7 +3332,7 @@
           1
         ]
       ],
-      "sourceHash": "fa3e93ba03bd556e5582ce91b98e4f7c9c084d9ed002ebbe1b56782accce9562",
+      "sourceHash": "014847f03be9371ffb44a17a33b5c287cb1fe010aaae35e40ddf2cd75bbb0c57",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

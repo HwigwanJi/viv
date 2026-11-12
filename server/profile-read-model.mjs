@@ -14,6 +14,7 @@ export function resolveInvestmentProfileIdentity(workspace, profileId, {record =
   if (pinned && iso(pinned.availableAt) && (!cutoff || pinned.availableAt <= cutoff)) {
     return {name: pinned.data?.name ?? pinned.title ?? null, sourceKind: 'mind-manifest', sourceId: pinned.id, sourceAsOf: pinned.availableAt};
   }
+  if (!record && profile.displayName && (!cutoff || profile.displayNameUpdatedAt<=cutoff)) return {name:profile.displayName,sourceKind:'profile',sourceId:profile.id,sourceAsOf:profile.displayNameUpdatedAt};
   if (!record && cutoff) {
     const current = list(workspace.mindManifests).filter(m => m.scope?.profileId === profileId && iso(m.availableAt) && m.availableAt <= cutoff).sort((a,b) => (a.data?.version ?? 0) - (b.data?.version ?? 0) || a.availableAt.localeCompare(b.availableAt)).at(-1);
     if (current) return {name: current.data?.name ?? current.title ?? null, sourceKind: 'mind-manifest', sourceId: current.id, sourceAsOf: current.availableAt};

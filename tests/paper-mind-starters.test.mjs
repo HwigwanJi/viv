@@ -5,6 +5,25 @@ import {PAPER_MIND_STARTERS} from '../dist/domain/paper-mind-presets.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
 import {handleMindStudioAPI} from '../server/mind-studio.mjs';
 import {WorkspaceRepository} from '../server/repository.mjs';
+import {createWorkspace,dispatchWorkspaceAction} from '../dist/domain/workspace.mjs';
+import {workspaceBaselineMindPolicy} from '../dist/domain/mind-manifest.mjs';
+import {resolveInvestmentProfileIdentity} from '../server/profile-read-model.mjs';
+
+test('renaming a mind updates its display identity without revising its policy',()=>{
+  const before=createWorkspace({now:'2026-11-10T00:00:00.000Z'});
+  const profile=before.investmentProfiles[0], now='2026-11-11T00:00:00.000Z';
+  const command={type:'profile.rename',payload:{profileId:profile.id,name:'  새 표시 이름  '},
+    expectedRevision:before.revision,idempotencyKey:'rename-paper-mind'};
+  const result=dispatchWorkspaceAction(before,command,{now});
+  assert.deepEqual(workspaceBaselineMindPolicy(result.workspace,result.result.profile),workspaceBaselineMindPolicy(before,profile));
+  assert.equal(resolveInvestmentProfileIdentity(result.workspace,profile.id,{asOf:now}).name,'새 표시 이름');
+  assert.equal(resolveInvestmentProfileIdentity(result.workspace,profile.id,{record:{asOf:before.updatedAt}}).name,profile.name);
+  for(const key of ['profileVersions','mindManifests','mindDocuments','deployments','accounts','mindSubscriptions']){
+    assert.deepEqual(result.workspace[key],before[key]);
+  }
+  assert.equal(dispatchWorkspaceAction(result.workspace,command,{now}).idempotent,true);
+  assert.throws(()=>dispatchWorkspaceAction(before,{...command,payload:{...command.payload,name:' '}},{now}),{code:'INVALID_NAME'});
+});
 
 test('new paper mind and starter policy commit together and replay once',async()=>{
   const local=await openLocalDatabase(':memory:');
