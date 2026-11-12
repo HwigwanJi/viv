@@ -2676,8 +2676,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T00:16:05.857Z",
-      "reason": "재검증의 기간·비용·호출 상한을 먼저 확인하고 취소하면 같은 원본 보고서와 초점으로 돌아간다. 기간 목록이 실패할 때 입력 보존과 키보드 재시도를 검증했다.",
+      "reviewedAt": "2026-11-12T01:03:13.430Z",
+      "reason": "저장 보고서의 ID와 원본 식별값을 좁은 화면에서 모두 읽고 JSON 내려받기가 현재 화면의 식별값과 같은 바이트를 사용하는지 검증했다.",
       "signature": "7b4380677e532db54ded7cb64bda064e8b0d5c0b5c968e46ad60e961f7f7a3e6",
       "controls": [
         [
@@ -2749,7 +2749,7 @@
           2
         ]
       ],
-      "sourceHash": "04458ea20d90f492204150ed7796c4ed481de4cfa3176058f98bb28694b8a459",
+      "sourceHash": "34f7ffa9a3b5caaf0f54c352251db46f2f9d0ca430e7ad430ecedee9fc5633d7",
       "customContainers": []
     },
     {

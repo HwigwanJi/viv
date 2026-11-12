@@ -82,6 +82,43 @@ test('repeat opens read-only review and cancellation restores the same report',a
   }
 });
 
+test('JSON download uses the report shown with its original fingerprint',async()=>{
+  const params=new URLSearchParams('view=simulations&simulationId=original&tab=report&executionMode=paper');
+  const original={
+    id:'original',status:'COMPLETED',config:{mindId:'mind-a',name:'원본',mode:'MECHANICAL'},
+  };
+  const report={reportId:'original',format:'json',hash:'visible-hash',filename:'original.json',text:'{"snapshot":1}'};
+  const downloads=[],reads=[],handlers=[];
+  const document=globalThis.document;
+  globalThis.document={addEventListener(type,handler,capture){if(type==='click'&&!capture)handlers.push(handler);},removeEventListener(){}};
+  const app=createSimulationPlayground({
+    getRoute:()=>({page:'minds',params}),
+    request:async(path)=>{
+      reads.push(path);
+      if(path.endsWith('/item?id=original'))return {simulation:original};
+      if(path.endsWith('/report?id=original&format=json'))return {...report};
+      assert.equal(path,'/api/workspace/simulations/report?id=original&format=csv');
+      return {reportId:'original',filename:'original.csv',text:'kind,sequence'};
+    },
+    download:(...value)=>downloads.push(value),
+  });
+  const download=id=>handlers.at(-1)({preventDefault(){},target:{closest:()=>({dataset:{simulationAction:'download',simulationId:id}})}});
+  try{
+    app.start();
+    await app.load();
+    assert.match(app.render(),/보고서 정보[^]*보고서 ID[^]*원본 식별값[^]*visible-hash[^]*SHA-256/);
+    await download('json');
+    assert.equal(reads.filter(path=>path.includes('format=json')).length,1);
+    assert.deepEqual(downloads[0],['viv-original.json',report.text,'application/json']);
+    await download('csv');
+    assert.deepEqual(downloads[1],['viv-original.csv','kind,sequence','text/csv']);
+  }finally{
+    app.destroy();
+    if(document===undefined)delete globalThis.document;
+    else globalThis.document=document;
+  }
+});
+
 test('saved AI experiment shows its call ceiling before execute',async()=>{
   const simulation={
     id:'paid-copy',status:'CREATED',config:{mindId:'mind-a',name:'재검증',mode:'JEV_RETROSPECTIVE',optInJev:true,maxJevCalls:42},

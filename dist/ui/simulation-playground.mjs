@@ -279,7 +279,20 @@ export function createSimulationPlayground(hooks={},options={}){
     const rows=items.map(record=>{const decision=decisionPresentation(record);return kind==='fills'?[esc(when(record.at||record.asOf)),...(market.portfolio||market.multiEvent?[esc(fillAsset(record,s).symbol)]:[]),esc(({buy:'매수',sell:'매도'})[fillSide(record)]||'확인'),number(record.quantity,8),market.portfolio||market.eventStream?market.amount(fillPrice(record)):number(fillPrice(record)),market.portfolio||market.eventStream?market.amount(record.fee):number(record.fee),market.portfolio||market.eventStream?market.amount(record.slippageCost??record.ledgerEntry?.slippageCost):number(record.slippageCost),market.portfolio||market.eventStream?market.amount(record.realizedPnl):number(record.realizedPnl),button(rowLoadingId===String(record.sequence)?'원본 조회 중…':'상세','row-detail',String(record.sequence),'data-simulation-report-id="'+esc(s.id)+'" '+(rowLoadingId?'disabled aria-busy="true"':''))]:[esc(when(record.at||record.asOf||record.decisionAt)),esc(decision.action),esc(decision.execution),percent(decision.confidence),esc(simulationDecisionAuthority(record,s)),button(rowLoadingId===String(record.sequence)?'원본 조회 중…':'상세','row-detail',String(record.sequence),'data-simulation-report-id="'+esc(s.id)+'" '+(rowLoadingId?'disabled aria-busy="true"':''))];});
     return '<section class="studio-sheet">'+table(kind==='fills'?['체결 시각',...(market.portfolio||market.multiEvent?['종목']:[]),'방향','수량','체결가'+(market.portfolio||market.eventStream?' · '+market.currency:''),'수수료','슬리피지','실현손익','']:['기준 봉','행동','모의 실행','확신도','실행 방식',''],rows,kind==='fills'?'저장된 체결이 없습니다.':'저장된 결정이 없습니다.')+pagination(rowsData?.page,query)+'</section>';
   }
-  function report(s){const r=reportData;return '<section class="studio-sheet"><div class="studio-sheet-head"><h2>저장 보고서</h2><div class="actions">'+button('JSON 내려받기','download','json',!r?'disabled':'')+button('CSV 내려받기','download','csv',!r?'disabled':'')+'</div></div><div class="studio-sheet-body">'+row('저장 상태',s.status==='COMPLETED'?'전체 기간 완료':'중간 보고서 · '+esc(statusLabel(s.status)))+row('보고서 ID',esc(r?.reportId||'조회 필요'))+row('원본 식별값','<code>'+esc(r?.hash||'조회 필요')+'</code>')+row('작성·완료 시각',esc(when(s.createdAt))+' / '+esc(when(s.report?.completedAt)))+row('실행 방식',esc(modeLabel(s.config?.mode)))+'<div class="spaced">'+helpTooltip('보고서 비교 기준','동일한 기간·초기 자금·비용의 실험과 보유·현금 비교를 함께 저장합니다.',{id:'simulation-report-comparison-help'})+'</div>'+raw({report:s.report,source:s.source,manifest:s.manifest,pins:s.pins,inputHash:s.inputHash,...(s.referenceValuation?{referenceValuation:s.referenceValuation}:{})},'보고서·입력·평가 원본')+'</div></section>';}
+  function report(s){
+    const r=reportData;
+    return '<section class="studio-sheet"><div class="studio-sheet-head"><h2>저장 보고서</h2><div class="actions">'+
+      button('JSON 내려받기','download','json',!r?'disabled':'')+button('CSV 내려받기','download','csv',!r?'disabled':'')+
+      '</div></div><div class="studio-sheet-body"><section class="simulation-detail-context" aria-label="보고서 정보">'+
+      row('저장 상태',s.status==='COMPLETED'?'전체 기간 완료':'중간 보고서 · '+esc(statusLabel(s.status)))+
+      row('보고서 ID',esc(r?.reportId||'조회 필요'))+
+      row('원본 식별값','<code>'+esc(r?.hash||'조회 필요')+'</code>')+
+      row('작성·완료 시각',esc(when(s.createdAt))+' / '+esc(when(s.report?.completedAt)))+
+      row('실행 방식',esc(modeLabel(s.config?.mode)))+
+      '</section><p class="tiny muted">보고서 ID로 같은 실험을 확인할 수 있습니다. 원본 식별값은 이 화면에서 내려받는 JSON의 SHA-256입니다.</p>'+
+      '<div class="spaced">'+helpTooltip('보고서 비교 기준','동일한 기간·초기 자금·비용의 실험과 보유·현금 비교를 함께 저장합니다.',{id:'simulation-report-comparison-help'})+'</div>'+
+      raw({report:s.report,source:s.source,manifest:s.manifest,pins:s.pins,inputHash:s.inputHash,...(s.referenceValuation?{referenceValuation:s.referenceValuation}:{})},'보고서·입력·평가 원본')+'</div></section>';
+  }
   function executionIdentity(s){
     const scope=simulationMarketScope(s),c=s.config||{},version=s.manifest?.data?.version,selection=c.benchmarkSelection,budget=s.jevBudget||{},target=modeLabel(c.mode),policy=version?'정책 v'+version:'정책 버전 확인',model=c.mode==='MECHANICAL'?'BTC 기준모델 9장':'발행된 전략 그래프';
     const help=c.mode==='MECHANICAL'?'저장한 정책의 BTC 기준모델 파라미터로 계산한 성과입니다. 발행한 결정 그래프의 성과는 마인드 전략 실험에서 확인합니다.':'저장한 마인드 정책과 전략 그래프를 각 과거 시점에 적용한 성과입니다. 실제 완료·미확정 호출 수를 함께 확인하세요.';
@@ -534,7 +547,12 @@ export function createSimulationPlayground(hooks={},options={}){
     if(action==='fill-decision')return await openFillDecision(id);
     if(action==='attempt-detail')return await openRowDetail(id,true);
     if(action==='raw-download'){const value=rawDownloads.get(id);if(value)return hooks.download?.(investmentFilename(value.filename),value.text,'application/json');return;}
-    if(action==='download'){const value=await hooks.request(BASE+'/report?'+new URLSearchParams({id:selectedId(),format:id}));return hooks.download?.(investmentFilename(value.filename),value.text,value.contentType||(id==='csv'?'text/csv':'application/json'));}
+    if(action==='download'){
+      const simulationId=selectedId();
+      const value=id==='json'?reportData:await hooks.request(BASE+'/report?'+new URLSearchParams({id:simulationId,format:id}));
+      if(value?.reportId!==simulationId||!visible(simulationId))return;
+      return hooks.download?.(investmentFilename(value.filename),value.text,value.contentType||(id==='csv'?'text/csv':'application/json'));
+    }
     if(action==='next'){const query=selectedId()?new URLSearchParams({mindId:scope(),id:selectedId(),kind:tab(),...(current().params.get('cursor')?{cursor:current().params.get('cursor')}:{})}):simulationQuery(current());cursors.remember(query,id);return navigate({cursor:id});}
     if(action==='prev'){const query=selectedId()?new URLSearchParams({mindId:scope(),id:selectedId(),kind:tab(),...(current().params.get('cursor')?{cursor:current().params.get('cursor')}:{})}):simulationQuery(current());return navigate({cursor:cursors.previous(query)});}
   }catch(problem){commandError=problem.message;redraw();}}
