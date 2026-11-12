@@ -3,8 +3,14 @@ const recoveryActions=new Set(['choose-mind','profile','archive','account','conn
 const readiness=model=>model.terminalReadiness?.schemaVersion===1?model.terminalReadiness:null;
 const captureError=model=>/^(MARKET_CAPTURE_REQUIRED|CANONICAL_CAPTURE_(REQUIRED|STALE|BOUNDARY)|MIND_MARKET_BOUNDARY_CHANGED|MIND_CANONICAL_SOURCE)$/.test(model.errorCode||model.runRequirement?.code||'')||/기존 수집 정본|최신 확정 봉.*필요|확정 시세.*수집/.test(model.error||'');
 
+function savedPaperDecisionDuringCooldown(model){
+  const current=readiness(model),blockers=list(current?.executionReadiness?.blockers);
+  if(current?.purpose!=='FORWARD_PAPER'||blockers[0]?.code!=='MIND_COOLDOWN')return null;
+  return blockers.find(blocker=>blocker.code==='CANDLE_ALREADY_EVALUATED'&&blocker.action?.action==='records'&&blocker.action.params?.runId)??null;
+}
+
 export function terminalRunRequirement(model={}){
-  return readiness(model)?.executionReadiness?.blockers?.[0]??model.runRequirement??null;
+  return savedPaperDecisionDuringCooldown(model)??readiness(model)?.executionReadiness?.blockers?.[0]??model.runRequirement??null;
 }
 
 /** The selected mind is explicit; the aggregate view never chooses an executor. */
@@ -14,7 +20,7 @@ export function terminalPrimaryAction(model={}){
   if(!selected&&!replay)return {action:'choose-mind',label:'마인드 선택',disabled:!!model.busy};
   if(model.busy)return {action:'run',label:'실행 중…',disabled:true};
   if(model.status==='loading')return {action:'wait',label:'시세 조회 중…',disabled:true};
-  const execution=readiness(model)?.executionReadiness,primary=execution?.primaryAction;
+  const execution=readiness(model)?.executionReadiness,primary=savedPaperDecisionDuringCooldown(model)?.action??execution?.primaryAction;
   if(primary&&recoveryActions.has(primary.action)){
     if(primary.action==='run'&&!execution.canRun)return {action:'inspect-conditions',label:'실행 조건 확인',disabled:false};
     return {...primary,canonical:true,disabled:primary.action==='wait'};

@@ -3223,8 +3223,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T07:41:28.546Z",
-      "reason": "계좌·자금 카드와 연결 창의 PC 기기 전환, 선택한 금융기관 복원 및 주소 복사",
+      "reviewedAt": "2026-11-12T08:38:15.930Z",
+      "reason": "모의 판단 실행 간격 중 저장된 같은 봉의 기록을 열 수 있는 공용 버튼",
       "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
       "controls": [
         [
@@ -3328,7 +3328,7 @@
           1
         ]
       ],
-      "sourceHash": "e4d3d1c6d374759aea19c09949963a2f3b89a8c53ef9ee5ff2bab8c7d8ec42a3",
+      "sourceHash": "9ea2cc818a8f95c614d67db28b6edbb6baeb28ac214e553d7dfde3a7a0f9fb5f",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3389,12 +3389,12 @@
         "navigation",
         "readonly"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-04",
-      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다.",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T08:38:15.931Z",
+      "reason": "모의 판단 실행 간격 중 저장된 같은 봉의 기록을 열 수 있는 공용 버튼",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "04384a950e17f8afdf823f0eb4d47209fe1f1603a35acc1a3b8d3b899821df69"
+      "sourceHash": "1db9cb1baa201b0a6d58c7a2995abb5c2020c5fb34b1bd29b6164f23ad98f5f1"
     },
     {
       "file": "dist/ui/theme-init.js",

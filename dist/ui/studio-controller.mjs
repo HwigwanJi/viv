@@ -1,4 +1,5 @@
 import {revealDialogError} from './dialog-focus.mjs';
+import {terminalRunRequirement} from './terminal-workspace-controls.mjs';
 import {mindDocumentImpact} from '../domain/mind-document-impact.mjs';
 import {calendarPortfolioSelection} from '../domain/adaptive-portfolio-graph.mjs';
 import {createRegimeProgramGraph,isRegimeProgramGraph} from '../domain/regime-program-graph.mjs';
@@ -593,7 +594,7 @@ export function createStudioController(hooks={},options={}){
         button('국면 추세 마인드 만들기','profile-new','','','primary');
       actions+='<a class="button" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>과거 시세로 연습</a>';
     }else{
-      const readiness=view.terminalReadiness?.executionReadiness,step=readiness?.primaryAction?.action;
+      const readiness=view.terminalReadiness?.executionReadiness,step=terminalRunRequirement(view)?.action?.action??readiness?.primaryAction?.action;
       message=readiness?.canRun?'결정 실행을 누르면 판단 근거와 모의 체결 상태를 확인할 수 있습니다.':
         step==='account'?'종목의 결제 통화로 모의 자금을 배정하세요. 처음 설정한 원화 예산은 별도로 보관됩니다.':
         step==='data'?'시세를 수집한 뒤 트레이딩으로 돌아오면 같은 마인드에서 판단을 계속할 수 있습니다.':

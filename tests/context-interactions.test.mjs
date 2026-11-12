@@ -8,6 +8,7 @@ import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
 import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS} from '../dist/ui/studio-controller.mjs';
 import {renderStudioJump,studioJumpItems,studioJumpMatches,studioJumpResearchItems} from '../dist/ui/studio-shell.mjs';
 import {terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
+import {terminalPrimaryAction,terminalRunRequirement} from '../dist/ui/terminal-workspace-controls.mjs';
 import {queryMarketKnowledge} from '../server/market-knowledge.mjs';
 import {marketKnowledgeExample} from '../dist/domain/market-knowledge.mjs';
 
@@ -23,6 +24,25 @@ test('paper decision previews separate the outcome from model response measures'
  assert.match(measures,/매수 0\.00% · 유지 100\.00% · 매도 0\.00%/);
  assert.equal(terminalModelMeasures({...view,authority:'STRATEGY_GRAPH',decisionMethod:{measureKind:'VOTE'}}),'');
  assert.equal(terminalModelMeasures({...view,model:null}),'');
+});
+
+test('a saved paper decision can be read during the execution cooldown',()=>{
+ const wait={code:'MIND_COOLDOWN',action:{action:'wait',label:'다음 결정 대기'}};
+ const saved={code:'CANDLE_ALREADY_EVALUATED',action:{action:'records',label:'저장된 결정 보기',params:{runId:'saved-run'}}};
+ const data={canRun:false,primaryAction:wait.action,blockers:[wait,saved]};
+ const model={selectedMindId:'test',profiles:[{id:'test'}],terminalReadiness:{schemaVersion:1,purpose:'FORWARD_PAPER',executionReadiness:data}};
+ assert.deepEqual(terminalPrimaryAction(model),{...saved.action,canonical:true,disabled:false});
+ assert.equal(terminalRunRequirement(model),saved);
+ assert.equal(data.canRun,false);
+ assert.equal(data.primaryAction,wait.action);
+ assert.deepEqual(data.blockers,[wait,saved]);
+ data.blockers=[wait];
+ assert.equal(terminalPrimaryAction(model).disabled,true);
+ data.blockers=[wait,{...saved,action:{action:'records'}}];
+ assert.equal(terminalPrimaryAction(model).disabled,true);
+ model.terminalReadiness.purpose='LIVE_READ_ONLY';
+ data.blockers=[wait,saved];
+ assert.equal(terminalPrimaryAction(model).disabled,true);
 });
 
 test('help queries find the capability catalog in the current viewing mode',()=>{
