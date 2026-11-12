@@ -1639,8 +1639,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T04:39:23.103205+00:00",
-      "reason": "직접 작성의 공개일 미확인 선택과 날짜 입력, 개인 참고 상태, 자료 읽기의 원문·수신 기록을 대조했습니다.",
+      "reviewedAt": "2026-11-12T04:44:59.540Z",
+      "reason": "공개일 미확인 직접 저장, 원문·수신 표시, 자료 저장·버전 이동과 브라우저 주소 동기화를 대조했습니다.",
       "signature": "90b448c9c7974a11f737555483bb6985a9abd96b5020dd073b4d45349c3037d5",
       "controls": [
         [
@@ -1720,7 +1720,7 @@
           1
         ]
       ],
-      "sourceHash": "8a291a1ed7f28a20becf917f0491ff30acef30a0936c63c7744b92eec28eaae5"
+      "sourceHash": "2158e31ac71d4a49c6c738b7fa21547bbee19e96d7cf7d204745b8486e014e0b"
     },
     {
       "file": "dist/ui/mind-activity-resource.mjs",
