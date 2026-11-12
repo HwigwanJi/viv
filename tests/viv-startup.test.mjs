@@ -6,6 +6,50 @@ import {optionalSessionStorage} from '../dist/ui/session-storage.mjs';
 import {submitPaperFunding} from '../dist/ui/paper-funding-request.mjs';
 
 const script = readFileSync(new URL('../dist/ui/viv-startup.js', import.meta.url), 'utf8');
+const notificationWorker = readFileSync(new URL('../dist/notification-worker.js', import.meta.url), 'utf8');
+
+test('VIV worker recovers unavailable app navigation and leaves other requests to the network', async () => {
+  const listeners = {};
+  const origin = 'http://localhost:4317';
+  let reply = new Response('current app');
+  runInNewContext(notificationWorker, {
+    self: {location: {origin}, addEventListener: (name, listener) => { listeners[name] = listener; }},
+    fetch: async () => {
+      if (!reply) throw new TypeError('connection refused');
+      return reply;
+    },
+    URL, Response
+  });
+  const navigate = (path, mode = 'navigate', method = 'GET') => {
+    let response;
+    listeners.fetch({
+      request: {url: new URL(path, origin).href, mode, method},
+      respondWith(value) { response = value; }
+    });
+    return response;
+  };
+  assert.equal(await navigate('/'), reply);
+  for (const status of [401, 403, 404]) {
+    reply = new Response('server response', {status});
+    assert.equal(await navigate('/'), reply);
+  }
+  for (const status of [null, 502, 503, 504]) {
+    reply = status ? new Response(null, {status}) : null;
+    for (const path of ['/', '/index.html', '/install.html']) {
+      const fallback = await navigate(path);
+      assert.equal(fallback.status, 503);
+      assert.equal(fallback.headers.get('Cache-Control'), 'no-store');
+      assert.match(await fallback.text(), /VIV 서버에 연결할 수 없어요[^]*다시 연결/);
+    }
+  }
+  assert.equal(navigate('/api/workspace'), undefined);
+  assert.equal(navigate('/mcp'), undefined);
+  assert.equal(navigate('/app.mjs'), undefined);
+  assert.equal(navigate('https://example.test/'), undefined);
+  assert.equal(navigate('/', 'cors'), undefined);
+  assert.equal(navigate('/', 'navigate', 'POST'), undefined);
+  assert.ok(listeners.push && listeners.notificationclick);
+});
 
 function setup(fetch, resources = []) {
   const events = {}, attributes = new Map(), status = {hidden: false}, message = {}, ring = {style: {}};

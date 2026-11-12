@@ -223,12 +223,26 @@
         "primitive",
         "navigation"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-04",
-      "reason": "알림 원문·현재 처리 상태와 연결한 동일 명령을 재사용한다. 완료 삭제/진행 중 비활성/휴지통 복원을 공용 서버 규칙과 대조한다.",
-      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "controls": [],
-      "sourceHash": "4351f5dd71470ad56206a55543dd1377ad738cfebffa12de44c4e1260a2237c6"
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T18:35:53.631Z",
+      "reason": "격리 서버 종료 후 PC·모바일에서 정적 복구 안내를 열고 재시작한 뒤 원래 경로와 보고서 식별값을 확인.",
+      "signature": "e6861bd04471a8240c61ecd228a49b29c68992e57f4fa66bbc75edd31af582e3",
+      "controls": [
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "element:summary",
+          1
+        ]
+      ],
+      "sourceHash": "00053612a77ac7e52ed80c41c04bc665067acc5fca70cb48638466b1b279119a",
+      "customContainers": []
     },
     {
       "file": "dist/research/regime-minute-forward-20261023/index.html",
@@ -3852,8 +3866,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T14:31:59.054Z",
-      "reason": "연결 실패 뒤 안내를 표시하고 정상 열기와 수정 키 클릭을 보존하는 동선을 확인",
+      "reviewedAt": "2026-11-12T18:35:53.633Z",
+      "reason": "격리 서버 종료 후 PC·모바일에서 정적 복구 안내를 열고 재시작한 뒤 원래 경로와 보고서 식별값을 확인.",
       "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
       "controls": [
         [
@@ -3869,7 +3883,8 @@
           1
         ]
       ],
-      "sourceHash": "3fa92a42b8fc35c59ad407a07067924c6c13ed23e94e220f65762e0e9ce552d3"
+      "sourceHash": "8b994029174838f806b09960df0621516e449b71163d81071482f92b5f3ba2eb",
+      "customContainers": []
     }
   ],
   "actionMatrix": "design/context-action-matrix.json",

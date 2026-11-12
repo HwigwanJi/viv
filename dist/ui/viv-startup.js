@@ -1,4 +1,8 @@
 (function () {
+  if (window.isSecureContext && navigator.serviceWorker) {
+    navigator.serviceWorker.register('/notification-worker.js').catch(function () {});
+  }
+
   var javascriptType = /^(?:text|application)\/javascript\b/i;
   var moduleLoadFailed = false;
 

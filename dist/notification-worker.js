@@ -1,5 +1,65 @@
 self.addEventListener('install',event=>event.waitUntil(self.skipWaiting()));
 self.addEventListener('activate',event=>event.waitUntil(self.clients.claim()));
+self.addEventListener('fetch',event=>{
+ const {request}=event;
+ if(request.method!=='GET'||request.mode!=='navigate')return;
+ const url=new URL(request.url);
+ if(url.origin!==self.location.origin||!['/','/index.html','/install.html'].includes(url.pathname))return;
+ event.respondWith((async()=>{
+  try{
+   const response=await fetch(request);
+   if(![502,503,504].includes(response.status))return response;
+  }catch{
+   // A stopped server can fail before sending any response.
+  }
+  return new Response(connectionHelp,{status:503,headers:{
+   'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store',
+   'Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'",
+   'Referrer-Policy':'no-referrer'
+  }});
+ })());
+});
+
+// The worker carries just the public help page, with no runtime cache.
+const connectionHelp=`<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101416">
+  <title>VIV 연결 복구</title>
+  <style>
+    :root{color-scheme:dark}
+    body{margin:0;background:#101416;color:#f4f6f7;font:1rem/1.6 system-ui,sans-serif;word-break:keep-all;overflow-wrap:anywhere}
+    main{box-sizing:border-box;max-width:36rem;margin:auto;padding:clamp(1.25rem,6vw,3rem)}
+    h1{font-size:1.6rem;line-height:1.35}
+    button{padding:.65rem 1rem;border:0;border-radius:.6rem;background:#dafa66;color:#161c13;font:inherit;font-weight:650;cursor:pointer}
+    a{color:#dafa66}
+    details{margin:1.25rem 0}
+    summary{cursor:pointer}
+    code{display:block;margin:.25rem 0 .8rem;overflow-wrap:anywhere}
+  </style>
+</head>
+<body>
+  <main>
+    <p><strong>VIV</strong></p>
+    <h1>VIV 서버에 연결할 수 없어요</h1>
+    <p>VIV를 설치한 컴퓨터가 켜져 있는지 확인하세요. 휴대폰에서 열었다면 컴퓨터와 같은 Tailscale 네트워크에 연결되어 있는지도 확인하세요.</p>
+    <button type="button">다시 연결</button>
+    <details>
+      <summary>서버 다시 시작</summary>
+      <p>원래 VIV 설치 폴더에서 운영체제에 맞는 명령을 실행하세요.</p>
+      <strong>Windows</strong>
+      <code>powershell.exe -NoProfile -ExecutionPolicy Bypass -File .&#92;scripts&#92;install-viv.ps1 -Resume</code>
+      <strong>Mac</strong>
+      <code>bash scripts/install-viv-mac.sh --resume</code>
+    </details>
+    <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#서버-다시-시작">서버 다시 시작 안내</a>
+  </main>
+  <script>document.querySelector('button').addEventListener('click',()=>location.reload());</script>
+</body>
+</html>`;
+
 self.addEventListener('push',event=>{
  let data;try{data=event.data.json();}catch{return;}
  if(!data||typeof data.id!=='string'||!/^[a-zA-Z0-9:_-]{1,160}$/.test(data.id))return;
