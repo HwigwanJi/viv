@@ -18,12 +18,12 @@
 <body>
   <main class="content studio-reading-content">
     <section class="studio-sheet spaced">
-      <div class="studio-sheet-head"><h1>VIV 앱 설치</h1></div>
+      <div class="studio-sheet-head"><h1 data-install-title>VIV 앱 설치</h1></div>
       <div class="studio-sheet-body">
         <div data-install-guide>
           <p data-install-steps>iPhone은 Safari의 공유 메뉴에서, Android는 Chrome의 더보기 메뉴에서 홈 화면에 추가하세요.</p>
           <p data-install-browser></p>
-          <p><button class="button primary" type="button" data-app-install data-app-install-native hidden>웹앱으로 설치</button></p>
+          <button class="button primary" type="button" data-app-install data-app-install-native hidden>웹앱으로 설치</button>
           <section class="spaced" data-install-handoff hidden>
             <h2 data-install-connection-title>휴대폰 연결</h2>
             <p data-install-connection role="status" aria-live="polite"></p>
@@ -43,6 +43,27 @@
           </section>
           <p data-apk-download hidden><a class="button" href="./downloads/viv-1.0.2.apk" download>APK 다운로드 · Android</a></p>
         </div>
+        <section data-install-ai hidden>
+          <p>VIV 서버가 실행 중인 컴퓨터에서 Codex, Claude Code 또는 HTTP MCP를 지원하는 AI 클라이언트를 연결하세요.</p>
+          <div data-install-mcp-address hidden>
+            <label class="field">MCP 주소<input type="url" readonly></label>
+            <p class="spaced"><button class="button" type="button" data-install-copy-mcp="address">MCP 주소 복사</button></p>
+            <details class="spaced" data-install-mcp-commands hidden>
+              <summary>Codex·Claude Code 연결 명령</summary>
+              <p>VIV 설치 폴더의 터미널에서 사용하는 AI에 맞는 명령을 실행하세요.</p>
+              <div class="spaced">
+                <p><strong>Codex</strong><br><code class="wrap-anywhere" data-install-mcp-codex></code></p>
+                <button class="button small" type="button" data-install-copy-mcp="codex">Codex 명령 복사</button>
+              </div>
+              <div class="spaced">
+                <p><strong>Claude Code</strong><br><code class="wrap-anywhere" data-install-mcp-claude></code></p>
+                <button class="button small" type="button" data-install-copy-mcp="claude">Claude Code 명령 복사</button>
+              </div>
+            </details>
+            <p class="spaced">다른 AI 클라이언트에는 위 주소를 등록하세요. 연결한 AI의 새 대화에서 <strong>VIV 시작하기</strong>를 입력하세요.</p>
+          </div>
+          <p><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#mcp만-복구하기">MCP 연결·복구 도움말</a></p>
+        </section>
         <p data-install-status role="status" aria-live="polite"></p>
         <p><a class="button" data-install-open href="/#home?executionMode=paper">VIV 열기</a></p>
         <div data-viv-open-status role="status"></div>

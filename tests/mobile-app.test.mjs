@@ -3,7 +3,14 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {validateMobileOrigin,privateMobileRouteStatus,verifyMobileInstallAddress,previewRequestOrigin} from '../scripts/preview-origin.mjs';
 import {handleAPI} from '../server/api.mjs';
-import {createAppInstall,chromeInstallLink,installPlatform,manualInstallGuide} from '../dist/ui/app-install.mjs';
+import {createAppInstall,chromeInstallLink,installPlatform,localMcpAddress,manualInstallGuide} from '../dist/ui/app-install.mjs';
+
+test('MCP setup preserves the installation port and stays on the server computer',()=>{
+  assert.equal(localMcpAddress(new URL('http://localhost:4430/#settings')), 'http://127.0.0.1:4430/mcp');
+  for(const origin of ['https://localhost:4430','http://localhost','http://localhost:4905','http://localhost.example:4430','https://pc.example.ts.net']){
+    assert.equal(localMcpAddress(new URL(origin)),null);
+  }
+});
 import {versionAssetBundle} from '../scripts/asset-versioning.mjs';
 
 const origin='https://chungji-test.example-tailnet.ts.net';

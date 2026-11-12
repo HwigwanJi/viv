@@ -12,6 +12,12 @@ export function installPlatform(navigator){
   return /Android/.test(navigator.userAgent)?'android':'desktop';
 }
 
+export function localMcpAddress(location){
+  if(location?.protocol!=='http:'||!['127.0.0.1','localhost'].includes(location.hostname))return null;
+  const port=Number(location.port);
+  return Number.isInteger(port)&&port>=1024&&port<=65535&&port!==4905?'http://127.0.0.1:'+port+'/mcp':null;
+}
+
 export function manualInstallGuide(navigator){
   const platform=installPlatform(navigator);
   if(platform==='apple')return 'Safari에서 <strong>공유 → 홈 화면에 추가</strong>를 누르세요. <strong>웹 앱으로 열기</strong>가 보이면 켜고 추가하세요.';

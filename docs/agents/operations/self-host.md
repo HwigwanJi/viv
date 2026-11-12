@@ -69,7 +69,7 @@ bash scripts/install-viv-mac.sh --mobile-only
 
 ### MCP만 복구하기
 
-먼저 기존 PC 주소에서 VIV가 열리는지 확인하세요. `mcpRetryCommand`가 있으면 실행하세요. 이전 결과를 찾을 수 없다면 VIV 폴더에서 다음 Codex 예제를 사용하세요.
+먼저 기존 PC 주소에서 VIV를 열고 **설정 → 서비스 연결 → AI 연결·복구 (MCP)**를 누르세요. **MCP 주소 복사**로 현재 주소를 가져오거나 **Codex·Claude Code 연결 명령**을 펼쳐 사용하는 클라이언트의 명령을 실행하세요. 설치 결과에 `mcpRetryCommand`가 있다면 같은 작업을 수행합니다. 아래 명령은 앱 화면에서 복구 명령을 찾기 어려울 때 사용할 수 있습니다.
 
 **Windows**
 

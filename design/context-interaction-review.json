@@ -81,12 +81,16 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T00:38:10.688Z",
-      "reason": "설치 안내와 첫 시작의 재시도에서 연결 실패 시 같은 화면과 키보드 초점을 유지하고 앱 주소를 다시 연다.",
-      "signature": "941761ee7feee8e2f0b3de1a5e73b77cf12262090bb5954952b4b1c5f0fef134",
+      "reviewedAt": "2026-11-12",
+      "reason": "Native links, readonly address and disclosure support AI registration recovery, mobile setup and return to VIV.",
+      "signature": "2c07c9a6845043a65f4188d53b89d3ed9f1bd67d03e54575c985e4f2c5758e3e",
       "controls": [
         [
           "data-install-copy-command",
+          1
+        ],
+        [
+          "data-install-mcp-commands",
           1
         ],
         [
@@ -103,11 +107,11 @@
         ],
         [
           "element:a",
-          3
+          4
         ],
         [
           "element:button",
-          4
+          7
         ],
         [
           "element:dialog",
@@ -115,14 +119,14 @@
         ],
         [
           "element:input",
-          1
+          2
         ],
         [
           "element:summary",
-          1
+          2
         ]
       ],
-      "sourceHash": "6ccd9d977525a6105ee7dc741c587dfb90c0999fbfb9e5e89642a5c70ccf2661"
+      "sourceHash": "4728d6de2c73428abb9add2f92de75439c68ad83e50ae9e38c8adf7c43aa11f2"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -358,8 +362,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T17:10:16.636Z",
-      "reason": "PC 웹앱 설치 안내와 휴대폰 연결 안내의 역할을 구분하고 기존 설치 이벤트 회귀를 확인했습니다.",
+      "reviewedAt": "2026-11-12",
+      "reason": "Shared local MCP address validation retains the installed port and leaves mobile and hosted addresses out of desktop setup.",
       "signature": "855a8476991a7abdd75d32f972c945ac64b1f17bb09135167fc4a52e8509389e",
       "controls": [
         [
@@ -371,7 +375,7 @@
           2
         ]
       ],
-      "sourceHash": "25799bb282203243ea29dd8a17d6caefb19727a8757e852c2af80494496bf830"
+      "sourceHash": "9dd3f83a6b744e3f8f6258305be91a1a6a1af876db4121b4cdc4d383d5a06ec1"
     },
     {
       "file": "dist/ui/app-notifications.mjs",
@@ -1356,12 +1360,16 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T19:37:17.533Z",
-      "reason": "복구 명령 복사와 선택 대체 동작을 현재 설치 상태에 맞춰 검토했다.",
-      "signature": "4bbfe6cafb48ac008b1193d4863f82704486a7240ab6e4c4d88e71689cc92f3a",
+      "reviewedAt": "2026-11-12",
+      "reason": "Loopback desktop AI view provides the local address and supported client commands. Standalone users can stay on the mobile recovery screen.",
+      "signature": "7bca0d370340677205acc6ef7fc1bb7985de8dfd9184e69a151934d6855fcf7a",
       "controls": [
         [
           "data-install-copy-command",
+          1
+        ],
+        [
+          "data-install-mcp-commands",
           1
         ],
         [
@@ -1381,7 +1389,7 @@
           1
         ]
       ],
-      "sourceHash": "e02fdf4239ddae371844357b466e1fd58d2986b0c6e8f47169c39c4e8e1e33cd"
+      "sourceHash": "b9521d3ac18165ea16ae5f44fb0fc57a16414b1a794106f475857dea45b14532"
     },
     {
       "file": "dist/ui/interface-motion.mjs",
@@ -3203,9 +3211,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T02:35:43.6703386+00:00",
-      "reason": "실전 계좌·자금 화면이 공용 모의 복귀 링크를 사용. 저장 결과 주소가 없으면 모의 홈으로 연결.",
-      "signature": "a8caa8bd67a45956f0aac8648b68ddc060b266a45b672717013b4e28722bc54a",
+      "reviewedAt": "2026-11-12",
+      "reason": "Service Connections exposes the AI recovery link on a local desktop while carrying the current account view.",
+      "signature": "432e1202a5a62cbe9142f2c5aed84b4d9269b9bf231a1689cf9c91bbf6a9f8b5",
       "controls": [
         [
           "data-auto-action",
@@ -3273,7 +3281,7 @@
         ],
         [
           "element:a",
-          27
+          28
         ],
         [
           "element:button",
@@ -3308,7 +3316,7 @@
           1
         ]
       ],
-      "sourceHash": "b2f90fcd6870830ea3902ca48970651b9d535450b70a8f48cc0927c5160cc824",
+      "sourceHash": "4afa1ede533938b95c8eb8ca9b048d6f00ce8d46d9cb3e161689860897957c31",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
