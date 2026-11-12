@@ -1,5 +1,9 @@
 export const PAPER_HOME_ENTRY = '#home?executionMode=paper';
-export const PAPER_DECISION_ENTRY = '#trade?executionMode=paper';
+export const PAPER_DECISION_INSTRUMENT = 'crypto:okx:BTC-USDT';
+export const PAPER_DECISION_TIMEFRAME = '4h';
+export const PAPER_DECISION_ENTRY = '#trade?' + new URLSearchParams({
+  executionMode:'paper',firstDecision:'1',instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME
+});
 export const PAPER_PRACTICE_ENTRY = '#minds?profileId=all&view=simulations&executionMode=paper&setup=new&practice=quant';
 
 export function paperPracticeEntry(mindId) {

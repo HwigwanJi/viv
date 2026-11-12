@@ -99,6 +99,17 @@ test('quick navigation opens a clean mind destination and labels a live-to-paper
  assert.equal(current.searchOnly,false);
 });
 
+test('first paper decision guidance survives its data return and stays in paper trading',()=>{
+ const route=parseStudioRoute('#trade?executionMode=paper&firstDecision=1&profileId=mind-one&timeframe=4h');
+ const trade=studioRouteHash(route,'trade',{returnTo:null});
+ const settings=parseStudioRoute(studioRouteHash(route,'settings',{view:'data',returnTo:trade}));
+ assert.equal(settings.params.has('firstDecision'),false);
+ assert.equal(settings.params.get('returnTo'),trade);
+ assert.equal(parseStudioRoute(trade).params.get('firstDecision'),'1');
+ assert.equal(parseStudioRoute(studioRouteHash(route,'trade',{executionMode:'live'})).params.has('firstDecision'),false);
+ assert.equal(parseStudioRoute(studioRouteHash(route,'trade',{firstDecision:null})).params.get('profileId'),'mind-one');
+});
+
 test('quick research results identify each version and retain the search for full results',()=>{
  const route=parseStudioRoute('#library?executionMode=live&view=documents&search=old&status=SAVED&knowledgeId=other');
  const page={items:[

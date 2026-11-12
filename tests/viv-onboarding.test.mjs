@@ -30,7 +30,11 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(saved.structuredContent.paperBudget.receipt.totalBudget,2000000);
     assert.match(saved.structuredContent.links.connections,/#settings\?view=accounts&executionMode=live/);
     assert.equal(new URL(saved.structuredContent.links.paperHome).hash,'#home?executionMode=paper');
-    assert.equal(new URL(saved.structuredContent.links.paperDecision).hash,'#trade?executionMode=paper');
+    const firstDecision=new URL(saved.structuredContent.links.paperDecision).hash;
+    assert.equal(firstDecision.split('?')[0],'#trade');
+    assert.deepEqual(Object.fromEntries(new URLSearchParams(firstDecision.split('?')[1])),{
+      executionMode:'paper',firstDecision:'1',instrumentId:'crypto:okx:BTC-USDT',timeframe:'4h'
+    });
     assert.equal(new URL(saved.structuredContent.links.paperPractice).hash,'#minds?profileId=all&view=simulations&executionMode=paper&setup=new&practice=quant');
     assert.match(saved.structuredContent.playbook,/종목·마인드·시각과 일치하는 항목의 openUrl/);
     const repeated=await onboarding({interest:'both',amountKrw:4000000,idempotencyKey:'viv-2'});

@@ -3215,9 +3215,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T06:39:18.055Z",
-      "reason": "빠른 이동의 기존 조작과 저장 자료 검색, 버전별 열기, 조회 실패 후 전체 목록 경로를 대조했습니다.",
-      "signature": "838417f36ede62713d892450440c45c341f29039cd0a45c4a2102e670893a8ad",
+      "reviewedAt": "2026-11-12T07:09:21.528Z",
+      "reason": "첫 모의 판단에서 국면 추세 정책 검토, 자금·시세 준비와 기존 모의 화면 복귀를 대조했습니다.",
+      "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
       "controls": [
         [
           "data-auto-action",
@@ -3285,7 +3285,7 @@
         ],
         [
           "element:a",
-          30
+          34
         ],
         [
           "element:button",
@@ -3309,7 +3309,7 @@
         ],
         [
           "helper:button(",
-          176
+          179
         ],
         [
           "helper:renderActionMenu(",
@@ -3320,7 +3320,7 @@
           1
         ]
       ],
-      "sourceHash": "35e1e72d3c8d9accf8bfc6294e0871bba5dc1e84ce5e1da46d6c041b7b62fb1c",
+      "sourceHash": "1d3d5684159d038aba26baa428537256551665313899f88c6b300683be961657",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

@@ -11,11 +11,11 @@ import {createMindLifeRuntime,renderLifeGallery,renderLifeStage} from './mind-li
 import {renderCapabilityCatalog,filterCapabilityCatalog} from './capability-catalog.mjs';
 import {callAutomation} from '../system/automation-contracts.mjs';
 import {currencyAmount} from './currency-format.mjs';
-import {PAPER_MIND_STARTERS} from '../domain/paper-mind-presets.mjs';
+import {PAPER_MIND_STARTERS,createPaperMindPresetGraph} from '../domain/paper-mind-presets.mjs';
 import {STRATEGY_TRACE_TYPES,strategyInputNodeLabel,strategyTraceNodeLabel,strategyTraceValue,strategyTraceSelection} from './decision-method.mjs';
 import {submitPaperFunding} from './paper-funding-request.mjs';
 import {paperBudgetSummary} from '../domain/paper-budget.mjs';
-import {PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../system/paper-decision-links.mjs';
+import {PAPER_DECISION_ENTRY,PAPER_DECISION_INSTRUMENT,PAPER_DECISION_TIMEFRAME,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../system/paper-decision-links.mjs';
 import {subscriptionInstrumentIds} from '../domain/mind-subscriptions.mjs';
 import {createBrokerConnections,brokerPaperReturnLink} from './broker-connections.mjs';
 import {createAutomatedTrading,isEventAutomationMind,saveLiveStrategyUpdate} from './automated-trading.mjs';
@@ -62,6 +62,11 @@ const pct=value=>Number.isFinite(value)?num(value*100)+'%':'—';
 const percentagePoints=value=>Number.isFinite(value)?num(value*100)+'%p':'—';
 const when=value=>value&&Number.isFinite(Date.parse(value))?new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(value))+' KST':'—';
 const byId=(items,id)=>list(items).find(item=>item.id===id);
+const FIRST_DECISION_STARTER='regime-trend';
+const firstPaperDecision=route=>route.page==='trade'&&executionModeOf(route)==='paper'&&route.params.get('firstDecision')==='1';
+const firstDecisionGraphHash=strategyGraphHash(createPaperMindPresetGraph(FIRST_DECISION_STARTER));
+const firstDecisionPlan=plan=>plan?.approval?.enabled&&plan.scope?.instrumentId===PAPER_DECISION_INSTRUMENT&&
+  plan.scope.timeframe===PAPER_DECISION_TIMEFRAME&&plan.graph?.schemaVersion===2&&strategyGraphHash(plan.graph)===firstDecisionGraphHash;
 const button=(label,action,id='',extra='',className='')=>`<button type="button" class="button small${className?' '+esc(className):''}" data-studio-action="${action}" data-studio-id="${esc(id)}" ${extra}>${esc(label)}</button>`;
 const row=(label,value)=>`<div class="detail-row"><span>${esc(label)}</span><strong>${value}</strong></div>`;
 function savedDecisionManifest(record,detail){const manifest=detail.manifest;if(!manifest||manifest.id!==record.manifestId||manifest.scope?.profileId!==record.profileId)return null;try{return mindDocumentHash(manifest)===record.manifestHash?manifest:null;}catch{return null;}}
@@ -203,6 +208,7 @@ export function selectionResultMarkup(selection,{profileName='마인드 정보 �
 export function parseStudioRoute(hash=''){
   const [raw,...search]=String(hash).replace(/^#/,'').split('?'),candidate=ALIASES[raw]||raw||'home',page=WORKSPACE_NAV.some(n=>n[0]===candidate)?candidate:'trade',params=new URLSearchParams(search.join('?'));
   if(params.has('executionMode')&&!['paper','live'].includes(params.get('executionMode')))params.set('executionMode','paper');
+  if(page!=='trade'||params.get('executionMode')==='live'||params.get('firstDecision')!=='1')params.delete('firstDecision');
   if(params.has('mind')&&!params.has('profileId'))params.set('profileId',params.get('mind'));
   if(params.has('comparison')&&!params.has('comparisonId'))params.set('comparisonId',params.get('comparison'));
   if(page==='trade'&&['decisions','trades','experiences','knowledge'].includes(params.get('view')))params.set('tab',params.get('view')==='trades'?'positions':params.get('view')==='experiences'?'knowledge':params.get('view'));
@@ -563,7 +569,38 @@ export function createStudioController(hooks={},options={}){
       return `<section class="studio-loading">${heading}${error?`<p role="alert">${esc(error)}</p>${button('다시 조회','refresh')}`:'<p>서버에 저장된 종목·마인드·투자 기록을 조회합니다.</p>'}</section>`;
     }
     const notice=error?`<div class="callout warning section" role="alert">${esc(error)} ${button('새로고침','refresh')}</div>`:'';
-    return notice+({home:()=>home.render(),trade:()=>terminal.render({...model(),instrumentUniverse:terminalUniverseModel()}),minds:renderMinds,library:renderLibrary,settings:renderSettings}[routeValue.page]||(()=>terminal.render({...model(),instrumentUniverse:terminalUniverseModel()})))();
+    const trade=()=>{const view=model();return renderFirstDecision(view)+terminal.render({...view,instrumentUniverse:terminalUniverseModel()});};
+    return notice+({home:()=>home.render(),trade,minds:renderMinds,library:renderLibrary,settings:renderSettings}[routeValue.page]||trade)();
+  }
+  function renderFirstDecision(view){
+    const current=currentRoute();
+    if(!firstPaperDecision(current))return '';
+    const selected=view.selectedMindId,close=studioRouteHash(current,'trade',{firstDecision:null});
+    let message,actions='';
+    if(selected==='all'){
+      message='BTC-USDT 4시간봉에서 국면 추세 프리셋으로 연습합니다. 이 프리셋은 JEV 키 없이 계산합니다.';
+      const published=list(mindData?.minds).filter(mind=>byId(workspace.investmentProfiles,mind.id)?.status!=='ARCHIVED'&&
+        mind.manifest?.data.strategyPlan?.status==='APPROVED'&&firstDecisionPlan(mind.manifest.data.strategyPlan));
+      const pending=list(mindData?.documents).find(item=>{
+        const doc=item.document,profile=byId(workspace.investmentProfiles,doc?.scope?.profileId);
+        return profile&&profile.status!=='ARCHIVED'&&item.status==='DRAFT'&&doc.kind==='mind-policy'&&
+          doc.data.version>(savedMind(profile.id)?.manifest?.data.version??0)&&firstDecisionPlan(doc.data.strategyPlan);
+      });
+      actions=!mindData?button('마인드 목록 다시 조회','refresh','','','primary'):
+        published.length?published.map(mind=>'<a class="button primary" href="'+esc(studioRouteHash(current,'trade',{profileId:mind.id,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME}))+'" data-studio-route>'+esc(profileName(mind.id))+'로 시작</a>').join(''):
+        pending?button('저장한 국면 추세 검토','document-detail',pending.id,'data-first-decision-review','primary'):
+        button('국면 추세 마인드 만들기','profile-new','','','primary');
+      actions+='<a class="button" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>과거 시세로 연습</a>';
+    }else{
+      const readiness=view.terminalReadiness?.executionReadiness,step=readiness?.primaryAction?.action;
+      message=readiness?.canRun?'결정 실행을 누르면 판단 근거와 모의 체결 상태를 확인할 수 있습니다.':
+        step==='account'?'종목의 결제 통화로 모의 자금을 배정하세요. 처음 설정한 원화 예산은 별도로 보관됩니다.':
+        step==='data'?'시세를 수집한 뒤 트레이딩으로 돌아오면 같은 마인드에서 판단을 계속할 수 있습니다.':
+        step==='records'?'저장된 결정 보기에서 현재 봉의 판단과 근거를 다시 확인할 수 있습니다.':
+        '아래 트레이딩 화면에서 현재 준비 상태와 다음 행동을 확인하세요.';
+      actions='<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>';
+    }
+    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision">첫 모의 판단</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+actions+'</div></div></section>';
   }
   function mindContext(){const id=currentRoute().params.get('profileId')||'all',profile=byId(workspace.investmentProfiles,id),manifest=savedMind(id)?.manifest,version=profileVersion(profile?.currentVersionId);return {id,profile,manifest,policy:manifest?.data,settings:manifest?.data.profileSettings||version?.settings,version,memory:byId(workspace.memoryVersions,profile?.currentMemoryVersionId)};}
   function mindHeading(label,actions='',secondary=''){
@@ -1080,13 +1117,17 @@ export function createStudioController(hooks={},options={}){
       const philosophy=state.philosophy?.philosophy||state.profile?.philosophy||state.investmentProfile?.philosophy||profileVersion(r.investmentProfileVersionId)?.settings.philosophy;
       const principles=list(state.principles||state.rules).filter(rule=>rule?.title||rule?.id);
       const principleDetails=principles.length?'<details class="spaced"><summary>'+principles.length+'개 '+(providerUsed?'전송 원칙·규칙':'원칙·규칙')+'</summary><ul>'+principles.map(rule=>'<li class="spaced"><strong>'+esc(rule.title||rule.id)+'</strong>'+(rule.text?'<p>'+esc(rule.text)+'</p>':'')+'</li>').join('')+'</ul></details>':'';
+      const trend=paperRecord&&firstDecisionPlan(pinnedManifest?.data.strategyPlan)
+        ?list(r.strategyEvaluation?.modules).find(module=>module.moduleId==='SMA_TREND')?.indicators:null;
+      const trendBasis=trend&&[trend.close,trend.slowMA,trend.lookbackBars].every(Number.isFinite)
+        ?row('판단에 사용한 시세',`확정 종가 ${money(trend.close,v.quoteCurrency)} · ${num(trend.lookbackBars,0)}봉 이동평균 ${money(trend.slowMA,v.quoteCurrency)}`):'';
       const evidence=r.decision?.evidence;
       const basis=typeof evidence?.title==='string'&&evidence.title
         ?row('선택한 근거',esc(evidence.title)+(typeof evidence.text==='string'?'<p>'+esc(evidence.text)+'</p>':''))
         :providerUsed&&!r.strategyEvaluation?'<p class="tiny muted">개별 선택 근거가 기록되지 않았습니다. 적용한 원칙과 선택 분포를 아래에서 확인할 수 있습니다.</p>':'';
       const recordLink=paperRecord&&currentRoute().params.get('search')!==id
         ?'<a class="button small" href="'+esc(paperDecisionRecordHash(id))+'" data-studio-route>이 판단을 기록에서 보기</a>':'';
-      hooks.open?.('결정 상세',`${paperRecord?'<p role="status" class="tiny muted">저장된 모의 판단</p>':''}${savedDecisionContext(r,d,v)}${paperFills}<div class="studio-decision-summary">${terminalTooltipContent([v],{showPinHint:false})}</div>${basis}${recordLink}${terminalModelMeasures(v)}<section class="spaced"><h3>${providerUsed?'JEV 입력':'실행 입력'}</h3>${philosophy?'<h4>투자 철학</h4><p>'+esc(philosophy)+'</p>':''}${principleDetails}${row(providerUsed?'전송 개인 기억':'연결 기억',`${list(state.approvedMemory||state.approvedPersonalMemory).length}개`)}${row('개인 투자 자료',`${list(state.macroAndNews||state.approvedMarketContexts).length}개`)}${row('공용 투자 자료',`${list(state.externalKnowledge).length}개`)}${externalKnowledgeEvidence(state)}${strategyEvaluationMarkup(r.strategyEvaluation||state.strategyEvaluation,pinnedManifest?.data.strategyPlan?.graph||state.strategyPlan?.graph)}${v.authority&&v.authority!=='JEV_FINAL'&&v.decisionMethod?.measureKind!=='CONFIDENCE'?row(v.decisionMethod?.measureKind==='VOTE'?'최다 투표 비중':'계산 강도',v.decisionMethod?.measureKind==='VOTE'?pct(v.strength):num(v.strength,3)):''}${raw(state.effectiveWeights,'실제 적용한 원칙 가중치')}${r.rawResponse||r.jevResponse?raw(answers,'JEV 원판단과 확률 분포'):''}</section><section class="spaced"><h3>체결·경험</h3>${row('실행 상태',esc(executionLabel(v.outcome)))}${r.execution?.reason?row('실행 사유',esc(r.execution.reason)):''}${table(['방향','수량','체결가','수수료'],list(d.fills).map(f=>[esc(f.side),num(f.quantity,8),money(f.fillPrice,f.quoteCurrency||v.quoteCurrency),money(f.fee,f.quoteCurrency||v.quoteCurrency)]),paperRecord&&!Array.isArray(d.fills)?'연결된 체결 기록 확인 필요':'이 결정에 연결된 체결이 없습니다.')}<div class="actions spaced">${list(d.experiences).map(e=>button('경험 · '+when(e.occurredAt),'experience',e.id)).join('')}${r.outcomeType==='TRADE_PROPOSED'?(migratedLegacyOrder(r)?button('현재 마인드 운용','mind-operations',migratedLegacyOrder(r)):button('모의 주문 검토','order-review',id)):''}${r.status==='PAPER_REVIEW_READY'||r.execution?.status==='PAPER_REVIEW_READY'?button('모의 체결 검토','mind-order-review',id):''}${terminalExecutionRetryable(r)?button('모의 실행 다시 시도','mind-order-review',id):''}${id.startsWith('mind-run-')?button('후속 관측 상태 보기','mind-observation',id)+(canCompareNews?button('JEV 뉴스 입력 비교','news-create',id):''):''}${id.startsWith('mind-run-')&&r.decision?.action==='hold'&&!r.execution?.accountSnapshotAfter&&!terminalExecutionRetryable(r)?button('후속 관측 기준 검토','mind-order-review',id):''}</div></section>${raw({versions:d.versions,reproducibility:d.reproducibility},'적용 버전·출처·입력 해시')}${raw(r.rawRequest||r.jevRequest,r.jevCalled===false?'실행 입력':'실제 JEV 요청')}${r.rawResponse||r.jevResponse?raw(r.rawResponse||r.jevResponse,'실제 JEV 응답'):''}${raw(r.risk||r.ruleResults,'실행 조건 검사')}${raw(r.execution,'모의 실행 원본')}`);
+      hooks.open?.('결정 상세',`${paperRecord?'<p role="status" class="tiny muted">저장된 모의 판단</p>':''}${savedDecisionContext(r,d,v)}${paperFills}<div class="studio-decision-summary">${terminalTooltipContent([v],{showPinHint:false})}</div>${basis}${trendBasis}${recordLink}${terminalModelMeasures(v)}<section class="spaced"><h3>${providerUsed?'JEV 입력':'실행 입력'}</h3>${philosophy?'<h4>투자 철학</h4><p>'+esc(philosophy)+'</p>':''}${principleDetails}${row(providerUsed?'전송 개인 기억':'연결 기억',`${list(state.approvedMemory||state.approvedPersonalMemory).length}개`)}${row('개인 투자 자료',`${list(state.macroAndNews||state.approvedMarketContexts).length}개`)}${row('공용 투자 자료',`${list(state.externalKnowledge).length}개`)}${externalKnowledgeEvidence(state)}${strategyEvaluationMarkup(r.strategyEvaluation||state.strategyEvaluation,pinnedManifest?.data.strategyPlan?.graph||state.strategyPlan?.graph)}${v.authority&&v.authority!=='JEV_FINAL'&&v.decisionMethod?.measureKind!=='CONFIDENCE'?row(v.decisionMethod?.measureKind==='VOTE'?'최다 투표 비중':'계산 강도',v.decisionMethod?.measureKind==='VOTE'?pct(v.strength):num(v.strength,3)):''}${raw(state.effectiveWeights,'실제 적용한 원칙 가중치')}${r.rawResponse||r.jevResponse?raw(answers,'JEV 원판단과 확률 분포'):''}</section><section class="spaced"><h3>체결·경험</h3>${row('실행 상태',esc(executionLabel(v.outcome)))}${r.execution?.reason?row('실행 사유',esc(r.execution.reason)):''}${table(['방향','수량','체결가','수수료'],list(d.fills).map(f=>[esc(f.side),num(f.quantity,8),money(f.fillPrice,f.quoteCurrency||v.quoteCurrency),money(f.fee,f.quoteCurrency||v.quoteCurrency)]),paperRecord&&!Array.isArray(d.fills)?'연결된 체결 기록 확인 필요':'이 결정에 연결된 체결이 없습니다.')}<div class="actions spaced">${list(d.experiences).map(e=>button('경험 · '+when(e.occurredAt),'experience',e.id)).join('')}${r.outcomeType==='TRADE_PROPOSED'?(migratedLegacyOrder(r)?button('현재 마인드 운용','mind-operations',migratedLegacyOrder(r)):button('모의 주문 검토','order-review',id)):''}${r.status==='PAPER_REVIEW_READY'||r.execution?.status==='PAPER_REVIEW_READY'?button('모의 체결 검토','mind-order-review',id):''}${terminalExecutionRetryable(r)?button('모의 실행 다시 시도','mind-order-review',id):''}${id.startsWith('mind-run-')?button('후속 관측 상태 보기','mind-observation',id)+(canCompareNews?button('JEV 뉴스 입력 비교','news-create',id):''):''}${id.startsWith('mind-run-')&&r.decision?.action==='hold'&&!r.execution?.accountSnapshotAfter&&!terminalExecutionRetryable(r)?button('후속 관측 기준 검토','mind-order-review',id):''}</div></section>${raw({versions:d.versions,reproducibility:d.reproducibility},'적용 버전·출처·입력 해시')}${raw(r.rawRequest||r.jevRequest,r.jevCalled===false?'실행 입력':'실제 JEV 요청')}${r.rawResponse||r.jevResponse?raw(r.rawResponse||r.jevResponse,'실제 JEV 응답'):''}${raw(r.risk||r.ruleResults,'실행 조건 검사')}${raw(r.execution,'모의 실행 원본')}`);
     }catch(problem){if(!disposed&&dialogIsCurrent(dialogToken))hooks.open?.('결정 상세','<p class="empty error-text" role="alert">'+esc(problem.message)+'</p>',button('다시 조회','decision',id));}
   }
   function openKnowledge(id){if(list(mindData?.documents).some(d=>d.id===id||(d.document||d).id===id))return documentDetail(id);if(byId(workspace.experiences,id))return openExperience(id);if(byId(workspace.memoryCandidates,id))return openCandidate(id);hooks.toast?.('연결된 경험과 학습 후보를 다시 조회하세요.');}
@@ -1108,11 +1149,12 @@ export function createStudioController(hooks={},options={}){
   function updateMindAppearancePreview(formNode){const preview=formNode.querySelector('[data-mind-customization-preview]');if(preview){const values=Object.fromEntries(new FormData(formNode)),config=Object.fromEntries(appearanceFields.map(([name])=>[name,values[name]]));preview.innerHTML=renderLifeStage({profileId:'appearance-preview:'+formNode.dataset.studioId,executionMode:'paper',phase:'idle',appearance:{config},game:{motion:'idle',weather:'calm'}},{view:'portrait'});mindGameRuntime.mount(preview.ownerDocument??preview);}}
   function profileForm(id=''){
     const p=byId(workspace.investmentProfiles,id),manifest=savedMind(id)?.manifest,s=manifest?.data.profileSettings||profileVersion(p?.currentVersionId)?.settings||{};
+    const guided=!id&&firstPaperDecision(currentRoute());
     const starterPicker=p?'':`<div class="field full">
       <label class="field">시작 전략
         <select name="starterId" aria-describedby="mind-starter-hint">
           <option value="">직접 구성</option>
-          <optgroup label="기본 프리셋">${PAPER_MIND_STARTERS.map(v=>`<option value="${esc(v.id)}">${esc(v.name)}</option>`).join('')}</optgroup>
+          <optgroup label="기본 프리셋">${PAPER_MIND_STARTERS.map(v=>`<option value="${esc(v.id)}"${guided&&v.id===FIRST_DECISION_STARTER?' selected':''}>${esc(v.name)}</option>`).join('')}</optgroup>
         </select>
       </label>
       <small class="muted" id="mind-starter-hint">기본 프리셋 ${PAPER_MIND_STARTERS.length}개 중 고르면 설명과 투자 범위를 확인할 수 있습니다.</small>
@@ -1130,6 +1172,10 @@ export function createStudioController(hooks={},options={}){
       field('주요 근거 · 쉼표 구분','evidencePreferences',list(s.evidencePreferences).join(', '),'text')+area('투자 철학','philosophy',s.philosophy||'')+
       area('손실·비용·반대 근거 검토 원칙','discipline',s.discipline||'')+
       (manifest?'<div class="full">'+helpLabel('정책 초안 저장','원칙을 새 정책 초안으로 저장합니다. 정책 양식에서 가중치·투자 범위·자료·실행 조건을 함께 편집하고 발행할 수 있습니다.')+'</div>':''),id,manifest?'정책 초안 저장':'마인드 생성');
+    if(guided&&typeof document!=='undefined'){
+      const picker=document.querySelector('#detail-dialog select[name="starterId"]');
+      if(picker)updateStarterPreview(picker);
+    }
   }
   function starterProfileDefaults(starter){
     return {name:starter.name,philosophy:starter.philosophy,discipline:'확정 시세와 현재 보유 확인, 거래 비용과 손실 한도 적용',evidencePreferences:'가격 추세, 모멘텀, 현재 보유'};
@@ -1291,9 +1337,10 @@ export function createStudioController(hooks={},options={}){
   function documentImpactRows(doc,currentPolicy){const impact=mindDocumentImpact(doc,{profileName:profileName(doc.scope?.profileId),currentPolicy});return '<section class="review-impact full" aria-label="반영 범위">'+row('자료 유형',esc(impact.kindLabel))+row('반영 대상',esc(impact.destination))+'<p class="spaced"><strong>발행 효과</strong><br>'+esc(impact.effect)+'</p>'+(impact.changes.length?row('변경 항목',esc(impact.changes.join(' · '))):'')+'</section>';}
   function openDocumentPublish(id,{live=false,paperStarter=false}={}){
     const entry=list(mindData?.documents).find(d=>d.id===id),doc=entry?.document;
+    const guided=paperStarter&&firstPaperDecision(currentRoute())&&firstDecisionPlan(doc?.data.strategyPlan);
     if(live&&(!doc||entry.status!=='DRAFT'||!isEventAutomationMind(doc)))throw new Error('실전 설정으로 연결할 분봉 정책 초안을 다시 여세요.');
     const context=live?savedPolicyContext(entry,savedMind(doc.scope.profileId)?.manifest)+'<p class="full">정책을 발행한 뒤 같은 마인드의 실전 설정을 엽니다. 기존 운용 한도를 불러오며 자동 주문은 운용 시작을 완료한 뒤 실행됩니다.</p><input type="hidden" name="afterPublish" value="live">'
-      :paperStarter?'<p class="full">발행을 마치면 새 마인드의 전략 화면을 엽니다. 백테스트는 실험실에서 시작할 수 있습니다.</p><input type="hidden" name="afterPublish" value="paper-starter">':'';
+      :paperStarter?'<p class="full">'+(guided?'발행을 마치면 이 마인드로 첫 모의 판단을 이어갑니다.':'발행을 마치면 새 마인드의 전략 화면을 엽니다. 백테스트는 실험실에서 시작할 수 있습니다.')+'</p><input type="hidden" name="afterPublish" value="paper-starter">':'';
     return form(live?'정책 확인 후 실전 설정':'자료 검토·발행','document-publish',documentImpactRows(doc,savedMind(doc.scope?.profileId)?.manifest)+context+area('근거·적용 범위·검토 이유','reason',live?doc.title+'의 노드와 투자 범위를 확인하고 실전 운용 설정으로 연결합니다.':''),id,live?'발행하고 실전 설정':'검토 후 발행');
   }
   async function enterLiveAutomationSettings(result,dialogToken){
@@ -1591,7 +1638,7 @@ export function createStudioController(hooks={},options={}){
       if(action==='deployment-pause')return await mutate('deployment.status',{deploymentId:id,status:'paused'});
       if(action==='order-review'){const r=byId(workspace.decisionRecords,id);if(migratedLegacyOrder(r))return hooks.open?.('이전 운용 기록','<p>현재 마인드 운용에서 새 결정을 확인하세요.</p>',button('현재 마인드 운용','mind-operations',migratedLegacyOrder(r)));const proposal=list(r?.ruleResults).find(v=>v.id==='order.prepare.paper')?.proposal;return hooks.open?.('모의 주문 검토',row('방향',esc(r?.decision.action))+raw(proposal),button('모의 주문 실행','order-execute',id));}
       if(action==='order-execute'){const r=byId(workspace.decisionRecords,id);if(migratedLegacyOrder(r)){hooks.close?.();return hooks.navigate?.('minds',{profileId:migratedLegacyOrder(r),view:'operations'});}await mutate('',{deploymentId:r.deploymentId,decisionId:id},'/api/workspace/execute');hooks.close?.();return hooks.toast?.('모의 체결을 저장했습니다.');}
-      if(action==='document-detail')return documentDetail(id);
+      if(action==='document-detail')return documentDetail(id,{paperStarter:node.hasAttribute('data-first-decision-review')&&firstPaperDecision(currentRoute())});
       if(action==='document-graph-edit'){const saved=list(mindData?.documents).find(d=>d.id===id||(d.document||d).id===id);if(!saved)throw new Error('편집할 정책을 다시 조회하세요.');return openPolicyGraphDraft({manifest:saved.document||saved});}
       if(action==='document-edit-copy'){const saved=list(mindData?.documents).find(d=>d.id===id);if(!saved)throw new Error('복사할 자료를 다시 조회하세요.');return openDocumentCopy(saved.document||saved);}
       if(action==='weight-propose')return await proposeWeight(id);
@@ -1700,6 +1747,11 @@ export function createStudioController(hooks={},options={}){
         if(values.afterPublish==='paper-starter'&&profileId===entry?.document.scope.profileId&&profileId&&dialogIsCurrent(dialogToken)){
           clearFormDraft(formNode);
           hooks.close?.();
+          if(firstPaperDecision(currentRoute())&&firstDecisionPlan(result.manifest.data.strategyPlan)){
+            hooks.navigate?.('trade',{profileId,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME,mode:'live',comparisonId:null,firstDecision:'1',executionMode:'paper'});
+            hooks.toast?.('국면 추세를 발행했습니다. 첫 모의 판단을 이어가세요.');
+            return;
+          }
           hooks.navigate?.('minds',{profileId,view:'principles',executionMode:'paper'});
           hooks.toast?.('시작 전략을 발행했습니다. 실험실에서 백테스트할 수 있습니다.');
           return;

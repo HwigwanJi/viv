@@ -11,7 +11,7 @@ const lessons=[
   {number:3,title:'이 링크의 투자법을 내 전략으로 만들어줘',tools:['read_strategy_ontology','read_quant_library','save_market_research']},
   {number:4,title:'모의로 판단을 연습하고 저장된 근거 확인하기',tools:['read_investment_status','read_trading_context','read_simulation_collection','read_mind_catalog'],choices:[
     {link:'paperPractice',label:'키 없이 BTC 과거 시세 실습',requirements:'보관한 BTC 시세와 기준 퀀트 전략을 사용합니다. 실습용 초기 자금은 따로 정하며 AI 호출은 0회입니다.'},
-    {link:'paperDecision',label:'현재 시세로 모의 판단',requirements:'종목의 결제 통화로 모의 자금을 배정하고 최신 시세를 준비합니다. 선택한 전략이 AI를 호출하면 JEV 키가 필요합니다.'},
+    {link:'paperDecision',label:'현재 시세로 첫 모의 판단',requirements:'BTC-USDT의 국면 추세 프리셋으로 연습할 수 있습니다. 별도 USDT 모의 자금을 배정하고 최신 확정 시세를 준비합니다.'},
   ]},
 ];
 
@@ -25,7 +25,7 @@ export const VIV_PLAYBOOK=[
   '자료 조사 과업은 호스트의 웹 검색·영상 자막 등 실제 접근 가능한 도구로 원문을 확인하고, VIV에서 현재 라이브러리·양식·전략 노드 메타데이터를 조회하세요. 원문 URL, 공개·조회 시각, 영상 시간대, 확인된 사실과 추론을 구분해 짧게 브리핑하세요. 원문을 열 수 없으면 읽지 못한 부분을 말하고 다른 링크, 원문 붙여넣기, 이 과업 건너뛰기를 제시하세요. 이 과업을 건너뛰면 완료로 표시하지 말고 남은 다른 과업으로 이어가세요. 실제로 확인한 발췌만 사용하고 범위를 표시하세요. 확인할 수 없는 거래나 수익은 미확인으로 남기세요.',
   '저장 양식의 예제 값을 원문 정보로 바꾸세요. publication.publishedAt은 원문 공개 시각, publication.retrievedAt과 provenance.createdAt은 실제 수집·작성 시각입니다. 원문에 공개일이 없으면 publication.precision을 undated로, publishedAt·sourcePublishedValue·timezone을 각각 null로 보내고 실제 수집 시각은 그대로 기록하세요. 이 결과도 바로 저장할 수 있으며 원문 공개 시점이 확인된 버전부터 마인드 판단에 활용할 수 있습니다. availableAt은 수집과 작성이 끝난 시각 이후로 설정하세요.',
   '1~3번 조사·분석 결과는 출처와 함께 save_market_research로 개인 라이브러리에 바로 저장하고, 영수증의 openUrl을 브리핑과 함께 제공하세요. 저장 중 REVISION_CONFLICT를 받으면 read_market_knowledge로 revision을 다시 조회하고 같은 문서·idempotencyKey로 재시도하세요. 응답이 끊겼다면 동일 요청을 재시도해 영수증을 확인하고 중복 문서를 만들지 마세요. 2~3번은 재현할 매매 규칙과 가정을 문서에 담으세요. 검증을 실행했다면 조건·결과를 기록하고, 실행 전이면 검증 상태를 명시하세요. 사용자가 저장 없이 보기를 요청하면 저장하지 마세요.',
-  '4번은 read_investment_status로 시작하세요. 처음 연습하거나 키를 나중에 설정하려는 사용자는 links.paperPractice에서 보관한 BTC 시세로 기준 퀀트 전략을 실행할 수 있습니다. 현재 시세의 판단을 원하면 links.paperDecision에서 종목과 마인드를 고릅니다. 종목의 결제 통화로 모의 자금을 배정하고 최신 시세를 준비합니다. 선택한 전략이 AI를 호출하는 경우에 JEV 키가 필요합니다. 두 과업 모두 실계좌 연결 없이 진행하며 백테스트와 현재 시세 모의 판단은 다른 기록으로 안내하세요.',
+  '4번은 read_investment_status로 시작하세요. 보관한 시세로 연습하려면 links.paperPractice를, 최신 확정 시세에서 첫 판단을 하려면 links.paperDecision을 엽니다. 첫 판단 안내에서 BTC-USDT의 국면 추세를 만들거나 기존 프리셋을 선택하고, USDT 모의 자금과 시세를 준비합니다. 국면 추세는 JEV 키 없이 계산할 수 있습니다. 두 과업 모두 실계좌 연결 없이 진행하며 백테스트와 현재 시세 모의 판단은 다른 기록으로 안내하세요.',
   '과거 시세 실습 결과를 확인하거나 다시 찾을 때는 read_simulation_collection에 kind:simulation, status:completed를 전달하세요. 실험 ID나 이름을 알면 q에 넣고, 마인드 이름만 알면 read_mind_catalog에서 확인한 mindId로 조회하세요. 후보가 여럿이면 실험 기간 또는 생성 시각을 확인하세요. 일치한 항목의 openUrl을 제공하고 성과·판단 탭을 안내하세요. 완료한 백테스트는 앱의 마인드 → 전체 시뮬레이션에서도 다시 열 수 있습니다.',
   '사용자가 종목 화면에서 결정 실행을 선택하면 앱에 저장된 결정 상세가 열립니다. read_investment_status를 다시 조회하고, 방금 실행한 종목·마인드·시각과 일치하는 항목의 openUrl을 안내하세요. 근거는 read_trading_context에 항목의 id를 decisionId로, profileId를 mindId로, instrumentId를 그대로 전달해 확인하세요. 개별 선택 근거가 저장되지 않은 경우 적용한 원칙과 선택 분포를 안내하세요. 사용자가 브리핑만 요청하면 기존 기록만 조회하세요.',
   '사용자에게 과업 결과를 실제로 제공한 뒤 action:complete와 lesson 번호를 보내세요. 1~3번은 저장 영수증의 documentId를 보내고 사용자가 자료 저장 없이 보기를 요청했다면 readOnly:true로 진행 상태만 기록합니다. 진행 상태 저장도 원하지 않으면 완료 기록을 남기지 마세요. 4번은 근거를 확인한 저장 판단의 decisionId 또는 완료한 기준 퀀트 백테스트의 simulationId를 함께 보냅니다. 둘 중 수행한 결과 하나를 보내고 반환된 openUrl을 안내하세요. 사용자가 브리핑만 원했다면 그 브리핑을 제공한 뒤 번호만 보냅니다. 실행 실패·자료 대기 상태는 완료 처리하지 마세요.',
