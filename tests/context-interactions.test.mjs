@@ -6,8 +6,10 @@ import assert from 'node:assert/strict';
 import {contextSourceFiles,inspectContextSource,inspectContextReview,inspectContextMatrix,checkContextInteractions} from '../scripts/check-context-interactions.mjs';
 import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
 import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS} from '../dist/ui/studio-controller.mjs';
-import {renderStudioJump,studioJumpItems,studioJumpMatches} from '../dist/ui/studio-shell.mjs';
+import {renderStudioJump,studioJumpItems,studioJumpMatches,studioJumpResearchItems} from '../dist/ui/studio-shell.mjs';
 import {terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
+import {queryMarketKnowledge} from '../server/market-knowledge.mjs';
+import {marketKnowledgeExample} from '../dist/domain/market-knowledge.mjs';
 
 test('paper decision previews separate the outcome from model response measures',()=>{
  const view={model:'jev-1.0.0',action:'hold',profileName:'추세형',confidence:1,probabilities:{buy:0,hold:1,sell:0},outcome:'NO_ORDER_REQUIRED',reasons:[]};
@@ -95,6 +97,50 @@ test('quick navigation opens a clean mind destination and labels a live-to-paper
  assert.equal(strategy.params.get('executionMode'),'live');
  const current=entries.find(item=>item.group==='현재 마인드'&&item.taskLabel==='모의 실험실');
  assert.equal(current.searchOnly,false);
+});
+
+test('quick research results identify each version and retain the search for full results',()=>{
+ const route=parseStudioRoute('#library?executionMode=live&view=documents&search=old&status=SAVED&knowledgeId=other');
+ const page={items:[
+  {id:'research-2',title:'<실습> 리서치',publisher:'발행자 A',version:2},
+  {id:'research-1',title:'<실습> 리서치',publisher:'발행자 B',version:1},
+ ],hasMore:true};
+ const entries=studioJumpResearchItems(route,'리서치',{page},studioRouteHash);
+ assert.deepEqual(entries.slice(0,2).map(item=>item.identity),['발행자 A · v2','발행자 B · v1']);
+ assert.deepEqual(entries.slice(0,2).map(item=>Object.fromEntries(parseStudioRoute(item.href).params)),[
+  {executionMode:'live',view:'documents',knowledgeId:'research-2'},
+  {executionMode:'live',view:'documents',knowledgeId:'research-1'},
+ ]);
+ assert.match(renderStudioJump(entries),/data-studio-jump-research="reader".*&lt;실습&gt; 리서치/);
+ const more=parseStudioRoute(entries[2].href).params;
+ assert.equal(more.get('search'),'리서치');
+ assert.equal(more.get('versions'),'all');
+ assert.equal(more.has('knowledgeId'),false);
+ assert.equal(studioJumpResearchItems(route,'리서치',{failed:true},studioRouteHash)[0].href,entries[2].href);
+ assert.deepEqual(studioJumpResearchItems(route,'리서치',{page:{items:[]}},studioRouteHash),[]);
+});
+
+test('quick research prioritizes title matches before limiting results',()=>{
+ const old='2026-11-01T00:00:00.000Z',recent='2026-11-10T00:00:00.000Z';
+ const entry=(id,title,version,time,summary='요약')=>{
+  const document=marketKnowledgeExample(time);
+  Object.assign(document,{id,title});
+  Object.assign(document.data,{version,summary});
+  return {id,document,status:'SAVED'};
+ };
+ const workspace={revision:1,marketKnowledge:[
+  entry('metadata','다른 자료',1,recent,'반도체 수출'),
+  entry('partial','반도체 수출 동향',1,recent),
+  entry('v1','반도체 수출',1,old),
+  entry('v2','반도체 수출',2,old),
+ ]};
+ const normal={search:'반도체 수출',pageSize:2,versions:'all'};
+ const quick={...normal,search:normal.search.normalize('NFD'),order:'relevance'};
+ const ids=result=>result.page.items.map(item=>item.id);
+ assert.deepEqual(ids(queryMarketKnowledge(workspace,normal)),['metadata','partial']);
+ const page=queryMarketKnowledge(workspace,quick);
+ assert.deepEqual(ids(page),['v2','v1']);
+ assert.deepEqual(ids(queryMarketKnowledge(workspace,{...quick,cursor:page.page.nextCursor})),['partial','metadata']);
 });
 
 const entry=(file,source,extra={})=>({file,owners:['card'],review:'SOURCE_REVIEWED',reviewedAt:'2026-11-04',reason:'카드의 상태별 기존 작업을 공용 메뉴로 연결한다.',...inspectContextSource(source),...extra});

@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T19:08:12.983Z",
-      "reason": "연결 창을 닫으면 비밀번호 입력을 지운다.",
+      "reviewedAt": "2026-11-12T06:39:18.050Z",
+      "reason": "빠른 이동의 기존 조작과 저장 자료 검색, 버전별 열기, 조회 실패 후 전체 목록 경로를 대조했습니다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "8b9fa3cfb95fb17f5083cc03d695d7b2c1aeeeeaca12a42af0f56183dcc62dba",
+      "sourceHash": "0a89f428f38b2986f9c00bdda46369ba3082bd56a725a99d74e9438a2601aff5",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -3215,8 +3215,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T05:08:38.135Z",
-      "reason": "자료별 JEV 전송 내용, 상태만 조회하는 조작, 키 설정과 동일 자료 복귀를 대조했습니다.",
+      "reviewedAt": "2026-11-12T06:39:18.055Z",
+      "reason": "빠른 이동의 기존 조작과 저장 자료 검색, 버전별 열기, 조회 실패 후 전체 목록 경로를 대조했습니다.",
       "signature": "838417f36ede62713d892450440c45c341f29039cd0a45c4a2102e670893a8ad",
       "controls": [
         [
@@ -3320,7 +3320,7 @@
           1
         ]
       ],
-      "sourceHash": "99405318a3d23fa6b80e9a8d02ad1c93a6d843aa0acea1a598a3e60781caa347",
+      "sourceHash": "35e1e72d3c8d9accf8bfc6294e0871bba5dc1e84ce5e1da46d6c041b7b62fb1c",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3335,8 +3335,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12",
-      "reason": "Quick navigation links names to scoped Strategy and Lab, distinguishes duplicates, and discloses paper-only destinations.",
+      "reviewedAt": "2026-11-12T06:39:18.051Z",
+      "reason": "빠른 이동의 기존 조작과 저장 자료 검색, 버전별 열기, 조회 실패 후 전체 목록 경로를 대조했습니다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3356,7 +3356,7 @@
           2
         ]
       ],
-      "sourceHash": "12f3f5a8890c52ffdcd973ab0ea70203351be6938a0deea31af89e5781e3ae44",
+      "sourceHash": "5ce11388f6ca6d766cb38d4b0829aaa1a98898f60d01db1a4f1d776cf1f548e2",
       "customContainers": []
     },
     {

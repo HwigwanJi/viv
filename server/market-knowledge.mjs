@@ -23,8 +23,9 @@ function relatedPolicyScopes(workspace,instrumentId,{manifests=workspace.mindMan
 }
 export function queryMarketKnowledge(workspace,query={},options={}){
   const q=query instanceof URLSearchParams?Object.fromEntries(query):query;
-  const allowed=['search','status','sourceType','authorId','level','horizon','sentiment','novelty','instrumentId','profileId','versions','pageSize','cursor'];check(Object.keys(q).every(k=>allowed.includes(k)),'KNOWLEDGE_QUERY','지원하는 자료 검색 항목을 선택하세요.');
+  const allowed=['search','status','sourceType','authorId','level','horizon','sentiment','novelty','instrumentId','profileId','versions','pageSize','cursor','order'];check(Object.keys(q).every(k=>allowed.includes(k)),'KNOWLEDGE_QUERY','지원하는 자료 검색 항목을 선택하세요.');
   if(q.versions)check(['latest','all'].includes(q.versions),'KNOWLEDGE_QUERY','자료 버전 보기 방식을 선택하세요.');
+  check(q.order===undefined||q.order==='relevance','KNOWLEDGE_QUERY','자료 검색 정렬 방식을 확인하세요.');
   const asOf=options.asOf??new Date().toISOString();check(typeof asOf==='string'&&Number.isFinite(Date.parse(asOf))&&new Date(asOf).toISOString()===asOf,'KNOWLEDGE_QUERY_TIME','자료 조회 기준 시각을 확인하세요.');
   const search=q.search??'',pageSize=Number(q.pageSize??20);check(typeof search==='string'&&search.length<=200&&Number.isInteger(pageSize)&&pageSize>=1&&pageSize<=50,'KNOWLEDGE_QUERY','검색어 200자와 페이지 크기 1~50을 확인하세요.');
   for(const [key,values] of Object.entries({status:['SAVED','DRAFT','APPROVED'],sourceType:KNOWLEDGE_SOURCE_TYPES,...KNOWLEDGE_CHOICES}))if(q[key])check(values.includes(q[key]),'KNOWLEDGE_QUERY','자료 필터의 선택값을 확인하세요.');
@@ -38,7 +39,8 @@ export function queryMarketKnowledge(workspace,query={},options={}){
     for(const item of items){const lineage=item.lineageId||item.id,prior=latest.get(lineage);if(!prior||item.version>prior.version)latest.set(lineage,item);}
     items=[...latest.values()];
   }
-  items=items.filter(item=>!search||[item.title,item.summary,item.publisher,...item.authors.map(a=>a.name)].join(' ').toLocaleLowerCase().includes(search.toLocaleLowerCase()));
+  const fold=value=>value.normalize('NFC').toLocaleLowerCase(),term=fold(search);
+  items=items.filter(item=>!term||fold([item.title,item.summary,item.publisher,...item.authors.map(a=>a.name)].join(' ')).includes(term));
   for(const key of ['status','sourceType'])if(q[key])items=items.filter(i=>i[key]===q[key]);
   for(const key of ['level','horizon','sentiment','novelty'])if(q[key])items=items.filter(i=>i.classification?.[key]===q[key]);
   if(q.authorId)items=items.filter(i=>i.authors.some(a=>a.id===q.authorId));
@@ -46,7 +48,11 @@ export function queryMarketKnowledge(workspace,query={},options={}){
   if(q.instrumentId){relationScopes=relatedPolicyScopes(workspace,getInstrument(q.instrumentId).id,{...options,asOf,profileId:q.profileId??'all'});items=items.filter(i=>relationScopes.some(s=>knowledgeRelated({scope:i.scope,data:{coverage:i.scope.coverage}},s.instrument,s.options)));}
   else if(q.profileId&&q.profileId!=='all')check((workspace.investmentProfiles??[]).some(p=>p.id===q.profileId),'PROFILE_NOT_FOUND','현재 작업공간의 마인드를 선택하세요.',404);
   const sourceTime=item=>item.publishedAt??item.publication.retrievedAt;
-  items.sort((a,b)=>sourceTime(b).localeCompare(sourceTime(a))||a.id.localeCompare(b.id));const total=items.length,index=after?items.findIndex(i=>i.id===after):-1;check(!after||index>=0,'KNOWLEDGE_CURSOR','페이지의 기준 자료를 확인하세요.');const page=items.slice(index+1,index+1+pageSize),hasMore=index+1+page.length<total;
+  const titleRank=item=>{const title=fold(item.title);return title===term?0:title.includes(term)?1:2;};
+  const relevance=q.order==='relevance';
+  items.sort((a,b)=>(relevance?titleRank(a)-titleRank(b):0)||sourceTime(b).localeCompare(sourceTime(a))||
+    (relevance?b.version-a.version:0)||a.id.localeCompare(b.id));
+  const total=items.length,index=after?items.findIndex(i=>i.id===after):-1;check(!after||index>=0,'KNOWLEDGE_CURSOR','페이지의 기준 자료를 확인하세요.');const page=items.slice(index+1,index+1+pageSize),hasMore=index+1+page.length<total;
   const payload={revision,scopeHash,lastId:page.at(-1)?.id??null};return {revision,page:{items:page,total,pageSize,hasMore,nextCursor:hasMore?encode({...payload,checksum:hashInputPackage(payload)}):null},facets:{sourceTypes:KNOWLEDGE_SOURCE_TYPES,...KNOWLEDGE_CHOICES},scope:{owner:'CURRENT_USER',asOf,search,filters:Object.fromEntries(Object.entries(q).filter(([k])=>!['cursor','pageSize','search'].includes(k))),...(relationScopes?{relationPolicy:'CURRENT_PUBLISHED_MIND_PINNED_SCOPE_UNION_V1',policyRefs:relationScopes.map(s=>s.ref).filter(Boolean)}:{})}};
 }
 export function verifyKnowledgeVersion(entries,doc){

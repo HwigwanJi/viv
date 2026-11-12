@@ -47,12 +47,29 @@ export function studioJumpMatches(text,query){
     target.includes(term)||/\p{Script=Hangul}/u.test(term)&&compact.includes(term));
 }
 
+export function studioJumpResearchItems(route,query,{page,failed},routeHash){
+  const source={page:route.page,params:new URLSearchParams({executionMode:route.params.get('executionMode')||'paper'})};
+  const href=changes=>routeHash(source,'library',{view:'documents',...changes});
+  const currentId=route.page==='library'&&route.params.get('view')==='documents'?route.params.get('knowledgeId'):null;
+  const group='저장한 투자 자료';
+  const entries=(page?.items??[]).map(item=>({
+    label:item.title,group,identity:[item.publisher,'v'+item.version].filter(Boolean).join(' · '),
+    research:'reader',href:item.id===currentId?routeHash(route,'library'):href({knowledgeId:item.id})
+  }));
+  if(failed||page?.hasMore)entries.push({
+    label:failed?'투자 자료에서 다시 검색':'투자 자료에서 결과 더 보기',group,
+    identity:failed?'빠른 검색 결과를 불러오지 못했습니다.':'',
+    research:'library',href:href({search:query,versions:'all'})
+  });
+  return entries;
+}
+
 export function renderStudioJump(entries,{modeLabel='',loading=false,error=''}={}) {
   const groups=new Map();
   for(const entry of entries){if(!groups.has(entry.group))groups.set(entry.group,[]);groups.get(entry.group).push(entry);}
   const ordered=[...groups].sort(([a],[b])=>(a==='현재 마인드'?-1:b==='현재 마인드'?1:0));
   let optionIndex=0;
-  return '<div class="studio-jump"><div class="studio-jump-search"><label class="field">화면 찾기<input type="search" data-studio-jump-query role="combobox" aria-autocomplete="list" aria-expanded="true" placeholder="마인드 이름, 전략, 계좌…" autocomplete="off" aria-controls="studio-jump-results" aria-describedby="studio-jump-count studio-jump-help"></label>'+(modeLabel?'<span class="pill">'+escape(modeLabel)+' 화면</span>':'')+'</div><p id="studio-jump-count" class="tiny muted" data-studio-jump-count role="status" aria-live="polite">'+entries.length+'개 화면</p><div class="studio-jump-problem" data-studio-jump-problem'+(error&&!loading?'':' hidden')+'><p class="error-text" data-studio-jump-error role="alert">'+escape(error)+'</p><button type="button" class="button small" data-studio-jump-retry>다시 조회</button></div><p class="tiny muted" data-studio-jump-loading role="status"'+(loading?'':' hidden')+'>마인드 목록을 불러오는 중…</p><div id="studio-jump-results" class="studio-jump-results" role="listbox" aria-label="이동할 화면">'+ordered.map(([group,items],index)=>'<section class="studio-jump-group" role="group" data-studio-jump-group aria-labelledby="studio-jump-group-'+index+'"><h3 id="studio-jump-group-'+index+'">'+escape(group)+(items[0].context?'<span class="studio-jump-context">'+escape(items[0].context)+'</span>':'')+'</h3>'+items.map(item=>'<a id="studio-jump-item-'+optionIndex+++'" role="option" aria-selected="false" tabindex="-1" data-studio-jump-item data-studio-route'+(item.searchOnly?' data-studio-jump-search-only hidden':'')+' data-studio-jump-search="'+escape([item.label,group,item.keywords,item.identity].filter(Boolean).join(' '))+'" href="'+escape(item.href)+'" title="'+escape(item.label)+'"><span>'+escape(item.taskLabel||item.label)+(item.identity?'<small class="studio-jump-context">'+escape(item.identity)+'</small>':'')+'</span>'+(item.taskSuffix?'<span class="studio-jump-task">'+escape(item.taskSuffix)+'</span>':'')+'<span class="studio-jump-arrow" aria-hidden="true">→</span></a>').join('')+'</section>').join('')+'</div><div class="studio-jump-empty" data-studio-jump-empty hidden><p>검색한 화면이 없습니다.</p><button type="button" class="button small" data-studio-jump-clear>검색어 지우기</button></div><p id="studio-jump-help" class="sr-only">위아래 방향키로 화면을 고르고 Enter로 엽니다. Esc로 닫습니다.</p><div class="studio-jump-keys" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span></div></div>';
+  return '<div class="studio-jump"><div class="studio-jump-search"><label class="field">화면 찾기<input type="search" data-studio-jump-query role="combobox" aria-autocomplete="list" aria-expanded="true" maxlength="200" placeholder="마인드, 화면, 자료 제목…" autocomplete="off" aria-controls="studio-jump-results" aria-describedby="studio-jump-count studio-jump-help"></label>'+(modeLabel?'<span class="pill">'+escape(modeLabel)+' 화면</span>':'')+'</div><p id="studio-jump-count" class="tiny muted" data-studio-jump-count role="status" aria-live="polite">'+entries.length+'개 화면</p><div class="studio-jump-problem" data-studio-jump-problem'+(error&&!loading?'':' hidden')+'><p class="error-text" data-studio-jump-error role="alert">'+escape(error)+'</p><button type="button" class="button small" data-studio-jump-retry>다시 조회</button></div><p class="tiny muted" data-studio-jump-loading role="status"'+(loading?'':' hidden')+'>마인드 목록을 불러오는 중…</p><div id="studio-jump-results" class="studio-jump-results" role="listbox" aria-label="검색 결과">'+ordered.map(([group,items],index)=>'<section class="studio-jump-group" role="group" data-studio-jump-group aria-labelledby="studio-jump-group-'+index+'"><h3 id="studio-jump-group-'+index+'">'+escape(group)+(items[0].context?'<span class="studio-jump-context">'+escape(items[0].context)+'</span>':'')+'</h3>'+items.map(item=>'<a id="studio-jump-item-'+optionIndex+++'" role="option" aria-selected="false" tabindex="-1" data-studio-jump-item data-studio-route'+(item.research?' data-studio-jump-research="'+item.research+'"':'')+(item.searchOnly?' data-studio-jump-search-only hidden':'')+' data-studio-jump-search="'+escape([item.label,group,item.keywords,item.identity].filter(Boolean).join(' '))+'" href="'+escape(item.href)+'" title="'+escape(item.label)+'"><span>'+escape(item.taskLabel||item.label)+(item.identity?'<small class="studio-jump-context">'+escape(item.identity)+'</small>':'')+'</span>'+(item.taskSuffix?'<span class="studio-jump-task">'+escape(item.taskSuffix)+'</span>':'')+'<span class="studio-jump-arrow" aria-hidden="true">→</span></a>').join('')+'</section>').join('')+'</div><div class="studio-jump-empty" data-studio-jump-empty hidden><p>검색 결과가 없습니다.</p><button type="button" class="button small" data-studio-jump-clear>검색어 지우기</button></div><p id="studio-jump-help" class="sr-only">위아래 방향키로 화면을 고르고 Enter로 엽니다. Esc로 닫습니다.</p><div class="studio-jump-keys" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span></div></div>';
 }
 
 export function selectStudioJump(root,item){
@@ -64,14 +81,18 @@ export function selectStudioJump(root,item){
   return selected;
 }
 
-export function filterStudioJump(root,query){
+export function filterStudioJump(root,query,{researchLoading=false}={}){
   let count=0;
   const searching=Boolean(query.trim());
-  for(const item of root.querySelectorAll('[data-studio-jump-item]')){item.hidden=(!searching&&item.hasAttribute('data-studio-jump-search-only'))||!studioJumpMatches(item.dataset.studioJumpSearch,query);if(!item.hidden)count++;}
+  for(const item of root.querySelectorAll('[data-studio-jump-item]')){
+    item.hidden=item.hasAttribute('data-studio-jump-research')?!searching:
+      (!searching&&item.hasAttribute('data-studio-jump-search-only'))||!studioJumpMatches(item.dataset.studioJumpSearch,query);
+    if(!item.hidden)count++;
+  }
   for(const group of root.querySelectorAll('[data-studio-jump-group]'))group.hidden=![...group.querySelectorAll('[data-studio-jump-item]')].some(item=>!item.hidden);
-  const empty=root.querySelector('[data-studio-jump-empty]'),message=empty.querySelector?.('p');empty.hidden=count>0;
-  if(message)message.textContent=root.querySelector('[data-studio-jump-loading]')?.hidden===false?'목록이 도착하면 검색 결과에 반영합니다.':'검색한 화면이 없습니다.';
-  const status=root.querySelector('[data-studio-jump-count]'),label=count+'개 화면';if(status.textContent!==label)status.textContent=label;
+  const empty=root.querySelector('[data-studio-jump-empty]'),message=empty.querySelector?.('p');empty.hidden=count>0||researchLoading;
+  if(message)message.textContent=root.querySelector('[data-studio-jump-loading]')?.hidden===false?'목록이 도착하면 검색 결과에 반영합니다.':'검색 결과가 없습니다.';
+  const status=root.querySelector('[data-studio-jump-count]'),label=researchLoading?'저장한 투자 자료 검색 중…':count+(searching?'개 검색 결과':'개 화면');if(status.textContent!==label)status.textContent=label;
   selectStudioJump(root,root.querySelector('[data-studio-jump-item][aria-selected="true"]'));
   return count;
 }

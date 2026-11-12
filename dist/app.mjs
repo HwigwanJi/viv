@@ -13,7 +13,7 @@ import {createFormDrafts} from './ui/form-draft.mjs';
 import {pixelToken} from './ui/design-tokens.mjs';
 import {installHelpTooltips} from './ui/help-tooltip.mjs';
 import {installActionMenus} from './ui/action-menu.mjs';
-import {renderStudioContext,renderMindWorkspace,studioPrimaryDestination,studioBreadcrumbs,renderStudioBreadcrumbs,createStudioRouteFocus,createStudioDialogNavigation,studioJumpItems,renderStudioJump,filterStudioJump,selectStudioJump} from './ui/studio-shell.mjs';
+import {renderStudioContext,renderMindWorkspace,studioPrimaryDestination,studioBreadcrumbs,renderStudioBreadcrumbs,createStudioRouteFocus,createStudioDialogNavigation,studioJumpItems,studioJumpResearchItems,renderStudioJump,filterStudioJump,selectStudioJump} from './ui/studio-shell.mjs';
 
 installHelpTooltips(document);
 installActionMenus(document,{window});
@@ -32,7 +32,7 @@ const entityMenu=createEntityMenu({onError:toast,navigateHref:navigateToHeading}
 const dialogFocus=createDialogFocusController({getDialog:()=>$('#detail-dialog'),getContainer:()=>$('#app'),getActiveElement:()=>document.activeElement,restoreFallback:restoreCompanionDialogFocus});
 const formDrafts=createFormDrafts(document,{getScope:()=>{const route=parseStudioRoute(location.hash);return [route.page,route.params.get('profileId')||'all',executionModeOf(route)].join('|');}});
 const routeFocus=createStudioRouteFocus({getHash:()=>location.hash,find:selector=>document.querySelector(selector)});
-function navigateToHeading(href){routeFocus.request(href,'.studio-content h1[tabindex="-1"]');if(location.hash===href)routeFocus.flush();else location.hash=href;}
+function navigateToHeading(href,selector='.studio-content h1[tabindex="-1"]'){routeFocus.request(href,selector);if(location.hash===href)routeFocus.flush();else location.hash=href;}
 const dialogNavigation=createStudioDialogNavigation({getDialog:()=>$('#detail-dialog'),cleanup:cleanupStrategyEditor,restore:restoreDialogFocus});
 const studio=createStudioController({render,open:openDialog,openStrategyEditor,close:closeDialog,getDialogToken,toast,navigate,download,getRoute:()=>parseStudioRoute(location.hash)});
 const appInstall=createAppInstall({window,navigator,open:openDialog,onError:toast,onInstalled:()=>toast('VIV 앱을 설치했습니다.')});
@@ -42,7 +42,7 @@ function toast(message){const node=$('#toast');node.textContent=message;node.cla
 function download(name,value,type='application/json'){const blob=new Blob([typeof value==='string'?value:JSON.stringify(value,null,2)],{type}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function cleanupStrategyEditor(){strategyEditorCleanup?.();strategyEditorCleanup=null;$('#detail-dialog').classList.remove('strategy-dialog');}
 function setDialogPresentation(dialog,presentation){const docked=presentation==='reader'&&innerWidth>=pixelToken('--ui-reader-breakpoint'),wasDocked=dialog.dataset.readerDocked==='true';if(dialog.open&&wasDocked!==docked)dialog.close();dialog.dataset.presentation=presentation;dialog.dataset.readerDocked=String(docked);document.documentElement.dataset.readerOpen=String(docked);if(!dialog.open){if(docked)dialog.show();else dialog.showModal();}}
-function openDialog(title,body,actions='',{presentation='modal',context=''}={}){dialogLifecycleToken++;cleanupStrategyEditor();entityMenu.close();const dialog=$('#detail-dialog');formDrafts.capture();dialogFocus.beforeOpen({replaceOrigin:presentation==='reader'&&!dialog.contains(document.activeElement)});dialog.innerHTML=`<div class="dialog-head"><div><h2 id="dialog-title">${esc(title)}</h2>${context?`<p class="dialog-context">${esc(context)}</p>`:''}</div><button class="shell-control" data-studio-action="close-dialog" aria-label="닫기">${icon('close')}</button></div><div class="dialog-body">${body}</div>${actions?`<div class="dialog-actions">${actions}</div>`:''}`;layoutDialogForm(dialog);formDrafts.prepare(dialog);setDialogPresentation(dialog,presentation);dialogFocus.focusCurrent();entityMenu.refresh();}
+function openDialog(title,body,actions='',{presentation='modal',context=''}={}){dialogLifecycleToken++;cleanupStrategyEditor();entityMenu.close();const dialog=$('#detail-dialog');formDrafts.capture();dialogFocus.beforeOpen({replaceOrigin:presentation==='reader'&&!dialog.contains(document.activeElement)});dialog.innerHTML=`<div class="dialog-head"><div><h2 id="dialog-title">${esc(title)}</h2>${context?`<p class="dialog-context">${esc(context)}</p>`:''}</div><button class="shell-control" data-studio-action="close-dialog" aria-label="닫기">${icon('close')}</button></div><div class="dialog-body">${body}</div>${actions?`<div class="dialog-actions">${actions}</div>`:''}`;layoutDialogForm(dialog);formDrafts.prepare(dialog);setDialogPresentation(dialog,presentation);dialogFocus.focusCurrent();if(presentation==='reader')routeFocus.flush();entityMenu.refresh();}
 async function openStrategyEditor(options){openDialog(options.readOnly?'판단 경로':'전략 편집','<div data-strategy-editor-root><p class="loading">편집기 불러오는 중…</p></div>');const token=getDialogToken();$('#detail-dialog').classList.add('strategy-dialog');try{const {mountStrategyGraphEditor}=await import('./vendor/strategy-graph-editor.mjs');if(token!==getDialogToken()||!$('#detail-dialog').open)return;strategyEditorCleanup=mountStrategyGraphEditor($('#detail-dialog [data-strategy-editor-root]'),{...options,onClose:closeDialog});return strategyEditorCleanup;}catch(problem){if(token===getDialogToken())openDialog('편집기 연결 오류','<p>'+esc(problem.message)+'</p>');}}
 function restoreDialogFocus(){dialogFocus.restore();}
 function closeDialog(){dialogLifecycleToken++;formDrafts.capture();cleanupStrategyEditor();const dialog=$('#detail-dialog');if(dialog.open){appNotifications.dismiss();dialog.close();document.documentElement.dataset.readerOpen='false';restoreDialogFocus();}}
@@ -86,20 +86,55 @@ function render(){
   queueMicrotask(()=>{if(token===renderGeneration){studio.mount($('#app'));entityMenu.mount($('#app'));if(hudFocus?.selector)document.querySelector('[data-hud-key="'+CSS.escape(hudFocus.key)+'"] '+hudFocus.selector)?.focus({preventScroll:true});if(retainedFocus&&document.activeElement===document.body)document.querySelector(retainedFocus)?.focus({preventScroll:true});routeFocus.flush();dialogFocus.afterRender();appNotifications.mount();routeMotion.enter($('.studio-content'),interfaceMotionKey(route));}});
 }
 
-let jumpEntriesKey='',jumpRetrying=false;
-function studioJumpEntries(route){return studioJumpItems(route,studio.navigation(route),{routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});}
+let jumpEntriesKey='',jumpRetrying=false,jumpResearch=null;
+function cancelJumpResearch(){
+  if(!jumpResearch)return;
+  clearTimeout(jumpResearch.timer);
+  jumpResearch.controller.abort();
+  jumpResearch=null;
+}
+function searchJumpResearch(query,{composing=false}={}){
+  const term=query.value.normalize('NFC').trim();
+  if(!composing&&jumpResearch?.term===term)return;
+  cancelJumpResearch();
+  if(term&&!composing){
+    const state={term,controller:new AbortController(),loading:true};
+    jumpResearch=state;
+    state.timer=setTimeout(async()=>{
+      state.timer=setTimeout(()=>state.controller.abort(),4000);
+      try {
+        const params=new URLSearchParams({search:term,versions:'all',pageSize:'6',order:'relevance'});
+        state.page=(await studio.request('/api/workspace/market-knowledge?'+params,undefined,{signal:state.controller.signal})).page;
+      } catch {
+        state.failed=true;
+      } finally {
+        clearTimeout(state.timer);
+        if(jumpResearch===state&&query.isConnected&&query.closest('dialog')?.open){
+          state.loading=false;
+          refreshStudioJump();
+        }
+      }
+    },220);
+  }
+  refreshStudioJump();
+}
+function studioJumpEntries(route){
+  const entries=studioJumpItems(route,studio.navigation(route),{routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+  return jumpResearch?[...studioJumpResearchItems(route,jumpResearch.term,jumpResearch,studioRouteHash),...entries]:entries;
+}
 function refreshStudioJump(){
   const dialog=$('#detail-dialog'),query=dialog.querySelector('[data-studio-jump-query]');if(!dialog.open||!query)return;
   const state=studio.state(),loading=state.loading||jumpRetrying,error=state.workspace?'':state.error;dialog.querySelector('[data-studio-jump-loading]').hidden=!loading;dialog.querySelector('[data-studio-jump-problem]').hidden=!error||loading;dialog.querySelector('[data-studio-jump-error]').textContent=error;dialog.querySelector('[data-studio-jump-retry]').disabled=loading;
-  const entries=studioJumpEntries(parseStudioRoute(location.hash)),key=JSON.stringify(entries);if(key===jumpEntriesKey){filterStudioJump(dialog,query.value);return;}jumpEntriesKey=key;
-  const active=dialog.querySelector('[data-studio-jump-item]:focus'),selected=dialog.querySelector('[data-studio-jump-item][aria-selected="true"]'),href=(selected||active)?.getAttribute('href'),results=dialog.querySelector('.studio-jump-results'),scroll=results.scrollTop,next=document.createElement('template');next.innerHTML=renderStudioJump(entries);results.replaceChildren(...next.content.querySelector('.studio-jump-results').childNodes);filterStudioJump(dialog,query.value);results.scrollTop=scroll;
+  const entries=studioJumpEntries(parseStudioRoute(location.hash)),key=JSON.stringify(entries),filterOptions={researchLoading:jumpResearch?.loading};if(key===jumpEntriesKey){filterStudioJump(dialog,query.value,filterOptions);return;}jumpEntriesKey=key;
+  const active=dialog.querySelector('[data-studio-jump-item]:focus'),selected=dialog.querySelector('[data-studio-jump-item][aria-selected="true"]'),href=(selected||active)?.getAttribute('href'),results=dialog.querySelector('.studio-jump-results'),scroll=results.scrollTop,next=document.createElement('template');next.innerHTML=renderStudioJump(entries);results.replaceChildren(...next.content.querySelector('.studio-jump-results').childNodes);filterStudioJump(dialog,query.value,filterOptions);results.scrollTop=scroll;
   const replacement=[...results.querySelectorAll('[data-studio-jump-item]')].find(item=>!item.hidden&&item.getAttribute('href')===href),selection=selectStudioJump(dialog,replacement);if(active)query.focus({preventScroll:true});if(document.activeElement===query)selection?.scrollIntoView({block:'nearest'});
 }
-function openStudioJump(){if($('#detail-dialog').open||studio.state().formSaving)return;const route=parseStudioRoute(location.hash),entries=studioJumpEntries(route);jumpEntriesKey=JSON.stringify(entries);openDialog('빠른 이동',renderStudioJump(entries,{modeLabel:executionModeOf(route)==='live'?'실전':'모의',loading:studio.state().loading||jumpRetrying,error:studio.state().workspace?'':studio.state().error}));filterStudioJump($('#detail-dialog'),'');$('#detail-dialog [data-studio-jump-query]')?.focus();}
+function openStudioJump(){if($('#detail-dialog').open||studio.state().formSaving)return;cancelJumpResearch();const route=parseStudioRoute(location.hash),entries=studioJumpEntries(route);jumpEntriesKey=JSON.stringify(entries);openDialog('빠른 이동',renderStudioJump(entries,{modeLabel:executionModeOf(route)==='live'?'실전':'모의',loading:studio.state().loading||jumpRetrying,error:studio.state().workspace?'':studio.state().error}));filterStudioJump($('#detail-dialog'),'');$('#detail-dialog [data-studio-jump-query]')?.focus();}
 document.addEventListener('click',event=>{if(event.target.closest('[data-studio-jump-open]'))openStudioJump();});
 document.addEventListener('click',async event=>{if(!event.target.closest('[data-studio-jump-retry]')||jumpRetrying)return;jumpRetrying=true;refreshStudioJump();$('#detail-dialog [data-studio-jump-query]')?.focus();try{await studio.refresh({coreOnly:true});}catch{/* refresh preserves the source error for the recovery UI. */}finally{jumpRetrying=false;refreshStudioJump();}});
-document.addEventListener('input',event=>{if(event.target.matches('[data-studio-jump-query]'))filterStudioJump($('#detail-dialog'),event.target.value);});
-document.addEventListener('click',event=>{if(!event.target.closest('[data-studio-jump-clear]'))return;const dialog=$('#detail-dialog'),query=dialog.querySelector('[data-studio-jump-query]');if(!query)return;query.value='';filterStudioJump(dialog,'');query.focus();});
+document.addEventListener('input',event=>{if(event.target.matches('[data-studio-jump-query]'))searchJumpResearch(event.target,{composing:event.isComposing});});
+document.addEventListener('compositionend',event=>{if(event.target.matches('[data-studio-jump-query]'))searchJumpResearch(event.target);});
+document.addEventListener('click',event=>{if(!event.target.closest('[data-studio-jump-clear]'))return;const query=$('#detail-dialog [data-studio-jump-query]');if(!query)return;query.value='';searchJumpResearch(query);query.focus();});
 document.addEventListener('keydown',event=>{
   if(event.isComposing)return;
   if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'){event.preventDefault();if($('#detail-dialog[open] [data-studio-jump-query]'))closeDialog();else openStudioJump();return;}
@@ -119,7 +154,12 @@ document.addEventListener('click',event=>{
     dialogLifecycleToken++;
     dialogNavigation.beforeRouteChange();
     if(settingsLink)closeSidebar();
-    navigateToHeading(destination.getAttribute('href'));
+    const href=destination.getAttribute('href'),sameRoute=location.hash===href;
+    cancelJumpResearch();
+    if(destination.dataset.studioJumpResearch==='reader'){
+      navigateToHeading(href,'[data-library-result-heading]');
+      if(sameRoute)void studio.openResearch(parseStudioRoute(href).params.get('knowledgeId'),{showLoading:true}).catch(()=>{});
+    }else navigateToHeading(href);
     return;
   }
   const nav=event.target.closest('[data-nav]');
@@ -128,7 +168,7 @@ document.addEventListener('click',event=>{
   if(event.target.closest('[data-studio-route]'))closeSidebar();
   if(event.target.closest('[data-studio-action="close-dialog"]'))closeDialog();
 });
-$('#detail-dialog').addEventListener('close',()=>{formDrafts.capture();if(!$('#detail-dialog').open){$('#detail-dialog [data-broker-form]')?.reset();document.documentElement.dataset.readerOpen='false';}dialogNavigation.closed();});
+$('#detail-dialog').addEventListener('close',()=>{formDrafts.capture();if(!$('#detail-dialog').open){cancelJumpResearch();$('#detail-dialog [data-broker-form]')?.reset();document.documentElement.dataset.readerOpen='false';}dialogNavigation.closed();});
 addEventListener('resize',()=>{const dialog=$('#detail-dialog');if(dialog.open&&dialog.dataset.presentation==='reader')setDialogPresentation(dialog,'reader');});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented&&$('#detail-dialog').open&&$('#detail-dialog').dataset.readerDocked==='true'){event.preventDefault();closeDialog();}});
 // Escape invalidates awaiting views before the browser queues its close event.
