@@ -52,7 +52,7 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
 });
 
 function setup(fetch, resources = []) {
-  const events = {}, attributes = new Map(), status = {hidden: false}, message = {}, ring = {style: {}};
+  const events = {}, attributes = new Map(), status = {hidden: false}, message = {}, fileStatus = {hidden: true}, ring = {style: {}};
   const button = {
     isConnected: true,
     addEventListener: (_, callback) => { button.click = callback; },
@@ -60,7 +60,7 @@ function setup(fetch, resources = []) {
     setAttribute: (name, value) => attributes.set(name, value),
     removeAttribute: name => attributes.delete(name),
   };
-  const recovery = {hidden: true, querySelector: selector => selector === 'button' ? button : message};
+  const recovery = {hidden: true, querySelector: selector => selector === 'button' ? button : selector === '[data-viv-failed-files]' ? fileStatus : message};
   const intro = {
     isConnected: true,
     querySelector: selector => selector === '.viv-intro-status' ? status : recovery,
@@ -76,7 +76,7 @@ function setup(fetch, resources = []) {
   const document = {querySelector: selector => selector === '.viv-intro' ? intro : null, getElementById: () => ({src: 'http://localhost/app.mjs'})};
   const location = {origin: 'http://localhost', pathname: '/', search: '?entry=install', reload: () => { reloads++; }};
   runInNewContext(script, {document, window, location, AbortController, fetch, URL});
-  return {events, attributes, status, message, ring, button, recovery, intro, reloads: () => reloads};
+  return {events, attributes, status, message, fileStatus, ring, button, recovery, intro, reloads: () => reloads};
 }
 
 const asset = (contentType, status = 200) => new Response(null, {status, headers: {'content-type': contentType}});
@@ -185,10 +185,34 @@ test('VIV checks the workspace module when a browser reports only the entry erro
     return method === 'GET' && url.endsWith('/app.mjs') ? asset('text/html', 404) : asset(method === 'HEAD' ? 'text/html' : 'text/javascript');
   });
   app.events.error({target: {id: 'viv-app-entry'}});
+  assert.equal(app.fileStatus.hidden, true);
   await app.button.click();
   assert.deepEqual(urls.slice(1), [['http://localhost/app.mjs', 'GET'], ['http://localhost/ui/studio-controller.mjs', 'GET']]);
   assert.equal(app.reloads(), 0);
   assert.match(app.message.textContent, /앱 파일/);
+  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/app.mjs');
+});
+
+test('VIV displays confirmed app paths and omits URLs and ambiguous transport failures', async () => {
+  const controller = 'http://localhost/ui/studio-controller.mjs?token=secret#private';
+  const shell = 'http://localhost/ui/shell.mjs?token=secret';
+  const app = setup(async (url, {method}) => {
+    if (method === 'HEAD') return asset('text/html');
+    if (url === controller) throw new TypeError('network disconnected');
+    if (url === shell) return asset('text/html', 404);
+    return asset('text/javascript');
+  }, [
+    {name: controller, initiatorType: 'script', responseStatus: 404},
+    {name: shell, initiatorType: 'script', decodedBodySize: 0},
+    {name: 'https://outside.invalid/ui/foreign.mjs', initiatorType: 'script', responseStatus: 404},
+    {name: 'http://localhost/api/private.mjs', initiatorType: 'script', responseStatus: 404},
+  ]);
+  app.events.error({target: {id: 'viv-app-entry'}});
+  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/ui/studio-controller.mjs');
+  await app.button.click();
+  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/ui/shell.mjs');
+  assert.equal(app.fileStatus.hidden, false);
+  assert.equal(app.reloads(), 0);
 });
 
 test('install entry keeps its own page on failure and retains normal modified link actions', async () => {

@@ -55,8 +55,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T14:31:59.053Z",
-      "reason": "시작 모듈 실패 화면에서 키보드로 복구 문서를 열고 원래 캘린더와 보고서로 돌아가는 동선을 확인",
+      "reviewedAt": "2026-11-12T19:30:59.490Z",
+      "reason": "확인된 앱 파일 경로 표시, 모바일·키보드 복원과 같은 보고서 재조회 검증.",
       "signature": "5519f59d210b80086618d40862701351498da4299812d670d56bf39c830f247f",
       "controls": [
         [
@@ -72,7 +72,8 @@
           1
         ]
       ],
-      "sourceHash": "a7286262ca646c1956bb04fd740aa5aeec441324f61fe170e5d5ab0f8ffc83ca"
+      "sourceHash": "8a2697de5d9944f043da7c1369adacca7e62d07304e4813a187f072627a69c31",
+      "customContainers": []
     },
     {
       "file": "dist/install.html",
@@ -3866,8 +3867,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T18:35:53.633Z",
-      "reason": "격리 서버 종료 후 PC·모바일에서 정적 복구 안내를 열고 재시작한 뒤 원래 경로와 보고서 식별값을 확인.",
+      "reviewedAt": "2026-11-12T19:30:59.491Z",
+      "reason": "확인된 앱 파일 경로 표시, 모바일·키보드 복원과 같은 보고서 재조회 검증.",
       "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
       "controls": [
         [
@@ -3883,7 +3884,7 @@
           1
         ]
       ],
-      "sourceHash": "8b994029174838f806b09960df0621516e449b71163d81071482f92b5f3ba2eb",
+      "sourceHash": "8ae35f28133d4e4e60daf35e2de42623d052ed8ef5eca4ab1e80c85f53c0d818",
       "customContainers": []
     }
   ],

@@ -4,18 +4,30 @@
   }
 
   var javascriptType = /^(?:text|application)\/javascript\b/i;
+  var appScriptPath = /^\/(?:(?:agent|domain|engine|system|trading|ui|vendor)\/[a-z0-9._/-]+|app|knowledge|store|strategy-view|notification-worker)\.m?js$/i;
   var moduleLoadFailed = false;
 
-  function failedScripts() {
+  function failedScripts(confirmedOnly) {
     var resources = window.performance?.getEntriesByType?.('resource') || [];
     return [...new Set(resources.filter(function (entry) {
       if (entry.initiatorType !== 'script') return false;
       var url = new URL(entry.name);
       if (url.origin !== location.origin || !/\.m?js$/i.test(url.pathname)) return false;
-      return entry.responseStatus === 0 || entry.responseStatus >= 400 ||
-        (entry.contentType && !javascriptType.test(entry.contentType)) ||
-        (entry.responseStatus === undefined && entry.decodedBodySize === 0);
+      var confirmed = entry.responseStatus >= 400 || (entry.contentType && !javascriptType.test(entry.contentType));
+      return confirmed || (!confirmedOnly && (entry.responseStatus === 0 ||
+        (entry.responseStatus === undefined && entry.decodedBodySize === 0)));
     }).map(function (entry) { return entry.name; }))];
+  }
+
+  function showFailedFiles(status, urls) {
+    if (!status) return;
+    var paths = new Set();
+    for (var url of urls) {
+      var file = new URL(url);
+      if (file.origin === location.origin && appScriptPath.test(file.pathname)) paths.add('dist' + file.pathname);
+    }
+    status.textContent = paths.size ? '확인할 앱 파일 ' + [...paths].join(', ') : '';
+    status.hidden = !paths.size;
   }
 
   async function scriptAvailable(url, options) {
@@ -25,14 +37,15 @@
       await response.arrayBuffer();
       return true;
     } catch {
-      return false;
+      return null;
     }
   }
 
-  async function confirmAndOpen(control, status, pageUrl, entryUrl, open) {
+  async function confirmAndOpen(control, status, pageUrl, entryUrl, open, fileStatus) {
     if (control.getAttribute('aria-disabled') === 'true') return;
     control.setAttribute('aria-disabled', 'true');
     status.textContent = 'VIV 서버에 연결할 수 있는지 확인 중…';
+    showFailedFiles(fileStatus, []);
     var controller = new AbortController();
     var timeout = window.setTimeout(function () { controller.abort(); }, 4000);
     var options = {method: 'HEAD', cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: controller.signal};
@@ -47,8 +60,10 @@
           var targets = failedScripts();
           // shortcut: check the workspace module when the browser omits failed URLs, extend if other boot dependencies need this fallback.
           if (moduleLoadFailed && targets.length === 0) targets.push(new URL('./ui/studio-controller.mjs', entryUrl).href);
-          var scripts = await Promise.all([...new Set([entryUrl, ...targets])].map(function (url) { return scriptAvailable(url, options); }));
+          var urls = [...new Set([entryUrl, ...targets])];
+          var scripts = await Promise.all(urls.map(function (url) { return scriptAvailable(url, options); }));
           ready = scripts.every(Boolean);
+          showFailedFiles(fileStatus, urls.filter(function (_, index) { return scripts[index] === false; }));
         }
         if (ready) {
           if (control.isConnected) open();
@@ -83,17 +98,19 @@
   var recovery = intro.querySelector('[data-viv-boot-failure]');
   var retry = recovery.querySelector('button');
   var status = recovery.querySelector('[data-viv-retry-status]');
+  var fileStatus = recovery.querySelector('[data-viv-failed-files]');
   function showRecovery() {
     if (!intro.isConnected || !recovery.hidden) return;
     intro.querySelector('.viv-intro-status').hidden = true;
     var rings = intro.querySelectorAll('.viv-intro-orbit i');
     for (var i = 0; i < rings.length; i++) rings[i].style.animation = 'none';
+    showFailedFiles(fileStatus, failedScripts(true));
     recovery.hidden = false;
   }
   retry.addEventListener('click', function () {
     return confirmAndOpen(retry, status, location.pathname + location.search, document.getElementById('viv-app-entry').src, function () {
       location.reload();
-    });
+    }, fileStatus);
   });
   window.addEventListener('error', function (event) {
     if (event.target?.id === 'viv-app-entry') moduleLoadFailed = true;
