@@ -3223,8 +3223,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T09:37:03.346Z",
-      "reason": "저장된 첫 모의 판단의 시세와 체결 결과를 모바일에서 읽고 같은 마인드의 모의 트레이딩으로 이어지는 동선을 대조했습니다.",
+      "reviewedAt": "2026-11-12T10:05:33.684Z",
+      "reason": "모의 판단 화면의 근거를 MCP와 공유하면서 기록 조회·계속하기를 대조했습니다.",
       "signature": "1745e71be5ed9d17ccaba26f637407a1e508c7b613aeec1d73251c150dd1ca99",
       "controls": [
         [
@@ -3328,7 +3328,7 @@
           1
         ]
       ],
-      "sourceHash": "e6ba1af017cd3af390d39df7ed0035dcc5d0250a30d943c893e2f169ea1975ac",
+      "sourceHash": "fa3e93ba03bd556e5582ce91b98e4f7c9c084d9ed002ebbe1b56782accce9562",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

@@ -12,7 +12,8 @@ import {parseMindData} from '../dist/domain/mind-manifest.mjs';
 import {CLUTCH_DEFAULTS,CLUTCH_PARAMETER_SCHEMA,validateClutchParameters} from '../dist/engine/clutch-policy.mjs';
 import {compileStrategyGraph} from '../dist/domain/strategy-graph.mjs';
 import {assertStrategyLearningResearchInput,strategyLearningResearchProtocol} from './strategy-learning-research.mjs';
-import {MARKET_TIMEFRAME_MS} from '../dist/domain/instruments.mjs';
+import {getInstrument,MARKET_TIMEFRAME_MS} from '../dist/domain/instruments.mjs';
+import {isFirstPaperDecisionPlan,paperTrendResultBasis} from '../dist/domain/paper-mind-presets.mjs';
 import {VIV_INSTRUCTIONS,VIV_PLAYBOOK,VIV_TUTORIAL_ACTIONS,vivOnboarding} from './viv-onboarding.mjs';
 const identifierSchema={type:'string',minLength:1,maxLength:200,pattern:'^[a-zA-Z0-9][a-zA-Z0-9_.:@-]{0,199}$'};
 const revisionSchema={type:'integer',minimum:0,maximum:Number.MAX_SAFE_INTEGER};
@@ -59,7 +60,7 @@ const schemas={
   read_investment_status:objectSchema(),
   run_due_paper_jobs:objectSchema({maxJobs:{type:'integer',minimum:1,maximum:3}}),
   read_mind_catalog:objectSchema(),
-  read_trading_context:objectSchema({mindId:identifierSchema,instrumentId:identifierSchema,decisionId:identifierSchema,timeframe:{type:'string',enum:Object.keys(MARKET_TIMEFRAME_MS)},mode:{type:'string',enum:['live','replay']}},['instrumentId']),
+  read_trading_context:objectSchema({mindId:identifierSchema,instrumentId:identifierSchema,decisionId:identifierSchema,timeframe:{type:'string',enum:Object.keys(MARKET_TIMEFRAME_MS)},mode:{type:'string',enum:['live','replay']},view:{const:'result',description:'decisionId와 함께 저장된 현재 시세 모의 판단의 이유와 체결 건수만 조회합니다.'}},['instrumentId']),
   write_mind_document:{...objectSchema({document:{type:'object',maxProperties:60,description:'앱이 제공하는 양식에 맞춘 문서 객체. 서버가 형식과 근거를 검증합니다.'},text:{type:'string',minLength:1,maxLength:160000},format:{type:'string',enum:['json','yaml']},expectedRevision:revisionSchema,idempotencyKey:identifierSchema},['expectedRevision','idempotencyKey']),oneOf:[{required:['document'],not:{required:['text']}},{required:['text'],not:{required:['document']}}]},
   classify_mind_document:objectSchema({documentId:identifierSchema,expectedRevision:revisionSchema,idempotencyKey:identifierSchema},['documentId','expectedRevision','idempotencyKey']),
   read_mind_manifest:objectSchema({mindId:identifierSchema,format:{type:'string',enum:['json','yaml']}},['mindId','format']),
@@ -93,10 +94,10 @@ const descriptions={
   write_market_knowledge:'공개 원문을 조사한 market-knowledge JSON/YAML을 초안으로 보관합니다. 내용 수정은 새 ID와 다음 버전으로 작성하며 승인은 앱에서 수행합니다. 분석 LLM API를 추가 호출하지 않습니다.',
   classify_market_knowledge:'자료 전체와 관련 승인 자료 최대 8개의 제목·요약·핵심 내용을 TypeSafe JEV에 보내 분류합니다. JEV API 사용량은 과금될 수 있습니다. 응답이 끊기면 read_market_knowledge에서 같은 documentId의 classificationAttempt 또는 저장된 분류를 먼저 읽으세요. 같은 요청 키는 저장된 결과를 반환합니다.',
   export_market_knowledge:'시장 지식 원문과 버전·출처·해시를 JSON/YAML로 내보내 새 버전의 분석에 사용합니다.',
-  read_investment_status:'현재 사용자 마인드 계좌·신규/기존 결정·관측·문서 검토·예약 상태를 원본 종류와 시점별로 조회합니다. 저장 평가값을 제공하며 서로 다른 계좌·통화를 합산하지 않습니다.',
+  read_investment_status:'현재 사용자 마인드 계좌·최근 결정·관측·문서 검토·예약 상태를 원본 종류와 시점별로 조회합니다. 저장 평가값은 계좌·통화별로 제공합니다. 최근 모의 판단의 이유와 체결 건수는 해당 id, profileId, instrumentId로 read_trading_context의 result 보기를 사용하세요.',
   run_due_paper_jobs:'실행 시각이 된 사용자 동의 모의투자 작업을 처리하고 결과를 보관합니다.',
   read_mind_catalog:'투자 마인드, 원칙·학습 문서와 작성 양식을 조회합니다. 실제 자료를 먼저 읽고 분석 문서를 작성하세요.',
-  read_trading_context:'선택한 종목과 마인드의 확정 캔들·원칙·기억을 조회합니다. decisionId를 함께 전달하면 같은 사용자의 실제 판단 원요청·원응답·계좌·실행·후속 관측 원문을 범위 검증 후 제공합니다.',
+  read_trading_context:'선택한 종목과 마인드의 확정 캔들·원칙·기억을 조회합니다. 왜 판단했는지 또는 체결됐는지 묻는 경우 decisionId와 view:result로 저장된 현재 시세 모의 판단의 결과만 읽으세요. decisionId만 함께 전달하면 전체 판단 원문을 포함합니다.',
   write_mind_document:'JSON 또는 YAML 양식의 분석 문서를 검토 가능한 초안으로 저장합니다. 승인·활성화는 앱에서 수행합니다. 별도 분석 LLM API를 호출하지 않습니다.',
   classify_mind_document:'저장한 문서의 공통 메타데이터를 실제 JEV Choice로 분류하고 결과를 기록합니다. 이 명시적 작업은 JEV API를 호출합니다.',
   read_mind_manifest:'투자 마인드의 원칙·설정·문서 참조를 JSON 또는 YAML 매니페스트로 내보냅니다.',
@@ -111,6 +112,7 @@ function validArguments(name,args){
   const automation=automationTool(name);if(automation)return validAutomationInput(automation,args)&&safeDocument(args);
   if(!plain(args)||!Object.hasOwn(schemas,name)||Object.keys(args).some(key=>!Object.hasOwn(schemas[name].properties,key)))return false;
   if((schemas[name].required??[]).some(key=>!Object.hasOwn(args,key)))return false;
+  if(name==='read_trading_context'&&Object.hasOwn(args,'view')&&(args.view!=='result'||!id(args.decisionId)))return false;
   if(name==='viv_onboarding'){
     const count=Object.keys(args).length;
     if(args.action==='pause'||args.action==='resume'||args.action==='defer_connection')return count===1;
@@ -255,6 +257,25 @@ async function callMindTool(request,env,options,name,args){
     return toolResult({ok:true,catalog:catalog.value,forms:forms.value,researchProtocol:strategyLearningResearchProtocol(),marketKnowledge:{formsUrl:'/api/workspace/market-knowledge/forms',...(knowledgeForm.ok?{form:knowledgeForm.value}:{}),writeTool:'write_market_knowledge',saveTool:'save_market_research',classifyTool:'classify_market_knowledge',...(library.ok?{page:library.value.page,revision:library.value.revision}:{})}});
   }
   if(name==='read_trading_context'){
+    if(args.view==='result'){
+      const detail=await studioCall(request,env,options,'/api/workspace/decisions/detail?'+new URLSearchParams({id:args.decisionId}));
+      if(!detail.ok)return toolResult(detail.value,true);
+      const saved=detail.value.decision,scope=decisionScope(saved,args);
+      if(!scope.ok)return toolResult(scope,true);
+      const {record,manifest,fills}=saved;
+      if((record.experimentType??record.inputPackage?.experimentType)!=='FORWARD_PAPER')
+        return toolResult({ok:false,code:'PAPER_DECISION_REQUIRED',message:'현재 시세 모의 판단의 기록을 선택하세요.'},true);
+      const timeframe=record.timeframe??record.inputPackage?.timeframe??record.rawRequest?.state?.market?.timeframe??record.strategyEvaluation?.timeframe??null;
+      if(timeframe&&args.timeframe&&timeframe!==args.timeframe)
+        return toolResult({ok:false,code:'DECISION_TIMEFRAME_SCOPE',message:'저장된 판단의 캔들 주기를 확인하세요.'},true);
+      let quoteCurrency=record.quoteCurrency??null;
+      if(!quoteCurrency)try{quoteCurrency=getInstrument(scope.instrumentId).quoteCurrency;}catch{}
+      const basis=isFirstPaperDecisionPlan(manifest?.data?.strategyPlan)?paperTrendResultBasis(record,fills):null;
+      return toolResult({ok:true,result:{decisionId:record.id,profileId:scope.profileId,instrumentId:scope.instrumentId,timeframe,
+        executionMode:'paper',asOf:record.asOf??record.inputPackage?.asOf??null,quoteCurrency,action:record.decision?.action??null,
+        executionStatus:record.execution?.status??null,fillCount:Array.isArray(fills)?fills.length:null,basis,
+        openUrl:new URL(paperDecisionRecordHash(record.id),new URL(request.url).origin).href}});
+    }
     const query=new URLSearchParams({...(args.mindId?{profileId:args.mindId}:{}),instrumentId:args.instrumentId,...(args.timeframe?{timeframe:args.timeframe}:{}),...(args.mode?{mode:args.mode}:{})});
     const [context,minds,detail]=await Promise.all([studioCall(request,env,options,'/api/workspace/terminal?'+query),studioCall(request,env,options,'/api/workspace/minds'),args.decisionId?studioCall(request,env,options,'/api/workspace/decisions/detail?'+new URLSearchParams({id:args.decisionId})):Promise.resolve(null)]);
     if(!context.ok||!minds.ok)return toolResult(!context.ok?context.value:minds.value,true);

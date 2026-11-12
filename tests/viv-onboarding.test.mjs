@@ -6,6 +6,47 @@ import {querySimulationCollection} from '../server/simulation-collection.mjs';
 import {terminalErrorRecovery} from '../server/terminal-readiness.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
 import {handleMindStudioAPI} from '../server/mind-studio.mjs';
+import {createPaperMindPresetGraph} from '../dist/domain/paper-mind-presets.mjs';
+
+test('stored paper result reads one owner-scoped record and separates an unknown count from zero',async()=>{
+  const record={id:'mind-run-example',profileId:'mind-a',instrumentId:'crypto:okx:BTC-USDT',experimentType:'FORWARD_PAPER',
+    timeframe:'4h',asOf:'2026-11-12T08:00:00.000Z',decision:{action:'hold'},execution:{status:'NO_ORDER_REQUIRED'},
+    strategyEvaluation:{modules:[{moduleId:'SMA_TREND',ready:true,indicators:{close:80,slowMA:100,lookbackBars:480}}],
+      graphEvaluation:{trace:[{nodeId:'trend-decision',output:{decision:{action:'sell',targetWeight:0}}}],output:{currentWeight:0,deltaWeight:0}}}};
+  const manifest={data:{strategyPlan:{approval:{enabled:true},scope:{instrumentId:record.instrumentId,timeframe:'4h'},graph:createPaperMindPresetGraph('regime-trend')}}};
+  let fills=[];
+  const reads=[];
+  const studioHandler=request=>{
+    const url=new URL(request.url),owner=request.headers.get('oai-authenticated-user-id');
+    reads.push({method:request.method,path:url.pathname,id:url.searchParams.get('id'),owner});
+    if(owner!=='owner-a')return Response.json({ok:false,code:'RECORD_NOT_FOUND'},{status:404});
+    return Response.json({ok:true,decision:{record,manifest,fills,evidence:{notes:['private-source']}}});
+  };
+  const call=async(overrides={},owner='owner-a')=>{
+    const args={view:'result',decisionId:record.id,instrumentId:record.instrumentId,mindId:record.profileId,...overrides};
+    const request=new Request('http://localhost:4317/mcp',{method:'POST',headers:{'oai-authenticated-user-id':owner},
+      body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'read_trading_context',arguments:args}})});
+    return (await (await handleMcp(request,{},{studioHandler})).json()).result;
+  };
+  const first=await call(),saved=first.structuredContent.result;
+  assert.equal(first.isError,false);
+  assert.deepEqual(reads,[{method:'GET',path:'/api/workspace/decisions/detail',id:record.id,owner:'owner-a'}]);
+  assert.equal(saved.fillCount,0);
+  assert.equal(saved.executionStatus,'NO_ORDER_REQUIRED');
+  assert.equal(saved.basis.orderReason,'TARGET_ALREADY_REACHED');
+  assert.match(saved.basis.explanation,/모의 주문 없이 유지/);
+  assert.equal(new URL(saved.openUrl).hash.split('search=')[1],record.id);
+  assert.doesNotMatch(first.content[0].text,/private-source/);
+  fills=undefined;
+  const unknown=(await call()).structuredContent.result;
+  assert.equal(unknown.fillCount,null);
+  assert.equal(unknown.basis.explanation,undefined);
+  assert.equal((await call({instrumentId:'crypto:okx:ETH-USDT'})).structuredContent.code,'DECISION_INSTRUMENT_SCOPE');
+  assert.equal((await call({mindId:'mind-b'})).structuredContent.code,'DECISION_MIND_SCOPE');
+  assert.equal((await call({timeframe:'1h'})).structuredContent.code,'DECISION_TIMEFRAME_SCOPE');
+  assert.equal((await call({},'owner-b')).structuredContent.code,'RECORD_NOT_FOUND');
+  assert.equal((await call({decisionId:undefined})).structuredContent.code,'INVALID_TOOL_ARGUMENTS');
+});
 
 test('VIV MCP negotiates, guides first use, creates a paper budget and preserves it on replay',async()=>{
   const local=await openLocalDatabase(':memory:');

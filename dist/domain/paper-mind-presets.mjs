@@ -1,9 +1,10 @@
 import {createDecisionStrategyNode,compileDecisionStrategyGraph,DECISION_GRAPH_VERSION} from './strategy-decision-graph.mjs';
-import {createStrategyModule} from './strategy-graph.mjs';
+import {createStrategyModule,strategyGraphHash} from './strategy-graph.mjs';
 import {createP50PullbackGraph} from './hourly-pullback.mjs';
 import {createAdaptivePortfolioGraph} from './adaptive-portfolio-graph.mjs';
 
 const BTC='crypto:okx:BTC-USDT';
+export const FIRST_PAPER_DECISION_STARTER='regime-trend';
 export const PAPER_MIND_STARTERS=Object.freeze([
  {id:'adaptive-portfolio',name:'국면 학습 · 현금과 다종목 배분',timeframe:'1h',minHistoryBars:150,description:'시장 상태에 따라 추세·돌파·반등·현금을 함께 평가하고 공동 자금의 목표 비중을 조정합니다.',universe:['BTC','ETH','SOL','XRP','ADA','AVAX','LINK','DOGE'].map(s=>'crypto:upbit:KRW-'+s),maxPositions:8,rebalanceEveryBars:1,philosophy:'확정 시간봉의 추세·시장 폭·변동성·분산으로 유사 국면을 찾는다. 완료된 6시간 보유의 비용 차감 성과로 전략 배분을 학습하고 현금보다 추정 성과가 높은 전략에만 참여한다. 한 개의 원장에서 현금과 여러 종목을 함께 관리하며 매도 체결 대조 이후 매수한다. 시간봉마다 목표를 갱신하고 주문과 보유는 실시간 관리한다. 과거 성과와 미래 수익을 구분한다.'},
  {id:'p50-pullback',name:'급등 후 눌림 P50 · 분할익절',timeframe:'1h',minHistoryBars:7,description:'급등·매도 체결대금·호가 눌림을 확인하고 현금 50%로 진입합니다. Bybit 6종목의 개발 구간 성과를 출발점으로 업비트에서 별도 운용합니다.',universe:['BTC','ETH','SOL','MPLX','BIRB','DOOD'].map(s=>'crypto:upbit:KRW-'+s),maxPositions:1,rebalanceEveryBars:1,philosophy:'최근 1시간 +5% 또는 6시간 +10%인 종목 중 5분 매도대금이 우세하고 호가 중간값이 내린 종목을 6시간 상승률 순으로 고른다. 현금 50% 진입, 순수익 20·30·40%에서 남은 수량 20%씩 익절하고 신호 6시간 뒤 청산한다. 구간별 24시간 중복 익절을 현재 보유 회차에 적용한다.'},
@@ -72,4 +73,20 @@ export function createPaperMindPresetGraph(presetId,parameters={}){
  add('risk','RISK',{maxExposure:presetId==='bear-rebound'?.35:1,maxOrderWeight:1,minConfidence:.6});add('order','ORDER',{execution:'PAPER',sizing:'TARGET_WEIGHT'});wire(final,'risk','decision','decision');wire('risk','order','approved','approved');
  const graph={schemaVersion:2,contractVersion:DECISION_GRAPH_VERSION,triggers:['manual','closed_bar'],nodes,edges,outputNodeId:'order'};
  compileDecisionStrategyGraph(graph);return graph;
+}
+
+const firstPaperDecisionGraphHash=strategyGraphHash(createPaperMindPresetGraph(FIRST_PAPER_DECISION_STARTER));
+export const isFirstPaperDecisionPlan=plan=>plan?.approval?.enabled&&plan.scope?.instrumentId===BTC&&
+ plan.scope.timeframe==='4h'&&plan.graph?.schemaVersion===2&&strategyGraphHash(plan.graph)===firstPaperDecisionGraphHash;
+
+export function paperTrendResultBasis(record,fills){
+ const evaluation=record.strategyEvaluation,trend=Array.isArray(evaluation?.modules)?evaluation.modules.find(module=>module.moduleId==='SMA_TREND'):null;
+ const {close,slowMA,lookbackBars}=trend?.indicators??{};
+ if(![close,slowMA,lookbackBars].every(Number.isFinite))return null;
+ const graph=evaluation.graphEvaluation,output=graph?.output;
+ const signal=Array.isArray(graph?.trace)?graph.trace.find(step=>step.nodeId==='trend-decision')?.output?.decision:null;
+ const noPosition=trend.ready===true&&record.decision?.action==='hold'&&record.execution?.status==='NO_ORDER_REQUIRED'&&fills?.length===0&&
+  signal?.action==='sell'&&signal.targetWeight===0&&output?.currentWeight===0&&output.deltaWeight===0&&close<=slowMA;
+ return {close,slowMA,lookbackBars,...(noPosition?{currentWeight:0,targetWeight:0,orderReason:'TARGET_ALREADY_REACHED',
+  explanation:'확정 종가가 이동평균'+(close===slowMA?'과 같아':'보다 낮아')+' 목표 보유 비중은 0%였습니다. 당시 이 종목의 보유 비중도 0%여서 매도할 수량이 없었고 모의 주문 없이 유지했습니다.'}:{})};
 }

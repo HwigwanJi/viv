@@ -12,7 +12,7 @@ import {createMindLifeRuntime,renderLifeGallery,renderLifeStage} from './mind-li
 import {renderCapabilityCatalog,filterCapabilityCatalog} from './capability-catalog.mjs';
 import {callAutomation} from '../system/automation-contracts.mjs';
 import {currencyAmount} from './currency-format.mjs';
-import {PAPER_MIND_STARTERS,createPaperMindPresetGraph} from '../domain/paper-mind-presets.mjs';
+import {PAPER_MIND_STARTERS,createPaperMindPresetGraph,FIRST_PAPER_DECISION_STARTER,isFirstPaperDecisionPlan as firstDecisionPlan,paperTrendResultBasis} from '../domain/paper-mind-presets.mjs';
 import {STRATEGY_TRACE_TYPES,strategyInputNodeLabel,strategyTraceNodeLabel,strategyTraceValue,strategyTraceSelection} from './decision-method.mjs';
 import {submitPaperFunding} from './paper-funding-request.mjs';
 import {paperBudgetSummary} from '../domain/paper-budget.mjs';
@@ -63,11 +63,7 @@ const pct=value=>Number.isFinite(value)?num(value*100)+'%':'—';
 const percentagePoints=value=>Number.isFinite(value)?num(value*100)+'%p':'—';
 const when=value=>value&&Number.isFinite(Date.parse(value))?new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(value))+' KST':'—';
 const byId=(items,id)=>list(items).find(item=>item.id===id);
-const FIRST_DECISION_STARTER='regime-trend';
 const firstPaperDecision=route=>route.page==='trade'&&executionModeOf(route)==='paper'&&route.params.get('firstDecision')==='1';
-const firstDecisionGraphHash=strategyGraphHash(createPaperMindPresetGraph(FIRST_DECISION_STARTER));
-const firstDecisionPlan=plan=>plan?.approval?.enabled&&plan.scope?.instrumentId===PAPER_DECISION_INSTRUMENT&&
-  plan.scope.timeframe===PAPER_DECISION_TIMEFRAME&&plan.graph?.schemaVersion===2&&strategyGraphHash(plan.graph)===firstDecisionGraphHash;
 const button=(label,action,id='',extra='',className='')=>`<button type="button" class="button small${className?' '+esc(className):''}" data-studio-action="${action}" data-studio-id="${esc(id)}" ${extra}>${esc(label)}</button>`;
 const row=(label,value)=>`<div class="detail-row"><span>${esc(label)}</span><strong>${value}</strong></div>`;
 function savedDecisionManifest(record,detail){const manifest=detail.manifest;if(!manifest||manifest.id!==record.manifestId||manifest.scope?.profileId!==record.profileId)return null;try{return mindDocumentHash(manifest)===record.manifestHash?manifest:null;}catch{return null;}}
@@ -87,14 +83,9 @@ function savedDecisionContext(record,detail,view){
   return '<section class="studio-detail-intro" data-saved-decision-context data-decision-id="'+esc(record.id)+'" data-profile-id="'+esc(profileId)+'" data-instrument-id="'+esc(instrumentId)+'"><strong>'+esc(name)+' · '+esc(instrument?.symbol||instrumentId||'종목 미기록')+' · '+esc(instrument?.venue||'거래소 미기록')+'</strong><p class="tiny muted">'+esc(period)+' · '+esc(mode)+(Number.isSafeInteger(version)?' · 적용 정책 v'+version:'')+'</p></section>';
 }
 export function paperTrendDecisionBasis(record,currency,fills){
-  const evaluation=record.strategyEvaluation,trend=list(evaluation?.modules).find(module=>module.moduleId==='SMA_TREND');
-  const {close,slowMA,lookbackBars}=trend?.indicators??{};
-  if(![close,slowMA,lookbackBars].every(Number.isFinite))return '';
-  const graph=evaluation.graphEvaluation,output=graph?.output;
-  const signal=list(graph?.trace).find(step=>step.nodeId==='trend-decision')?.output?.decision;
-  const noPosition=trend.ready===true&&record.decision?.action==='hold'&&record.execution?.status==='NO_ORDER_REQUIRED'&&fills?.length===0&&
-    signal?.action==='sell'&&signal.targetWeight===0&&output?.currentWeight===0&&output.deltaWeight===0&&close<=slowMA;
-  const explanation=noPosition?'<p>확정 종가가 이동평균'+(close===slowMA?'과 같아':'보다 낮아')+' 목표 보유 비중은 0%였습니다. 당시 이 종목의 보유 비중도 0%여서 매도할 수량이 없었고 모의 주문 없이 유지했습니다.</p>':'';
+  const basis=paperTrendResultBasis(record,fills);
+  if(!basis)return '';
+  const {close,slowMA,lookbackBars}=basis,explanation=basis.explanation?'<p>'+esc(basis.explanation)+'</p>':'';
   return '<section class="studio-detail-intro" aria-labelledby="paper-trend-basis"><h3 id="paper-trend-basis">판단에 사용한 시세</h3><p>확정 종가 '+esc(money(close,currency))+' · '+num(lookbackBars,0)+'봉 이동평균 '+esc(money(slowMA,currency))+'</p>'+explanation+'</section>';
 }
 function savedPolicyContext(saved,currentPolicy){
@@ -1170,7 +1161,7 @@ export function createStudioController(hooks={},options={}){
       <label class="field">시작 전략
         <select name="starterId" aria-describedby="mind-starter-hint">
           <option value="">직접 구성</option>
-          <optgroup label="기본 프리셋">${PAPER_MIND_STARTERS.map(v=>`<option value="${esc(v.id)}"${guided&&v.id===FIRST_DECISION_STARTER?' selected':''}>${esc(v.name)}</option>`).join('')}</optgroup>
+          <optgroup label="기본 프리셋">${PAPER_MIND_STARTERS.map(v=>`<option value="${esc(v.id)}"${guided&&v.id===FIRST_PAPER_DECISION_STARTER?' selected':''}>${esc(v.name)}</option>`).join('')}</optgroup>
         </select>
       </label>
       <small class="muted" id="mind-starter-hint">기본 프리셋 ${PAPER_MIND_STARTERS.length}개 중 고르면 설명과 투자 범위를 확인할 수 있습니다.</small>
