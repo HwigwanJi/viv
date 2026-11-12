@@ -1639,9 +1639,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T04:44:59.540Z",
-      "reason": "공개일 미확인 직접 저장, 원문·수신 표시, 자료 저장·버전 이동과 브라우저 주소 동기화를 대조했습니다.",
-      "signature": "90b448c9c7974a11f737555483bb6985a9abd96b5020dd073b4d45349c3037d5",
+      "reviewedAt": "2026-11-12T05:08:38.134Z",
+      "reason": "자료별 JEV 전송 내용, 상태만 조회하는 조작, 키 설정과 동일 자료 복귀를 대조했습니다.",
+      "signature": "fc62539c5608fc0186bcd59c0b651ffd22d5ab1463dc726c179f28b8af9beb33",
       "controls": [
         [
           "data-library-action",
@@ -1681,7 +1681,7 @@
         ],
         [
           "element:a",
-          2
+          3
         ],
         [
           "element:button",
@@ -1709,7 +1709,7 @@
         ],
         [
           "helper:button(",
-          19
+          21
         ],
         [
           "helper:renderActionMenu(",
@@ -1720,7 +1720,7 @@
           1
         ]
       ],
-      "sourceHash": "2158e31ac71d4a49c6c738b7fa21547bbee19e96d7cf7d204745b8486e014e0b"
+      "sourceHash": "7d79e4b7fd7e3ef48e101fbf09dc711087e4a4add8d62afff33842ef4b50a250"
     },
     {
       "file": "dist/ui/mind-activity-resource.mjs",
@@ -3211,9 +3211,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12",
-      "reason": "Mind navigation exposes creation context for duplicate-name results while retaining archived scope filtering.",
-      "signature": "3037014b83eb4f42f49c43cc661707357ef5cf55a1196b1b1dcaeec2b89b8e28",
+      "reviewedAt": "2026-11-12T05:08:38.135Z",
+      "reason": "자료별 JEV 전송 내용, 상태만 조회하는 조작, 키 설정과 동일 자료 복귀를 대조했습니다.",
+      "signature": "838417f36ede62713d892450440c45c341f29039cd0a45c4a2102e670893a8ad",
       "controls": [
         [
           "data-auto-action",
@@ -3281,7 +3281,7 @@
         ],
         [
           "element:a",
-          29
+          30
         ],
         [
           "element:button",
@@ -3316,7 +3316,7 @@
           1
         ]
       ],
-      "sourceHash": "87fadaa890c7d805607ccc2f5796a8d418571ab238756d227a02c53a051a45e7",
+      "sourceHash": "99405318a3d23fa6b80e9a8d02ad1c93a6d843aa0acea1a598a3e60781caa347",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

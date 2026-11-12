@@ -28,6 +28,10 @@ const libraryColumns=['source','scope','classification','publication','status'];
 const table=(heads,rows,empty,{library=false}={})=>!rows.length?'<div class="empty">'+esc(empty)+'</div>':library?renderDataTable(heads.map((label,i)=>({label,widthClass:'studio-library-col-'+libraryColumns[i]})),rows,{className:'studio-library-table'}):'<div class="studio-table-scroll"><table class="studio-table"><thead><tr>'+heads.map(h=>'<th scope="col">'+h+'</th>').join('')+'</tr></thead><tbody>'+rows.map(cells=>'<tr>'+cells.map(cell=>'<td>'+cell+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>';
 export const isLibraryDocuments=route=>route.page==='library'&&route.params.get('view')==='documents';
 
+function providerUsageLabel(usage){
+  const tokens=[['input_tokens','입력'],['output_tokens','출력']].flatMap(([key,label])=>Number.isSafeInteger(usage?.[key])?[label+' '+usage[key].toLocaleString('ko-KR')+'토큰']:[]);
+  return tokens.join(' · ')||'응답에 미기록';
+}
 function readingContent(doc){
   const normalize=text=>String(text??'').trim().replace(/\s+/g,' '),seen=new Set([normalize(doc.title)]);
   const unique=text=>{const key=normalize(text);if(!key||seen.has(key))return false;seen.add(key);return true;};
@@ -47,7 +51,7 @@ export function libraryImportExample(source,{now=new Date().toISOString(),id='kn
 /** Shared source library: cursor reads and immutable content/version actions. */
 export function createMarketLibrary(hooks){
   let data=null,loading=false,error='',generation=0,abort=null,key='',searchTimer=null,searchFocus=null,filterFocus=null,chipFocus=null,queryText='',started=false,commandPending=false,selectedId=null,detailGeneration=0,readerItems=[],readerQuery='',linkedReadKey=null,adjacentRouteId=null,pageFocus=null,editorGeneration=0,editorFlight=null,editorRetry=null;
-  const committedForms=new WeakSet(),committedClassifications=new Set(),committedApprovals=new Set();
+  const committedForms=new WeakSet(),committedClassifications=new Set(),interruptedClassifications=new Set(),committedApprovals=new Set();
   const cursors=createCursorHistory();
   const current=()=>hooks.getRoute(),redraw=()=>{rememberFocus();hooks.render?.();},busy=()=>hooks.isBusy?.()||false;
   function rememberFocus(){const focused=typeof document==='undefined'?null:document.activeElement;if(focused?.matches?.('[data-library-action="clear-filter"]'))chipFocus=focused.dataset.libraryId;if(focused?.matches?.('[data-library-filter]'))filterFocus=focused.dataset.libraryFilter;if(focused?.matches?.('[data-library-search]')){queryText=focused.value;searchFocus={start:focused.selectionStart,end:focused.selectionEnd};}}
@@ -104,23 +108,49 @@ export function createMarketLibrary(hooks){
     }
     return detail(id,{showLoading:true,adjacent});
   }
+  function classificationControls(id,attempt,canReview){
+    if(!canReview||!attempt)return {notice:'',actions:''};
+    const status=attempt.status==='READY'&&interruptedClassifications.has(id)?'UNKNOWN':attempt.status;
+    const described='aria-describedby="library-classification-effect" ';
+    const checkResult=button('분류 상태 확인','classification-status',id);
+    const keyLink='#settings?'+new URLSearchParams({view:'connections',executionMode:current().params.get('executionMode')||'paper',jevReview:'1',returnTo:knowledgeReaderHash(current(),id)});
+    const settings='<a class="button small" href="'+esc(keyLink)+'" data-studio-route>JEV 키 설정</a>';
+    const outbound='이 자료 전체와 관련 승인 자료 최대 8개의 제목·요약·핵심 내용을 TypeSafe JEV에 보냅니다.';
+    let message=outbound+' JEV 사용량이 발생할 수 있습니다.',actions='';
+    if(status==='KEY_REQUIRED'){
+      message='서버에 JEV 키를 설정하면 자료를 분류할 수 있습니다.';
+      actions=settings;
+    }else if(status==='PENDING'){
+      message='JEV 요청이 처리 중입니다. 창을 닫아도 처리되며 이 자료에서 결과를 확인할 수 있습니다.';
+      actions=checkResult;
+    }else if(status==='REJECTED'||status==='UNKNOWN'){
+      message=status==='REJECTED'?'JEV가 요청을 거절했습니다'+(attempt.httpStatus?' ('+attempt.httpStatus+')':'')+'. 키 또는 접근 권한을 확인하세요.':'이전 요청의 분류 결과를 확인하지 못했습니다. 상태 확인은 자료만 조회합니다. 다시 보내면 JEV 사용량이 추가될 수 있습니다.';
+      actions=checkResult+(status==='REJECTED'?settings:'')+button('JEV에 다시 보내기','classify-retry',id,described+(busy()||commandPending?'disabled':''));
+      message+=' '+outbound+(status==='REJECTED'?' JEV 사용량이 발생할 수 있습니다.':'');
+    }else{
+      actions=button('JEV에 보내 분류','classify',id,described+(busy()||commandPending||committedClassifications.has(id)?'disabled':''));
+    }
+    const receipt=(attempt.at?row('최근 요청',esc(date(attempt.at))):'')+(attempt.providerRequestId?row('JEV 요청 ID',esc(attempt.providerRequestId)):'');
+    return {notice:'<p id="library-classification-effect" class="tiny muted spaced" role="status">'+esc(message)+'</p>'+receipt,actions};
+  }
   async function detail(id,{showLoading=false,adjacent=false}={}){
     if(showLoading&&!adjacent){readerQuery=libraryQuery(current()).toString();readerItems=isLibraryDocuments(current())&&key===readerQuery?list(data?.page?.items).map(item=>({id:item.id,title:item.title})):[];}
     const seq=++detailGeneration,scope=JSON.stringify([current().page,current().params.get('view'),current().params.get('profileId')]);selectedId=id;if(showLoading){hooks.open('투자 자료',readerNavigation(id)+'<p role="status">자료를 불러오는 중…</p>','',{presentation:'reader',context:'라이브러리 · 공용 자료'});if(adjacent)focusReaderNavigation();}const dialogToken=hooks.getDialogToken?.();redraw();
-    try{const value=await hooks.request('/api/workspace/market-knowledge/item?'+new URLSearchParams({id})),entry=value.entry,doc=entry.document,item=value.item,c=item.classification,classification=c?'<section class="spaced"><h3>JEV 분류</h3>'+row('수준 · 기간 · 방향',esc([label(c.level),label(c.horizon),label(c.sentiment)].join(' · ')))+row('신규성 · 범위',esc(knowledgeNoveltyLabel(c)+' · '+label(c.scopeKind)))+row('분류 완료',esc(date(c.answeredAt)))+row('모델',esc(c.model))+(c.noveltyStatus==='NO_COMPARISON_BASELINE'?row('신규성 비교','비교 기준 없음'):'')+raw(entry.classificationRecord,'실제 JEV 분류 원본')+'</section>':'<p class="tiny muted spaced">분류 기록 없음</p>';
+    try{const value=await hooks.request('/api/workspace/market-knowledge/item?'+new URLSearchParams({id})),entry=value.entry,doc=entry.document,item=value.item,c=item.classification,classification=c?'<section class="spaced"><h3>JEV 분류</h3>'+row('수준 · 기간 · 방향',esc([label(c.level),label(c.horizon),label(c.sentiment)].join(' · ')))+row('신규성 · 범위',esc(knowledgeNoveltyLabel(c)+' · '+label(c.scopeKind)))+row('분류 완료',esc(date(c.answeredAt)))+row('모델',esc(c.model))+row('JEV 사용량',esc(providerUsageLabel(entry.classificationRecord?.provider?.usage)))+(c.noveltyStatus==='NO_COMPARISON_BASELINE'?row('신규성 비교','비교 기준 없음'):'')+raw(entry.classificationRecord,'실제 JEV 분류 원본')+'</section>':'<p class="tiny muted spaced">분류 기록 없음</p>';
     if(seq!==detailGeneration||scope!==JSON.stringify([current().page,current().params.get('view'),current().params.get('profileId')])||dialogToken!==undefined&&dialogToken!==hooks.getDialogToken?.())return;
     const usageMarkup=renderUsage(value.usage);
     const uri=new URL(doc.source.uri),source='<a href="'+esc(uri.href)+'" target="_blank" rel="noopener noreferrer">'+esc(uri.hostname)+' ↗</a>';
     const sourceDetails=row('저장 위치','내 투자 자료')+row('발행자 · 저자',esc(doc.data.publisher+(doc.data.authors.length?' · '+doc.data.authors.map(a=>a.name).join(', '):'')))+row('출처 유형',esc(label(doc.data.sourceType)))+row('공개 원문',source)+row('버전','v'+doc.data.version)+row('자료 기준',esc(date(doc.asOf)))+(doc.data.publication.reportPeriodEnd?row('보고 기간 종료일',esc(doc.data.publication.reportPeriodEnd.slice(0,10))):'')+row('원문 공개',esc(knowledgePublicationLabel(doc)))+row('원문 수신',esc(date(doc.data.publication.retrievedAt)))+row('라이브러리 등록',esc(date(entry.importedAt)))+(doc.data.publication.precision==='undated'?'':row('사용 기준 시각',esc(date(item.availableAt))))+row('유효 종료',esc(doc.data.validUntil?date(doc.data.validUntil):'지정 없음'))+(entry.review?row('승인 시각',esc(date(entry.review.reviewedAt)))+row('검토 사유',esc(entry.review.reason)):'');
     const tools=(doc.data.previousVersionId?button('이전 버전 · v'+(doc.data.version-1),'detail',doc.data.previousVersionId):'')+renderActionMenu({id:'library-detail-'+entry.id,label:'자료 작업',items:[{label:'이 버전 링크 복사',attributes:{'data-library-action':'copy-link','data-library-id':id}},{label:'새 버전 작성',attributes:{'data-library-action':'revise','data-library-id':id},disabled:busy()},{label:'JSON 내보내기',attributes:{'data-library-action':'export-json','data-library-id':id}},{label:'YAML 내보내기',attributes:{'data-library-action':'export-yaml','data-library-id':id}}]});
     const undated=doc.data.publication.precision==='undated',canReview=!undated&&['DRAFT','SAVED'].includes(entry.status);
-    const classificationEffect=canReview&&!c?'<p id="library-classification-effect" class="tiny muted spaced">분류를 선택하면 이 자료 전체와 관련 승인 자료 일부를 JEV에 보냅니다.</p>':'';
+    if(c)interruptedClassifications.delete(id);
+    const classificationControl=classificationControls(id,value.classificationAttempt,canReview&&!c);
     const eligibleMinds=value.usage?.eligibleMinds;
     const quickSource=undated?'<p class="tiny muted spaced">공개일 미확인 · '+source+' · 확인 '+esc(date(doc.data.publication.retrievedAt))+'</p>':'';
     const use=undated?'원문 공개 시점이 확인된 버전부터 마인드 판단에 활용할 수 있습니다.':canReview?'승인 후 마인드의 자료 설정에 따라 판단 입력으로 선택할 수 있습니다.':
       Array.isArray(eligibleMinds)?(eligibleMinds.length?'현재 정책에서 '+eligibleMinds.length+'개 마인드가 이 자료를 선택할 수 있습니다.':'현재 정책에서 이 자료를 선택할 마인드가 없습니다.'):'마인드의 자료 설정에서 사용 조건을 확인할 수 있습니다.';
     const restoreReaderFocus=adjacent&&typeof document!=='undefined'&&document.activeElement?.closest?.('[data-library-reader-nav]');
-    hooks.open('투자 자료', readerNavigation(id)+'<h3>'+esc(doc.title)+'</h3><p data-library-command-status class="tiny muted spaced" role="status" aria-live="polite"></p>'+row('라이브러리',esc(label(entry.status)))+row('판단·선정 전송',esc(transmissionCount(value.usage?.transmissionCount)))+row('자료 범위',esc(knowledgeScopeLabel(item,hooks.instruments)))+'<p class="tiny muted spaced">'+esc(use)+'</p>'+quickSource+classificationEffect+readingContent(doc)+'<details class="spaced"><summary>출처·사용 시점</summary>'+sourceDetails+'</details>'+(!undated?'<details class="spaced"><summary>분류 상세</summary>'+classification+'</details><details class="spaced"><summary>마인드에서 활용</summary>'+usageMarkup+'</details>':'')+raw(doc,'원본 데이터'),tools+(canReview?button('JEV로 자료 분류','classify',id,(c?'':'aria-describedby="library-classification-effect" ')+(busy()||c||committedClassifications.has(id)?'disabled':''))+button('검토·승인','approve',id,busy()||!c||committedApprovals.has(id)?'disabled':''):'')+(entry.status==='APPROVED'?button('마인드에 연결','pin',id,busy()?'disabled':'','primary'):''),{presentation:'reader',context:'라이브러리 · 공용 자료 · v'+doc.data.version});if(restoreReaderFocus)focusReaderNavigation();
+    hooks.open('투자 자료', readerNavigation(id)+'<h3>'+esc(doc.title)+'</h3><p data-library-command-status class="tiny muted spaced" role="status" aria-live="polite"></p>'+row('라이브러리',esc(label(entry.status)))+row('마인드 판단·선정 전송',esc(transmissionCount(value.usage?.transmissionCount)))+row('자료 범위',esc(knowledgeScopeLabel(item,hooks.instruments)))+'<p class="tiny muted spaced">'+esc(use)+'</p>'+quickSource+classificationControl.notice+readingContent(doc)+'<details class="spaced"><summary>출처·사용 시점</summary>'+sourceDetails+'</details>'+(!undated?'<details class="spaced"><summary>분류 상세</summary>'+classification+'</details><details class="spaced"><summary>마인드에서 활용</summary>'+usageMarkup+'</details>':'')+raw(doc,'원본 데이터'),tools+(canReview?classificationControl.actions+(c?button('검토·승인','approve',id,busy()||committedApprovals.has(id)?'disabled':''):''):'')+(entry.status==='APPROVED'?button('마인드에 연결','pin',id,busy()?'disabled':'','primary'):''),{presentation:'reader',context:'라이브러리 · 공용 자료 · v'+doc.data.version});if(restoreReaderFocus)focusReaderNavigation();
     }catch(problem){if(seq!==detailGeneration||scope!==JSON.stringify([current().page,current().params.get('view'),current().params.get('profileId')])||dialogToken!==undefined&&dialogToken!==hooks.getDialogToken?.())return;if(showLoading&&seq===detailGeneration&&(dialogToken===undefined||dialogToken===hooks.getDialogToken?.())){const restoreReaderFocus=adjacent&&typeof document!=='undefined'&&document.activeElement?.closest?.('[data-library-reader-nav]');hooks.open('투자 자료',readerNavigation(id)+'<p role="alert">'+esc(problem.message)+'</p>'+button('다시 불러오기','detail',id),'',{presentation:'reader',context:'라이브러리 · 공용 자료'});if(restoreReaderFocus)focusReaderNavigation();}throw problem;}
   }
   async function editor(initial='',{direct=false,revisionId=null}={}){
@@ -165,7 +195,7 @@ export function createMarketLibrary(hooks){
   const errorArea=()=>'<p data-library-command-status class="tiny muted spaced" role="status" aria-live="polite"></p><p id="library-form-error" data-library-error class="error-text spaced" role="alert" tabindex="-1"></p>';
   function commandStatus(node,message){const container=node.closest?.('dialog')||node.closest?.('[data-library-form]'),status=container?.querySelector?.('[data-library-command-status]');if(status){status.textContent=message;status.setAttribute?.('role','status');}return status;}
   function beginCommand(node,message){
-    const previous=node.textContent,status=commandStatus(node,message+(node.dataset?.libraryAction==='classify'?' 창을 닫아도 요청 처리는 계속됩니다.':''));let committed=false,completedLabel='저장 완료';commandPending=true;node.disabled=true;node.textContent=message;node.setAttribute?.('aria-busy','true');
+    const previous=node.textContent,status=commandStatus(node,message+(['classify','classify-retry'].includes(node.dataset?.libraryAction)?' 창을 닫아도 요청 처리는 계속됩니다.':''));let committed=false,completedLabel='저장 완료';commandPending=true;node.disabled=true;node.textContent=message;node.setAttribute?.('aria-busy','true');
     const finish=problem=>{commandPending=false;if(node.isConnected!==false){node.disabled=committed;node.textContent=committed?completedLabel:previous;node.removeAttribute?.('aria-busy');}if(status&&status.isConnected!==false){status.textContent=problem?finish.errorMessage(problem):committed?completedLabel:'';status.setAttribute?.('role',problem?'alert':'status');}};
     finish.commit=label=>{committed=true;completedLabel=label;if(node.isConnected!==false){node.disabled=true;node.textContent=label;}if(status&&status.isConnected!==false){status.textContent=label+' · 상세 조회 중…';status.setAttribute?.('role','status');}};
     finish.errorMessage=problem=>committed?completedLabel+' · 상세 조회 실패. 창을 닫고 자료를 다시 여세요. '+problem.message:problem.message;
@@ -189,7 +219,22 @@ export function createMarketLibrary(hooks){
     if(action==='next'){if(loading||!data?.page?.hasMore||!id||id!==data.page.nextCursor)return;pageFocus=true;cursors.remember(libraryQuery(current()),id);return hooks.navigate('library',{cursor:id,knowledgeId:null});}
     if(action==='prev'){if(loading||!current().params.has('cursor'))return;pageFocus=true;return hooks.navigate('library',{cursor:cursors.previous(libraryQuery(current())),knowledgeId:null});}
     if(action==='validate'){const form=node.closest('form');clearValidation(node);const doc=parseMarketKnowledgeDocument(form.elements.source.value,{format:form.elements.format.value});form.querySelector('[data-library-validation]').textContent='형식 확인 완료 · '+doc.title;return;}
-    if(action==='classify'){if(commandPending||busy()||committedClassifications.has(id))return;const finish=beginCommand(node,'JEV 분류 중…'),onCommitted=()=>{committedClassifications.add(id);finish.commit('JEV 분류 완료');};try{await hooks.mutate('',{documentId:id},'/api/workspace/market-knowledge/classify',{onCommitted});onCommitted();await load({force:true});if(actionCurrent())await detail(id);finish();return;}catch(problem){finish(problem);return;}}
+    if(action==='classification-status')return await openRecord(id);
+    if(action==='classify'||action==='classify-retry'){
+      if(commandPending||busy()||committedClassifications.has(id))return;
+      const finish=beginCommand(node,'JEV 분류 중…'),onCommitted=()=>{committedClassifications.add(id);finish.commit('JEV 분류 완료');};
+      try{
+        await hooks.mutate('',{documentId:id},'/api/workspace/market-knowledge/classify',{onCommitted,newAttempt:action==='classify-retry'});
+        onCommitted();
+        await load({force:true});
+      }catch(problem){
+        if(problem.serverResponse!==true)interruptedClassifications.add(id);
+        if(problem.serverResponse===true&&problem.status<500&&!['IN_PROGRESS','CLAIM_CONFLICT','REVISION_CONFLICT','KNOWLEDGE_CLASSIFICATION_LOCKED','JEV_CONNECTION_REQUIRED'].includes(problem.code)&&!problem.providerFailureEventId){finish(problem);return;}
+      }
+      finish();
+      if(actionCurrent())await detail(id,{showLoading:true});
+      return;
+    }
     if(action==='approve'){if(committedApprovals.has(id))return;return hooks.open('자료 검토·승인','<form data-library-form="approve" data-library-id="'+esc(id)+'"><div class="spaced">'+helpLabel('자료 승인 기준','공개 원문과 적용 범위, 공개 지연을 확인하고 검토 사유를 기록하세요.')+'</div>'+textarea('검토 사유','reason')+errorArea()+'<div class="form-actions"><button type="submit" class="button primary">검토 후 승인</button></div></form>');}
     if(action==='revise')return await editor('',{revisionId:id});
     if(action==='editor-retry'){const retry=editorRetry;if(retry&&retry.scope===JSON.stringify([current().page,current().params.toString()])&&(retry.dialog===undefined||retry.dialog===hooks.getDialogToken?.()))return await editor(retry.initial,retry);return;}

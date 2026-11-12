@@ -89,4 +89,6 @@ MCP에서 공개일이 확인되지 않은 원문은 `publication.precision: "un
 
 1~3번의 저장 결과를 제공한 뒤 `viv_onboarding`에 `action: complete`, 과업 번호, 라이브러리 영수증의 `documentId`를 보냅니다. 사용자가 보기만 요청했으면 `readOnly: true`로 완료를 표시할 수 있습니다. 현재 확정 시세의 저장 판단을 실행한 4번은 `decisionId`를 보냅니다. 키 없이 완료한 기준 퀀트 백테스트는 `read_simulation_collection`에서 확인한 실험의 `simulationId`를 보내고, 응답의 저장 보고서 `openUrl`을 제공하세요. 진행·중단은 `resume`·`pause`로 기록합니다.
 
+자료 분류를 요청받았다면, JEV에 자료 전체와 관련 승인 자료 최대 8개의 제목·요약·핵심 내용을 보내며 사용량이 발생할 수 있다고 안내합니다. 응답이 끊겼을 때는 같은 documentId로 read_market_knowledge를 조회해 저장된 분류와 classificationAttempt를 확인합니다. 분류 상태를 조회하는 동안 JEV 호출은 없습니다. 같은 요청 키는 기존 결과를 반환합니다. 다시 보내려는 사용자의 선택이 있으면 새 요청 키로 진행하세요.
+
 실행용 프롬프트는 MCP의 `viv_start`와 `viv_onboarding` 응답에서 같은 내용을 제공합니다.

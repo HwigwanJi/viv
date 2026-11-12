@@ -44,7 +44,7 @@ import { loadInstrumentMarket, InstrumentMarketError, safeInstrumentMarketDiagno
 import { createOwnerMarketResolver } from './canonical-instrument-market.mjs';
 import { decisionReadModel } from './read-model.mjs';
 import { buildPortfolioView } from './portfolio-views.mjs';
-import { acquireClaim, completeClaim, releaseClaim } from './claims.mjs';
+import { acquireClaim, completeClaim, listInFlightClaims, releaseClaim } from './claims.mjs';
 import { JEV_MODEL } from '../dist/trading/jev.mjs';
 import {mindRunEvidenceHash} from './mind-observation.mjs';
 import seed from '../dist/data/knowledge-seed.json' with {type:'json'};
@@ -106,12 +106,30 @@ function baseManifests(w,now,owner){
   });
 }
 function findManifest(w,mindId,now,owner){const m=baseManifests(w,now,owner).find(m=>m.scope.profileId===mindId);check(m,'MIND_NOT_FOUND','마인드를 선택하세요.',404);return m;}
+const marketClassificationPath='/api/workspace/market-knowledge/classify';
+const marketClassificationResource=id=>'knowledge-classification:'+id;
+const jevKeyConfigured=env=>typeof env.TYPESAFE_API_KEY==='string'&&!!env.TYPESAFE_API_KEY.trim();
+
+async function marketClassificationState(db,owner,w,entry,env,now){
+  if(entry.classificationRecord||entry.document.data.publication.publishedAt===null)return null;
+  if(!jevKeyConfigured(env))return {status:'KEY_REQUIRED'};
+  const claim=(await listInFlightClaims(db,{ownerId:owner,nowMs:Date.parse(now)})).find(row=>row.resourceId===marketClassificationResource(entry.id));
+  if(claim)return {status:claim.expired?'UNKNOWN':'PENDING',at:claim.startedAt};
+  const failure=w.activityEvents.findLast(event=>event.eventType==='MIND_PROVIDER_FAILED'&&event.resourceId===entry.id&&event.payload?.path===marketClassificationPath);
+  if(!failure)return {status:'READY'};
+  const provider=failure.payload.providerFailure?.provider;
+  return {status:[401,403].includes(provider?.httpStatus)?'REJECTED':'UNKNOWN',at:failure.occurredAt,
+    ...(provider?.providerRequestId?{providerRequestId:provider.providerRequestId}:{}),
+    ...(provider?.httpStatus?{httpStatus:provider.httpStatus}:{})};
+}
+
 function receipt(w,body,path){
   check(safeId(body.idempotencyKey)&&Number.isSafeInteger(body.expectedRevision),'INVALID_COMMAND','요청 키와 저장 버전을 확인하세요.');
   const fingerprint=hashInputPackage({path,input:Object.fromEntries(Object.entries(body).filter(([k])=>!['expectedRevision','idempotencyKey'].includes(k)))});
   const saved=w.commandReceipts.find(r=>r.key===body.idempotencyKey);
   if(saved){check(saved.studioFingerprint===fingerprint,'IDEMPOTENCY_CONFLICT','같은 요청 키의 입력이 변경되었습니다.',409);return {saved,fingerprint};}
-  check(body.expectedRevision===w.revision,'REVISION_CONFLICT','자료가 갱신되었습니다. 새로고침 후 실행하세요.',409);return {saved:null,fingerprint};
+  // This command identifies an immutable document version and checks its latest state before sending.
+  check(path===marketClassificationPath||body.expectedRevision===w.revision,'REVISION_CONFLICT','자료가 갱신되었습니다. 새로고침 후 실행하세요.',409);return {saved:null,fingerprint};
 }
 async function commit(repository,owner,w,next,body,path,result,now,fingerprint,fence){
   next.revision=w.revision+1;next.updatedAt=now;
@@ -284,7 +302,7 @@ export async function handleMindStudioAPI(request,env={},options={}){
       if(path==='/api/workspace/market-knowledge/item'||path==='/api/workspace/market-knowledge/export'){
         const entry=w.marketKnowledge.find(e=>e.id===url.searchParams.get('id'));check(entry,'KNOWLEDGE_NOT_FOUND','자료를 선택하세요.',404);
         if(path.endsWith('/export')){const format=url.searchParams.get('format')??'json';return json({ok:true,revision:w.revision,format,text:serializeMarketKnowledgeDocument(entry.document,{format}),document:entry.document,contentHash:entry.contentHash,classificationRecord:entry.classificationRecord,review:entry.review,filename:entry.id+'.'+format});}
-        return json({ok:true,revision:w.revision,item:knowledgeItem(entry),entry,usage:marketKnowledgeUsage(w,entry,manifests,now)});
+        return json({ok:true,revision:w.revision,item:knowledgeItem(entry),entry,classificationAttempt:await marketClassificationState(db,owner,w,entry,env,now),usage:marketKnowledgeUsage(w,entry,manifests,now)});
       }
       if(path==='/api/workspace/mind-valuations')return json(await buildMindValuation(w,url.searchParams,{now:()=>nowISO(options),fetchImpl:options.fetchImpl,readRevision:async()=>(await readOperationalWorkspace(repo,owner)).revision}));
       if(path==='/api/workspace/mind-memories')return json(buildMindMemoryView(w,{profileId:url.searchParams.get('profileId')??'all',manifests,now}));
@@ -454,18 +472,42 @@ export async function handleMindStudioAPI(request,env={},options={}){
       document.scope.instrumentIds.forEach(id=>check(getInstrument(id).id===id,'KNOWLEDGE_INSTRUMENT','거래소를 포함한 정식 종목 ID를 사용하세요.'));verifyKnowledgeVersion(w.marketKnowledge,document);
       const entry={id:document.id,document,contentHash:marketKnowledgeHash(document),status:path.endsWith('/save')?'SAVED':'DRAFT',importedAt:now,importedBy:owner,availableAt:document.availableAt>now?document.availableAt:now,classificationRecord:null,review:null};
       next.marketKnowledge.push(entry);result={item:knowledgeItem(entry),document};
-    }else if(path==='/api/workspace/market-knowledge/classify'){
-      const entry=next.marketKnowledge.find(e=>e.id===body.documentId);check(entry,'KNOWLEDGE_NOT_FOUND','분류할 자료를 선택하세요.',404);
-      check(['DRAFT','SAVED'].includes(entry.status)&&!entry.classificationRecord,'KNOWLEDGE_CLASSIFICATION_LOCKED','새 내용은 새로운 자료 버전으로 작성하세요.',409);
+    }else if(path===marketClassificationPath){
+      const entry=w.marketKnowledge.find(e=>e.id===body.documentId);check(entry,'KNOWLEDGE_NOT_FOUND','분류할 자료를 선택하세요.',404);
+      check(['DRAFT','SAVED'].includes(entry.status)&&!entry.classificationRecord,'KNOWLEDGE_CLASSIFICATION_LOCKED','저장된 분류를 자료에서 확인하세요.',409);
       check(entry.document.data.publication.publishedAt!==null,'KNOWLEDGE_PUBLICATION_REQUIRED','마인드 판단에 활용하려면 원문 공개 시점이 확인된 버전을 저장하세요.');
-      const resourceId='knowledge-classification:'+entry.id,acquired=await acquireClaim(db,{ownerId:owner,resourceId,key:body.idempotencyKey,fingerprint,baseRevision:w.revision,nowMs:Date.parse(now),leaseMs:90000}),token=acquired.claim?.token??acquired.token;
+      check(jevKeyConfigured(env),'JEV_CONNECTION_REQUIRED','서버의 JEV 연결을 설정하세요.',503);
+      const {callMindJev}=await import('./mind-engine.mjs');
+      const request={model:JEV_MODEL,state:{operation:'MARKET_KNOWLEDGE_CLASSIFICATION_V1',classificationAsOf:now,document:entry.document,contentHash:entry.contentHash,approvalStatus:'DRAFT',priorRelatedApproved:priorKnowledgeDigest(w.marketKnowledge,entry.document,now),noveltyBasis:'OWNER_APPROVED_RELATED_LIBRARY_AT_CLASSIFICATION_TIME',pricedIn:'unknown',coverageRouting:'EXPLICIT_DOCUMENT_COVERAGE_ONLY'},questions:buildKnowledgeClassificationQuestions()};
+      const resourceId=marketClassificationResource(entry.id),claim=await acquireClaim(db,{ownerId:owner,resourceId,key:body.idempotencyKey,fingerprint,baseRevision:w.revision,nowMs:Date.parse(now),leaseMs:90000}),token=claim.token;
+      let classificationRecord=null,providerFailure=null,failed=null;
       try{
-        const {callMindJev}=await import('./mind-engine.mjs');
-        const request={model:JEV_MODEL,state:{operation:'MARKET_KNOWLEDGE_CLASSIFICATION_V1',classificationAsOf:now,document:entry.document,contentHash:entry.contentHash,approvalStatus:'DRAFT',priorRelatedApproved:priorKnowledgeDigest(w.marketKnowledge,entry.document,now),noveltyBasis:'OWNER_APPROVED_RELATED_LIBRARY_AT_CLASSIFICATION_TIME',pricedIn:'unknown',coverageRouting:'EXPLICIT_DOCUMENT_COVERAGE_ONLY'},questions:buildKnowledgeClassificationQuestions()};
-        const value=await callMindJev({request,env,fetchImpl:options.fetchImpl,clock:()=>nowISO(options)}),completedAt=nowISO(options);
-        entry.classificationRecord={...value,contentHash:entry.contentHash,classification:knowledgeClassification(value,{priorDigest:request.state.priorRelatedApproved})};entry.availableAt=[entry.availableAt,completedAt].sort().at(-1);result={item:knowledgeItem(entry),classificationRecord:entry.classificationRecord};
-        const committed=await commit(repo,owner,w,next,body,path,result,completedAt,fingerprint,{resourceId,token,nowMs:Date.parse(completedAt)});await completeClaim(db,{ownerId:owner,resourceId,token,nowMs:Date.parse(completedAt)});return json(committed);
-      }catch(error){await releaseClaim(db,{ownerId:owner,resourceId,token,nowMs:Date.parse(nowISO(options)),status:'FAILED'}).catch(()=>{});throw error;}
+        const value=await callMindJev({request,env,fetchImpl:options.fetchImpl,clock:()=>nowISO(options)});
+        classificationRecord={...value,contentHash:entry.contentHash,classification:knowledgeClassification(value,{priorDigest:request.state.priorRelatedApproved})};
+      }catch(error){
+        providerFailure=captureMindProviderFailure(error,{attemptKey:body.idempotencyKey,now:nowISO(options),env,maxBytes:64000});
+        if(!providerFailure){await releaseClaim(db,{ownerId:owner,resourceId,token,nowMs:Date.parse(nowISO(options))}).catch(()=>{});throw error;}
+        const recovery=terminalErrorRecovery(error);
+        failed={ok:false,code:error.code,message:recovery.category==='JEV_AUTH'?recovery.message:'JEV 분류 결과를 확인하지 못했습니다. 자료에서 요청 상태를 확인하세요.',httpStatus:recovery.category==='JEV_AUTH'?error.provider.httpStatus:502,providerFailureEventId:uniqueId('event')};
+      }
+      // Another tab may save while JEV answers. Retry the fenced write, not the provider request.
+      for(let attempt=0;;attempt++){
+        const current=await readOperationalWorkspace(repo,owner),updated=clone(current),target=updated.marketKnowledge.find(e=>e.id===entry.id);
+        check(target&&target.status===entry.status&&target.contentHash===entry.contentHash&&!target.classificationRecord,'KNOWLEDGE_CLASSIFICATION_LOCKED','분류 요청 뒤 자료 상태가 바뀌었습니다. 같은 자료를 다시 조회하세요.',409);
+        const at=nowISO(options);
+        if(failed){
+          updated.activityEvents.push({id:failed.providerFailureEventId,eventType:'MIND_PROVIDER_FAILED',resourceType:'market-knowledge',resourceId:entry.id,occurredAt:at,actorId:owner,status:'failed',payload:{path,documentId:entry.id,requestKey:body.idempotencyKey,providerFailure}});
+          result=failed;
+        }else{
+          target.classificationRecord=classificationRecord;target.availableAt=[target.availableAt,at].sort().at(-1);
+          result={item:knowledgeItem(target),classificationRecord};
+        }
+        try{
+          const committed=await commit(repo,owner,current,updated,body,path,result,at,fingerprint,{resourceId,token,nowMs:Date.parse(at)});
+          await completeClaim(db,{ownerId:owner,resourceId,token,nowMs:Date.parse(at)}).catch(()=>{});
+          return json(committed,failed?.httpStatus??200);
+        }catch(error){if(error.code!=='REVISION_CONFLICT'||attempt===2)throw error;}
+      }
     }else if(path==='/api/workspace/market-knowledge/publish'){
       const entry=next.marketKnowledge.find(e=>e.id===body.documentId);check(entry,'KNOWLEDGE_NOT_FOUND','검토할 자료를 선택하세요.',404);
       check(['DRAFT','SAVED'].includes(entry.status),'KNOWLEDGE_REVIEWED','검토 대기 자료를 선택하세요.',409);
