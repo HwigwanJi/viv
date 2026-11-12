@@ -20,7 +20,7 @@ export function simulationReadyStart(preflight, mode, startAt, endAt) {
   return Number.isFinite(first) && first > start && first < end ? at : null;
 }
 
-export function simulationCostSummary(draft, format = String) {
-  const currency=draft.assetMode==='US_EQUITY_SESSION'?'USD':'USDT';
-  return `${format(Number(draft.initialCash))} ${currency} · 수수료 ${format(Number(draft.feeBps))}bp · 슬리피지 ${format(Number(draft.slippageBps))}bp`;
+export function simulationCostSummary(draft, market) {
+  const basisPoints = new Intl.NumberFormat('ko-KR', {maximumFractionDigits: 2});
+  return `${market.amount(Number(draft.initialCash))} ${market.currency} · 수수료 ${basisPoints.format(Number(draft.feeBps))}bp · 슬리피지 ${basisPoints.format(Number(draft.slippageBps))}bp`;
 }

@@ -2585,11 +2585,11 @@
         "navigation"
       ],
       "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-04",
-      "reason": "자료·계좌·종목·실험·학습·실행 기록은 행/카드 소유자의 기존 작업을 투영한다. 양식·탭·필터·일반 링크와 편집 필드는 기본 조작을 유지한다.",
+      "reviewedAt": "2026-11-12T00:09:09.432Z",
+      "reason": "실험의 결제 통화와 정밀도를 비용 요약에 사용한다.",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "2342b17fad91a85380b9796c76199b5f167ccc9db7a1e18e38a17a9e6ad0159e"
+      "sourceHash": "f03ffed7106cb9c2ff81b5c040c6a1d19de729dee26a426c98738be691d714ac"
     },
     {
       "file": "dist/ui/simulation-lab.mjs",
@@ -2672,9 +2672,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T23:43:46.773Z",
-      "reason": "이전 단계에서 조건 조회가 실패해도 검토 단계에서 같은 조건을 다시 확인한다. 키보드 초점과 저장한 조건의 실행 순서를 확인했다.",
-      "signature": "b20f35ce9a15c3dfc832a943510e5e8840931dfa3f2bce9d927a20c35aa2bb7b",
+      "reviewedAt": "2026-11-12T00:12:27.459Z",
+      "reason": "재검증에서 새 실험의 기간·비용·호출 상한을 먼저 확인하고 취소하면 원본 보고서와 초점으로 돌아간다. 저장과 실행을 각각 검증했다.",
+      "signature": "7edb8dd3e444a5d8369d66b63a0e248cd76f485104defb4b587cab4e6b681168",
       "controls": [
         [
           "data-simulation-action",
@@ -2698,6 +2698,10 @@
         ],
         [
           "data-simulation-action=\"preflight-retry\"",
+          1
+        ],
+        [
+          "data-simulation-action=\"repeat\"",
           1
         ],
         [
@@ -2741,7 +2745,7 @@
           2
         ]
       ],
-      "sourceHash": "b083ec0c01837dbb322bc63f4961df31c82871f5a7efbfe724c4f40066b7a1bc",
+      "sourceHash": "9d05feb613a2d908ea28784801b5893513f55bd2001d1716f114a6060628392d",
       "customContainers": []
     },
     {

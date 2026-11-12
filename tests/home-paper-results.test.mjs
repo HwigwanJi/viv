@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildHomePerformance,readHomePerformance} from '../server/home-performance.mjs';
 import {createHomeShowcase,renderHomeShowcase} from '../dist/ui/home-showcase.mjs';
+import {simulationCostSummary} from '../dist/ui/simulation-editor-state.mjs';
+import {simulationMarketScope} from '../dist/ui/simulation-asset-scope.mjs';
 import {createSimulationPlayground} from '../dist/ui/simulation-playground.mjs';
 import {hashInputPackage} from '../dist/domain/workspace.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
@@ -34,6 +36,72 @@ test('saved keyless practice shows its inputs before the only execute button',as
   simulation={...simulation,modelReadiness:{readyDecisions:0,totalDecisions:5,warmupDecisions:5}};
   await app.load({force:true});
   assert.match(app.render(),/모델 준비 자료 필요[^]*저장한 실행 조건[^]*data-simulation-action="run"[^>]*disabled/);
+});
+
+test('repeat opens read-only review and cancellation restores the same report',async()=>{
+  const saved={
+    id:'original',status:'COMPLETED',config:{
+      mindId:'mind-a',name:'원본',mode:'MECHANICAL',startAt:'2026-09-15T00:00:00Z',
+      endAt:'2026-10-15T00:00:00Z',initialCash:13579,feeBps:13,slippageBps:2,
+    },
+  };
+  const params=new URLSearchParams('view=simulations&simulationId=original&tab=report&executionMode=paper');
+  const handlers=[];
+  const document=globalThis.document;
+  globalThis.document={addEventListener(type,handler,capture){if(type==='click'&&!capture)handlers.push(handler);},removeEventListener(){}};
+  const app=createSimulationPlayground({
+    getRoute:()=>({page:'minds',params}),
+    getMinds:()=>[{id:'mind-a',name:'마인드'}],
+    navigate(_page,changes){for(const [key,value] of Object.entries(changes))value===null?params.delete(key):params.set(key,value);},
+    request:async(path,body)=>{
+      assert.equal(body,undefined);
+      if(path.endsWith('/item?id=original'))return {simulation:saved};
+      if(path.endsWith('/report?id=original&format=json'))return {reportId:'original',hash:'original-hash'};
+      const url=new URL(path,'https://example.invalid');
+      assert.ok(url.pathname.endsWith('/capabilities'));
+      assert.equal(url.searchParams.get('sourceSimulationId'),'original');
+      return {canCreate:true,preflight:{ok:true}};
+    },
+  });
+  const click=action=>handlers.at(-1)({preventDefault(){},target:{closest:()=>({dataset:{simulationAction:action,simulationId:'original'}})}});
+  try{
+    app.start();
+    await app.load();
+    await click('repeat');
+    assert.equal(params.get('setupStep'),'review');
+    assert.match(app.render(),/data-setup-step="review"[^]*13,579[^]*예상 최대 AI 호출[^]*0회[^]*새 실험 저장/);
+    await click('cancel');
+    assert.equal(params.has('setupStep'),false);
+    assert.equal(params.get('simulationId'),'original');
+    assert.equal(params.get('tab'),'report');
+    assert.match(app.render(),/저장 보고서[^]*original-hash/);
+  }finally{
+    app.destroy();
+    if(document===undefined)delete globalThis.document;
+    else globalThis.document=document;
+  }
+});
+
+test('saved AI experiment shows its call ceiling before execute',async()=>{
+  const simulation={
+    id:'paid-copy',status:'CREATED',config:{mindId:'mind-a',name:'재검증',mode:'JEV_RETROSPECTIVE',optInJev:true,maxJevCalls:42},
+    jevBudget:{maximum:42,completed:0},
+  };
+  const app=createSimulationPlayground({
+    getRoute:()=>({page:'minds',params:new URLSearchParams('view=simulations&simulationId=paid-copy&executionMode=paper')}),
+    request:async(path,body)=>{
+      assert.equal(path,'/api/workspace/simulations/item?id=paid-copy');
+      assert.equal(body,undefined);
+      return {simulation};
+    },
+  });
+  await app.load();
+  assert.match(app.render(),/AI 호출 상한 42회 · 제공사 요금 적용 가능[^]*data-simulation-action="run"/);
+});
+
+test('simulation cost summary uses the account currency and retains BTC precision',()=>{
+  const draft={assetMode:'UPBIT_BTC_PORTFOLIO',initialCash:0.00123456,feeBps:10,slippageBps:2.5};
+  assert.equal(simulationCostSummary(draft,simulationMarketScope(draft)),'0.00123456 BTC · 수수료 10bp · 슬리피지 2.5bp');
 });
 
 test('paper home links to saved decisions and latest completed experiments independently of rankings',()=>{
