@@ -88,7 +88,7 @@ const descriptions={
   read_quant_library:'공용 퀀트 전략의 입력·계산·조건·최종 BUY/HOLD/SELL 정의, 버전과 사용 마인드를 조회합니다. id로 버전 상세, id와 format으로 JSON/YAML 원본을 내보냅니다. 발행한 버전을 마인드 그래프에 배치합니다.',
   draft_quant_strategy:'입력부터 QUANT 최종 판단까지 완성된 공용 전략 초안을 저장합니다. strategyId는 새 버전, draftId와 expectedContentHash는 기존 초안 수정, JSON/YAML 가져오기는 새 전략을 만듭니다. 검토·발행은 라이브러리에서 수행합니다.',
   draft_mind_policy:'자료 연결·투자 범위·등록된 BTC 현물 전략 설정으로 마인드 정책 초안을 만듭니다. 서버가 버전·매개변수 식별값을 생성합니다. 검토와 발행은 앱에서 수행하며 JEV와 주문 API를 호출하지 않습니다.',
-  read_market_knowledge:'사용자 소유 시장 라이브러리의 자료·공개 시각·적용 범위·실제 JEV 분류·승인 상태를 검색합니다. documentId로 보관 원문을 조회합니다.',
+  read_market_knowledge:'사용자 소유 시장 라이브러리의 자료를 검색합니다. documentId로 원문, 분류 요청 상태, 승인과 실제 전송 기록을 조회합니다. 검색과 상세 조회의 openUrl로 해당 자료 버전을 앱에서 엽니다.',
   save_market_research:'뉴스 브리핑·전략 리서치를 개인 라이브러리에 바로 저장하고 열기 링크를 반환합니다. 새 문서는 document 또는 text를, 기존 자료를 보관하려면 documentId를 전달하세요. 마인드 활용 승인은 별도입니다.',
   write_market_knowledge:'공개 원문을 조사한 market-knowledge JSON/YAML을 초안으로 보관합니다. 내용 수정은 새 ID와 다음 버전으로 작성하며 승인은 앱에서 수행합니다. 분석 LLM API를 추가 호출하지 않습니다.',
   classify_market_knowledge:'자료 전체와 관련 승인 자료 최대 8개의 제목·요약·핵심 내용을 TypeSafe JEV에 보내 분류합니다. JEV API 사용량은 과금될 수 있습니다. 응답이 끊기면 read_market_knowledge에서 같은 documentId의 classificationAttempt 또는 저장된 분류를 먼저 읽으세요. 같은 요청 키는 저장된 결과를 반환합니다.',
@@ -262,9 +262,15 @@ async function callMindTool(request,env,options,name,args){
     const scope=detail?decisionScope(detail.value.decision,args,context.value,minds.value):null;if(scope&&!scope.ok)return toolResult(scope,true);
     return toolResult({ok:true,scope:{mindId:args.mindId??null,instrumentId:args.instrumentId,decisionId:args.decisionId??null,timeframe:args.timeframe??null,mode:args.mode??null},context:context.value,minds:minds.value,...(detail?{decision:detail.value.decision,decisionContext:scope}:{})});
   }
+  const knowledgeOpenUrl=knowledgeId=>new URL('/#library?'+new URLSearchParams({view:'documents',executionMode:'paper',knowledgeId}),request.url).href;
   if(['read_market_knowledge','export_market_knowledge'].includes(name)){
     const {documentId,...filters}=args;const path=name==='export_market_knowledge'?'/api/workspace/market-knowledge/export?'+new URLSearchParams({id:documentId,format:args.format}):documentId?'/api/workspace/market-knowledge/item?'+new URLSearchParams({id:documentId}):'/api/workspace/market-knowledge?'+new URLSearchParams(filters);
-    const result=await studioCall(request,env,options,path);return toolResult(result.value,!result.ok);
+    const result=await studioCall(request,env,options,path);
+    if(result.ok&&name==='read_market_knowledge'){
+      if(documentId)result.value.openUrl=knowledgeOpenUrl(result.value.item.id);
+      else for(const item of result.value.page.items)item.openUrl=knowledgeOpenUrl(item.id);
+    }
+    return toolResult(result.value,!result.ok);
   }
   let shared=['write_market_knowledge','classify_market_knowledge','save_market_research'].includes(name);
   if(name==='write_mind_document'){try{shared=(args.document??parseMindData(args.text,{format:args.format??'auto'})).kind==='market-knowledge';}catch{}}
@@ -276,7 +282,7 @@ async function callMindTool(request,env,options,name,args){
     const path='/api/workspace/market-knowledge/'+operation;
     const result=await studioCall(request,env,options,path,{method:'POST',body:args});
     const knowledgeId=result.value.item?.id;
-    if(result.ok&&operation!=='classify'&&knowledgeId)result.value.openUrl=new URL('/#library?'+new URLSearchParams({view:'documents',executionMode:'paper',knowledgeId}),request.url).href;
+    if(result.ok&&operation!=='classify'&&knowledgeId)result.value.openUrl=knowledgeOpenUrl(knowledgeId);
     if(result.ok&&operation==='save'&&knowledgeId)result.value.effect={action:'LIBRARY_SAVE',scope:'PERSONAL_LIBRARY',mindUseChanged:false};
     return toolResult(result.value,!result.ok);
   }

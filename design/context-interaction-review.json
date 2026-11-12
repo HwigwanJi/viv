@@ -1639,9 +1639,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T05:16:48.113Z",
-      "reason": "JEV 전송과 과금, 상태 조회와 키보드 초점, 키·크레딧 문제에서 같은 자료로 돌아오는 과정을 대조했습니다.",
-      "signature": "bbdcc8b4b094e04411a409fef1bfcb1b6d1d688a1ada6dd036e28fcf69e7a230",
+      "reviewedAt": "2026-11-12T06:07:20.766Z",
+      "reason": "데스크톱 활용 상세와 320px 자료 목록에서 안내 링크를 확인하고, 정확한 버전의 열기와 검토·승인 및 모의 정책 발행을 검증했습니다.",
+      "signature": "7353ce5b9d946bfadf675a9369740526df1f6937ebd2f96f23d85129230c718d",
       "controls": [
         [
           "data-library-action",
@@ -1685,7 +1685,7 @@
         ],
         [
           "element:a",
-          4
+          5
         ],
         [
           "element:button",
@@ -1724,7 +1724,7 @@
           1
         ]
       ],
-      "sourceHash": "22d5759d753031b403357d031573109068d5087ac44c25d06f0ca174b98a13b9"
+      "sourceHash": "2d3eee36049102af5410e845fd0c52b8df518b28518b81323158840477c77533"
     },
     {
       "file": "dist/ui/mind-activity-resource.mjs",

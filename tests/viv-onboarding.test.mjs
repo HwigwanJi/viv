@@ -72,7 +72,10 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.equal(reloaded.entry.review,null);
     assert.equal(reloaded.entry.classificationRecord,null);
     assert.deepEqual(reloaded.usage.eligibleMinds,[]);
-    assert.equal((await tool('read_market_knowledge',{status:'SAVED'})).page.total,2);
+    assert.equal(reloaded.openUrl,result.openUrl);
+    const found=await tool('read_market_knowledge',{status:'SAVED'});
+    assert.equal(found.page.total,2);
+    assert.equal(found.page.items.find(item=>item.id===analysis.id).openUrl,result.openUrl);
     const undated=structuredClone(analysis);
     undated.id=undated.data.lineageId='viv-undated-analysis';
     undated.source.uri='https://example.com/undated';
