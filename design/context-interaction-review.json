@@ -569,7 +569,7 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T07:34:38.029Z",
+      "reviewedAt": "2026-11-12T07:37:58.623Z",
       "reason": "계좌·자금 카드와 연결 창의 PC 기기 전환, 선택한 금융기관 복원 및 주소 복사",
       "signature": "c9ee810793ed4f81a1095748ca4ba02c8267564f7dcad55be7a45f1aa77a2aa4",
       "controls": [
@@ -610,7 +610,7 @@
           1
         ]
       ],
-      "sourceHash": "f2c6d8412356ec97484292512f9317140aa954013cb9cd8360a91e04e61c4749",
+      "sourceHash": "0d0475a8f6c13df80ab744a7a1788b3bf82f036309bbced8627d64308d1cc601",
       "customContainers": []
     },
     {
@@ -3215,7 +3215,7 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T07:34:38.028Z",
+      "reviewedAt": "2026-11-12T07:37:58.622Z",
       "reason": "계좌·자금 카드와 연결 창의 PC 기기 전환, 선택한 금융기관 복원 및 주소 복사",
       "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
       "controls": [
