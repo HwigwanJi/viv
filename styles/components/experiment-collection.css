@@ -15,7 +15,7 @@
 .experiment-search > .button { @apply shrink-0 min-w-control-touch border-0 bg-transparent px-ui-2 shadow-none text-secondary; }
 .experiment-filter select { @apply rounded-ui-md border border-default bg-surface px-ui-4 py-ui-3 font-ui-sans text-ui-sm leading-ui-sm; @apply min-h-control-md; }
 .experiment-filter-clear { @apply border-transparent bg-transparent text-secondary shadow-none; }
-.experiment-table-scroll { @apply relative min-w-0 overflow-x-auto rounded-ui-lg border border-default bg-surface; }
+.experiment-table-scroll { @apply relative min-w-0 overflow-x-auto rounded-ui-lg border border-default bg-surface; container:experiment-list / inline-size; }
 .experiment-table { @apply w-full table-fixed border-collapse; @apply min-w-(--ui-table-min); }
 .experiment-table th { @apply border-b border-subtle bg-canvas px-ui-5 py-ui-3 text-left text-ui-xs leading-ui-xs font-ui-medium text-secondary; }
 .experiment-table td { @apply min-w-0 border-b border-subtle px-ui-5 py-ui-5 align-middle; }
@@ -32,7 +32,8 @@
 .experiment-collection .button.small.experiment-name:hover { @apply text-accent underline; }
 .experiment-mind { @apply mt-ui-2 block min-w-0 max-w-full truncate text-ui-xs leading-ui-xs text-secondary; }
 .experiment-kind { @apply whitespace-nowrap text-ui-xs leading-ui-xs text-secondary; }
-.experiment-period-cell { @apply whitespace-nowrap text-ui-xs leading-ui-xs text-secondary tabular-nums; }
+.experiment-period-cell { @apply text-ui-xs leading-ui-xs text-secondary tabular-nums; }
+.experiment-period-cell time { @apply whitespace-nowrap; }
 .experiment-period-cell small, .experiment-status-cell small, .experiment-outcome-cell small { @apply mt-ui-2 block text-ui-xs leading-ui-xs text-secondary; }
 .experiment-status { @apply inline-flex whitespace-nowrap rounded-ui-sm bg-canvas px-ui-3 py-ui-1 text-ui-xs leading-ui-xs font-ui-medium text-secondary; }
 .experiment-status[data-state=RUNNING], .experiment-status[data-state=TRAINING], .experiment-status[data-state=VALIDATING] { @apply text-(color:--ds-accent); background:var(--ds-bg-selected); }
@@ -43,6 +44,22 @@
 .experiment-return[data-direction=negative] { @apply text-negative; }
 .experiment-outcome-empty { @apply text-secondary; }
 .experiment-menu-cell { @apply text-right; }
+.experiment-compact-period-label, .experiment-outcome-cell .experiment-shared-outcome { @apply hidden; }
+
+@container experiment-list (width < 50rem) {
+ .experiment-table, .experiment-table tbody { @apply block w-full min-w-0; }
+ .experiment-table thead { @apply hidden; }
+ .experiment-table tbody tr { @apply grid min-w-0 items-start gap-x-ui-4 gap-y-ui-2 border-b border-subtle p-ui-4; grid-template-columns:minmax(0,1fr) auto; }
+ .experiment-table tbody tr:last-child { @apply border-b-0; }
+ .experiment-table td { @apply block min-w-0 border-0 p-0; }
+ .experiment-table td.experiment-name-cell { @apply col-start-1 row-start-1; }
+ .experiment-table td.experiment-kind-cell, .experiment-table td.experiment-period-cell { @apply col-span-full; }
+ .experiment-table td.experiment-period-cell { @apply flex flex-wrap items-baseline gap-x-ui-3 whitespace-normal wrap-anywhere; }
+ .experiment-period-cell small { @apply m-0; }
+ .experiment-compact-period-label, .experiment-outcome-cell .experiment-shared-outcome { @apply block; }
+ .experiment-status { @apply whitespace-normal; }
+ .experiment-table td.experiment-menu-cell { @apply col-start-2 row-start-1 justify-self-end; }
+}
 .experiment-pagination { @apply mt-ui-4 flex items-center justify-between gap-ui-4 text-ui-xs leading-ui-xs text-secondary; }
 .experiment-pagination > div { @apply flex items-center gap-ui-3; }
 .experiment-empty { @apply flex min-w-0 flex-col items-center justify-center rounded-ui-lg border border-default bg-surface px-ui-7 py-ui-12 text-center; }

@@ -13,8 +13,16 @@ const array=value=>Array.isArray(value)?value:[];
 const button=(label,action,id='',extra='',className='')=>`<button type="button" class="button small ${className}" data-experiment-action="${action}" data-experiment-id="${escape(id)}" ${extra}>${escape(label)}</button>`;
 const options=(values,current)=>values.map(([value,label])=>`<option value="${escape(value)}" ${value===current?'selected':''}>${escape(label)}</option>`).join('');
 const date=value=>value&&Number.isFinite(Date.parse(value))?new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value)).replace(/\.\s*$/,''):'—';
-const fullDate=value=>value&&Number.isFinite(Date.parse(value))?new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',...(new Date(value).getUTCMilliseconds()?{fractionalSecondDigits:3}:{}),hour12:false}).format(new Date(value))+' KST':'—';
 const time=value=>new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',second:'2-digit',...(new Date(value).getUTCMilliseconds()?{fractionalSecondDigits:3}:{}),hour12:false}).format(new Date(value));
+function periodRange({startAt,endAt},isDraft){
+ const start=date(startAt),end=date(endAt);
+ if(start==='—'||end==='—')return `<span>${isDraft?'기간 선택':escape(start+' – '+end)}</span>`;
+ const startTime=`<time datetime="${escape(startAt)}">${escape(time(startAt))}</time>`;
+ const endTime=`<time datetime="${escape(endAt)}">${escape(time(endAt))}</time>`;
+ return start===end
+  ?`<span>${escape(start)}<small>${startTime} – ${endTime} KST</small></span>`
+  :`<span>${escape(start)} ${startTime}<small>– ${escape(end)} ${endTime} KST</small></span>`;
+}
 const percent=value=>Number.isFinite(value)?new Intl.NumberFormat('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2,signDisplay:'exceptZero'}).format(value*100)+'%':'—';
 
 export function experimentCollectionActive(route){return route?.page==='minds'&&route.params.get('view')==='simulations'&&!route.params.get('lab')&&!route.params.get('simulationId')&&!route.params.get('learningId')&&!route.params.get('setup')&&!route.params.get('prepare');}
@@ -49,7 +57,7 @@ export function createExperimentCollection(hooks){
   const performance=item.performance,value=performance?performance.value:item.metrics?.totalReturn,label=outcomeLabel(item);
   if(!Number.isFinite(value))return '<span class="experiment-outcome-empty">—</span>';
   const text=performance?.unit==='percentage-point'?percent(value).replace('%','%p'):percent(value);
-  return `<strong class="experiment-return" data-direction="${value>0?'positive':value<0?'negative':'neutral'}">${escape(text)}</strong>${sharedLabel===label?'':`<small>${escape(label)}</small>`}`;
+  return `<strong class="experiment-return" data-direction="${value>0?'positive':value<0?'negative':'neutral'}">${escape(text)}</strong><small${sharedLabel===label?' class="experiment-shared-outcome"':''}>${escape(label)}</small>`;
  }
  function row(item,showKind,sharedLabel){
   const period=item.period||{},name=item.name||'저장된 실험',mind=mindLabel(item),isBusy=busyId===item.id,archived=!!item.archivedAt,phase=item.status,isDraft=item.recordType==='EDITOR_DRAFT'||phase==='DRAFT',evaluation=item.evaluationStatus??item.evaluationEligibility?.status,phaseLabel=phase==='COMPLETED'&&partialPortfolioValuation(item)?'부분 계좌 평가':phase==='COMPLETED'&&evaluation==='PARTIAL_WINDOW'?'부분 평가':phase==='COMPLETED'&&evaluation==='NO_EVALUABLE_DECISIONS'?'자료 준비 부족':statuses[phase]||phase||'저장됨';
@@ -60,9 +68,14 @@ export function createExperimentCollection(hooks){
   const href=hooks.href?.('minds',experimentCollectionDestination(item)),nameControl=href?'<a class="button small experiment-name" href="'+escape(href)+'" data-experiment-action="open" data-experiment-id="'+escape(item.id)+'" title="'+escape(name)+'">'+escape(name)+'</a>':button(name,'open',item.id,`title="${escape(name)}"`,'experiment-name');
   const actions=renderActionMenu({id:'experiment-actions-'+item.id,label:name+' 작업',compact:true,items:[{label:isDraft?'이어 편집':'열기',href,attributes:{'data-experiment-action':'open','data-experiment-id':item.id}},{label:archived?'복원':'보관',disabled:blocked,attributes:{'data-experiment-action':archived?'restore':'archive','data-experiment-id':item.id}}]});
   const showMind=scope()==='all'||!minds().some(mind=>mind.id===scope())||array(item.mindIds).filter(Boolean).some(id=>id!==scope())||(!array(item.mindIds).length&&item.mindId!==scope());
-  const sameDay=Number.isFinite(Date.parse(period.startAt))&&Number.isFinite(Date.parse(period.endAt))&&date(period.startAt)===date(period.endAt);
-  const periodMarkup=isDraft&&(!period.startAt||!period.endAt)?'<span>기간 선택</span>':`<span title="${escape(fullDate(period.startAt)+' ~ '+fullDate(period.endAt))}">${escape(date(period.startAt))}<small>${sameDay?escape(time(period.startAt)+'–'+time(period.endAt)+' KST'):'– '+escape(date(period.endAt))}</small></span>`;
-  return `<tr data-experiment-row="${escape(item.id)}" ${isBusy?'aria-busy="true"':''}><td class="experiment-name-cell">${nameControl}${showMind?`<span class="experiment-mind" title="${escape(mind)}">${escape(mind)}</span>`:''}</td>${showKind?`<td class="experiment-kind-cell"><span class="experiment-kind">${escape(kinds[item.kind]||'실험')}</span></td>`:''}<td class="experiment-period-cell">${periodMarkup}</td><td class="experiment-status-cell"><span class="experiment-status" data-state="${escape(phase)}">${escape(phaseLabel)}</span>${!isDraft&&Number.isInteger(item.progress?.total)&&item.progress.total>0&&phase!=='COMPLETED'?`<small>${item.progress.completed??0} / ${item.progress.total}${item.progress.unit==='bars'?'봉':' 실행'}</small>`:''}${validation}${adoption}</td><td class="experiment-outcome-cell">${outcome(item,sharedLabel)}</td><td class="experiment-menu-cell">${actions}</td></tr>`;
+  return `<tr role="row" data-experiment-row="${escape(item.id)}" ${isBusy?'aria-busy="true"':''}>
+   <td role="cell" class="experiment-name-cell">${nameControl}${showMind?`<span class="experiment-mind" title="${escape(mind)}">${escape(mind)}</span>`:''}</td>
+   ${showKind?`<td role="cell" class="experiment-kind-cell"><span class="experiment-kind">${escape(kinds[item.kind]||'실험')}</span></td>`:''}
+   <td role="cell" class="experiment-period-cell"><span class="experiment-compact-period-label">테스트 기간</span>${periodRange(period,isDraft)}</td>
+   <td role="cell" class="experiment-status-cell"><span class="experiment-status" data-state="${escape(phase)}">${escape(phaseLabel)}</span>${!isDraft&&Number.isInteger(item.progress?.total)&&item.progress.total>0&&phase!=='COMPLETED'?`<small>${item.progress.completed??0} / ${item.progress.total}${item.progress.unit==='bars'?'봉':' 실행'}</small>`:''}${validation}${adoption}</td>
+   <td role="cell" class="experiment-outcome-cell">${outcome(item,sharedLabel)}</td>
+   <td role="cell" class="experiment-menu-cell">${actions}</td>
+  </tr>`;
  }
  function render(){
   if(!active())return '';
@@ -75,7 +88,7 @@ export function createExperimentCollection(hooks){
   if(pending)body='<div class="experiment-empty" role="status"><span class="experiment-loading-mark" aria-hidden="true"></span><p>실험을 불러오는 중…</p></div>';
   else if(error)body=`<div class="experiment-empty" tabindex="-1" role="alert"><h3>실험을 불러오지 못했어요</h3><p>${escape(error)}</p>${q.has('cursor')?button('처음 페이지','first'):button('다시 조회','refresh')}</div>`;
   else if(!items.length)body=`<div class="experiment-empty" tabindex="-1" role="status"><h3>${filtered?'검색 결과가 없습니다':archived?'보관한 실험이 없습니다':undo?'목록에 남은 실험이 없습니다':'첫 실험을 시작하세요'}</h3><p>${filtered?'다른 이름이나 조건으로 찾아보세요.':archived?'목록에서 보관한 실험을 여기에서 다시 열 수 있습니다.':undo?'보관을 되돌리거나 보관함에서 실험을 다시 열 수 있습니다.':'전략의 성과를 검증하고, 비교하고, 조정하세요.'}</p></div>`;
-  else body=`<div class="experiment-table-scroll" tabindex="0" role="region" aria-label="실험 목록"><table class="experiment-table"><thead><tr><th scope="col" class="experiment-name-cell">실험</th>${showKind?'<th scope="col" class="experiment-kind-cell">종류</th>':''}<th scope="col" class="experiment-period-cell">테스트 기간</th><th scope="col" class="experiment-status-cell">상태</th><th scope="col" class="experiment-outcome-cell">${escape(sharedLabel||'성과')}</th><th scope="col" class="experiment-menu-cell"><span class="sr-only">작업</span></th></tr></thead><tbody>${items.map(item=>row(item,showKind,sharedLabel)).join('')}</tbody></table></div>`;
+  else body=`<div class="experiment-table-scroll" tabindex="0" role="region" aria-label="실험 목록"><table role="table" class="experiment-table"><thead role="rowgroup"><tr role="row"><th scope="col" class="experiment-name-cell">실험</th>${showKind?'<th scope="col" class="experiment-kind-cell">종류</th>':''}<th scope="col" class="experiment-period-cell">테스트 기간</th><th scope="col" class="experiment-status-cell">상태</th><th scope="col" class="experiment-outcome-cell">${escape(sharedLabel||'성과')}</th><th scope="col" class="experiment-menu-cell"><span class="sr-only">작업</span></th></tr></thead><tbody role="rowgroup">${items.map(item=>row(item,showKind,sharedLabel)).join('')}</tbody></table></div>`;
   if(!pending&&!error&&(items.length||q.has('cursor')))body+=`<div class="experiment-pagination"><span role="status">${Number.isInteger(data?.total)?'전체 '+data.total+'개'+(items.length!==data.total?' · '+items.length+'개 표시':''):items.length+'개 표시'}</span>${q.has('cursor')||data?.page?.hasMore?`<div>${q.has('cursor')&&cursors.previous(q)?button('처음','first'):''}${q.has('cursor')?button(cursors.has(q)?'이전':'처음',cursors.has(q)?'previous':'first'):''}${data?.page?.hasMore?button('다음','next',data.page.nextCursor):''}</div>`:''}</div>`;
   return `<section class="experiment-collection" data-experiment-collection><div class="studio-page-head experiment-page-head"><div><${heading}>${archived?'실험 보관함':'실험실'}</${heading}>${archived?'<p>보관한 실험을 찾아 복원하세요.</p>':''}</div><div class="actions">${button(archived?'실험 목록':'보관함','archive-view','','','experiment-archive-link')}${button('새 실험','new','','','primary')}</div></div>${filterMarkup}${filterSummary}${notice?`<div class="experiment-notice"><span role="status">${escape(notice)}</span>${undo?button(busyId?'복원 중…':'되돌리기','undo-archive','',`aria-label="${escape(undo.item.name||'실험')} 보관 되돌리기" ${busyId?'disabled':''}`):''}</div>`:''}${commandError?`<p class="error-text" role="alert">${escape(commandError)}</p>`:''}${busyId?'<span class="sr-only" role="status">실험 목록을 저장하는 중…</span>':''}${body}</section>`;
  }

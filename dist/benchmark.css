@@ -2136,6 +2136,7 @@
   border-width: 1px;
   border-color: var(--ds-border-default);
   background-color: var(--ds-bg-raised);
+  container: experiment-list / inline-size;
 }
 .experiment-table {
   width: 100%;
@@ -2243,10 +2244,12 @@
   font-size: var(--ds-font-size-xs);
   --tw-leading: var(--ds-leading-xs);
   line-height: var(--ds-leading-xs);
-  white-space: nowrap;
   color: var(--ds-text-secondary);
   --tw-numeric-spacing: tabular-nums;
   font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
+}
+.experiment-period-cell time {
+  white-space: nowrap;
 }
 .experiment-period-cell small, .experiment-status-cell small, .experiment-outcome-cell small {
   margin-top: var(--ds-space-2);
@@ -2302,6 +2305,71 @@
 }
 .experiment-menu-cell {
   text-align: right;
+}
+.experiment-compact-period-label, .experiment-outcome-cell .experiment-shared-outcome {
+  display: none;
+}
+@container experiment-list (width < 50rem) {
+  .experiment-table, .experiment-table tbody {
+    display: block;
+    width: 100%;
+    min-width: 0px;
+  }
+  .experiment-table thead {
+    display: none;
+  }
+  .experiment-table tbody tr {
+    display: grid;
+    min-width: 0px;
+    align-items: flex-start;
+    column-gap: var(--ds-space-4);
+    row-gap: var(--ds-space-2);
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: var(--ds-border-subtle);
+    padding: var(--ds-space-4);
+    grid-template-columns: minmax(0,1fr) auto;
+  }
+  .experiment-table tbody tr:last-child {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 0px;
+  }
+  .experiment-table td {
+    display: block;
+    min-width: 0px;
+    border-style: var(--tw-border-style);
+    border-width: 0px;
+    padding: 0px;
+  }
+  .experiment-table td.experiment-name-cell {
+    grid-column-start: 1;
+    grid-row-start: 1;
+  }
+  .experiment-table td.experiment-kind-cell, .experiment-table td.experiment-period-cell {
+    grid-column: 1 / -1;
+  }
+  .experiment-table td.experiment-period-cell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: var(--ds-space-3);
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+  .experiment-period-cell small {
+    margin: 0px;
+  }
+  .experiment-compact-period-label, .experiment-outcome-cell .experiment-shared-outcome {
+    display: block;
+  }
+  .experiment-status {
+    white-space: normal;
+  }
+  .experiment-table td.experiment-menu-cell {
+    grid-column-start: 2;
+    grid-row-start: 1;
+    justify-self: flex-end;
+  }
 }
 .experiment-pagination {
   margin-top: var(--ds-space-4);
