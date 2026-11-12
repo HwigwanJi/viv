@@ -116,7 +116,7 @@ export function createMarketLibrary(hooks){
     const keyLink='#settings?'+new URLSearchParams({view:'connections',executionMode:current().params.get('executionMode')||'paper',jevReview:'1',returnTo:knowledgeReaderHash(current(),id)});
     const settings='<a class="button small" href="'+esc(keyLink)+'" data-studio-route>JEV 키 설정</a>';
     const outbound='이 자료 전체와 관련 승인 자료 최대 8개의 제목·요약·핵심 내용을 TypeSafe JEV에 보냅니다.';
-    let message=outbound+' JEV 사용량이 발생할 수 있습니다.',actions='';
+    let message=outbound+' JEV API 사용량은 과금될 수 있습니다.',actions='';
     if(status==='KEY_REQUIRED'){
       message='서버에 JEV 키를 설정하면 자료를 분류할 수 있습니다.';
       actions=settings;
@@ -124,9 +124,9 @@ export function createMarketLibrary(hooks){
       message='JEV 요청이 처리 중입니다. 창을 닫아도 처리되며 이 자료에서 결과를 확인할 수 있습니다.';
       actions=checkResult;
     }else if(status==='REJECTED'||status==='UNKNOWN'){
-      message=status==='REJECTED'?'JEV가 요청을 거절했습니다'+(attempt.httpStatus?' ('+attempt.httpStatus+')':'')+'. 키 또는 접근 권한을 확인하세요.':'이전 요청의 분류 결과를 확인하지 못했습니다. 상태 확인은 자료만 조회합니다. 다시 보내면 JEV 사용량이 추가될 수 있습니다.';
+      message=status==='REJECTED'?'JEV가 요청을 거절했습니다'+(attempt.httpStatus?' ('+attempt.httpStatus+')':'')+'. 키 또는 접근 권한을 확인하세요.':'이전 요청의 분류 결과를 확인하지 못했습니다. 상태 확인은 자료만 조회합니다. 다시 보내면 JEV 사용량과 비용이 추가될 수 있습니다.';
       actions=checkResult+(status==='REJECTED'?settings:'')+button('JEV에 다시 보내기','classify-retry',id,described+(busy()||commandPending?'disabled':''));
-      message+=' '+outbound+(status==='REJECTED'?' JEV 사용량이 발생할 수 있습니다.':'');
+      message+=' '+outbound+(status==='REJECTED'?' JEV API 사용량은 과금될 수 있습니다.':'');
     }else{
       actions=button('JEV에 보내 분류','classify',id,described+(busy()||commandPending||committedClassifications.has(id)?'disabled':''));
     }

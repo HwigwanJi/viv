@@ -1639,7 +1639,7 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T05:11:31.095Z",
+      "reviewedAt": "2026-11-12T05:12:15.154Z",
       "reason": "자료별 JEV 전송 내용, 상태 조회·키보드 초점 및 조회 실패 복구를 대조했습니다.",
       "signature": "376e5330dea81f88b42707f48576403f3ac227abbdbf092778c60ff48a7657b0",
       "controls": [
@@ -1724,7 +1724,7 @@
           1
         ]
       ],
-      "sourceHash": "7551652a90b0927e7f1ed21addc0fab3553a7c688d9d7441092b584a172630f4"
+      "sourceHash": "8925dd29255df712eac1c4bcb26ae17e50316978360f20d26274c5567853b711"
     },
     {
       "file": "dist/ui/mind-activity-resource.mjs",

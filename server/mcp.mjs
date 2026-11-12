@@ -91,7 +91,7 @@ const descriptions={
   read_market_knowledge:'사용자 소유 시장 라이브러리의 자료·공개 시각·적용 범위·실제 JEV 분류·승인 상태를 검색합니다. documentId로 보관 원문을 조회합니다.',
   save_market_research:'뉴스 브리핑·전략 리서치를 개인 라이브러리에 바로 저장하고 열기 링크를 반환합니다. 새 문서는 document 또는 text를, 기존 자료를 보관하려면 documentId를 전달하세요. 마인드 활용 승인은 별도입니다.',
   write_market_knowledge:'공개 원문을 조사한 market-knowledge JSON/YAML을 초안으로 보관합니다. 내용 수정은 새 ID와 다음 버전으로 작성하며 승인은 앱에서 수행합니다. 분석 LLM API를 추가 호출하지 않습니다.',
-  classify_market_knowledge:'자료 전체와 관련 승인 자료 최대 8개의 제목·요약·핵심 내용을 TypeSafe JEV에 보내 분류합니다. 사용량이 발생할 수 있습니다. 응답이 끊기면 read_market_knowledge에서 같은 documentId의 classificationAttempt 또는 저장된 분류를 먼저 읽으세요. 같은 요청 키는 저장된 결과를 반환합니다.',
+  classify_market_knowledge:'자료 전체와 관련 승인 자료 최대 8개의 제목·요약·핵심 내용을 TypeSafe JEV에 보내 분류합니다. JEV API 사용량은 과금될 수 있습니다. 응답이 끊기면 read_market_knowledge에서 같은 documentId의 classificationAttempt 또는 저장된 분류를 먼저 읽으세요. 같은 요청 키는 저장된 결과를 반환합니다.',
   export_market_knowledge:'시장 지식 원문과 버전·출처·해시를 JSON/YAML로 내보내 새 버전의 분석에 사용합니다.',
   read_investment_status:'현재 사용자 마인드 계좌·신규/기존 결정·관측·문서 검토·예약 상태를 원본 종류와 시점별로 조회합니다. 저장 평가값을 제공하며 서로 다른 계좌·통화를 합산하지 않습니다.',
   run_due_paper_jobs:'실행 시각이 된 사용자 동의 모의투자 작업을 처리하고 결과를 보관합니다.',
