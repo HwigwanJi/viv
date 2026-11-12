@@ -146,7 +146,7 @@ test('VIV checks the workspace module when a browser reports only the entry erro
 });
 
 test('install entry keeps its own page on failure and retains normal modified link actions', async () => {
-  const attrs = new Map(), status = {};
+  const attrs = new Map(), status = {}, help = {hidden: true};
   const link = {
     isConnected: true, href: 'http://localhost/#home?executionMode=paper', pathname: '/', search: '',
     addEventListener(_, fn) { this.click = fn; },
@@ -155,7 +155,8 @@ test('install entry keeps its own page on failure and retains normal modified li
     removeAttribute: name => attrs.delete(name),
   };
   const urls = [], opened = [];
-  const document = {querySelector: selector => selector === '[data-install-open]' ? link : selector === '[data-viv-open-status]' ? status : null};
+  const nodes = {'[data-install-open]': link, '[data-viv-open-status]': status, '[data-viv-open-help]': help};
+  const document = {querySelector: selector => nodes[selector] ?? null};
   const window = {setTimeout: () => 1, clearTimeout() {}};
   const fetch = async url => {
     urls.push(url);
@@ -166,9 +167,11 @@ test('install entry keeps its own page on failure and retains normal modified li
   const click = {button: 0, preventDefault: () => { prevented++; }};
   await link.click({...click, ctrlKey: true});
   assert.equal(prevented, 0);
+  assert.equal(help.hidden, true);
   assert.deepEqual(urls, []);
   await link.click(click);
   assert.match(status.textContent, /VIV 서버/);
+  assert.equal(help.hidden, false);
   assert.deepEqual(opened, []);
   await link.click(click);
   assert.deepEqual(urls, ['/', '/']);

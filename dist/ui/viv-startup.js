@@ -58,16 +58,19 @@
     }
     status.textContent = problem;
     control.removeAttribute('aria-disabled');
+    return false;
   }
 
   var installLink = document.querySelector('[data-install-open]');
   if (installLink) {
-    installLink.addEventListener('click', function (event) {
+    var installHelp = document.querySelector('[data-viv-open-help]');
+    installLink.addEventListener('click', async function (event) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
-      return confirmAndOpen(installLink, document.querySelector('[data-viv-open-status]'), installLink.pathname + installLink.search, null, function () {
+      var result = await confirmAndOpen(installLink, document.querySelector('[data-viv-open-status]'), installLink.pathname + installLink.search, null, function () {
         location.assign(installLink.href);
       });
+      if (result === false && installHelp) installHelp.hidden = false;
     });
   }
 

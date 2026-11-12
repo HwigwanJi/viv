@@ -54,11 +54,15 @@
         "navigation",
         "readonly"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-12T12:13:03.219Z",
-      "reason": "캘린더 진입·날짜별 읽기와 캐릭터 꾸미기 단일 저장 동선을 대조",
-      "signature": "1eb14d305d971b6c5f37ea50403a13aeea3ad3b27d616d4aae8782132446acb4",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T14:31:59.053Z",
+      "reason": "시작 모듈 실패 화면에서 키보드로 복구 문서를 열고 원래 캘린더와 보고서로 돌아가는 동선을 확인",
+      "signature": "5519f59d210b80086618d40862701351498da4299812d670d56bf39c830f247f",
       "controls": [
+        [
+          "element:a",
+          1
+        ],
         [
           "element:button",
           1
@@ -68,7 +72,7 @@
           1
         ]
       ],
-      "sourceHash": "62428a810b158730fba3ccb27852524de7d1f9d1b64ee5d95648d04d61b05232"
+      "sourceHash": "a7286262ca646c1956bb04fd740aa5aeec441324f61fe170e5d5ab0f8ffc83ca"
     },
     {
       "file": "dist/install.html",
@@ -81,9 +85,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T11:08:06.844Z",
-      "reason": "복원 안내 링크, 키보드 이동, MCP 주소 복사와 권한 실패 시 선택, 휴대폰 PC 안내를 검토",
-      "signature": "cdb057a9050d8256b85907caaf4c430922d0f037a11b4c00e8a582fa05a00062",
+      "reviewedAt": "2026-11-12T14:31:59.054Z",
+      "reason": "휴대폰 너비에서 연결 실패 때만 복구 문서 링크를 찾고 원래 설치 화면으로 돌아오는 동선을 확인",
+      "signature": "5fe6affb0976b5c09e8466e0a569889c2ab6d7dc7607474806e39a3bfbc08dc5",
       "controls": [
         [
           "data-install-copy-command",
@@ -102,12 +106,16 @@
           1
         ],
         [
+          "data-viv-open-help",
+          1
+        ],
+        [
           "data-viv-open-status",
           1
         ],
         [
           "element:a",
-          5
+          6
         ],
         [
           "element:button",
@@ -126,7 +134,7 @@
           2
         ]
       ],
-      "sourceHash": "c670c5ea247ee82380c42e4f7c9b7b630a00b4f98b49d2b45787c34fbddbf610"
+      "sourceHash": "428b58e568ba2e3dad3c056791d0488505bb710b06d01eeb5369461497681957"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -3831,13 +3839,17 @@
       "owners": [
         "primitive"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-12T13:40:53.917Z",
-      "reason": "실패한 앱 파일과 진입 파일의 GET 확인, 복구 화면 유지와 원래 주소 보존을 검토",
-      "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T14:31:59.054Z",
+      "reason": "연결 실패 뒤 안내를 표시하고 정상 열기와 수정 키 클릭을 보존하는 동선을 확인",
+      "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
       "controls": [
         [
           "data-install-open",
+          1
+        ],
+        [
+          "data-viv-open-help",
           1
         ],
         [
@@ -3845,7 +3857,7 @@
           1
         ]
       ],
-      "sourceHash": "bcd35d429a04411e1abe40f4310c9b2d982bb1326d3f206c4dc8d5c96b379a54"
+      "sourceHash": "3fa92a42b8fc35c59ad407a07067924c6c13ed23e94e220f65762e0e9ce552d3"
     }
   ],
   "actionMatrix": "design/context-action-matrix.json",

@@ -5359,7 +5359,7 @@ a {
   color: var(--ds-text-link);
   text-decoration-line: none;
 }
-a:hover {
+a:hover, a[data-viv-recovery-link] {
   text-decoration-line: underline;
 }
 svg {
