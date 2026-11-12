@@ -29,6 +29,10 @@
   transform: rotate(var(--viv-orbit-angle)) scaleY(.42);
   box-shadow: var(--viv-orbit-glow);
   animation: viv-orbit var(--viv-orbit-duration) cubic-bezier(.52,.1,.44,.94) infinite;
+  animation-play-state: paused;
+}
+.viv-intro:has(> .viv-intro-status:not([hidden])) .viv-intro-orbit i {
+  animation-play-state: running;
 }
 .viv-intro-orbit i:nth-child(2) {
   border-color: var(--viv-intro-violet);

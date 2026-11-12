@@ -52,7 +52,7 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
 });
 
 function setup(fetch, resources = []) {
-  const events = {}, attributes = new Map(), status = {hidden: false}, message = {}, fileStatus = {hidden: true}, ring = {style: {}};
+  const events = {}, attributes = new Map(), status = {hidden: true}, message = {}, fileStatus = {hidden: true};
   const button = {
     isConnected: true,
     addEventListener: (_, callback) => { button.click = callback; },
@@ -64,7 +64,6 @@ function setup(fetch, resources = []) {
   const intro = {
     isConnected: true,
     querySelector: selector => selector === '.viv-intro-status' ? status : recovery,
-    querySelectorAll: () => [ring],
   };
   let reloads = 0;
   const window = {
@@ -76,14 +75,15 @@ function setup(fetch, resources = []) {
   const document = {querySelector: selector => selector === '.viv-intro' ? intro : null, getElementById: () => ({src: 'http://localhost/app.mjs'})};
   const location = {origin: 'http://localhost', pathname: '/', search: '?entry=install', reload: () => { reloads++; }};
   runInNewContext(script, {document, window, location, AbortController, fetch, URL});
-  return {events, attributes, status, message, fileStatus, ring, button, recovery, intro, reloads: () => reloads};
+  return {events, attributes, status, message, fileStatus, button, recovery, intro, reloads: () => reloads};
 }
 
 const asset = (contentType, status = 200) => new Response(null, {status, headers: {'content-type': contentType}});
 
 test('VIV offers recovery when the entry module fails or startup stalls', () => {
   for (const trigger of ['module', 'timeout', 'completed']) {
-    const {events, status, ring, recovery, intro} = setup();
+    const {events, status, recovery, intro} = setup();
+    assert.equal(status.hidden, false);
     events.error({target: {id: 'unrelated-image'}});
     assert.equal(recovery.hidden, true);
     if (trigger === 'completed') intro.isConnected = false;
@@ -92,9 +92,15 @@ test('VIV offers recovery when the entry module fails or startup stalls', () => 
     assert.equal(recovery.hidden, trigger === 'completed');
     if (trigger !== 'completed') {
       assert.equal(status.hidden, true);
-      assert.equal(ring.style.animation, 'none');
     }
   }
+});
+
+test('VIV startup help is a visible HTML link before the script runs', () => {
+  const html = readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
+  assert.match(html, /class="viv-intro-status" role="status" hidden/);
+  assert.match(html, /data-viv-boot-failure hidden[^]*?<\/div>\s*<noscript>[^<]+<\/noscript>\s*<a data-viv-recovery-link href="https:\/\//);
+  assert.equal((html.match(/data-viv-recovery-link/g) || []).length, 1);
 });
 
 test('VIV keeps the recovery screen until the same page and JavaScript respond', async () => {

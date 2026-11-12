@@ -95,15 +95,14 @@
 
   var intro = document.querySelector('.viv-intro');
   if (!intro) return;
+  var loading = intro.querySelector('.viv-intro-status');
   var recovery = intro.querySelector('[data-viv-boot-failure]');
   var retry = recovery.querySelector('button');
   var status = recovery.querySelector('[data-viv-retry-status]');
   var fileStatus = recovery.querySelector('[data-viv-failed-files]');
   function showRecovery() {
     if (!intro.isConnected || !recovery.hidden) return;
-    intro.querySelector('.viv-intro-status').hidden = true;
-    var rings = intro.querySelectorAll('.viv-intro-orbit i');
-    for (var i = 0; i < rings.length; i++) rings[i].style.animation = 'none';
+    loading.hidden = true;
     showFailedFiles(fileStatus, failedScripts(true));
     recovery.hidden = false;
   }
@@ -118,4 +117,5 @@
   }, true);
   window.addEventListener('unhandledrejection', showRecovery);
   window.setTimeout(showRecovery, 12000);
+  loading.hidden = false;
 }());
