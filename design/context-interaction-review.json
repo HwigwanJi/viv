@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T17:38:46.350Z",
-      "reason": "시세 복구의 과거 실습, 마인드 선택 포커스, 원래 트레이딩 복귀를 검증했다.",
+      "reviewedAt": "2026-11-12T20:02:40.985Z",
+      "reason": "같은 실험 화면의 자동 갱신에서 이미 포커스된 결과 제목을 보존하고, 다른 경로의 제목에는 포커스를 이동하지 않는다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "986b2ce6cefd0e8ef8409708cf9aac647478db50467160b66297872c7d55ea49",
+      "sourceHash": "b8ee12d3c51902a454d0e86b6538151212ab97939b078534e3a692f9b1aa2f36",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -2731,8 +2731,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T18:08:25.374Z",
-      "reason": "저장 보고서의 계산 근거를 보관 정책과 구분하고, 재검증에서 같은 계산 설정과 원본으로의 복귀를 확인했다.",
+      "reviewedAt": "2026-11-12T20:02:40.988Z",
+      "reason": "키보드 실행 완료 후 결과 제목에 포커스를 옮기고, 실행 중 탐색·다른 요소 포커스·터치 실행과 저장 보고서 재열기의 경계를 브라우저에서 확인했다.",
       "signature": "dc0d94ae7cf480ce2915278886d8fb2042fa4068faf2828a3702acb34c7bb40a",
       "controls": [
         [
@@ -2804,7 +2804,7 @@
           2
         ]
       ],
-      "sourceHash": "b2f874437b9107b1b549add870621cedafd02d4b14f18e39501cb67c07943d47",
+      "sourceHash": "fa5979e194c8ed965f188dadeec78b905c0b4f2f507813e126e70ff514ed1ee1",
       "customContainers": []
     },
     {

@@ -253,7 +253,7 @@ export function createSimulationPlayground(hooks={},options={}){
   }
 
   function pagination(page,query){return `<div class="studio-pagination"><span>${page?.hasMore?'다음 기록 있음':'마지막 페이지'}</span><div>${button('이전','prev','',cursors.has(query)&&!loading?'':'disabled')}${button('다음','next',page?.nextCursor||'',page?.hasMore&&!loading?'':'disabled')}</div></div>`;}
-  function header(name,actions=''){const heading=scope()==='all'?'h1':'h2';return `<div class="studio-page-head"><${heading} tabindex="-1" title="${esc(name)}">${esc(name)}</${heading}><div class="actions">${actions}</div></div>`;}
+  function header(name,actions='',completed=false){const heading=scope()==='all'?'h1':'h2';return `<div class="studio-page-head"><${heading} tabindex="-1"${completed?' id="simulation-result-heading" aria-describedby="simulation-result-status"':''} title="${esc(name)}">${esc(name)}</${heading}><div class="actions">${actions}</div></div>`;}
   function listView(){
     const items=list(data?.items);
     const rows=items.map(s=>{
@@ -335,7 +335,7 @@ export function createSimulationPlayground(hooks={},options={}){
     const practiceHref=active==='overview'&&s.status==='COMPLETED'&&s.config.mode==='MECHANICAL'&&current().params.get('executionMode')!=='live'&&minds().some(m=>m.id===s.config.mindId)
       ?hooks.href?.('trade',{profileId:s.config.mindId,instrumentId:'crypto:okx:BTC-USDT',timeframe:'4h',mode:'live',executionMode:'paper',comparisonId:null}):null;
     const nextPractice=practiceHref?'<div class="actions spaced"><a class="button small" href="'+esc(practiceHref)+'" data-studio-route>현재 시세로 모의 판단 시작</a><span class="tiny muted">발행 정책을 현재 확정 봉에 적용합니다. 모의 자금이 필요하며 정책에 따라 AI 키가 필요합니다.</span></div>':'';
-    return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls)+(s.status==='COMPLETED'?'<span class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+'</span><span>'+esc(simulationExecutionBasis(s))+'</span>'+(s.config.mode==='MECHANICAL'?'<span>AI 호출 0회</span>':'')+'<span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(id==='overview'&&prepared?'저장한 조건':label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
+    return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls,s.status==='COMPLETED')+(s.status==='COMPLETED'?'<span id="simulation-result-status" class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+'</span><span>'+esc(simulationExecutionBasis(s))+'</span>'+(s.config.mode==='MECHANICAL'?'<span>AI 호출 0회</span>':'')+'<span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(id==='overview'&&prepared?'저장한 조건':label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
   }
   function runStatus(s){
     if(s.status!=='ACTION_REQUIRED')return `<div class="simulation-run-status" role="status" aria-live="polite"><strong>${running?'실행 중':s.status==='RUNNING'?'이어서 실행 가능':statusLabel(s.status)}</strong><span>${esc(commandStatus)}</span>${s.lastError?'<span class="error-text">'+esc(s.lastError.message||s.lastError.code)+'</span>':''}</div>`;
@@ -414,11 +414,31 @@ export function createSimulationPlayground(hooks={},options={}){
     catch(problem){if(token!==previewGeneration)return;preview=null;commandError=problem.message;}
     finally{if(token===previewGeneration){previewLoading=false;redraw();}}
   }
-  async function runSteps(id){
-    if(commandBusy||running||!visible(id)||!isOpen(simulation())||modelUnavailable(simulation()))return;running=true;stopRequested=false;runId=id;const scopeKey=currentFeedbackScope();commandError='';commandStatus='저장한 종료 시점까지 순서대로 실행합니다.';redraw();
+  async function runSteps(id,trigger){
+    if(commandBusy||running||!visible(id)||!isOpen(simulation())||modelUnavailable(simulation()))return;
+    const doc=trigger?.ownerDocument,focus=doc&&doc.activeElement===trigger?new AbortController():null;
+    const cancelFocus=()=>focus.abort();
+    if(focus){
+      const listener={signal:focus.signal};
+      doc.addEventListener('focusin',cancelFocus,listener);
+      doc.addEventListener('pointerdown',cancelFocus,listener);
+      doc.defaultView?.addEventListener('hashchange',cancelFocus,listener);
+      doc.defaultView?.addEventListener('blur',cancelFocus,listener);
+    }
+    running=true;stopRequested=false;runId=id;const scopeKey=currentFeedbackScope();commandError='';commandStatus='저장한 종료 시점까지 순서대로 실행합니다.';redraw();
     try{while(!stopRequested&&visible(id)&&isOpen(simulation())){if(scopeKey!==currentFeedbackScope()){stopRequested=true;break;}const value=await command('step',{id},simulation().revision);if(scopeKey!==currentFeedbackScope()){stopRequested=true;break;}if(!visible(id))break;readGeneration++;abort?.abort();data={ok:true,simulation:value.simulation};loading=false;commandStatus=number(value.progress?.processed??value.simulation?.progress?.processed,0)+'개 결정 처리 · 남은 '+number(value.progress?.remaining,0)+'개';redraw();if(value.simulation.status==='COMPLETED'||value.simulation.status==='ACTION_REQUIRED'||value.simulation.status==='FAILED'||value.progress?.processed===0)break;}}
     catch(problem){commandError=problem.message;stopRequested=true;}
-    finally{running=false;runId=null;if(visible(id)){redraw();await load({force:true});}}
+    finally{
+      running=false;runId=null;
+      try{
+        if(visible(id)){
+          redraw();await load({force:true});
+          if(focus&&!focus.signal.aborted&&visible(id)&&simulation()?.status==='COMPLETED'&&doc.activeElement===doc.body){
+            root?.querySelector('#simulation-result-heading')?.focus();
+          }
+        }
+      }finally{focus?.abort();}
+    }
   }
   async function pause(id){if(stopRequested||!running)return;stopRequested=true;commandStatus='현재 요청의 저장을 기다린 뒤 중지합니다.';redraw();await runPromise;if(!visible(id)||simulation()?.status==='COMPLETED')return;commandBusy=true;redraw();try{const value=await command('pause',{id},simulation().revision);if(visible(id))data={ok:true,simulation:value.simulation};}catch(problem){commandError=problem.message;}finally{commandBusy=false;redraw();}}
   function cancelRetryRead(){if(!retryRead)return;const read=retryRead;retryRead=null;retryLoadingId='';retryGeneration++;read.abort.abort();}
@@ -562,7 +582,7 @@ export function createSimulationPlayground(hooks={},options={}){
     if(action==='open'||action==='back'){leaveEditor();stopRequested=true;cursors.reset();if(action==='back'&&collection.back())return;return navigate({simulationId:action==='open'?id:null,tab:'overview',cursor:null,...(action==='back'?{learningId:null,previousLearningId:null,comparisonA:null,comparisonB:null}: {})});}
     if(action==='refresh')return await load({force:true});
     if(action==='tab'){cursors.reset();return navigate({tab:id,cursor:null});}
-    if(action==='run'){runPromise=runSteps(id);return await runPromise;}
+    if(action==='run'){runPromise=runSteps(id,event.detail===0?node:null);return await runPromise;}
     if(action==='pause')return await pause(id);
     if(action==='row-detail')return await openRowDetail(id,false,null,null,{panel:node.closest?.('.lab-decision-navigation')?.closest?.('[data-simulation-detail]')?.querySelector?.('[data-simulation-action="detail-tab"][aria-current="page"]')?.dataset.simulationId||node.dataset.simulationDetailTab||'summary',direction:node.dataset.simulationDirection});
     if(action==='fill-decision')return await openFillDecision(id);

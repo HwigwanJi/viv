@@ -63,7 +63,7 @@ function render(){
   hudRenderPending=false;
   const sameRoute=document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash;
   const active=document.activeElement;
-  const retainedFocus=sameRoute&&['.studio-content h1[tabindex="-1"]','[data-capability-guide]','#first-paper-decision'].find(selector=>active?.matches(selector));
+  const retainedFocus=sameRoute&&['#simulation-result-heading','.studio-content h1[tabindex="-1"]','[data-capability-guide]','#first-paper-decision'].find(selector=>active?.matches(selector));
   const retainedCalendar=sameRoute&&active?.dataset?.calDate?'[data-cal-date="'+CSS.escape(active.dataset.calDate)+'"]':null;
   const activeHud=active?.closest?.('[data-mind-hud]'),hudFocus=sameRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:active.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>active.dataset[key]!==undefined)}:null;
   if(hudFocus&&hudFocus.selector!=='[data-hud-viewport]'){const key=hudFocus.selector;hudFocus.selector=key?'[data-'+key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+'="'+CSS.escape(document.activeElement.dataset[key])+'"]':null;}

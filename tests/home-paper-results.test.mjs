@@ -67,6 +67,53 @@ test('saved keyless practice shows its inputs before the only execute button',as
   assert.match(app.render(),/모델 준비 자료 필요[^]*저장한 실행 조건[^]*data-simulation-action="run"[^>]*disabled/);
 });
 
+test('simulation completion focuses the saved result only for an uninterrupted keyboard run',async()=>{
+  const originalDocument=globalThis.document;
+  try{
+    for(const interruption of [null,'focusin','hashchange','pointerdown','blur']){
+      let simulation={id:'practice',revision:1,status:'CREATED',config:{mindId:'mind-a',name:'실습',mode:'MECHANICAL'}};
+      const doc=new EventTarget();
+      doc.defaultView=new EventTarget();
+      doc.body={};
+      const trigger={ownerDocument:doc,dataset:{simulationAction:'run',simulationId:simulation.id}};
+      const heading={focus(){doc.activeElement=this;}};
+      let click;
+      const listen=doc.addEventListener.bind(doc);
+      doc.addEventListener=(type,handler,options)=>{
+        if(type==='click'&&!options)click=handler;
+        listen(type,handler,options);
+      };
+      globalThis.document=doc;
+      const app=createSimulationPlayground({
+        getRoute:()=>({page:'minds',params:new URLSearchParams('view=simulations&simulationId=practice')}),
+        render(){doc.activeElement=doc.body;},
+        async request(path){
+          if(path.endsWith('/step')){
+            if(interruption==='hashchange'||interruption==='blur')doc.defaultView.dispatchEvent(new Event(interruption));
+            else if(interruption)doc.dispatchEvent(new Event(interruption));
+            simulation={...simulation,status:'COMPLETED',revision:2};
+            return {simulation};
+          }
+          assert.ok(path.endsWith('/item?id=practice'));
+          return {simulation};
+        },
+      });
+      try{
+        app.start();
+        await app.load();
+        await app.mount({querySelector:selector=>selector==='#simulation-result-heading'?heading:null});
+        doc.activeElement=trigger;
+        await click({detail:0,preventDefault(){},target:{closest:()=>trigger}});
+        assert.equal(doc.activeElement,interruption?doc.body:heading);
+        assert.match(app.render(),/id="simulation-result-heading" aria-describedby="simulation-result-status"[^]*id="simulation-result-status"[^>]*>완료/);
+      }finally{app.destroy();}
+    }
+  }finally{
+    if(originalDocument===undefined)delete globalThis.document;
+    else globalThis.document=originalDocument;
+  }
+});
+
 test('repeat opens read-only review and cancellation restores the same report',async()=>{
   const saved={
     id:'original',status:'COMPLETED',source:{mechanicalBaseline:{parametersSource:'DEFAULT_MODEL_CONFIG'}},config:{
