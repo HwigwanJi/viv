@@ -213,7 +213,7 @@ export async function readHomePerformance({repository,db,ownerId,executionMode='
     const tables=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('broker_connections','simulation_reports','workspace_heads')").bind().all()).results.map(r=>r.name);
     if(executionMode==='live'&&tables.includes('broker_connections'))brokerConnections=(await db.prepare('SELECT provider,snapshot,updated_at FROM broker_connections WHERE owner_id=?').bind(ownerId).all()).results.map(r=>({provider:r.provider,updatedAt:r.updated_at,snapshot:r.snapshot?JSON.parse(r.snapshot):null}));
     if(tables.includes('simulation_reports'))simulationHighlights=(await db.prepare("SELECT json_extract(payload,'$.report') AS report FROM simulation_reports WHERE owner_id=? AND json_extract(payload,'$.status')='COMPLETED' AND json_extract(payload,'$.archivedAt') IS NULL ORDER BY json_extract(payload,'$.report.completedAt') DESC,id DESC LIMIT 6").bind(ownerId).all()).results.map(r=>({report:r.report?JSON.parse(r.report):null})).filter(r=>r.report);
-    if(executionMode==='paper'&&!simulationHighlights.some(entry=>completedReport(entry,activityAsOf,workspace))&&tables.includes('simulation_reports')){
+    if(executionMode==='paper'&&tables.includes('simulation_reports')){
       const activeMindIds=list(workspace.investmentProfiles).filter(p=>p.status!=='ARCHIVED').map(p=>p.id);
       pendingPaperPractice=await db.prepare(`SELECT id AS simulationId, json_extract(payload,'$.config.mindId') AS profileId,
         json_extract(payload,'$.config.name') AS name FROM simulation_reports WHERE owner_id=?

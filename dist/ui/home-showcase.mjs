@@ -83,10 +83,10 @@ function recentMarkup(selection,performance){
 }
 
 function paperPractice(performance){
- if(performance?.executionMode!=='paper'||performance.latestPaperExperiment)return null;
+ if(performance?.executionMode!=='paper')return null;
  const pending=performance.pendingPaperPractice;
  return pending?{href:paperExperimentUrl(pending),label:'백테스트 이어하기',info:pending.name}
-  :{href:PAPER_PRACTICE_ENTRY,label:'첫 백테스트 실습',info:'API 키 없이 BTC 시세로 연습'};
+  :performance.latestPaperExperiment?null:{href:PAPER_PRACTICE_ENTRY,label:'첫 백테스트 실습',info:'API 키 없이 BTC 시세로 연습'};
 }
 
 function paperResultsMarkup(performance,practice){
@@ -101,8 +101,10 @@ function paperResultsMarkup(performance,practice){
   ?[paperExperimentUrl(experiment),'최근 완료 실험',[experiment.profileName,experiment.name].filter(Boolean).join(' · '),stamp(experiment.completedAt)]
   :practice?[practice.href,practice.label,practice.info]
   :[paperExperimentUrl(),'백테스트 결과','전체 시뮬레이션 보기'];
- const links=[decisionLink,experimentLink];
- return '<nav class="home-paper-results" aria-label="모의 결과">'+links.map(([href,label,info,context])=>routeLink(href,
+ const links=experiment&&practice
+  ?[[practice.href,practice.label,practice.info],decisionLink,experimentLink]
+  :[decisionLink,experimentLink];
+ return '<nav class="home-paper-results" aria-label="모의 실습과 결과">'+links.map(([href,label,info,context])=>routeLink(href,
   '<span><strong>'+esc(label)+'</strong><small>'+esc(info)+'</small>'+(context?'<small>'+esc(context)+'</small>':'')+'</span>'+arrow)).join('')+'</nav>';
 }
 
@@ -140,7 +142,7 @@ export function renderHomeShowcase({performance,market,error='',loading=false,ma
  const selection=homeSelection(performance,route),mode=selection.mode,summary=list(performance?.accountSummaries).find(s=>s.currency===selection.currency),scope=mode==='live'?'실전':'모의';
  const summaryValue=summary&&(finite(summary.equity)||finite(summary.available))?routeLink(url('settings',{view:'accounts',executionMode:mode}),`<span>${mode==='live'?'계좌 저장 잔고':finite(summary.equity)?scope+' 자산':'주문 가능'}</span><strong>${esc(currencyAmount(finite(summary.equity)?summary.equity:summary.available,summary.currency,summary.currency==='KRW'?0:2))}</strong><small>${esc(summary.currency)}</small>`,'home-account-summary')+(mode==='live'?helpTooltip('계좌 저장 잔고','연결 계좌를 마지막으로 조회해 저장한 '+(finite(summary.equity)?'평가자산':'사용 가능 금액')+'입니다. 마인드별 운용 자금과 수익률은 해당 마인드의 원장으로 표시합니다. '+(list(summary.valuationAsOf).map(stamp).filter(Boolean).join(' · ')||stamp(summary.asOf)||'조회 시각 미기록'),{id:'home-account-snapshot-help'}):''):'';
  const activityState=mode==='live'?liveActivityState:paperActivityState,activityError=activityState?.error,activityLoading=activityState?.loading&&!list(performance?.cards).some(card=>cardActivity(card,mode));
- const practice=paperPractice(performance),heroPractice=!selection.metric&&!cardActivity(selection.card,mode)?practice:null;
+ const practice=paperPractice(performance),heroPractice=!performance?.latestPaperExperiment&&!selection.metric&&!cardActivity(selection.card,mode)?practice:null;
  return `<div class="home-showcase" data-home-showcase><header class="home-heading"><div><p>VIBE INVESTING</p><h1 tabindex="-1">나의 투자</h1></div><div class="home-heading-actions">${mode==='live'?'<button type="button" class="home-text-link" data-home-action="portfolio">통합 운용</button>':''}${routeLink(url('settings',{view:'accounts',executionMode:mode}),'계좌·자금'+arrow,'home-text-link')}${iconButton('홈 새로고침','refresh','↻',loading?'disabled':'')}</div></header>${mode==='paper'?paperResultsMarkup(performance,heroPractice?null:practice):''}${error?`<p class="home-feedback" role="alert">${esc(error)}</p>`:''}${activityError?'<p class="home-feedback" role="alert">'+scope+' 운용 기록을 다시 조회해 주세요. '+esc(activityError)+'</p>':''}<div class="home-scope-row"><div class="home-view-tabs" role="group" aria-label="성과 구분">${[['performance',scope+' 운용'],...(mode==='paper'?[['experiments','실험 성과']]:[])].map(([id,label])=>`<a href="${esc(url('home',{executionMode:mode,showcase:id,currency:selection.currency}))}" data-studio-route aria-current="${selection.showcase===id?'page':'false'}">${label}</a>`).join('')}</div>${mode==='paper'&&(performance?.latestPaperExperiment||practice&&!heroPractice)?routeLink(paperExperimentUrl(),'전체 시뮬레이션'+arrow,'home-text-link'):''}${selection.currencies.length>1?`<label class="home-currency"><span class="sr-only">자산 통화</span><select aria-label="자산 통화" data-home-currency>${selection.currencies.map(currency=>`<option value="${esc(currency)}"${currency===selection.currency?' selected':''}>${esc(currency)}</option>`).join('')}</select></label>`:''}${summaryValue?'<div class="home-account-group">'+summaryValue+'</div>':''}</div>${(loading||activityLoading)&&!list(performance?.cards).length?'<section class="home-loading" role="status"><span></span><strong>마인드의 기록을 불러오고 있어요</strong></section>':`<div class="home-feature-grid">${heroMarkup(performance,selection,heroPractice)}${recentMarkup(selection,performance)}</div>${carouselMarkup(performance,selection,paused)}`}<div class="home-insights-grid">${marketMarkup(market,marketBusy||recommendationBusy,mode,marketReadPending&&!market)}${recommendationMarkup(market,recommendationBusy||marketBusy,mode,loading&&!market)}</div></div>`;
 }
 

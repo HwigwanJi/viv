@@ -319,11 +319,12 @@ test('fresh owner can prepare a BTC practice and resume without publishing or co
     assert.equal(graph.canCreate,false);
     assert.ok(graph.blockedReasons.some(reason=>reason.code==='PUBLISHED_MIND_REQUIRED'));
 
-    const saved=await api('create',{
+    const practice={
       mindId,mode:'MECHANICAL',name:'첫 BTC 실습',startAt:'2026-10-01T00:00:00.000Z',
       endAt:'2026-10-15T00:00:00.000Z',initialCash:10000,feeBps:10,slippageBps:5,optInJev:false,
-      maxJevCalls:0,expectedRevision:before.revision,idempotencyKey:'practice-create',
-    });
+      maxJevCalls:0,expectedRevision:before.revision,
+    };
+    const saved=await api('create',{...practice,idempotencyKey:'practice-create'});
     assert.equal(saved.status,200,saved.data.message);
     const simulation=saved.data.simulation;
     assert.equal(simulation.manifest.id,mechanical.currentManifest.id);
@@ -345,6 +346,37 @@ test('fresh owner can prepare a BTC practice and resume without publishing or co
     const route={params:new URLSearchParams()};
     assert.match(renderHomeShowcase({performance:prepared},route),new RegExp('simulationId='+simulation.id+'[^]*?백테스트 이어하기'));
     assert.match(renderHomeShowcase({performance:{...prepared,pendingPaperPractice:null}},route),/practice=quant[^]*?첫 백테스트 실습/);
+
+    const completed=await api('step',{
+      id:simulation.id,expectedRevision:simulation.revision,idempotencyKey:'practice-run',
+    });
+    assert.equal(completed.status,200,completed.data.message);
+    assert.equal(completed.data.simulation.status,'COMPLETED');
+    assert.equal((await home()).pendingPaperPractice,undefined);
+    const next=await api('create',{
+      ...practice,name:'다음 BTC 실습',idempotencyKey:'practice-next',
+    });
+    assert.equal(next.status,200,next.data.message);
+    const combined=await home();
+    assert.equal(combined.latestPaperExperiment.simulationId,simulation.id);
+    assert.equal(combined.pendingPaperPractice.simulationId,next.data.simulation.id);
+    const html=renderHomeShowcase({performance:combined},route);
+    assert.match(html,new RegExp('simulationId='+next.data.simulation.id+'[^]*?백테스트 이어하기'));
+    assert.match(html,new RegExp('simulationId='+simulation.id+'[^]*?최근 완료 실험'));
+    assert.equal((html.match(/백테스트 이어하기/g)||[]).length,1);
+    assert.equal((await home(owner,'live')).pendingPaperPractice,undefined);
+    assert.equal((await home('other-practice-owner')).pendingPaperPractice,undefined);
+
+    const second=next.data.simulation;
+    const paused=await api('pause',{id:second.id,expectedRevision:second.revision,idempotencyKey:'practice-pause'});
+    assert.equal(paused.data.simulation.status,'PAUSED');
+    assert.equal((await home()).pendingPaperPractice.simulationId,second.id);
+    const archived=await api('archive',{id:second.id,expectedRevision:paused.data.simulation.revision,idempotencyKey:'practice-archive'});
+    assert.ok(archived.data.simulation.archivedAt);
+    const withArchive=await home();
+    assert.equal(withArchive.pendingPaperPractice,undefined);
+    assert.equal(withArchive.latestPaperExperiment.simulationId,simulation.id);
+    assert.deepEqual(await repository.read(owner),before);
   }finally{local.close();}
 });
 test('saved simulation summaries identify the settings used for their execution mode',async()=>{

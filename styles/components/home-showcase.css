@@ -22,6 +22,8 @@
 .home-account-summary strong { @apply tabular-nums text-foreground font-ui-semibold truncate; }
 .home-account-summary small { @apply text-ui-xs; }
 .home-paper-results { @apply grid grid-cols-2 gap-ui-2 min-w-0; }
+.home-paper-results:has(> :nth-child(3)) { @apply md:grid-cols-3; }
+.home-paper-results:has(> :nth-child(3)) > a:first-child { @apply col-span-full md:col-span-1; }
 .home-paper-results a { @apply flex items-center justify-between gap-ui-2 min-w-0 rounded-ui-lg px-ui-3 py-ui-3 text-foreground; border: var(--ui-border-width) solid var(--ds-border-subtle); }
 .home-paper-results a:hover { @apply bg-hover; }
 .home-paper-results a>span { @apply min-w-0; }

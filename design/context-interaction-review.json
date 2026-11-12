@@ -1160,8 +1160,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T09:11:15.582Z",
-      "reason": "시장 요약이 늦을 때 모의 홈에서 저장된 판단을 바로 열 수 있는 흐름을 브라우저에서 검증했습니다.",
+      "reviewedAt": "2026-11-12T20:33:07.313Z",
+      "reason": "완료 보고서와 미완료 백테스트를 함께 표시하고, 키보드와 모바일 터치로 각각 저장 실험을 열어 확인했다.",
       "signature": "702d5ac2be0d2b3682cd4c305d7c5ff59a854d29fae9325eb8f7b78003ab81e8",
       "controls": [
         [
@@ -1249,7 +1249,7 @@
           19
         ]
       ],
-      "sourceHash": "c336848049536acafcb2098493d41725a932eb595c499033a1b23e53e300708f",
+      "sourceHash": "64359cfb889fd9e21a6e2091736210f1eebbfb49f42eebc0826a33b5fbcef3fc",
       "customContainers": []
     },
     {
