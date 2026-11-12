@@ -86,8 +86,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T23:30:12.074Z",
-      "reason": "휴대폰 설치 주소의 마지막 확인 시각과 재확인 상태를 표시하고 현재 확인된 주소에서만 복사한다.",
+      "reviewedAt": "2026-11-12T23:57:48.379Z",
+      "reason": "휴대폰 연결 오류에서 공개 가이드의 모바일 복구 절로 바로 이동한다.",
       "signature": "5fe6affb0976b5c09e8466e0a569889c2ab6d7dc7607474806e39a3bfbc08dc5",
       "controls": [
         [
@@ -135,7 +135,7 @@
           2
         ]
       ],
-      "sourceHash": "dcfcb4e991f502d8b83acbda3b44cbbe64988851ec0cd625221cfa1755b9c7b1"
+      "sourceHash": "a11d7b7e47c27514fa4ea97604e119ccb5b75218bb33c7c6b09f150710064c72"
     },
     {
       "file": "dist/knowledge.mjs",

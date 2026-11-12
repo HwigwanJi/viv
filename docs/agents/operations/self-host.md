@@ -51,9 +51,16 @@ Windows와 Mac 모두 터미널에 앱·MCP·모바일 상태를 표시합니다
 
 ### 모바일만 복구하기
 
-PC에서 Tailscale 로그인이나 VPN 승인을 마친 뒤 `mobileRetryCommand`를 실행하세요. 설치 결과가 없다면 PC의 **휴대폰 연결·설치** 화면에서 **이 PC에서 다시 실행할 명령 → 복구 명령 복사**를 누르거나 아래 명령을 사용하세요.
+PC의 **휴대폰 연결·설치** 화면에 표시된 상태를 확인하세요.
 
-**연결 다시 확인** 중이거나 연결에 일시적으로 실패하면, 같은 화면에 마지막 확인 시각과 이전 주소가 남습니다. 현재 연결 확인에 성공하면 **설치 주소 복사**를 다시 사용할 수 있습니다. 공개 Funnel이나 다른 VIV 설치가 감지되면 이전 주소가 사라집니다. 원래 설치의 비공개 Serve 연결을 확인한 뒤 다시 확인하세요.
+| 화면에 표시된 상태 | 다음 행동 |
+| --- | --- |
+| 연결을 확인 중이거나 저장한 주소에 연결할 수 없음 | PC의 VIV 서버와 Tailscale 연결을 확인한 뒤 **연결 다시 확인**을 누르세요. 화면에 남은 이전 주소는 마지막 확인 시각과 함께 표시됩니다. **설치 주소 복사**는 현재 연결 확인에 성공하면 활성화됩니다. |
+| 공개 Funnel이 켜져 있음 | Tailscale에서 VIV에 사용할 공개 Funnel을 끄고 원래 VIV PC 주소로 연결되는 비공개 Serve 경로를 확인하세요. |
+| 휴대폰 주소가 이 VIV 설치와 일치하지 않음 | 원래 VIV PC 주소를 열고 그 설치 폴더에서 연결을 확인하세요. 다른 설치를 가리키는 경로가 있으면 Tailscale에서 대상을 확인한 뒤 **연결 다시 확인**을 누르세요. |
+| 이 PC에서 휴대폰 연결 준비 필요 | PC에서 Tailscale 로그인이나 VPN 승인을 마친 뒤 아래 복구 명령을 실행하세요. |
+
+설치 결과의 `mobileRetryCommand`를 사용하거나, **이 PC에서 다시 실행할 명령 → 복구 명령 복사**를 누르세요. 터미널에서 실행할 때는 원래 VIV 설치 폴더에서 아래와 같이 실행합니다.
 
 **Windows**
 
@@ -67,7 +74,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-hos
 bash scripts/install-viv-mac.sh --mobile-only
 ```
 
-`mobileStatus`가 `phone-install-pending`이면 같은 Tailscale 네트워크의 휴대폰에서 `mobileInstallUrl`을 여세요. PC 설치 화면에서는 **연결 다시 확인**을 누르면 주소가 표시됩니다.
+터미널에서 `mobileStatus: phone-install-pending`을 확인했다면, 브라우저에서 뒤로 돌아가 PC의 설치 화면에서 **연결 다시 확인 → 설치 주소 복사**를 누르세요. 복사한 주소 또는 설치 결과의 `mobileInstallUrl`을 같은 Tailscale 네트워크의 휴대폰에서 여세요.
 
 ### MCP만 복구하기
 
