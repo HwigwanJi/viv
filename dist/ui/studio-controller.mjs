@@ -451,7 +451,8 @@ export function createStudioController(hooks={},options={}){
     const serializedBody=body?JSON.stringify(body):null;
     assertDocumentRequestSize(path,serializedBody);
     const response=await fetchImpl(path,{method:body?'POST':'GET',cache:'no-store',signal,headers:{'Content-Type':'application/json',...(workspaceView==='studio'?{'X-Workspace-View':'studio'}:{})},...(body?{body:serializedBody}:{})});
-    let value;try{value=await response.json();}catch{throw new Error('서버 응답을 확인하지 못했습니다. 저장된 기록을 다시 조회하세요.');}
+    const value=await response.json().catch(()=>null);
+    if(value===null)throw Object.assign(new Error('서버 응답을 확인하지 못했습니다. 저장된 기록을 다시 조회하세요.'),{status:response.status,invalidResponse:true});
     if(!response.ok||value.ok===false){const problem=new Error(value.message||value.error?.message||'요청을 완료하지 못했습니다.');problem.code=value.code;problem.serverResponse=true;problem.blockedInputs=value.blockedInputs;problem.inputRequirementPolicy=value.inputRequirementPolicy;problem.availability=value.availability;problem.diagnostic=value.diagnostic;problem.collection=value.collection;problem.terminalReadiness=value.terminalReadiness;problem.recovery=value.recovery;problem.providerFailureEventId=value.providerFailureEventId;problem.status=response.status;throw problem;}return value;
   }
   async function readCore(path){
@@ -1144,8 +1145,29 @@ export function createStudioController(hooks={},options={}){
   }
   async function openDecision(id){
     const dialogToken=openRecordLoading('결정 상세');
-
-    try{const value=await request('/api/workspace/decisions/detail?id='+encodeURIComponent(id));if(disposed||!dialogIsCurrent(dialogToken))return;const d=value.decision,r=d.record,pinnedManifest=savedDecisionManifest(r,d),v=terminalDecisionView(r,{profiles:pinnedManifest?[{id:r.profileId,name:pinnedManifest.data.name}]:workspace.investmentProfiles,legacyInstrumentId:'crypto:okx:BTC-USDT'}),answers=d.model?.questions||r.jevResponse?.answers||{};
+    const current=()=>!disposed&&dialogIsCurrent(dialogToken);
+    const showReadError=(message,retry=true)=>{
+      if(current())hooks.open?.('결정 상세','<p class="empty error-text" role="alert">'+esc(message)+'</p>',retry?button('이 판단 다시 조회','decision',id):'');
+    };
+    let value;
+    const signal=AbortSignal.timeout(8000);
+    try{
+      value=await request('/api/workspace/decisions/detail?id='+encodeURIComponent(id),undefined,{signal});
+    }catch(problem){
+      if(signal.aborted)return showReadError('판단 기록의 조회 시간이 초과됐습니다. 잠시 후 다시 조회하세요.');
+      if(problem.status===404)return showReadError('이 판단 기록을 찾을 수 없습니다. 상세를 닫고 목록에서 다른 기록을 선택하세요.',false);
+      if(problem.status===401||problem.status===403)return showReadError('현재 이 판단 기록에 접근할 수 없습니다. 이 기록을 저장한 VIV에서 열었는지 확인하세요.',false);
+      if(problem.status===429)return showReadError('조회 요청이 많습니다. 잠시 기다린 뒤 같은 판단을 다시 조회하세요.');
+      if(problem.status>=500)return showReadError('VIV 서버에서 판단 기록을 조회하지 못했습니다. 잠시 후 다시 조회하세요.');
+      if(problem.invalidResponse)return showReadError('판단 기록의 응답 형식을 확인할 수 없습니다. VIV 연결을 확인해 주세요.');
+      if(!problem.serverResponse)return showReadError('VIV 서버에서 응답을 받지 못했습니다. 연결을 확인한 뒤 다시 조회하세요.');
+      return showReadError('이 판단 기록을 조회할 수 없습니다. 상세를 닫고 목록을 새로고침하세요.',false);
+    }
+    if(!current())return;
+    const d=value?.decision,r=d?.record;
+    if(!r||typeof r.id!=='string')return showReadError('판단 기록의 응답 형식을 확인할 수 없습니다. VIV 연결을 확인해 주세요.');
+    if(r.id!==id)return showReadError('받은 기록이 선택한 판단과 일치하지 않습니다. 이 판단을 다시 조회하세요.');
+    try{const pinnedManifest=savedDecisionManifest(r,d),v=terminalDecisionView(r,{profiles:pinnedManifest?[{id:r.profileId,name:pinnedManifest.data.name}]:workspace.investmentProfiles,legacyInstrumentId:'crypto:okx:BTC-USDT'}),answers=d.model?.questions||r.jevResponse?.answers||{};
       const state=r.rawRequest?.state||r.jevRequest?.state||{},providerUsed=Boolean(r.rawResponse||r.jevResponse),canCompareNews=providerUsed&&list(state.externalKnowledge).length>0;
       const paperRecord=r.experimentType==='FORWARD_PAPER'&&r.status!=='FAILED';
       const paperFills=paperRecord?row('모의 체결',Array.isArray(d.fills)?num(d.fills.length,0)+'건':'기록 확인 필요'):'';
@@ -1165,7 +1187,7 @@ export function createStudioController(hooks={},options={}){
         currentRoute().page!=='trade'&&workspace.investmentProfiles.some(profile=>profile.id===r.profileId&&profile.status!=='ARCHIVED')
         ?'<a class="button small" href="'+esc(studioRouteHash(currentRoute(),'trade',{executionMode:'paper',firstDecision:'1',profileId:r.profileId,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME}))+'" data-studio-route>이 마인드의 모의 트레이딩 열기</a>':'';
       hooks.open?.('결정 상세',`${paperRecord?'<p role="status" class="tiny muted">저장된 모의 판단</p>':''}${savedDecisionContext(r,d,v)}${paperFills}<div class="studio-decision-summary">${terminalTooltipContent([v],{showPinHint:false})}</div>${basis}${trendBasis}${recordLink}${nextTrade}${terminalModelMeasures(v)}<section class="spaced"><h3>${providerUsed?'JEV 입력':'실행 입력'}</h3>${philosophy?'<h4>투자 철학</h4><p>'+esc(philosophy)+'</p>':''}${principleDetails}${row(providerUsed?'전송 개인 기억':'연결 기억',`${list(state.approvedMemory||state.approvedPersonalMemory).length}개`)}${row('개인 투자 자료',`${list(state.macroAndNews||state.approvedMarketContexts).length}개`)}${row('공용 투자 자료',`${list(state.externalKnowledge).length}개`)}${externalKnowledgeEvidence(state)}${strategyEvaluationMarkup(r.strategyEvaluation||state.strategyEvaluation,pinnedManifest?.data.strategyPlan?.graph||state.strategyPlan?.graph)}${v.authority&&v.authority!=='JEV_FINAL'&&v.decisionMethod?.measureKind!=='CONFIDENCE'?row(v.decisionMethod?.measureKind==='VOTE'?'최다 투표 비중':'계산 강도',v.decisionMethod?.measureKind==='VOTE'?pct(v.strength):num(v.strength,3)):''}${raw(state.effectiveWeights,'실제 적용한 원칙 가중치')}${r.rawResponse||r.jevResponse?raw(answers,'JEV 원판단과 확률 분포'):''}</section><section class="spaced"><h3>체결·경험</h3>${row('실행 상태',esc(executionLabel(v.outcome)))}${r.execution?.reason?row('실행 사유',esc(r.execution.reason)):''}${table(['방향','수량','체결가','수수료'],list(d.fills).map(f=>[esc(f.side),num(f.quantity,8),money(f.fillPrice,f.quoteCurrency||v.quoteCurrency),money(f.fee,f.quoteCurrency||v.quoteCurrency)]),paperRecord&&!Array.isArray(d.fills)?'연결된 체결 기록 확인 필요':'이 결정에 연결된 체결이 없습니다.')}<div class="actions spaced">${list(d.experiences).map(e=>button('경험 · '+when(e.occurredAt),'experience',e.id)).join('')}${r.outcomeType==='TRADE_PROPOSED'?(migratedLegacyOrder(r)?button('현재 마인드 운용','mind-operations',migratedLegacyOrder(r)):button('모의 주문 검토','order-review',id)):''}${r.status==='PAPER_REVIEW_READY'||r.execution?.status==='PAPER_REVIEW_READY'?button('모의 체결 검토','mind-order-review',id):''}${terminalExecutionRetryable(r)?button('모의 실행 다시 시도','mind-order-review',id):''}${id.startsWith('mind-run-')?button('후속 관측 상태 보기','mind-observation',id)+(canCompareNews?button('JEV 뉴스 입력 비교','news-create',id):''):''}${id.startsWith('mind-run-')&&r.decision?.action==='hold'&&!r.execution?.accountSnapshotAfter&&!terminalExecutionRetryable(r)?button('후속 관측 기준 검토','mind-order-review',id):''}</div></section>${raw({versions:d.versions,reproducibility:d.reproducibility},'적용 버전·출처·입력 해시')}${raw(r.rawRequest||r.jevRequest,r.jevCalled===false?'실행 입력':'실제 JEV 요청')}${r.rawResponse||r.jevResponse?raw(r.rawResponse||r.jevResponse,'실제 JEV 응답'):''}${raw(r.risk||r.ruleResults,'실행 조건 검사')}${raw(r.execution,'모의 실행 원본')}`);
-    }catch(problem){if(!disposed&&dialogIsCurrent(dialogToken))hooks.open?.('결정 상세','<p class="empty error-text" role="alert">'+esc(problem.message)+'</p>',button('다시 조회','decision',id));}
+    }catch{showReadError('이 판단 기록의 상세 내용을 표시하지 못했습니다. 잠시 후 다시 조회하세요.');}
   }
   function openKnowledge(id){if(list(mindData?.documents).some(d=>d.id===id||(d.document||d).id===id))return documentDetail(id);if(byId(workspace.experiences,id))return openExperience(id);if(byId(workspace.memoryCandidates,id))return openCandidate(id);hooks.toast?.('연결된 경험과 학습 후보를 다시 조회하세요.');}
   async function openExperience(id){

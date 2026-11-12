@@ -3258,8 +3258,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T17:38:46.355Z",
-      "reason": "시세 복구의 과거 실습, 마인드 선택 포커스, 원래 트레이딩 복귀를 검증했다.",
+      "reviewedAt": "2026-11-12T23:00:59.705Z",
+      "reason": "결정 상세의 조회 실패와 잘못된 판단 ID를 구분하고, 재조회가 가능한 상태에서 같은 판단의 읽기 버튼만 표시한다.",
       "signature": "fa445de2602d901a10292dd0d851596ea18457c87a4fc0d36bcc8a97304510a3",
       "controls": [
         [
@@ -3363,7 +3363,7 @@
           1
         ]
       ],
-      "sourceHash": "fa7ad8f9de5781128aa17c5c24ab4aaa7b8a0bab66426f38528c0adbc6458c04",
+      "sourceHash": "241c74aeb27cebdd63baaf604152b90c34b57cffed6730addc144a3c8bd15e6b",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
