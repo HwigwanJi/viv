@@ -1998,7 +1998,7 @@
   white-space: normal;
   overflow-wrap: anywhere;
 }
-.lab-result-name:focus-visible {
+#simulation-result-heading:focus, .lab-result-name:focus-visible {
   outline: var(--ds-focus-width) solid var(--ds-focus);
   outline-offset: var(--ds-focus-offset);
 }
