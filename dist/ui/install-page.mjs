@@ -81,6 +81,7 @@ if(aiView){
   back.textContent='서비스 연결로 돌아가기';
   const url=desktop&&localMcpAddress(location);
   if(url){
+    ai.querySelector('[data-install-mcp-pc]').hidden=true;
     const address=ai.querySelector('[data-install-mcp-address]'),field=address.querySelector('input');
     address.hidden=false;field.value=url;
     const port=new URL(url).port;
