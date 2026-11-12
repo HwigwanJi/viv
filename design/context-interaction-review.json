@@ -12,7 +12,7 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T09:35:12.756Z",
+      "reviewedAt": "2026-11-12T09:37:03.347Z",
       "reason": "저장된 첫 모의 판단의 시세와 체결 결과를 모바일에서 읽고 같은 마인드의 모의 트레이딩으로 이어지는 동선을 대조했습니다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
@@ -3223,7 +3223,7 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T09:35:12.754Z",
+      "reviewedAt": "2026-11-12T09:37:03.346Z",
       "reason": "저장된 첫 모의 판단의 시세와 체결 결과를 모바일에서 읽고 같은 마인드의 모의 트레이딩으로 이어지는 동선을 대조했습니다.",
       "signature": "1745e71be5ed9d17ccaba26f637407a1e508c7b613aeec1d73251c150dd1ca99",
       "controls": [
@@ -3328,7 +3328,7 @@
           1
         ]
       ],
-      "sourceHash": "6ac7b122d61e012e67afe5a66626b8ab2522aefd18efafd7a549994b121f37a1",
+      "sourceHash": "e6ba1af017cd3af390d39df7ed0035dcc5d0250a30d943c893e2f169ea1975ac",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

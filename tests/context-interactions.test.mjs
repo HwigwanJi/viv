@@ -53,7 +53,7 @@ test('paper trend lesson explains no order only when the saved result supports i
  const basis=paperTrendDecisionBasis(record,'USDT',[]);
  assert.match(basis,/<h3[^>]*>판단에 사용한 시세<\/h3>/);
  assert.match(basis,/이동평균보다 낮아 목표 보유 비중은 0%/);
- assert.match(basis,/BTC 보유 비중도 0%여서.*모의 주문 없이 유지/);
+ assert.match(basis,/이 종목의 보유 비중도 0%여서.*모의 주문 없이 유지/);
  assert.doesNotMatch(paperTrendDecisionBasis(record,'USDT',undefined),/매도할 수량/);
  assert.doesNotMatch(paperTrendDecisionBasis({...record,execution:{status:'RISK_BLOCKED'}},'USDT',[]),/매도할 수량/);
  record.strategyEvaluation.graphEvaluation.output.currentWeight=.3;
