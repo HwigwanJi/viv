@@ -2716,9 +2716,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T02:08:18.7168143+00:00",
-      "reason": "키 없는 기준 퀀트 실습에서 이전 마인드를 검증하여 미리 선택하고 기존 실행·결과 경로로 연결.",
-      "signature": "7b4380677e532db54ded7cb64bda064e8b0d5c0b5c968e46ad60e961f7f7a3e6",
+      "reviewedAt": "2026-11-12T18:05:03.343Z",
+      "reason": "저장 보고서에서 실제 계산 설정과 보관 정책을 구분한다. 모바일에서 실행 근거를 열고 PC에서 내려받은 원본을 대조했다.",
+      "signature": "dc0d94ae7cf480ce2915278886d8fb2042fa4068faf2828a3702acb34c7bb40a",
       "controls": [
         [
           "data-simulation-action",
@@ -2782,14 +2782,14 @@
         ],
         [
           "helper:button(",
-          57
+          56
         ],
         [
           "helper:renderActionMenu(",
           2
         ]
       ],
-      "sourceHash": "db2d5ec2ac22249fc0774f2b12640ddaa5cecd331ae62dc86f13ac51eb33d75d",
+      "sourceHash": "c04534e5882a9c3abb9b470ed6ffafbb13944c6543476d0d961a687fa41efb21",
       "customContainers": []
     },
     {

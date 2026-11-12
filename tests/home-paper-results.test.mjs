@@ -298,3 +298,25 @@ test('fresh owner can prepare a BTC practice and resume without publishing or co
     assert.match(renderHomeShowcase({performance:{...prepared,pendingPaperPractice:null}},route),/practice=quant[^]*?첫 백테스트 실습/);
   }finally{local.close();}
 });
+test('saved simulation summaries identify the settings used for their execution mode',async()=>{
+  const config={mode:'MECHANICAL',name:'저장된 실험',mindId:'mind-a'};
+  const manifest={data:{name:'마인드',version:2}};
+  let simulation={id:'provenance',status:'COMPLETED',config,manifest};
+  const app=createSimulationPlayground({
+    getRoute:()=>({page:'minds',params:new URLSearchParams('view=simulations&profileId=all&simulationId=provenance&executionMode=paper')}),
+    request:async()=>({simulation}),
+  });
+  for(const [mode,parametersSource,expected] of [
+    ['MECHANICAL','DEFAULT_MODEL_CONFIG','기준모델 기본 설정'],
+    ['MECHANICAL','MIND_POLICY_BTC_DOC9','마인드에서 가져온 기준모델 설정 · v2'],
+    ['MECHANICAL',null,'기준모델 설정 출처 미기록'],
+    ['GRAPH_CANONICAL',null,'마인드 정책 v2'],
+  ]){
+    simulation={...simulation,config:{...config,mode},source:parametersSource?{mechanicalBaseline:{parametersSource}}:{}};
+    await app.load({force:true});
+    const context=app.render().match(/class="lab-context-line">([\s\S]*?)<\/div>/)?.[1]||'';
+    assert.ok(context.includes(expected),context);
+    assert.equal(context.includes('AI 호출 0회'),mode==='MECHANICAL');
+    assert.equal(context.includes('마인드 정책 v2'),mode==='GRAPH_CANONICAL');
+  }
+});
