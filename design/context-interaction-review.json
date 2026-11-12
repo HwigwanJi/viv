@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T17:00:36.602Z",
-      "reason": "화면 찾기에서 공개 복구 링크를 열고 기존 화면과 키보드 이동을 검토했다.",
+      "reviewedAt": "2026-11-12T17:38:46.350Z",
+      "reason": "시세 복구의 과거 실습, 마인드 선택 포커스, 원래 트레이딩 복귀를 검증했다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "b88608be833b5ef3785d1f2f4a387e6507d0794b9847d82ad05ffa13b0207335",
+      "sourceHash": "986b2ce6cefd0e8ef8409708cf9aac647478db50467160b66297872c7d55ea49",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -3243,8 +3243,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T17:30:48.545Z",
-      "reason": "시세 수집 실패에서 같은 마인드의 과거 실습을 실행하고 같은 현재 시세 실습으로 돌아가는 링크를 확인했다.",
+      "reviewedAt": "2026-11-12T17:38:46.355Z",
+      "reason": "시세 복구의 과거 실습, 마인드 선택 포커스, 원래 트레이딩 복귀를 검증했다.",
       "signature": "fa445de2602d901a10292dd0d851596ea18457c87a4fc0d36bcc8a97304510a3",
       "controls": [
         [
@@ -3348,7 +3348,7 @@
           1
         ]
       ],
-      "sourceHash": "6dc3b1e7ac58882c0332b0be6161c97eea9946d54f56c7b39dbb490df27e8402",
+      "sourceHash": "fa7ad8f9de5781128aa17c5c24ab4aaa7b8a0bab66426f38528c0adbc6458c04",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

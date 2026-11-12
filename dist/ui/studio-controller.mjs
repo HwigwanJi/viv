@@ -72,9 +72,9 @@ function firstDecisionOrigin(route){
   return executionModeOf(route)==='paper'&&firstPaperDecision(origin)?origin:null;
 }
 function firstDecisionPracticeLink(origin){
-  const params=new URLSearchParams({returnTo:studioRouteHash(origin,'trade',{returnTo:null})});
-  const href=paperPracticeEntry(origin.params.get('profileId'))+'&'+params;
-  return '<a class="button small" href="'+esc(href)+'" data-studio-route>과거 시세로 연습</a>';
+  const destination=paperPracticeEntry(origin.params.get('profileId')).slice(1);
+  const href=studioRouteHash(origin,destination,{returnTo:studioRouteHash(origin,'trade',{returnTo:null})});
+  return '<a class="button small" href="'+esc(href)+'" data-studio-route data-first-decision-practice>과거 시세로 연습</a>';
 }
 const button=(label,action,id='',extra='',className='')=>`<button type="button" class="button small${className?' '+esc(className):''}" data-studio-action="${action}" data-studio-id="${esc(id)}" ${extra}>${esc(label)}</button>`;
 const row=(label,value)=>`<div class="detail-row"><span>${esc(label)}</span><strong>${value}</strong></div>`;

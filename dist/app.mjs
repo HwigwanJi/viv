@@ -157,7 +157,8 @@ document.addEventListener('click',event=>{
     return;
   }
   const paperGuide=routeHref?.startsWith('#trade?')&&parseStudioRoute(routeHref).params.has('firstDecision');
-  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide?routeLink:null);
+  const paperPractice=routeLink?.hasAttribute('data-first-decision-practice');
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice?routeLink:null);
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
     dialogLifecycleToken++;
@@ -168,7 +169,8 @@ document.addEventListener('click',event=>{
     if(destination.dataset.studioJumpResearch==='reader'){
       navigateToHeading(href,'[data-library-result-heading]');
       if(sameRoute)void studio.openResearch(parseStudioRoute(href).params.get('knowledgeId'),{showLoading:true}).catch(()=>{});
-    }else navigateToHeading(href,paperGuide?'#first-paper-decision':undefined);
+    }else if(paperPractice)navigateToHeading(href,'[data-simulation-form="create"] select[name="mindId"]');
+    else navigateToHeading(href,paperGuide?'#first-paper-decision':undefined);
     return;
   }
   const nav=event.target.closest('[data-nav]');
