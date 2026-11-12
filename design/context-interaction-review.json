@@ -3831,9 +3831,9 @@
       "owners": [
         "primitive"
       ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T00:38:10.688Z",
-      "reason": "설치 안내와 첫 시작의 재시도에서 연결 실패 시 같은 화면과 키보드 초점을 유지하고 앱 주소를 다시 연다.",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-12T13:33:41.784Z",
+      "reason": "기존 다시 열기 버튼의 실패 모듈 재조회와 복구 화면 유지, 원래 주소 보존을 검토",
       "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
       "controls": [
         [
@@ -3845,7 +3845,7 @@
           1
         ]
       ],
-      "sourceHash": "e1206145a69339449d8b96f58f5719174affd15b983e33d27693b6dc2eb51f3d"
+      "sourceHash": "1de7f7c34f0af7c1b866e081ab834cfa90c69ab0da13435c0c11d5db8e433217"
     }
   ],
   "actionMatrix": "design/context-action-matrix.json",

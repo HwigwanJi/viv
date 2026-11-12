@@ -1,4 +1,30 @@
 (function () {
+  var javascriptType = /^(?:text|application)\/javascript\b/i;
+  var moduleLoadFailed = false;
+
+  function failedScripts() {
+    var resources = window.performance?.getEntriesByType?.('resource') || [];
+    return [...new Set(resources.filter(function (entry) {
+      if (entry.initiatorType !== 'script') return false;
+      var url = new URL(entry.name);
+      if (url.origin !== location.origin || !/\.m?js$/i.test(url.pathname)) return false;
+      return entry.responseStatus === 0 || entry.responseStatus >= 400 ||
+        (entry.contentType && !javascriptType.test(entry.contentType)) ||
+        (entry.responseStatus === undefined && entry.decodedBodySize === 0);
+    }).map(function (entry) { return entry.name; }))];
+  }
+
+  async function scriptAvailable(url, options) {
+    try {
+      var response = await fetch(url, {...options, method: 'GET'});
+      if (!response.ok || !javascriptType.test(response.headers.get('content-type'))) return false;
+      await response.arrayBuffer();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async function confirmAndOpen(control, status, pageUrl, entryUrl, open) {
     if (control.getAttribute('aria-disabled') === 'true') return;
     control.setAttribute('aria-disabled', 'true');
@@ -12,9 +38,17 @@
       if (page.ok && /^text\/html\b/i.test(page.headers.get('content-type'))) {
         var ready = true;
         if (entryUrl) {
-          problem = '앱 파일을 불러올 수 없습니다. 잠시 후 다시 시도하세요.';
+          problem = '앱 파일을 불러올 수 없습니다. VIV 서버의 파일을 확인한 뒤 다시 시도하세요.';
+          status.textContent = 'VIV 앱 파일을 확인하는 중…';
           var entry = await fetch(entryUrl, options);
-          ready = entry.ok && /^(?:text|application)\/javascript\b/i.test(entry.headers.get('content-type'));
+          ready = entry.ok && javascriptType.test(entry.headers.get('content-type'));
+          if (ready) {
+            var targets = failedScripts();
+            // shortcut: check the workspace module when the browser omits failed URLs, extend if other boot dependencies need this fallback.
+            if (moduleLoadFailed && targets.length === 0) targets.push(new URL('./ui/studio-controller.mjs', entryUrl).href);
+            var scripts = await Promise.all(targets.map(function (url) { return scriptAvailable(url, options); }));
+            ready = scripts.every(Boolean);
+          }
         }
         if (ready) {
           if (control.isConnected) open();
@@ -59,7 +93,8 @@
     });
   });
   window.addEventListener('error', function (event) {
-    if (event.target === window || (event.target && event.target.id === 'viv-app-entry')) showRecovery();
+    if (event.target?.id === 'viv-app-entry') moduleLoadFailed = true;
+    if (event.target === window || moduleLoadFailed) showRecovery();
   }, true);
   window.addEventListener('unhandledrejection', showRecovery);
   window.setTimeout(showRecovery, 12000);

@@ -5,7 +5,7 @@ import {runInNewContext} from 'node:vm';
 
 const script = readFileSync(new URL('../dist/ui/viv-startup.js', import.meta.url), 'utf8');
 
-function setup(fetch) {
+function setup(fetch, resources = []) {
   const events = {}, attributes = new Map(), status = {hidden: false}, message = {}, ring = {style: {}};
   const button = {
     isConnected: true,
@@ -22,13 +22,14 @@ function setup(fetch) {
   };
   let reloads = 0;
   const window = {
+    performance: {getEntriesByType: () => resources},
     addEventListener: (name, callback) => { events[name] = callback; },
     setTimeout: (callback, delay) => { events[delay] = callback; return delay; },
     clearTimeout: delay => { delete events[delay]; },
   };
   const document = {querySelector: selector => selector === '.viv-intro' ? intro : null, getElementById: () => ({src: 'http://localhost/app.mjs'})};
-  const location = {pathname: '/', search: '?entry=install', reload: () => { reloads++; }};
-  runInNewContext(script, {document, window, location, AbortController, fetch});
+  const location = {origin: 'http://localhost', pathname: '/', search: '?entry=install', reload: () => { reloads++; }};
+  runInNewContext(script, {document, window, location, AbortController, fetch, URL});
   return {events, attributes, status, message, ring, button, recovery, intro, reloads: () => reloads};
 }
 
@@ -95,6 +96,53 @@ test('VIV startup checks are bounded and duplicate retry presses send one reques
   assert.equal(app.attributes.has('aria-disabled'), false);
   assert.equal(app.reloads(), 0);
   assert.match(app.message.textContent, /VIV 서버/);
+});
+
+test('VIV retries failed same-origin script downloads before leaving recovery', async () => {
+  const dependency = 'http://localhost/ui/studio-controller.mjs';
+  const legacy = 'http://localhost/system/legacy.mjs';
+  const wrongType = 'http://localhost/ui/shell.mjs';
+  const entry = (name, fields) => ({name, initiatorType: 'script', ...fields});
+  const resources = [
+    entry(dependency, {responseStatus: 0}), entry(dependency, {responseStatus: 404}),
+    entry(legacy, {decodedBodySize: 0}),
+    entry(wrongType, {responseStatus: 200, contentType: 'text/html'}),
+    entry('http://localhost/ui/cached.mjs', {decodedBodySize: 200, transferSize: 0}),
+    entry('https://example.com/foreign.mjs', {responseStatus: 0}),
+    entry('http://localhost/ui/request.mjs', {initiatorType: 'fetch', responseStatus: 0}),
+  ];
+  let unavailable = true;
+  const gets = [];
+  const app = setup(async (url, options) => {
+    assert.equal(options.cache, 'no-store');
+    if (options.method === 'HEAD') return asset(url.startsWith('/') ? 'text/html' : 'text/javascript');
+    gets.push(url);
+    if (unavailable && url === dependency) return asset('text/html');
+    return new Response('export {};', {headers: {'content-type': 'application/javascript'}});
+  }, resources);
+  app.events.error({target: {id: 'viv-app-entry'}});
+  await app.button.click();
+  assert.equal(app.reloads(), 0);
+  assert.match(app.message.textContent, /앱 파일/);
+  assert.equal(app.attributes.has('aria-disabled'), false);
+  assert.deepEqual(gets, [dependency, legacy, wrongType]);
+  unavailable = false;
+  await app.button.click();
+  assert.equal(app.reloads(), 1);
+  assert.deepEqual(gets, [dependency, legacy, wrongType, dependency, legacy, wrongType]);
+});
+
+test('VIV checks the workspace module when a browser reports only the entry error', async () => {
+  const urls = [];
+  const app = setup(async (url, {method}) => {
+    urls.push([url, method]);
+    return method === 'GET' ? asset('text/html', 404) : asset(url.startsWith('/') ? 'text/html' : 'text/javascript');
+  });
+  app.events.error({target: {id: 'viv-app-entry'}});
+  await app.button.click();
+  assert.deepEqual(urls.at(-1), ['http://localhost/ui/studio-controller.mjs', 'GET']);
+  assert.equal(app.reloads(), 0);
+  assert.match(app.message.textContent, /앱 파일/);
 });
 
 test('install entry keeps its own page on failure and retains normal modified link actions', async () => {
