@@ -3212,8 +3212,8 @@
       ],
       "review": "BROWSER_VERIFIED",
       "reviewedAt": "2026-11-12",
-      "reason": "Service Connections exposes the AI recovery link on a local desktop while carrying the current account view.",
-      "signature": "432e1202a5a62cbe9142f2c5aed84b4d9269b9bf231a1689cf9c91bbf6a9f8b5",
+      "reason": "Starter help uses a native disclosure and the same public walkthrough from Feature List. An explicitly reviewed new starter returns to its own paper strategy after publication; shared review and live behavior are exercised separately.",
+      "signature": "3037014b83eb4f42f49c43cc661707357ef5cf55a1196b1b1dcaeec2b89b8e28",
       "controls": [
         [
           "data-auto-action",
@@ -3281,7 +3281,7 @@
         ],
         [
           "element:a",
-          28
+          29
         ],
         [
           "element:button",
@@ -3289,7 +3289,7 @@
         ],
         [
           "element:input",
-          30
+          31
         ],
         [
           "element:select",
@@ -3297,7 +3297,7 @@
         ],
         [
           "element:summary",
-          20
+          21
         ],
         [
           "element:textarea",
@@ -3316,7 +3316,7 @@
           1
         ]
       ],
-      "sourceHash": "022a7cba7f6dfa05c0888a01108e685d4a2e799f51bce88f5872789418cc9f06",
+      "sourceHash": "ce7768720bc8595053205c7325fef7194a988618db1c3da6878257e2bffd2d03",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

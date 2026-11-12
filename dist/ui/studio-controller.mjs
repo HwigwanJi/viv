@@ -93,6 +93,7 @@ const table=(heads,rows,empty='기록이 없습니다.')=>rows.length?renderData
 const TASK_DESCRIPTIONS={'계좌·자금':'연결 계좌의 잔고와 마인드에 배정한 자금을 확인합니다.','서비스 연결':'거래소와 AI 연결 상태를 관리합니다.','자동 운용':'실행 중인 마인드와 최근 운용 기록을 확인합니다.','데이터':'종목 목록과 입력 자료를 수집하고 저장 기록을 관리합니다.','기능 목록':'노드의 입출력과 액션별 호출 경로를 검색합니다.','가져오기 양식':'작성할 자료 종류를 선택하면 해당 양식이 열립니다.','투자 경험':'과거 판단과 후속 성과를 함께 확인합니다.','검토함':'검토를 기다리는 자료를 선택해 확인합니다.'};
 const title=(text,actions='')=>`<div class="studio-page-head"><h1 tabindex="-1">${esc(text)}</h1><div class="actions">${actions}</div></div>${TASK_DESCRIPTIONS[text]?`<p class="studio-task-description">${esc(TASK_DESCRIPTIONS[text])}</p>`:''}`;
 const CAPABILITY_GUIDE='<a class="button small" data-capability-guide href="https://github.com/HwigwanJi/viv#readme" target="_blank" rel="noopener noreferrer">VIV 사용 안내 ↗</a>';
+const MIND_STARTER_GUIDE='<a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/viv-mcp-playbook.md#기본-프리셋으로-시작하기" target="_blank" rel="noopener noreferrer">기본 프리셋 실습 안내 ↗</a>';
 const recordTimeMarkup=record=>{if(record.kind==='fill')return esc(when(record.asOf));const completed=record.completedAt&&Number.isFinite(Date.parse(record.completedAt)),requested=record.requestAt&&Number.isFinite(Date.parse(record.requestAt)),engine=record.authority||record.jevCalled===false?'결정':'JEV';return '<time datetime="'+esc(record.asOf)+'">기준 봉 '+esc(when(record.asOf))+'</time><small class="studio-cell-secondary">'+(completed?engine+' 완료 '+esc(when(record.completedAt)):requested?engine+' 요청 '+esc(when(record.requestAt))+' · 완료 시각 미기록':engine+' 실행 시각 미기록')+'</small>';};
 const types=[['OBSERVED_FACT','관측 사실'],['HYPOTHESIS','가설'],['VALIDATED_HEURISTIC','검증된 경험칙'],['OPERATING_PROCEDURE','운영 절차']];
 const formNames={'mind-policy':'마인드 정책','trade-review':'거래 분석','market-context':'투자 자료','principle-evidence':'원칙 검증 근거','weight-proposal':'가중치 변경 제안'};
@@ -894,7 +895,7 @@ export function createStudioController(hooks={},options={}){
   }
   function renderSettings(){
     const jobs=list(workspace.scheduler?.jobs),deployments=list(workspace.deployments),view=currentRoute().params.get('view')||'connections';
-    if(view==='capabilities')return title('기능 목록',CAPABILITY_GUIDE+button('새로고침','refresh'))+renderCapabilityCatalog({data:capabilityData,loading:capabilityLoading,error:capabilityError,openGroups:capabilityOpenGroups,query:capabilityQuery});
+    if(view==='capabilities')return title('기능 목록',CAPABILITY_GUIDE+button('새로고침','refresh'))+'<p class="spaced">'+MIND_STARTER_GUIDE+'</p>'+renderCapabilityCatalog({data:capabilityData,loading:capabilityLoading,error:capabilityError,openGroups:capabilityOpenGroups,query:capabilityQuery});
     if(view==='accounts')return renderAccounts();
     if(view==='automation'&&executionModeOf(currentRoute())==='live'){
       const state=liveActivity.state(),items=list(liveActivity.items());
@@ -1113,6 +1114,12 @@ export function createStudioController(hooks={},options={}){
       </label>
       <small class="muted" id="mind-starter-hint">기본 프리셋 ${PAPER_MIND_STARTERS.length}개 중 고르면 설명과 투자 범위를 확인할 수 있습니다.</small>
       <div class="field" data-starter-preview aria-live="polite" aria-atomic="true"></div>
+      <details>
+        <summary>기본 프리셋 사용법</summary>
+        <p>기본 프리셋은 새 마인드에 전략과 투자 범위를 채웁니다. <strong>직접 구성</strong>에서는 마인드 원칙을 입력하고 전략을 따로 만듭니다.</p>
+        <p>처음이라면 <strong>국면 추세</strong>를 골라 생성하고 전략을 검토·발행하세요. 새 마인드의 실험실에서 발행한 전략을 백테스트할 수 있습니다.</p>
+        <p>${MIND_STARTER_GUIDE}</p>
+      </details>
     </div>`;
     const horizon=select('투자 기간','horizon',[['1m','1분봉'],['3m','3분봉'],['5m','5분봉'],['1h','1시간봉'],['4h','4시간봉'],['1d','일봉'],['multi-day','여러 날']],s.horizon||'4h');
     form(p?'마인드 원칙 편집':'마인드 추가',manifest?'manifest-profile':'profile',
@@ -1138,7 +1145,7 @@ export function createStudioController(hooks={},options={}){
     if(!starter){preview.replaceChildren();return;}
     const timeframe=starter.timeframe==='1h'?'1시간봉':'4시간봉';
     const instruments=starter.universe.map(id=>getInstrument(id).symbol).join(', ');
-    preview.innerHTML=`<span>${esc(starter.description)}</span><small class="muted">${timeframe} · ${esc(instruments)}</small><small class="muted">빈 항목에는 프리셋 기본값이 적용됩니다. 생성 후 전략을 검토할 수 있습니다.</small>`;
+    preview.innerHTML=`<span>${esc(starter.description)}</span><small class="muted">${timeframe} · ${esc(instruments)}</small><small class="muted">빈 항목에는 프리셋 기본값이 적용됩니다. 생성한 전략은 검토·발행 후 실험에서 선택할 수 있습니다.</small>`;
   }
   function chooseDocumentMind(operation,kind='mind-policy'){
     return form('마인드 선택','document-target','<input type="hidden" name="operation" value="'+esc(operation)+'"><input type="hidden" name="kind" value="'+esc(kind)+'">'+select('적용할 마인드','mindId',[['','마인드를 선택하세요'],...list(workspace.investmentProfiles).map(p=>[p.id,profileName(p.id)])],''),'','계속');
@@ -1279,10 +1286,11 @@ export function createStudioController(hooks={},options={}){
     }});
   }
   function documentImpactRows(doc,currentPolicy){const impact=mindDocumentImpact(doc,{profileName:profileName(doc.scope?.profileId),currentPolicy});return '<section class="review-impact full" aria-label="반영 범위">'+row('자료 유형',esc(impact.kindLabel))+row('반영 대상',esc(impact.destination))+'<p class="spaced"><strong>발행 효과</strong><br>'+esc(impact.effect)+'</p>'+(impact.changes.length?row('변경 항목',esc(impact.changes.join(' · '))):'')+'</section>';}
-  function openDocumentPublish(id,{live=false}={}){
+  function openDocumentPublish(id,{live=false,paperStarter=false}={}){
     const entry=list(mindData?.documents).find(d=>d.id===id),doc=entry?.document;
     if(live&&(!doc||entry.status!=='DRAFT'||!isEventAutomationMind(doc)))throw new Error('실전 설정으로 연결할 분봉 정책 초안을 다시 여세요.');
-    const context=live?savedPolicyContext(entry,savedMind(doc.scope.profileId)?.manifest)+'<p class="full">정책을 발행한 뒤 같은 마인드의 실전 설정을 엽니다. 기존 운용 한도를 불러오며 자동 주문은 운용 시작을 완료한 뒤 실행됩니다.</p><input type="hidden" name="afterPublish" value="live">':'';
+    const context=live?savedPolicyContext(entry,savedMind(doc.scope.profileId)?.manifest)+'<p class="full">정책을 발행한 뒤 같은 마인드의 실전 설정을 엽니다. 기존 운용 한도를 불러오며 자동 주문은 운용 시작을 완료한 뒤 실행됩니다.</p><input type="hidden" name="afterPublish" value="live">'
+      :paperStarter?'<p class="full">발행을 마치면 새 마인드의 전략 화면을 엽니다. 백테스트는 실험실에서 시작할 수 있습니다.</p><input type="hidden" name="afterPublish" value="paper-starter">':'';
     return form(live?'정책 확인 후 실전 설정':'자료 검토·발행','document-publish',documentImpactRows(doc,savedMind(doc.scope?.profileId)?.manifest)+context+area('근거·적용 범위·검토 이유','reason',live?doc.title+'의 노드와 투자 범위를 확인하고 실전 운용 설정으로 연결합니다.':''),id,live?'발행하고 실전 설정':'검토 후 발행');
   }
   async function enterLiveAutomationSettings(result,dialogToken){
@@ -1586,7 +1594,7 @@ export function createStudioController(hooks={},options={}){
       if(action==='weight-propose')return await proposeWeight(id);
       if(action==='weight-approve')return form('가중치 변경 승인','weight-approve',area('근거·적용 범위·변경 이유','reason')+field('사용 가능 시각 · UTC','availableAt',new Date(Date.now()+3600000).toISOString().slice(0,16),'datetime-local'),id,'새 정책 버전 승인');
       if(action==='document-classify'){if(await mutateInDialog('',{documentId:id},endpoints.mindClassify))return documentDetail(id);return;}
-      if(action==='document-publish'||action==='document-publish-live')return openDocumentPublish(id,{live:action==='document-publish-live'});
+      if(action==='document-publish'||action==='document-publish-live')return openDocumentPublish(id,{live:action==='document-publish-live',paperStarter:node.hasAttribute('data-starter-publish')&&executionModeOf(currentRoute())==='paper'});
       if(action==='instrument-catalog')return openInstrumentCatalog();
       if(action==='stocks-collect')return collectStockSource(node);
       if(action==='universe-skip'){node.closest('[data-universe-picker]').querySelector('[data-universe-selection-count]').focus();return;}
@@ -1618,7 +1626,7 @@ export function createStudioController(hooks={},options={}){
     const k=data.externalKnowledge||disabledExternalKnowledge(),active=k.enabled&&k.mode==='pinned',pins=k.documentPins.length?table(['고정 자료','버전','원본 식별값',''],k.documentPins.map(pin=>[esc(knowledgeItems.get(pin.id)?.title||'자료 제목 조회 필요')+'<details><summary>자료 ID</summary><div class="code">'+esc(pin.id)+'</div></details>','v'+pin.version,'<details><summary><code title="'+esc(pin.contentHash)+'">'+esc(pin.contentHash.slice(0,12))+'…</code></summary><div class="code">'+esc(pin.contentHash)+'</div></details>','<button type="button" class="button small" data-library-action="detail" data-library-id="'+esc(pin.id)+'">원문 열기</button>']), '고정한 자료 버전이 없습니다.'):'';
     return '<section class="spaced"><h3>공용 투자 자료 연결</h3>'+knowledgeConnectionRows(k)+(pins?(active?'<h4 class="spaced">현재 고정 설정</h4>'+pins:'<details class="spaced"><summary>보관한 고정 설정 · '+k.documentPins.length+'개</summary>'+pins+'</details>'):'')+'</section>';
   }
-  async function documentDetail(id){const dialogToken=openRecordLoading('표준 자료 검토');try{let saved=list(mindData?.documents).find(d=>d.id===id||(d.document||d).id===id);if(!saved){const value=await request(endpoints.minds);if(disposed||!dialogIsCurrent(dialogToken))return;mindData=value;saved=list(mindData?.documents).find(d=>d.id===id||(d.document||d).id===id);}if(!saved)throw new Error('자료를 찾을 수 없습니다. 삭제되었거나 아직 불러오지 못한 자료입니다.');const doc=structuredClone(saved.document||saved),review=mindDocumentReviewView(saved),currentPolicy=savedMind(doc.scope?.profileId)?.manifest,stalePolicy=saved.status==='DRAFT'&&doc.kind==='mind-policy'&&Number.isFinite(currentPolicy?.data?.version)&&doc.data.version<=currentPolicy.data.version;if(doc.kind==='mind-policy')await Promise.all(list(doc.data.externalKnowledge?.documentPins).filter(pin=>!knowledgeItems.has(pin.id)).map(async pin=>{try{const value=await request('/api/workspace/market-knowledge/item?'+new URLSearchParams({id:pin.id}));knowledgeItems.set(pin.id,value.item);}catch{knowledgeItems.set(pin.id,{id:pin.id,title:'자료 제목 조회 실패'});}}));if(disposed||!dialogIsCurrent(dialogToken))return;hooks.open?.(doc.kind==='mind-policy'?'전략 정책 검토':'표준 자료 검토',`<h3>${esc(doc.title)}</h3>${documentImpactRows(doc,currentPolicy)}${savedPolicyContext(saved,currentPolicy)}${row('양식',esc(formNames[doc.kind]||doc.kind))}${row('검토 상태',esc(review.status))}${stalePolicy?row('발행 조건','현재 정책 v'+esc(currentPolicy.data.version)+' 이후의 새 버전으로 작성하세요.'):''}${row('JEV 분류',esc(review.classification))}${row('출처 검토',esc(review.sourceValidation))}${review.approvedAt?row('승인 시각',esc(when(review.approvedAt))):''}${review.reason?row('검토 사유',esc(review.reason)):''}${row('마인드',esc(profileName(doc.scope?.profileId)))}${row('기준 시점',esc(when(doc.asOf)))}${row('사용 가능 시점',esc(when(doc.availableAt)))}${row('출처',esc(doc.source?.type+' · '+doc.source?.id))}${documentBody(doc)}${doc.provenance?.classification?raw(doc.provenance.classification,'실제 JEV 자료 분류'):''}${raw(doc,'양식 원본')}`,(doc.kind==='mind-policy'?button('노드로 편집','document-graph-edit',id,busy?'disabled':''):'')+renderActionMenu({id:'document-actions-'+id,label:'자료 작업',content:button('내보내기','document-export',id)+button('편집본 작성','document-edit-copy',id,busy?'disabled':'')+button('JEV 자료 분류','document-classify',id,busy||saved.status!=='DRAFT'?'disabled':'')+(doc.kind==='mind-policy'&&executionModeOf(currentRoute())==='live'&&isEventAutomationMind(doc)?button('발행 후 실전 설정','document-publish-live',id,busy||saved.status!=='DRAFT'||stalePolicy?'disabled':''):'')})+(doc.kind==='weight-proposal'?button('가중치 변경 승인','weight-approve',id,busy||doc.data.status!=='REVIEW_REQUIRED'||(doc.data.assessment?.summary?.controlledSamples??0)<(doc.data.assessment?.minimumIndependentSamples??3)?'disabled':''):button('검토·발행','document-publish',id,busy||saved.status!=='DRAFT'||stalePolicy?'disabled':'','primary')));reviewedDocumentExport={id,document:doc,dialogToken:hooks.getDialogToken?.()};}catch(problem){if(!disposed&&dialogIsCurrent(dialogToken))hooks.open?.('표준 자료 검토','<p class="error-text wrap-anywhere" role="alert">'+esc(problem.message)+'</p>',button('다시 조회','document-detail',id));}}
+  async function documentDetail(id,{paperStarter=false}={}){const dialogToken=openRecordLoading('표준 자료 검토');try{let saved=list(mindData?.documents).find(d=>d.id===id||(d.document||d).id===id);if(!saved){const value=await request(endpoints.minds);if(disposed||!dialogIsCurrent(dialogToken))return;mindData=value;saved=list(mindData?.documents).find(d=>d.id===id||(d.document||d).id===id);}if(!saved)throw new Error('자료를 찾을 수 없습니다. 삭제되었거나 아직 불러오지 못한 자료입니다.');const doc=structuredClone(saved.document||saved),review=mindDocumentReviewView(saved),currentPolicy=savedMind(doc.scope?.profileId)?.manifest,stalePolicy=saved.status==='DRAFT'&&doc.kind==='mind-policy'&&Number.isFinite(currentPolicy?.data?.version)&&doc.data.version<=currentPolicy.data.version;if(doc.kind==='mind-policy')await Promise.all(list(doc.data.externalKnowledge?.documentPins).filter(pin=>!knowledgeItems.has(pin.id)).map(async pin=>{try{const value=await request('/api/workspace/market-knowledge/item?'+new URLSearchParams({id:pin.id}));knowledgeItems.set(pin.id,value.item);}catch{knowledgeItems.set(pin.id,{id:pin.id,title:'자료 제목 조회 실패'});}}));if(disposed||!dialogIsCurrent(dialogToken))return;hooks.open?.(doc.kind==='mind-policy'?'전략 정책 검토':'표준 자료 검토',`<h3>${esc(doc.title)}</h3>${documentImpactRows(doc,currentPolicy)}${savedPolicyContext(saved,currentPolicy)}${row('양식',esc(formNames[doc.kind]||doc.kind))}${row('검토 상태',esc(review.status))}${stalePolicy?row('발행 조건','현재 정책 v'+esc(currentPolicy.data.version)+' 이후의 새 버전으로 작성하세요.'):''}${row('JEV 분류',esc(review.classification))}${row('출처 검토',esc(review.sourceValidation))}${review.approvedAt?row('승인 시각',esc(when(review.approvedAt))):''}${review.reason?row('검토 사유',esc(review.reason)):''}${row('마인드',esc(profileName(doc.scope?.profileId)))}${row('기준 시점',esc(when(doc.asOf)))}${row('사용 가능 시점',esc(when(doc.availableAt)))}${row('출처',esc(doc.source?.type+' · '+doc.source?.id))}${documentBody(doc)}${doc.provenance?.classification?raw(doc.provenance.classification,'실제 JEV 자료 분류'):''}${raw(doc,'양식 원본')}`,(doc.kind==='mind-policy'?button('노드로 편집','document-graph-edit',id,busy?'disabled':''):'')+renderActionMenu({id:'document-actions-'+id,label:'자료 작업',content:button('내보내기','document-export',id)+button('편집본 작성','document-edit-copy',id,busy?'disabled':'')+button('JEV 자료 분류','document-classify',id,busy||saved.status!=='DRAFT'?'disabled':'')+(doc.kind==='mind-policy'&&executionModeOf(currentRoute())==='live'&&isEventAutomationMind(doc)?button('발행 후 실전 설정','document-publish-live',id,busy||saved.status!=='DRAFT'||stalePolicy?'disabled':''):'')})+(doc.kind==='weight-proposal'?button('가중치 변경 승인','weight-approve',id,busy||doc.data.status!=='REVIEW_REQUIRED'||(doc.data.assessment?.summary?.controlledSamples??0)<(doc.data.assessment?.minimumIndependentSamples??3)?'disabled':''):button('검토·발행','document-publish',id,(busy||saved.status!=='DRAFT'||stalePolicy?'disabled ':'')+(paperStarter?'data-starter-publish':''),'primary')));reviewedDocumentExport={id,document:doc,dialogToken:hooks.getDialogToken?.()};}catch(problem){if(!disposed&&dialogIsCurrent(dialogToken))hooks.open?.('표준 자료 검토','<p class="error-text wrap-anywhere" role="alert">'+esc(problem.message)+'</p>',button('다시 조회','document-detail',id));}}
   async function submit(event){
     if(formSaving){event.preventDefault();event.stopImmediatePropagation?.();return;}
     if(event.target.closest?.('[data-event-paper-form]')?.dataset?.eventPaperForm)return eventPaper.submit(event);
@@ -1647,8 +1655,8 @@ export function createStudioController(hooks={},options={}){
         if(starter){
           const result=await mutate('',{newMind:payload,starterId:starter.id},'/api/workspace/mind-documents/policy-draft');
           clearFormDraft(formNode);
-          if(dialogIsCurrent(dialogToken))await documentDetail(result.document.id);
-          hooks.toast?.('마인드를 만들었습니다. 전략 탭에서 시작 전략을 검토할 수 있습니다.');
+          if(dialogIsCurrent(dialogToken))await documentDetail(result.document.id,{paperStarter:executionModeOf(currentRoute())==='paper'});
+          hooks.toast?.('마인드를 만들었습니다. 시작 전략을 검토·발행할 수 있습니다.');
           return;
         }
         await mutate(id?'profile.revise':'profile.create',payload);
@@ -1684,6 +1692,14 @@ export function createStudioController(hooks={},options={}){
         const result=await mutate('',{documentId:id,reason:values.reason},endpoints.mindApply);
         if(continueLive&&dialogIsCurrent(dialogToken)){
           await enterLiveAutomationSettings(result,dialogToken);return;
+        }
+        const profileId=result.manifest?.scope.profileId;
+        if(values.afterPublish==='paper-starter'&&profileId===entry?.document.scope.profileId&&profileId&&dialogIsCurrent(dialogToken)){
+          clearFormDraft(formNode);
+          hooks.close?.();
+          hooks.navigate?.('minds',{profileId,view:'principles',executionMode:'paper'});
+          hooks.toast?.('시작 전략을 발행했습니다. 실험실에서 백테스트할 수 있습니다.');
+          return;
         }
       }
       else if(kind==='weight-propose'){const cohorts=weightCohorts(values.mindId,id);if(!cohorts.some(c=>c.key===values.cohortKey))throw new Error('비교할 평가 묶음을 선택하세요.');const result=await mutate('',{mindId:values.mindId,principleId:id,cohortKey:values.cohortKey},'/api/workspace/minds/weights/propose');return documentDetail(result.document.id);}
