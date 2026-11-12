@@ -66,7 +66,7 @@ const schemas={
   read_mind_manifest:objectSchema({mindId:identifierSchema,format:{type:'string',enum:['json','yaml']}},['mindId','format']),
 };
 const descriptions={
-  viv_onboarding:'VIV 첫 시작 안내와 기존 모의 원화 예산을 조회합니다. 인수 없이 시작하고, 사용자가 분야와 금액을 선택하면 세 인수를 함께 보내 최초 공용 모의 예산만 생성합니다. action:pause·resume으로 중단·재개를 저장하고, action:complete로 실제 결과를 제공한 튜토리얼 번호를 기록합니다. 연결을 미루겠다는 선택은 action:defer_connection으로 저장하고 links.paperResume을 엽니다.',
+  viv_onboarding:'VIV 시작 안내, 저장한 모의 판단 링크와 튜토리얼 진행을 조회합니다. 인수 없이 시작하고, 원화 모의 예산은 사용자가 분야와 금액을 선택한 경우에 세 인수를 함께 보내 최초 공용 예산을 생성합니다. action:pause·resume으로 중단·재개를 저장하고, action:complete로 실제 결과를 제공한 튜토리얼 번호를 기록합니다. 연결을 미루겠다는 선택은 action:defer_connection으로 저장하고 links.paperResume을 엽니다.',
   validate_strategy_ontology:'종목·계좌·자료·판단의 명시한 객체와 관계를 공용 온톨로지로 검사합니다. 관계 종류·개수·종목/계좌 일치·시점·자료 계보 순환을 검사하고 오류 대상과 경로를 반환합니다. complete가 false면 제공한 사실만 검사합니다. 주문·설정·저장을 수행하지 않습니다.',
   read_strategy_ontology:'노드 편집기와 API의 같은 온톨로지를 조회합니다. 종목·계좌·자료·판단·주문 관계, 역할 코호트, 포트 자료형·실제 연결 지원 상태와 공용 기능 계약을 반환합니다. 운용이나 설정을 변경하지 않습니다.',
  ...Object.fromEntries(HOURLY_LEARNING_ACTIONS.map(a=>[a.mcp_tool,a.description])),
@@ -327,7 +327,7 @@ export async function handleMcp(request,env,options={}){
   }
   if(input.method.startsWith('notifications/')&&!Object.hasOwn(input,'id'))return new Response(null,{status:202});
   if(input.method==='ping')return reply({});
-  if(input.method==='prompts/list')return reply({prompts:[{name:'viv_start',title:'VIV 시작하기',description:'모의계좌를 준비하고 선택형 튜토리얼을 진행합니다.'}]});
+  if(input.method==='prompts/list')return reply({prompts:[{name:'viv_start',title:'VIV 시작하기',description:'저장한 모의 판단을 다시 열거나 튜토리얼과 모의계좌 설정을 시작합니다.'}]});
   if(input.method==='prompts/get'&&input.params?.name==='viv_start')return reply({description:'VIV 시작하기',messages:[{role:'user',content:{type:'text',text:VIV_PLAYBOOK}}]});
   if(input.method==='server/discover')return reply({supportedVersions:['2026-07-28'],capabilities:{tools:{}}});
   if(input.method==='tools/list')return reply({tools:Object.entries(schemas).map(([name,inputSchema])=>({name,inputSchema,description:descriptions[name],annotations:automationTool(name)?{readOnlyHint:automationTool(name).api.method==='GET',destructiveHint:['automation.trading.activate','automation.trading.resume','automation.trading.strategy.update'].includes(automationTool(name).id),idempotentHint:automationTool(name).idempotent,openWorldHint:['automation.trading.prepare','automation.trading.activate','automation.trading.resume','automation.trading.strategy.update'].includes(automationTool(name).id)}:{readOnlyHint:readTools.has(name),destructiveHint:['activate_automated_trading','configure_hourly_model_learning'].includes(name),idempotentHint:!['run_due_paper_jobs','prepare_automated_trading','activate_automated_trading','configure_hourly_model_learning'].includes(name),openWorldHint:['prepare_automated_trading','activate_automated_trading','prepare_event_paper','step_strategy_learning','run_due_paper_jobs','read_trading_context','classify_mind_document','classify_market_knowledge'].includes(name)}}))});
@@ -340,7 +340,7 @@ export async function handleMcp(request,env,options={}){
       try{
         const result=await vivOnboarding(args,{origin:new URL(request.url).origin,db:env.DB,owner,call:(path,init)=>studioCall(request,env,options,path,init)});
         return reply(toolResult({...result.value,playbook:VIV_PLAYBOOK},!result.ok));
-      }catch{return reply(toolResult({ok:false,code:'VIV_ONBOARDING_FAILED',message:'모의 예산 또는 튜토리얼 진행 상태를 확인하지 못했습니다. 연결을 확인한 뒤 다시 시도하세요.'},true));}
+      }catch{return reply(toolResult({ok:false,code:'VIV_ONBOARDING_FAILED',message:'VIV 시작 안내를 불러오지 못했습니다. 연결을 확인한 뒤 다시 시도하세요.'},true));}
     }
     if(!['read_investment_status','run_due_paper_jobs'].includes(name)){
       try{return reply(await callMindTool(request,env,options,name,args));}catch{return reply(toolResult({ok:false,code:'MIND_TOOL_FAILED',message:'분석 도구 실행을 완료하지 못했습니다. 앱의 연결 상태와 문서 형식을 확인하세요.'},true));}

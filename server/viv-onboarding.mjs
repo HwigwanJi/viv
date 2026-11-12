@@ -1,4 +1,5 @@
 import {paperBudgetFor} from '../dist/domain/paper-budget.mjs';
+import {paperRuns} from '../dist/domain/mind-companion.mjs';
 import {PAPER_DECISION_ENTRY,PAPER_HOME_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash,paperPracticeReportHash} from '../dist/system/paper-decision-links.mjs';
 
 export const VIV_TUTORIAL_ACTIONS=['pause','resume','complete','defer_connection'];
@@ -18,8 +19,9 @@ const lessons=[
 export const VIV_PLAYBOOK=[
   '안녕하세요 투자자님. VIV에 오신 것을 환영합니다.',
   '먼저 viv_onboarding을 인수 없이 호출하세요. 이미 모의 원화 예산이 있으면 금액과 확인 링크를 안내하고 next 상태를 따르세요.',
+  'savedPaperDecision이 있으면 종목과 openUrl을 안내하고, 결과를 보려는 사용자는 그 기록으로 바로 연결하세요. 이유나 체결은 같은 decisionId, mindId, instrumentId로 read_trading_context의 view:result를 호출해 확인하세요. 저장 결과 조회와 튜토리얼 재개·중단에는 예산 입력이 필요 없습니다.',
   'tutorial_paused 또는 tutorial_complete에서는 튜토리얼을 다시 권하지 말고 사용자가 하려는 일을 진행하세요. 사용자가 “튜토리얼 계속”, “이어하기”라고 하면 action:resume으로 남은 항목을 불러오세요.',
-  '처음이라면 어느 분야에 관심 있나요? 1 주식 / 2 코인 / 3 둘 다. 답을 받은 뒤 “본 게임 전에 모의 투자를 해볼 수 있어요. 모의 원화 예산을 얼마로 설정할까요?”라고 금액을 받으세요.',
+  'next가 ask_interest_and_budget이고 사용자가 하려는 일을 아직 말하지 않았다면 튜토리얼 시작, 원화 모의계좌 설정, 바로 사용 중 무엇을 원하는지 물으세요. 튜토리얼은 action:resume, 건너뛰기는 action:pause로 진행하세요. 계좌 설정을 선택하면 관심 분야 1 주식 / 2 코인 / 3 둘 다와 모의 원화 예산을 물으세요.',
   '분야와 금액을 모두 받은 뒤에만 “모의계좌를 세팅하는 중입니다”라고 안내하고 viv_onboarding에 interest, amountKrw, 재시도에도 같은 idempotencyKey를 전달하세요. 응답이 성공한 경우에만 금액과 확인 링크를 안내하세요. 이 단계는 공용 모의 예산을 만들며 전략 배정과 실행은 각각 다음 과업입니다.',
   'tutorial_offer일 때 “튜토리얼이 있습니다. 진행하실까요? 1 진행 / 2 건너뛰기”를 한 번 물으세요. 진행은 action:resume, 건너뛰기 또는 중단은 action:pause로 저장하세요. tutorial_lessons에서는 lessons의 남은 번호와 제목만 보여주세요. 원래 번호를 유지하고 자연어로 말한 과업도 연결하세요.',
   '자료 조사 과업은 호스트의 웹 검색·영상 자막 등 실제 접근 가능한 도구로 원문을 확인하고, VIV에서 현재 라이브러리·양식·전략 노드 메타데이터를 조회하세요. 원문 URL, 공개·조회 시각, 영상 시간대, 확인된 사실과 추론을 구분해 짧게 브리핑하세요. 원문을 열 수 없으면 읽지 못한 부분을 말하고 다른 링크, 원문 붙여넣기, 이 과업 건너뛰기를 제시하세요. 이 과업을 건너뛰면 완료로 표시하지 말고 남은 다른 과업으로 이어가세요. 실제로 확인한 발췌만 사용하고 범위를 표시하세요. 확인할 수 없는 거래나 수익은 미확인으로 남기세요.',
@@ -85,13 +87,9 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
     connections:origin+'/#settings?view=accounts&executionMode=live',
   };
   const existing=paperBudgetFor(workspace,'KRW');
-  if(!existing){
-    if(args.action&&!defer)return failure('VIV_PAPER_BUDGET_REQUIRED','먼저 모의 원화 예산을 설정하세요.');
-    if(args.amountKrw===undefined)return {ok:true,value:{ok:true,next:'ask_interest_and_budget',interests:[{number:1,value:'stocks',title:'주식'},{number:2,value:'crypto',title:'코인'},{number:3,value:'both',title:'둘 다'}],lessons,links,liveConnection:await liveConnectionPreference(session,owner,{defer})}};
-  }
   let paperBudget;
   if(existing)paperBudget={amountKrw:existing.totalBudget,existing:true};
-  else{
+  else if(args.amountKrw!==undefined){
     const result=await call('/api/workspace/accounts/budget',{method:'POST',body:{quoteCurrency:'KRW',totalBudget:args.amountKrw,expectedRevision:workspace.revision,idempotencyKey:args.idempotencyKey}});
     if(!result.ok)return result;
     paperBudget={amountKrw:args.amountKrw,receipt:result.value.budget};
@@ -101,11 +99,9 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
     if(!saved.ok&&saved.value.code!=='KNOWLEDGE_NOT_FOUND')return saved;
     if(!saved.ok||!['SAVED','APPROVED'].includes(saved.value.entry?.status))return failure('VIV_TUTORIAL_RESULT_REQUIRED','개인 라이브러리에 저장된 결과를 확인한 뒤 완료로 표시하세요.');
   }
-  if(args.decisionId){
-    const run=workspace.mindRuns.find(row=>row.id===args.decisionId);
-    if(run?.experimentType!=='FORWARD_PAPER'||!['buy','hold','sell'].includes(run.decision?.action)||run.status==='FAILED'){
-      return failure('VIV_TUTORIAL_DECISION_REQUIRED','같은 계정의 저장된 모의 판단을 확인한 뒤 완료로 표시하세요.');
-    }
+  const runs=paperRuns(workspace,null,new Date().toISOString()).filter(run=>run.status!=='FAILED'&&run.executionMode!=='live'&&run.automation?.portfolioCycle?.phase!=='SCREENING'&&run.execution?.status!=='SCREENING_ONLY');
+  if(args.decisionId&&!runs.some(run=>run.id===args.decisionId)){
+    return failure('VIV_TUTORIAL_DECISION_REQUIRED','같은 계정의 저장된 모의 판단을 확인한 뒤 완료로 표시하세요.');
   }
   if(args.simulationId){
     const saved=await call('/api/workspace/simulations/item?'+new URLSearchParams({id:args.simulationId}));
@@ -116,6 +112,11 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
     }
   }
   const progress=await tutorialProgress(session,owner,args);
+  const latest=runs.find(run=>run.id&&run.profileId&&run.instrumentId);
+  const savedPaperDecision=latest?{decisionId:latest.id,mindId:latest.profileId,instrumentId:latest.instrumentId,openUrl:new URL(paperDecisionRecordHash(latest.id),origin).href}:undefined;
+  if(!paperBudget&&!savedPaperDecision&&progress.status==='new'&&!Object.keys(progress.completed).length){
+    return {ok:true,value:{ok:true,next:'ask_interest_and_budget',interests:[{number:1,value:'stocks',title:'주식'},{number:2,value:'crypto',title:'코인'},{number:3,value:'both',title:'둘 다'}],lessons,links,liveConnection:await liveConnectionPreference(session,owner,{defer})}};
+  }
   const selectedLessons=progress.interest==='stocks'
     ?[{...lessons[0],title:'오늘의 주식 시장 주요 투자동향을 조사하고 수집해줘'},...lessons.slice(1)]
     :lessons;
@@ -128,12 +129,12 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
     return {number,title,documentId:resultId,openUrl:links.knowledge+'&'+new URLSearchParams({knowledgeId:resultId})};
   });
   const next=!remaining.length?'tutorial_complete':({new:'tutorial_offer',paused:'tutorial_paused',active:'tutorial_lessons'})[progress.status];
-  const paperResult=completed.find(lesson=>lesson.number===4)?.openUrl;
+  const paperResult=completed.find(lesson=>lesson.number===4)?.openUrl??savedPaperDecision?.openUrl;
   if(paperResult){
     links.paperResume=paperResult;
     links.connections+='&'+new URLSearchParams({returnTo:new URL(paperResult).hash});
   }
   const offer=args.action==='complete'&&!progress.previouslyComplete&&next==='tutorial_complete'&&progress.status==='active';
   const liveConnection=await liveConnectionPreference(session,owner,{offer,defer});
-  return {ok:true,value:{ok:true,next,...(progress.interest?{interest:progress.interest}:{}),paperBudget,lessons:remaining,tutorial:{status:next,completed},links,liveConnection}};
+  return {ok:true,value:{ok:true,next,...(progress.interest?{interest:progress.interest}:{}),paperBudget,savedPaperDecision,lessons:remaining,tutorial:{status:next,completed},links,liveConnection}};
 }

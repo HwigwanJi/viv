@@ -63,7 +63,10 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     assert.ok((await rpc('tools/list')).tools.some(tool=>tool.name==='viv_onboarding'));
     const onboarding=(args,owner)=>rpc('tools/call',{name:'viv_onboarding',arguments:args},owner);
     assert.equal((await onboarding({})).structuredContent.next,'ask_interest_and_budget');
-    assert.equal((await onboarding({action:'pause'})).structuredContent.code,'VIV_PAPER_BUDGET_REQUIRED');
+    const skip=(await onboarding({action:'pause'},'no-budget-skip')).structuredContent;
+    assert.equal(skip.next,'tutorial_paused');
+    assert.equal(skip.paperBudget,undefined);
+    assert.equal((await onboarding({},'no-budget-skip')).structuredContent.next,'tutorial_paused');
     assert.equal((await onboarding({interest:'both',amountKrw:0,idempotencyKey:'viv-1'})).isError,true);
     const saved=await onboarding({interest:'both',amountKrw:2000000,idempotencyKey:'viv-1'});
     assert.equal(saved.isError,false,JSON.stringify(saved.structuredContent));
@@ -205,6 +208,48 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
   }finally{local.close();}
 });
 
+test('VIV reopens a saved paper decision without setting up a KRW budget',async()=>{
+  const local=await openLocalDatabase(':memory:');
+  const decision={id:'mind-run-saved',profileId:'mind-a',instrumentId:'crypto:okx:BTC-USDT',experimentType:'FORWARD_PAPER',decisionAt:'2026-01-01T00:00:00.000Z',decision:{action:'hold'}};
+  const studioHandler=request=>{
+    assert.equal(request.method,'GET');
+    assert.equal(new URL(request.url).pathname,'/api/workspace');
+    const owner=request.headers.get('oai-authenticated-user-id');
+    const mindRuns=owner==='owner-a'?[
+      decision,
+      {...decision,id:'mind-run-failed',decisionAt:'2026-01-02T00:00:00.000Z',status:'FAILED'},
+      {...decision,id:'mind-run-screening',decisionAt:'2026-01-02T00:00:00.000Z',execution:{status:'SCREENING_ONLY'}},
+      {...decision,id:'mind-run-live',decisionAt:'2026-01-03T00:00:00.000Z',executionMode:'live'},
+      {...decision,id:'mind-run-replay',decisionAt:'2026-01-04T00:00:00.000Z',mode:'replay'},
+    ]:[];
+    return Response.json({ok:true,workspace:{revision:1,mindRuns}});
+  };
+  const onboarding=async(args={},owner='owner-a')=>{
+    const request=new Request('http://localhost:4317/mcp',{method:'POST',headers:{'oai-authenticated-user-id':owner},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'viv_onboarding',arguments:args}})});
+    return (await (await handleMcp(request,{DB:local.db},{studioHandler})).json()).result.structuredContent;
+  };
+  try{
+    const first=await onboarding();
+    assert.equal(first.next,'tutorial_offer');
+    assert.equal(first.paperBudget,undefined);
+    assert.deepEqual(first.tutorial.completed,[]);
+    const {decisionId,mindId,instrumentId,openUrl}=first.savedPaperDecision;
+    assert.deepEqual({decisionId,mindId,instrumentId},{decisionId:decision.id,mindId:decision.profileId,instrumentId:decision.instrumentId});
+    assert.equal(new URLSearchParams(new URL(openUrl).hash.split('?')[1]).get('search'),decision.id);
+    assert.equal(first.links.paperResume,openUrl);
+    assert.equal((await onboarding({},'owner-b')).savedPaperDecision,undefined);
+    assert.equal((await onboarding({action:'resume'})).next,'tutorial_lessons');
+    assert.equal((await onboarding({action:'pause'})).next,'tutorial_paused');
+    assert.equal((await onboarding()).links.paperResume,openUrl);
+    const complete={action:'complete',lesson:4,decisionId};
+    assert.equal((await onboarding(complete,'owner-b')).code,'VIV_TUTORIAL_DECISION_REQUIRED');
+    assert.equal((await onboarding({...complete,decisionId:'mind-run-screening'})).code,'VIV_TUTORIAL_DECISION_REQUIRED');
+    const finished=await onboarding(complete);
+    assert.equal(finished.paperBudget,undefined);
+    assert.equal(finished.tutorial.completed[0].openUrl,openUrl);
+  }finally{local.close();}
+});
+
 test('VIV resumes a completed keyless practice with its own saved report',async()=>{
   const local=await openLocalDatabase(':memory:');
   const id='simulation-practice';
@@ -222,7 +267,6 @@ test('VIV resumes a completed keyless practice with its own saved report',async(
   };
   try{
     const setup={interest:'crypto',amountKrw:1000000,idempotencyKey:'practice-setup'};
-    await onboarding(setup);
     await onboarding(setup,'other-owner');
     const complete={action:'complete',lesson:4};
     for(const simulationId of ['unfinished','ai-backtest']){
@@ -231,6 +275,7 @@ test('VIV resumes a completed keyless practice with its own saved report',async(
     assert.equal((await onboarding({...complete,simulationId:id},'other-owner')).code,'VIV_TUTORIAL_SIMULATION_REQUIRED');
     assert.equal((await onboarding({...complete,simulationId:id,decisionId:'other-kind'})).code,'INVALID_TOOL_ARGUMENTS');
     const finished=await onboarding({...complete,simulationId:id});
+    assert.equal(finished.paperBudget,undefined);
     assert.ok(!finished.lessons.some(lesson=>lesson.number===4));
     const [receipt]=finished.tutorial.completed;
     assert.equal(receipt.simulationId,id);
