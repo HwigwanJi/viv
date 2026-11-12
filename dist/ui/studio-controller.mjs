@@ -18,7 +18,7 @@ import {PAPER_MIND_STARTERS,createPaperMindPresetGraph,FIRST_PAPER_DECISION_STAR
 import {STRATEGY_TRACE_TYPES,strategyInputNodeLabel,strategyTraceNodeLabel,strategyTraceValue,strategyTraceSelection} from './decision-method.mjs';
 import {submitPaperFunding} from './paper-funding-request.mjs';
 import {paperBudgetSummary} from '../domain/paper-budget.mjs';
-import {PAPER_DECISION_ENTRY,PAPER_DECISION_INSTRUMENT,PAPER_DECISION_TIMEFRAME,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../system/paper-decision-links.mjs';
+import {PAPER_DECISION_ENTRY,PAPER_DECISION_INSTRUMENT,PAPER_DECISION_TIMEFRAME,PAPER_PRACTICE_ENTRY,paperPracticeEntry,paperDecisionRecordHash} from '../system/paper-decision-links.mjs';
 import {subscriptionInstrumentIds} from '../domain/mind-subscriptions.mjs';
 import {createBrokerConnections,brokerPaperReturnLink} from './broker-connections.mjs';
 import {createAutomatedTrading,isEventAutomationMind,saveLiveStrategyUpdate} from './automated-trading.mjs';
@@ -67,6 +67,15 @@ const percentagePoints=value=>Number.isFinite(value)?num(value*100)+'%p':'—';
 const when=value=>value&&Number.isFinite(Date.parse(value))?new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(value))+' KST':'—';
 const byId=(items,id)=>list(items).find(item=>item.id===id);
 const firstPaperDecision=route=>route.page==='trade'&&executionModeOf(route)==='paper'&&route.params.get('firstDecision')==='1';
+function firstDecisionOrigin(route){
+  const origin=parseStudioRoute(route.params.get('returnTo')||'');
+  return executionModeOf(route)==='paper'&&firstPaperDecision(origin)?origin:null;
+}
+function firstDecisionPracticeLink(origin){
+  const params=new URLSearchParams({returnTo:studioRouteHash(origin,'trade',{returnTo:null})});
+  const href=paperPracticeEntry(origin.params.get('profileId'))+'&'+params;
+  return '<a class="button small" href="'+esc(href)+'" data-studio-route>과거 시세로 연습</a>';
+}
 const button=(label,action,id='',extra='',className='')=>`<button type="button" class="button small${className?' '+esc(className):''}" data-studio-action="${action}" data-studio-id="${esc(id)}" ${extra}>${esc(label)}</button>`;
 const row=(label,value)=>`<div class="detail-row"><span>${esc(label)}</span><strong>${value}</strong></div>`;
 function savedDecisionManifest(record,detail){const manifest=detail.manifest;if(!manifest||manifest.id!==record.manifestId||manifest.scope?.profileId!==record.profileId)return null;try{return mindDocumentHash(manifest)===record.manifestHash?manifest:null;}catch{return null;}}
@@ -608,7 +617,7 @@ export function createStudioController(hooks={},options={}){
         step==='records'?'저장된 결정 보기에서 현재 봉의 판단과 근거를 다시 확인할 수 있습니다.'+
           (list(readiness?.blockers).some(blocker=>blocker.code==='CANDLE_ALREADY_EVALUATED')?' 다음 모의 판단에는 새로 확정된 시세가 필요합니다.':''):
         '아래 트레이딩 화면에서 현재 준비 상태와 다음 행동을 확인하세요.';
-      actions='<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>';
+      actions=(step==='data'?firstDecisionPracticeLink(current):'')+'<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>';
     }
     return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">첫 모의 판단</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+actions+'</div></div></section>';
   }
@@ -621,7 +630,22 @@ export function createStudioController(hooks={},options={}){
     return '<div class="studio-page-head" data-mind-management data-profile-id="'+esc(id)+'"><'+headingTag+' tabindex="-1" title="'+esc(heading)+'">'+esc(heading)+'</'+headingTag+'><div class="actions">'+actions+menu+'</div></div>';
   }
   function selectMindRequired(label){return mindHeading(label)+'<section class="studio-sheet"><div class="studio-empty-state"><h2>마인드를 선택하세요.</h2>'+profilePicker('all')+'<p>선택한 마인드의 '+esc(label)+'을 확인합니다.</p></div></section>';}
-  function renderMinds(){if(currentRoute().params.get('view')==='motions')return renderLifeGallery();const view=currentRoute().params.get('view')||'overview';if(view==='records')return renderRecords();if(view==='operations')return renderMindOperations();if(view==='simulations')return '<section data-simulation-execution-mode="paper" aria-label="모의 실험실"><p class="tiny muted">모의 실험</p>'+simulations.render()+'</section>';if(view==='principles')return renderMindPrinciples();if(view==='knowledge')return renderConnectedKnowledge();return renderMindOverview();}
+  function renderMinds(){
+    const route=currentRoute(),view=route.params.get('view')||'overview';
+    if(view==='motions')return renderLifeGallery();
+    if(view==='records')return renderRecords();
+    if(view==='operations')return renderMindOperations();
+    if(view==='simulations'){
+      const back=(route.params.get('profileId')||'all')==='all'&&firstDecisionOrigin(route)
+        ?studioReturnLink(route,parseStudioRoute,studioRouteHash):null;
+      return '<section data-simulation-execution-mode="paper" aria-label="모의 실험실"><p class="tiny muted">모의 실험</p>'+
+        (back?'<a class="studio-return-link" href="'+esc(back.href)+'" data-studio-route>'+esc(back.label)+'</a>':'')+
+        simulations.render()+'</section>';
+    }
+    if(view==='principles')return renderMindPrinciples();
+    if(view==='knowledge')return renderConnectedKnowledge();
+    return renderMindOverview();
+  }
   function renderMindOverview(){
     const {id,profile,policy,settings,version}=mindContext();
     if(id==='all'){
@@ -1042,11 +1066,14 @@ export function createStudioController(hooks={},options={}){
   }
   function renderCaptureStatus(){
     const c=captureData,latest=c?.latest,lastError=c?.lastError,scope=(c?.provider||'okx').toUpperCase()+' · '+(c?.instrumentId?.split(':').at(-1)||'BTC-USDT')+' · '+({'4h':'4시간봉','1d':'일봉'}[c?.timeframe||'4h']||c.timeframe),status=({READY:'현재 확정 봉 보관됨',WAITING_SETTLEMENT:'확정 봉 수집 시각 대기',COOLDOWN:'공급처 재요청 대기',COLLECTION_REQUIRED:'확정 시세 수집 필요'})[c?.status]||'수집 상태 확인',disabled=busy||captureLoading||captureCollecting||!!captureStatusError||c?.canCollect!==true;
+    const origin=firstDecisionOrigin(currentRoute());
+    const alternative=origin&&(captureStatusError||captureActionError||['WAITING_SETTLEMENT','COOLDOWN'].includes(c?.status))
+      ?firstDecisionPracticeLink(origin):'';
     return '<section class="studio-sheet studio-data-group" aria-labelledby="data-capture-title" aria-busy="'+(captureLoading||captureCollecting)+'"><div class="studio-sheet-head"><div><h2 id="data-capture-title" tabindex="-1">확정 시세 보관</h2><p class="studio-data-scope">'+esc(scope)+'</p></div>'+(c?'<span class="pill" aria-label="수집 상태: '+esc(status)+'">'+esc(status)+'</span>':'')+'</div><div class="studio-sheet-body">'+
       (captureCollecting?'<p class="tiny spaced" role="status" aria-live="polite">OKX에서 확정 봉 원문을 수집하고 보관하는 중…</p>':captureLoading?'<p class="tiny spaced" role="status">수집 상태를 조회하는 중…</p>':captureMessage?'<p class="tiny spaced" role="status">'+esc(captureMessage)+'</p>':'')+
       (captureStatusError?'<p class="error-text spaced" role="alert">'+esc(captureStatusError)+' '+button('상태 다시 조회','capture-status','',captureLoading?'disabled':'')+'</p>':'')+(captureActionError?'<p class="error-text spaced" role="alert">'+esc(captureActionError)+'</p>':'')+
       (c?row('현재 보관한 기준 봉',latest?esc(when(latest.latestClosedAsOf)):'보관된 시세 없음')+(!c.canCollect&&['WAITING_SETTLEMENT','COOLDOWN'].includes(c.status)?row('다음 수집 가능',esc(when(c.nextAllowedAt))):'')+'<details class="spaced"><summary>수집 상세</summary>'+row('공급처',esc((c.provider==='okx'?'OKX':c.provider)+' · '+(c.origin||'접속 주소 미기록')))+row('필요한 기준 봉',esc(when(c.requiredClosedAsOf)))+(latest?row('원문 수신',esc(when(latest.receivedAt)))+row('자료 사용 가능',esc(when(latest.availableAt)))+row('보관 봉 수','4시간봉 '+num(latest.candleCount,0)+'개 · 일봉 '+num(latest.dailyCandleCount,0)+'개'):'')+row('다음 수집 가능',esc(when(c.nextAllowedAt)))+
-      (lastError?'<section class="spaced"><h3>최근 수집 실패</h3>'+row('공급처 응답',lastError.httpStatus?'HTTP '+esc(lastError.httpStatus):'응답 상태 미기록')+row('실패 시각',esc(when(lastError.failedAt)))+row('재요청 가능',esc(when(lastError.nextAllowedAt)))+(lastError.retryAfter!==null&&lastError.retryAfter!==undefined?row('공급처 Retry-After',esc(lastError.retryAfter)):'')+'</section>':'')+raw(c,'수집 출처·원문 식별값')+'</details>':'<p class="tiny muted spaced">이 종목의 확정 시세 보관 상태를 조회합니다.</p>')+'</div><div class="studio-data-actions actions">'+button(captureCollecting?'확정 시세 수집 중…':'확정 시세 수집','capture-collect','',disabled?'disabled':'')+'</div></section>';
+      (lastError?'<section class="spaced"><h3>최근 수집 실패</h3>'+row('공급처 응답',lastError.httpStatus?'HTTP '+esc(lastError.httpStatus):'응답 상태 미기록')+row('실패 시각',esc(when(lastError.failedAt)))+row('재요청 가능',esc(when(lastError.nextAllowedAt)))+(lastError.retryAfter!==null&&lastError.retryAfter!==undefined?row('공급처 Retry-After',esc(lastError.retryAfter)):'')+'</section>':'')+raw(c,'수집 출처·원문 식별값')+'</details>':'<p class="tiny muted spaced">이 종목의 확정 시세 보관 상태를 조회합니다.</p>')+'</div><div class="studio-data-actions actions">'+button(captureCollecting?'확정 시세 수집 중…':'확정 시세 수집','capture-collect','',disabled?'disabled':'')+alternative+'</div></section>';
   }
   async function collectCapture(){if(captureCollecting||captureLoading||captureStatusError||busy||captureData?.canCollect!==true)return;if(isDataSettings())restoreMindActionFocus('capture-collect','');captureCollecting=true;captureActionError='';captureMessage='';redraw();try{const value=await mutate('',{provider:'okx',instrumentId:'crypto:okx:BTC-USDT'},'/api/workspace/market-captures/collect',{onCommitted:invalidateTerminal});captureData=value.collection;captureMessage=value.result?.reused?'이미 보관한 확정 시세를 확인했습니다.':'확정 시세 원문을 수집해 보관했습니다.';if(currentRoute().page==='trade')await loadTerminal();}catch(problem){captureActionError=problem.message;if(problem.collection)captureData=problem.collection;}finally{captureCollecting=false;await loadCaptureStatus();redraw();}}
   function connectionSummary(){

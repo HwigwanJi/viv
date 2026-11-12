@@ -3243,9 +3243,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T16:02:40.505Z",
-      "reason": "브라우저 세션 저장소 접근 예외를 검토했다. 기존 화면 조작과 저장 키를 유지한다.",
-      "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
+      "reviewedAt": "2026-11-12T17:30:48.545Z",
+      "reason": "시세 수집 실패에서 같은 마인드의 과거 실습을 실행하고 같은 현재 시세 실습으로 돌아가는 링크를 확인했다.",
+      "signature": "fa445de2602d901a10292dd0d851596ea18457c87a4fc0d36bcc8a97304510a3",
       "controls": [
         [
           "data-auto-action",
@@ -3313,7 +3313,7 @@
         ],
         [
           "element:a",
-          34
+          36
         ],
         [
           "element:button",
@@ -3348,7 +3348,7 @@
           1
         ]
       ],
-      "sourceHash": "6c2bfd00f6da4bd1593d4293581a55ea7676b663b8173137e63021830f41289d",
+      "sourceHash": "6dc3b1e7ac58882c0332b0be6161c97eea9946d54f56c7b39dbb490df27e8402",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
