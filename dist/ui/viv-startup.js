@@ -7,33 +7,45 @@
   var appScriptPath = /^\/(?:(?:agent|domain|engine|system|trading|ui|vendor)\/[a-z0-9._/-]+|app|knowledge|store|strategy-view|notification-worker)\.m?js$/i;
   var moduleLoadFailed = false;
 
-  function failedScripts(confirmedOnly) {
-    var resources = window.performance?.getEntriesByType?.('resource') || [];
-    return [...new Set(resources.filter(function (entry) {
-      if (entry.initiatorType !== 'script') return false;
-      var url = new URL(entry.name);
-      if (url.origin !== location.origin || !/\.m?js$/i.test(url.pathname)) return false;
-      var confirmed = entry.responseStatus >= 400 || (entry.contentType && !javascriptType.test(entry.contentType));
-      return confirmed || (!confirmedOnly && (entry.responseStatus === 0 ||
-        (entry.responseStatus === undefined && entry.decodedBodySize === 0)));
-    }).map(function (entry) { return entry.name; }))];
+  function scriptIssue(status, type) {
+    if (status === 404) return 'HTTP 404 · 서버에서 파일을 찾을 수 없음';
+    if (Number.isInteger(status) && status >= 400 && status < 600) return 'HTTP ' + status + ' · 파일 요청 실패';
+    if (/^text\/html(?:\s*;|\s*$)/i.test(type)) return 'HTML 응답 · 원래 PC 주소와 비교';
+    if (type && !javascriptType.test(type)) return '응답 형식 오류 · JavaScript 필요';
+    return '';
   }
 
-  function showFailedFiles(status, urls) {
+  function failedScripts(confirmedOnly) {
+    var resources = window.performance?.getEntriesByType?.('resource') || [];
+    return resources.flatMap(function (entry) {
+      if (entry.initiatorType !== 'script') return [];
+      var url = new URL(entry.name);
+      if (url.origin !== location.origin || !/\.m?js$/i.test(url.pathname)) return [];
+      var issue = scriptIssue(entry.responseStatus, entry.contentType);
+      var unconfirmed = entry.responseStatus === 0 ||
+        (entry.responseStatus === undefined && entry.decodedBodySize === 0);
+      return issue || (!confirmedOnly && unconfirmed) ? [{url: entry.name, issue}] : [];
+    });
+  }
+
+  function showFailedFiles(status, failures) {
     if (!status) return;
-    var paths = new Set();
-    for (var url of urls) {
+    var paths = new Map();
+    for (var {url, issue} of failures) {
       var file = new URL(url);
-      if (file.origin === location.origin && appScriptPath.test(file.pathname)) paths.add('dist' + file.pathname);
+      if (issue && file.origin === location.origin && appScriptPath.test(file.pathname)) paths.set('dist' + file.pathname, issue);
     }
-    status.textContent = paths.size ? '확인할 앱 파일 ' + [...paths].join(', ') : '';
+    status.textContent = paths.size ? '확인할 앱 파일 ' + [...paths].map(function ([path, issue]) {
+      return path + ' (' + issue + ')';
+    }).join(', ') : '';
     status.hidden = !paths.size;
   }
 
   async function scriptAvailable(url, options) {
     try {
       var response = await fetch(url, {...options, method: 'GET'});
-      if (!response.ok || !javascriptType.test(response.headers.get('content-type'))) return false;
+      var type = response.headers.get('content-type');
+      if (!response.ok || !javascriptType.test(type)) return scriptIssue(response.status, type) || '응답 형식 오류 · JavaScript 필요';
       await response.arrayBuffer();
       return true;
     } catch {
@@ -57,13 +69,15 @@
         if (entryUrl) {
           problem = '앱 파일을 불러올 수 없습니다. VIV 서버의 파일을 확인한 뒤 다시 시도하세요.';
           status.textContent = 'VIV 앱 파일을 확인하는 중…';
-          var targets = failedScripts();
+          var targets = failedScripts().map(function (failure) { return failure.url; });
           // shortcut: check the workspace module when the browser omits failed URLs, extend if other boot dependencies need this fallback.
           if (moduleLoadFailed && targets.length === 0) targets.push(new URL('./ui/studio-controller.mjs', entryUrl).href);
           var urls = [...new Set([entryUrl, ...targets])];
           var scripts = await Promise.all(urls.map(function (url) { return scriptAvailable(url, options); }));
-          ready = scripts.every(Boolean);
-          showFailedFiles(fileStatus, urls.filter(function (_, index) { return scripts[index] === false; }));
+          ready = scripts.every(function (result) { return result === true; });
+          showFailedFiles(fileStatus, urls.map(function (url, index) {
+            return {url, issue: typeof scripts[index] === 'string' ? scripts[index] : ''};
+          }));
         }
         if (ready) {
           if (control.isConnected) open();

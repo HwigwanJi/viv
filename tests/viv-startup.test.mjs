@@ -196,7 +196,7 @@ test('VIV checks the workspace module when a browser reports only the entry erro
   assert.deepEqual(urls.slice(1), [['http://localhost/app.mjs', 'GET'], ['http://localhost/ui/studio-controller.mjs', 'GET']]);
   assert.equal(app.reloads(), 0);
   assert.match(app.message.textContent, /앱 파일/);
-  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/app.mjs');
+  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/app.mjs (HTTP 404 · 서버에서 파일을 찾을 수 없음)');
 });
 
 test('VIV displays confirmed app paths and omits URLs and ambiguous transport failures', async () => {
@@ -214,11 +214,32 @@ test('VIV displays confirmed app paths and omits URLs and ambiguous transport fa
     {name: 'http://localhost/api/private.mjs', initiatorType: 'script', responseStatus: 404},
   ]);
   app.events.error({target: {id: 'viv-app-entry'}});
-  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/ui/studio-controller.mjs');
+  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/ui/studio-controller.mjs (HTTP 404 · 서버에서 파일을 찾을 수 없음)');
   await app.button.click();
-  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/ui/shell.mjs');
+  assert.equal(app.fileStatus.textContent, '확인할 앱 파일 dist/ui/shell.mjs (HTTP 404 · 서버에서 파일을 찾을 수 없음)');
   assert.equal(app.fileStatus.hidden, false);
   assert.equal(app.reloads(), 0);
+});
+
+test('VIV distinguishes HTML served for an app file from HTTP failures and transfer errors', async () => {
+  for (const [response, detail] of [
+    [asset('text/html; charset=utf-8'), 'HTML 응답 · 원래 PC 주소와 비교'],
+    [asset('text/html', 503), 'HTTP 503 · 파일 요청 실패'],
+    [asset('text/plain'), '응답 형식 오류 · JavaScript 필요'],
+    [new Response(null, {status: 200}), '응답 형식 오류 · JavaScript 필요'],
+    [null, ''],
+  ]) {
+    const app = setup(async (url, {method}) => {
+      if (method === 'HEAD') return asset('text/html');
+      if (!response) throw new TypeError('transport failed');
+      return response;
+    });
+    app.events[12000]();
+    await app.button.click();
+    assert.equal(app.fileStatus.textContent, detail ? '확인할 앱 파일 dist/app.mjs (' + detail + ')' : '');
+    assert.equal(app.fileStatus.hidden, !detail);
+    assert.equal(app.reloads(), 0);
+  }
 });
 
 test('install entry keeps its own page on failure and retains normal modified link actions', async () => {

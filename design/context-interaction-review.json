@@ -3867,8 +3867,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T21:03:16.716Z",
-      "reason": "시작을 확인한 뒤에만 진행 상태를 표시하고 기존의 다시 열기 검사와 확인된 파일 경로를 유지한다.",
+      "reviewedAt": "2026-11-12T21:59:37.138Z",
+      "reason": "실제 404와 HTML 응답을 파일별로 구분하고, 전송 실패나 비공개 URL은 상세에 표시하지 않는다.",
       "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
       "controls": [
         [
@@ -3884,7 +3884,7 @@
           1
         ]
       ],
-      "sourceHash": "295a8553a180d505b256e0be950d0d6d641f8f922d13aa870b1a638ea424f6c3",
+      "sourceHash": "03eef962abad778b0c612dae1604bc07d0159f34ed3883a669d855cfa7e1534c",
       "customContainers": []
     }
   ],
