@@ -150,7 +150,7 @@ export function createMarketLibrary(hooks){
     const use=undated?'원문 공개 시점이 확인된 버전부터 마인드 판단에 활용할 수 있습니다.':canReview?'승인 후 마인드의 자료 설정에 따라 판단 입력으로 선택할 수 있습니다.':
       Array.isArray(eligibleMinds)?(eligibleMinds.length?'현재 정책에서 '+eligibleMinds.length+'개 마인드가 이 자료를 선택할 수 있습니다.':'현재 정책에서 이 자료를 선택할 마인드가 없습니다.'):'마인드의 자료 설정에서 사용 조건을 확인할 수 있습니다.';
     const restoreReaderFocus=adjacent&&typeof document!=='undefined'&&document.activeElement?.closest?.('[data-library-reader-nav]');
-    hooks.open('투자 자료', readerNavigation(id)+'<h3>'+esc(doc.title)+'</h3><p data-library-command-status class="tiny muted spaced" role="status" aria-live="polite"></p>'+row('라이브러리',esc(label(entry.status)))+row('마인드 판단·선정 전송',esc(transmissionCount(value.usage?.transmissionCount)))+row('자료 범위',esc(knowledgeScopeLabel(item,hooks.instruments)))+'<p class="tiny muted spaced">'+esc(use)+'</p>'+quickSource+classificationControl.notice+readingContent(doc)+'<details class="spaced"><summary>출처·사용 시점</summary>'+sourceDetails+'</details>'+(!undated?'<details class="spaced"><summary>분류 상세</summary>'+classification+'</details><details class="spaced"><summary>마인드에서 활용</summary>'+usageMarkup+'</details>':'')+raw(doc,'원본 데이터'),tools+(canReview?classificationControl.actions+(c?button('검토·승인','approve',id,busy()||committedApprovals.has(id)?'disabled':''):''):'')+(entry.status==='APPROVED'?button('마인드에 연결','pin',id,busy()?'disabled':'','primary'):''),{presentation:'reader',context:'라이브러리 · 공용 자료 · v'+doc.data.version});if(restoreReaderFocus)focusReaderNavigation();
+    hooks.open('투자 자료', readerNavigation(id)+'<h3 data-library-result-heading tabindex="-1">'+esc(doc.title)+'</h3><p data-library-command-status class="tiny muted spaced" role="status" aria-live="polite"></p>'+row('라이브러리',esc(label(entry.status)))+row('마인드 판단·선정 전송',esc(transmissionCount(value.usage?.transmissionCount)))+row('자료 범위',esc(knowledgeScopeLabel(item,hooks.instruments)))+'<p class="tiny muted spaced">'+esc(use)+'</p>'+quickSource+classificationControl.notice+readingContent(doc)+'<details class="spaced"><summary>출처·사용 시점</summary>'+sourceDetails+'</details>'+(!undated?'<details class="spaced"><summary>분류 상세</summary>'+classification+'</details><details class="spaced"><summary>마인드에서 활용</summary>'+usageMarkup+'</details>':'')+raw(doc,'원본 데이터'),tools+(canReview?classificationControl.actions+(c?button('검토·승인','approve',id,busy()||committedApprovals.has(id)?'disabled':''):''):'')+(entry.status==='APPROVED'?button('마인드에 연결','pin',id,busy()?'disabled':'','primary'):''),{presentation:'reader',context:'라이브러리 · 공용 자료 · v'+doc.data.version});if(restoreReaderFocus)focusReaderNavigation();
     }catch(problem){if(seq!==detailGeneration||scope!==JSON.stringify([current().page,current().params.get('view'),current().params.get('profileId')])||dialogToken!==undefined&&dialogToken!==hooks.getDialogToken?.())return;if(showLoading&&seq===detailGeneration&&(dialogToken===undefined||dialogToken===hooks.getDialogToken?.())){const restoreReaderFocus=adjacent&&typeof document!=='undefined'&&document.activeElement?.closest?.('[data-library-reader-nav]');hooks.open('투자 자료',readerNavigation(id)+'<p role="alert">'+esc(problem.message)+'</p>'+button('다시 불러오기','detail',id),'',{presentation:'reader',context:'라이브러리 · 공용 자료'});if(restoreReaderFocus)focusReaderNavigation();}throw problem;}
   }
   async function editor(initial='',{direct=false,revisionId=null}={}){
@@ -219,7 +219,17 @@ export function createMarketLibrary(hooks){
     if(action==='next'){if(loading||!data?.page?.hasMore||!id||id!==data.page.nextCursor)return;pageFocus=true;cursors.remember(libraryQuery(current()),id);return hooks.navigate('library',{cursor:id,knowledgeId:null});}
     if(action==='prev'){if(loading||!current().params.has('cursor'))return;pageFocus=true;return hooks.navigate('library',{cursor:cursors.previous(libraryQuery(current())),knowledgeId:null});}
     if(action==='validate'){const form=node.closest('form');clearValidation(node);const doc=parseMarketKnowledgeDocument(form.elements.source.value,{format:form.elements.format.value});form.querySelector('[data-library-validation]').textContent='형식 확인 완료 · '+doc.title;return;}
-    if(action==='classification-status')return await openRecord(id);
+    if(action==='classification-status'){
+      const dialog=node.closest('dialog');
+      try{await openRecord(id);}
+      finally{
+        if(dialog?.open&&selectedId===id){
+          const focus=dialog.querySelector('[data-library-action="classification-status"], [role="alert"] + [data-library-action="detail"]')||dialog.querySelector('[data-library-result-heading]');
+          focus?.focus({preventScroll:true});
+        }
+      }
+      return;
+    }
     if(action==='classify'||action==='classify-retry'){
       if(commandPending||busy()||committedClassifications.has(id))return;
       const finish=beginCommand(node,'JEV 분류 중…'),onCommitted=()=>{committedClassifications.add(id);finish.commit('JEV 분류 완료');};
@@ -229,7 +239,7 @@ export function createMarketLibrary(hooks){
         await load({force:true});
       }catch(problem){
         if(problem.serverResponse!==true)interruptedClassifications.add(id);
-        if(problem.serverResponse===true&&problem.status<500&&!['IN_PROGRESS','CLAIM_CONFLICT','REVISION_CONFLICT','KNOWLEDGE_CLASSIFICATION_LOCKED','JEV_CONNECTION_REQUIRED'].includes(problem.code)&&!problem.providerFailureEventId){finish(problem);return;}
+        if(problem.serverResponse===true&&problem.status<500&&!['IN_PROGRESS','CLAIM_CONFLICT','REVISION_CONFLICT','KNOWLEDGE_CLASSIFICATION_LOCKED','KNOWLEDGE_CLASSIFICATION_OUTCOME_UNKNOWN','JEV_CONNECTION_REQUIRED'].includes(problem.code)&&!problem.providerFailureEventId){finish(problem);return;}
       }
       finish();
       if(actionCurrent())await detail(id,{showLoading:true});

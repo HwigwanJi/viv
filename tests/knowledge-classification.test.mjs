@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {openLocalDatabase} from '../server/local-db.mjs';
 import {handleMindStudioAPI} from '../server/mind-studio.mjs';
+import {acquireClaim} from '../server/claims.mjs';
+import {hashInputPackage} from '../dist/domain/workspace.mjs';
 
 test('market knowledge retains one JEV outcome when another tab saves during classification',async()=>{
   const local=await openLocalDatabase(':memory:');
@@ -46,7 +48,7 @@ test('classification status reads and failed receipts never retransmit the docum
   const local=await openLocalDatabase(':memory:');
   try{
     const env={DB:local.db};
-    let calls=0;
+    let calls=0,now=Date.now();
     const fetchImpl=async(_url,{body})=>{
       calls++;
       if(calls===1)return Response.json({message:'denied'},{status:403,headers:{'x-request-id':'first-provider-request'}});
@@ -56,7 +58,7 @@ test('classification status reads and failed receipts never retransmit the docum
     };
     const url='http://localhost/api/workspace/market-knowledge';
     const call=async(path='',body)=>{
-      const r=await handleMindStudioAPI(new Request(url+path,{method:body?'POST':'GET',headers:{'oai-authenticated-user-id':'knowledge-test-owner',...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined}),env,{fetchImpl});
+      const r=await handleMindStudioAPI(new Request(url+path,{method:body?'POST':'GET',headers:{'oai-authenticated-user-id':'knowledge-test-owner',...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined}),env,{fetchImpl,now:()=>now});
       return {status:r.status,...await r.json()};
     };
     const {example}=await call('/forms');
@@ -85,6 +87,14 @@ test('classification status reads and failed receipts never retransmit the docum
     assert.equal(afterDisconnect.classificationAttempt.status,'UNKNOWN');
     assert.equal(afterDisconnect.entry.status,'SAVED');
     assert.equal(afterDisconnect.entry.classificationRecord,null);
+    assert.equal(calls,2);
+
+    const path='/api/workspace/market-knowledge/classify', expiredKey='expired-unknown';
+    await acquireClaim(local.db,{ownerId:'knowledge-test-owner',resourceId:'knowledge-classification:'+example.id,key:expiredKey,
+      fingerprint:hashInputPackage({path,input:{documentId:example.id}}),baseRevision:afterDisconnect.revision,nowMs:now+1,leaseMs:1000});
+    now+=2000;
+    assert.equal((await item()).classificationAttempt.status,'UNKNOWN');
+    assert.equal((await call('/classify',{...second,idempotencyKey:expiredKey})).code,'KNOWLEDGE_CLASSIFICATION_OUTCOME_UNKNOWN');
     assert.equal(calls,2);
 
     const recovered=await call('/classify',{...second,expectedRevision:afterDisconnect.revision,idempotencyKey:'explicit-retry'});

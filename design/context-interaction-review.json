@@ -1639,9 +1639,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T05:08:38.134Z",
-      "reason": "자료별 JEV 전송 내용, 상태만 조회하는 조작, 키 설정과 동일 자료 복귀를 대조했습니다.",
-      "signature": "fc62539c5608fc0186bcd59c0b651ffd22d5ab1463dc726c179f28b8af9beb33",
+      "reviewedAt": "2026-11-12T05:11:31.095Z",
+      "reason": "자료별 JEV 전송 내용, 상태 조회·키보드 초점 및 조회 실패 복구를 대조했습니다.",
+      "signature": "376e5330dea81f88b42707f48576403f3ac227abbdbf092778c60ff48a7657b0",
       "controls": [
         [
           "data-library-action",
@@ -1652,12 +1652,16 @@
           1
         ],
         [
+          "data-library-action=\"classification-status\"",
+          1
+        ],
+        [
           "data-library-action=\"clear-filter\"",
           3
         ],
         [
           "data-library-action=\"detail\"",
-          2
+          3
         ],
         [
           "data-library-action=\"first\"",
@@ -1720,7 +1724,7 @@
           1
         ]
       ],
-      "sourceHash": "7d79e4b7fd7e3ef48e101fbf09dc711087e4a4add8d62afff33842ef4b50a250"
+      "sourceHash": "7551652a90b0927e7f1ed21addc0fab3553a7c688d9d7441092b584a172630f4"
     },
     {
       "file": "dist/ui/mind-activity-resource.mjs",
