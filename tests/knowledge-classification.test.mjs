@@ -53,6 +53,7 @@ test('classification status reads and failed receipts never retransmit the docum
       calls++;
       if(calls===1)return Response.json({message:'denied'},{status:403,headers:{'x-request-id':'first-provider-request'}});
       if(calls===2)throw Error('mock provider disconnected');
+      if(calls===3)return Response.json({message:'credits unavailable'},{status:402,headers:{'x-request-id':'billing-provider-request'}});
       const request=JSON.parse(body);
       return Response.json({model:'fixture',answers:Object.fromEntries(Object.entries(request.questions).map(([key,q])=>[key,{type:'choice',choice:Object.keys(q.criteria)[0],confidence:.7}]))});
     };
@@ -97,12 +98,19 @@ test('classification status reads and failed receipts never retransmit the docum
     assert.equal((await call('/classify',{...second,idempotencyKey:expiredKey})).code,'KNOWLEDGE_CLASSIFICATION_OUTCOME_UNKNOWN');
     assert.equal(calls,2);
 
-    const recovered=await call('/classify',{...second,expectedRevision:afterDisconnect.revision,idempotencyKey:'explicit-retry'});
+    const billingArgs={...second,expectedRevision:afterDisconnect.revision,idempotencyKey:'billing-retry'};
+    const billing=await call('/classify',billingArgs);
+    assert.equal(billing.status,402);
+    assert.equal((await item()).classificationAttempt.status,'BILLING_REQUIRED');
+    assert.equal((await call('/classify',billingArgs)).status,402);
+    assert.equal(calls,3);
+
+    const recovered=await call('/classify',{...billingArgs,expectedRevision:billing.revision,idempotencyKey:'explicit-retry'});
     assert.equal(recovered.status,200);
     const final=await item();
     assert.equal(final.entry.status,'SAVED');
     assert.equal(final.classificationAttempt,null);
     assert.equal(final.entry.classificationRecord.provider.requestId,recovered.classificationRecord.provider.requestId);
-    assert.equal(calls,3);
+    assert.equal(calls,4);
   }finally{local.close();}
 });

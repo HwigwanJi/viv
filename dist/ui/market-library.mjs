@@ -123,6 +123,9 @@ export function createMarketLibrary(hooks){
     }else if(status==='PENDING'){
       message='JEV 요청이 처리 중입니다. 창을 닫아도 처리되며 이 자료에서 결과를 확인할 수 있습니다.';
       actions=checkResult;
+    }else if(status==='BILLING_REQUIRED'){
+      message='JEV가 잔액 확인을 요청했습니다 (402). 결제 내역과 사용 가능 크레딧을 확인하세요. '+outbound+' JEV API 사용량은 과금될 수 있습니다.';
+      actions=checkResult+'<a class="button small" href="https://help.typesafe.ai/articles/5505198974" target="_blank" rel="noopener noreferrer">크레딧 확인 방법 ↗</a>'+button('JEV에 다시 보내기','classify-retry',id,described+(busy()||commandPending?'disabled':''));
     }else if(status==='REJECTED'||status==='UNKNOWN'){
       message=status==='REJECTED'?'JEV가 요청을 거절했습니다'+(attempt.httpStatus?' ('+attempt.httpStatus+')':'')+'. 키 또는 접근 권한을 확인하세요.':'이전 요청의 분류 결과를 확인하지 못했습니다. 상태 확인은 자료만 조회합니다. 다시 보내면 JEV 사용량과 비용이 추가될 수 있습니다.';
       actions=checkResult+(status==='REJECTED'?settings:'')+button('JEV에 다시 보내기','classify-retry',id,described+(busy()||commandPending?'disabled':''));

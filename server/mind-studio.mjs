@@ -119,7 +119,7 @@ async function marketClassificationState(db,owner,w,entry,env,now){
   const failure=w.activityEvents.findLast(event=>event.eventType==='MIND_PROVIDER_FAILED'&&event.resourceId===entry.id&&event.payload?.path===marketClassificationPath);
   if(!failure)return {status:'READY'};
   const provider=failure.payload.providerFailure?.provider;
-  return {status:[401,403].includes(provider?.httpStatus)?'REJECTED':'UNKNOWN',at:failure.occurredAt,
+  return {status:provider?.httpStatus===402?'BILLING_REQUIRED':[401,403].includes(provider?.httpStatus)?'REJECTED':'UNKNOWN',at:failure.occurredAt,
     ...(provider?.providerRequestId?{providerRequestId:provider.providerRequestId}:{}),
     ...(provider?.httpStatus?{httpStatus:provider.httpStatus}:{})};
 }
@@ -491,7 +491,9 @@ export async function handleMindStudioAPI(request,env={},options={}){
         providerFailure=captureMindProviderFailure(error,{attemptKey:body.idempotencyKey,now:nowISO(options),env,maxBytes:64000});
         if(!providerFailure){await releaseClaim(db,{ownerId:owner,resourceId,token,nowMs:Date.parse(nowISO(options))}).catch(()=>{});throw error;}
         const recovery=terminalErrorRecovery(error);
-        failed={ok:false,code:error.code,message:recovery.category==='JEV_AUTH'?recovery.message:'JEV 분류 결과를 확인하지 못했습니다. 자료에서 요청 상태를 확인하세요.',httpStatus:recovery.category==='JEV_AUTH'?error.provider.httpStatus:502,providerFailureEventId:uniqueId('event')};
+        const billingRequired=error.provider?.httpStatus===402;
+        const message=billingRequired?'TypeSafe 계정의 사용 가능 크레딧과 결제 내역을 확인하세요.':recovery.category==='JEV_AUTH'?recovery.message:'JEV 분류 결과를 확인하지 못했습니다. 자료에서 요청 상태를 확인하세요.';
+        failed={ok:false,code:error.code,message,httpStatus:billingRequired?402:recovery.category==='JEV_AUTH'?error.provider.httpStatus:502,providerFailureEventId:uniqueId('event')};
       }
       // Another tab may save while JEV answers. Retry the fenced write, not the provider request.
       for(let attempt=0;;attempt++){
