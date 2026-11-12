@@ -55,8 +55,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T11:58:33.043Z",
-      "reason": "초기 응답 지연과 모듈 실패를 모바일 브라우저에서 재현하고 재시도 후 정상 진입을 확인했습니다.",
+      "reviewedAt": "2026-11-12T00:38:10.685Z",
+      "reason": "설치 안내와 첫 시작의 재시도에서 연결 실패 시 같은 화면과 키보드 초점을 유지하고 앱 주소를 다시 연다.",
       "signature": "1eb14d305d971b6c5f37ea50403a13aeea3ad3b27d616d4aae8782132446acb4",
       "controls": [
         [
@@ -68,7 +68,7 @@
           1
         ]
       ],
-      "sourceHash": "3cfb9d4e490dc5485f041c958e65020e0c87d87b3fc3975767401f29896c820b"
+      "sourceHash": "1bdc875f62257520e3a812e02f4e7292f3f82504932580be89d9008fcbacd77c"
     },
     {
       "file": "dist/install.html",
@@ -81,9 +81,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T19:37:17.531Z",
-      "reason": "복구 명령 복사 버튼과 모의 홈 진입점을 설치 화면에 연결했다.",
-      "signature": "fdad2b5baa8a9282f7f64739cf26d19e554dadcdb98f11682e133d613f923877",
+      "reviewedAt": "2026-11-12T00:38:10.688Z",
+      "reason": "설치 안내와 첫 시작의 재시도에서 연결 실패 시 같은 화면과 키보드 초점을 유지하고 앱 주소를 다시 연다.",
+      "signature": "941761ee7feee8e2f0b3de1a5e73b77cf12262090bb5954952b4b1c5f0fef134",
       "controls": [
         [
           "data-install-copy-command",
@@ -95,6 +95,10 @@
         ],
         [
           "data-install-retry-command",
+          1
+        ],
+        [
+          "data-viv-open-status",
           1
         ],
         [
@@ -118,7 +122,7 @@
           1
         ]
       ],
-      "sourceHash": "dab2f683357fea04d57c1f8244e2b1f3954b4c9b794d8ca7061a47db1f516855"
+      "sourceHash": "6ccd9d977525a6105ee7dc741c587dfb90c0999fbfb9e5e89642a5c70ccf2661"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -3778,11 +3782,20 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T11:58:33.050Z",
-      "reason": "초기 응답 지연과 모듈 실패를 모바일 브라우저에서 재현하고 재시도 후 정상 진입을 확인했습니다.",
-      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "controls": [],
-      "sourceHash": "b242aa558756283004e8aeb00d8231673b3230951345f14bc53438c1c43b86fd"
+      "reviewedAt": "2026-11-12T00:38:10.688Z",
+      "reason": "설치 안내와 첫 시작의 재시도에서 연결 실패 시 같은 화면과 키보드 초점을 유지하고 앱 주소를 다시 연다.",
+      "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
+      "controls": [
+        [
+          "data-install-open",
+          1
+        ],
+        [
+          "data-viv-open-status",
+          1
+        ]
+      ],
+      "sourceHash": "e1206145a69339449d8b96f58f5719174affd15b983e33d27693b6dc2eb51f3d"
     }
   ],
   "actionMatrix": "design/context-action-matrix.json",
