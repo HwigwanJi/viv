@@ -157,8 +157,10 @@ document.addEventListener('click',event=>{
     return;
   }
   const paperGuide=routeHref?.startsWith('#trade?')&&parseStudioRoute(routeHref).params.has('firstDecision');
+  const recordRoute=routeHref?.startsWith('#minds?')?parseStudioRoute(routeHref):null;
+  const savedDecision=recordRoute?.params.get('view')==='records'&&recordRoute.params.get('kind')==='decisions'&&executionModeOf(recordRoute)==='paper'&&recordRoute.params.get('search');
   const paperPractice=routeLink?.hasAttribute('data-first-decision-practice');
-  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice?routeLink:null);
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice||savedDecision?routeLink:null);
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
     dialogLifecycleToken++;
@@ -182,8 +184,10 @@ document.addEventListener('click',event=>{
 $('#detail-dialog').addEventListener('close',()=>{formDrafts.capture();if(!$('#detail-dialog').open){cancelJumpResearch();$('#detail-dialog [data-broker-form]')?.reset();document.documentElement.dataset.readerOpen='false';}dialogNavigation.closed();});
 addEventListener('resize',()=>{const dialog=$('#detail-dialog');if(dialog.open&&dialog.dataset.presentation==='reader')setDialogPresentation(dialog,'reader');});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!event.defaultPrevented&&$('#detail-dialog').open&&$('#detail-dialog').dataset.readerDocked==='true'){event.preventDefault();closeDialog();}});
-// Escape invalidates awaiting views before the browser queues its close event.
-$('#detail-dialog').addEventListener('cancel',event=>{if(studio.state().formSaving){event.preventDefault();return;}dialogLifecycleToken++;appNotifications.dismiss();});
+$('#detail-dialog').addEventListener('cancel',event=>{
+  event.preventDefault();
+  if(!studio.state().formSaving)closeDialog();
+});
 document.addEventListener('keydown',event=>{if(event.key==='/'&&!event.metaKey&&!event.ctrlKey&&!event.isComposing&&!event.target.closest('input,textarea,select,[contenteditable="true"]')&&!$('#detail-dialog').open){event.preventDefault();const hash=studioRouteHash(parseStudioRoute(location.hash),'trade');routeFocus.request(hash,'[data-terminal-search]');navigate('trade');queueMicrotask(()=>{studio.terminal.focusInstrumentSearch();routeFocus.flush();});}});
 window.addEventListener('hashchange',()=>{dialogLifecycleToken++;dialogNavigation.beforeRouteChange();routeFocus.routeChanged(location.hash);render();studio.routeChanged(parseStudioRoute(location.hash));appNotifications.routeChanged();});
 const initial=parseStudioRoute(location.hash);if(location.hash!=='#'+initial.page+(initial.params.size?'?'+initial.params:''))history.replaceState(null,'','#'+initial.page+(initial.params.size?'?'+initial.params:''));

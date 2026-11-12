@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T20:02:40.985Z",
-      "reason": "같은 실험 화면의 자동 갱신에서 이미 포커스된 결과 제목을 보존하고, 다른 경로의 제목에는 포커스를 이동하지 않는다.",
+      "reviewedAt": "2026-11-12T22:33:41.307Z",
+      "reason": "저장된 모의 판단 링크는 기록 제목에 포커스를 주고, 같은 화면 갱신은 제목 포커스를 보존한다. 모달의 Esc와 닫기 버튼은 같은 포커스 복귀 경로를 사용한다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "b8ee12d3c51902a454d0e86b6538151212ab97939b078534e3a692f9b1aa2f36",
+      "sourceHash": "1b2bc53f499450cf7ab5c94abde0aa1d75fb105981e4788e4115be60ad8b1e26",
       "matrix": "design/context-action-matrix.json"
     },
     {
