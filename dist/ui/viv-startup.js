@@ -37,7 +37,7 @@
     }
     status.textContent = paths.size ? '확인할 앱 파일 ' + [...paths].map(function ([path, issue]) {
       return path + ' (' + issue + ')';
-    }).join(', ') : '';
+    }).join('\n') : '';
     status.hidden = !paths.size;
   }
 

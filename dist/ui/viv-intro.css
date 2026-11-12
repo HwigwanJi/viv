@@ -62,6 +62,9 @@
   color: var(--viv-intro-muted);
   font-size: var(--viv-status-size);
 }
+.viv-intro [data-viv-failed-files] {
+  white-space: pre-line;
+}
 @keyframes viv-orbit {
   0%, 100% {
     transform: rotate(var(--viv-orbit-angle)) scaleY(.42);
