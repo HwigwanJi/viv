@@ -13,3 +13,14 @@ export function paperPracticeReportHash(id) {
 export function paperDecisionRecordHash(id) {
   return '#minds?' + new URLSearchParams({profileId:'all',view:'records',executionMode:'paper',kind:'decisions',search:id});
 }
+
+export function paperResultReturnHash(hash) {
+  if(!hash?.startsWith('#minds?'))return PAPER_HOME_ENTRY;
+  const params=new URLSearchParams(hash.slice('#minds?'.length));
+  if(params.get('executionMode')!=='paper')return PAPER_HOME_ENTRY;
+  const isId=value=>/^[a-zA-Z0-9][a-zA-Z0-9_.:@-]{0,199}$/.test(value??'');
+  const view=params.get('view'),simulationId=params.get('simulationId'),decisionId=params.get('search');
+  if(view==='simulations'&&isId(simulationId))return paperPracticeReportHash(simulationId);
+  if(view==='records'&&params.get('kind')==='decisions'&&isId(decisionId))return paperDecisionRecordHash(decisionId);
+  return PAPER_HOME_ENTRY;
+}

@@ -1,6 +1,6 @@
 import {helpLabel,readonlyTooltip} from './help-tooltip.mjs';
 import {renderDataTable} from './data-table.mjs';
-import {PAPER_HOME_ENTRY} from '../system/paper-decision-links.mjs';
+import {PAPER_HOME_ENTRY,paperResultReturnHash} from '../system/paper-decision-links.mjs';
 const names={toss:'토스증권',upbit:'업비트'};
 const urls={toss:'https://www.tossinvest.com/open-api/landing',upbit:'https://upbit.com/mypage/open_api_management'};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -8,6 +8,11 @@ const money=v=>Number.isFinite(v)?new Intl.NumberFormat('ko-KR',{maximumFraction
 const quantity=(value,symbol,label,detailLabel='조회 수량')=>Number.isFinite(value)?`<span class="tabular-nums whitespace-nowrap" tabindex="0" aria-label="${esc(label+' '+String(value)+' '+symbol)}">${readonlyTooltip(new Intl.NumberFormat('ko-KR',{maximumSignificantDigits:15}).format(value),detailLabel+': '+String(value)+' '+symbol)}</span>`:'—';
 const button=(label,action,id='',disabled=false)=>`<button type="button" class="button small" data-broker-action="${action}" data-broker-provider="${id}" ${disabled?'disabled':''}>${label}</button>`;
 const table=(headers,rows)=>renderDataTable(headers.map((header,i)=>({...(typeof header==='string'?{label:header}:header),numeric:i>0})),rows);
+
+export function brokerPaperReturnLink(route){
+ const href=paperResultReturnHash(route.params.get('returnTo'));
+ return `<a class="button" href="${esc(href)}" data-studio-route data-broker-paper-home>${href===PAPER_HOME_ENTRY?'모의 홈으로':'저장한 모의 결과로 돌아가기'}</a>`;
+}
 const issueLabels={MARKET_UNAVAILABLE:'원화 거래쌍 없음',MARKET_CATALOG_UNAVAILABLE:'거래 목록 조회 필요',QUOTE_UNAVAILABLE:'시세 조회 필요',QUOTE_INVALID:'시세 응답 확인 필요'};
 function valuationNotice(snapshot){
  if(snapshot?.valuationStatus!=='PARTIAL')return '';
@@ -48,9 +53,9 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
   const guideUrl=upbit?'https://docs.upbit.com/kr/docs/api-key':'https://developers.tossinvest.com/';
   const providerLinks=`<div class="actions"><a href="${urls[provider]}" target="_blank" rel="noopener noreferrer">${names[provider]} API 관리 열기 ↗</a><a href="${guideUrl}" target="_blank" rel="noopener noreferrer">공식 발급 안내 ↗</a><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#계좌-연결과-잔고-확인" target="_blank" rel="noopener noreferrer">VIV 연결 문제 해결 ↗</a></div>`;
   const permission=upbit?'업비트 PC 웹에서 <strong>자산조회</strong> 권한만 선택해 잔고 조회용 키를 발급하세요.':'토스증권 PC 웹의 설정 → Open API에서 Client ID와 Client Secret을 발급하세요.';
-  const issuing=`<p>${permission}</p><p>${ip}</p>${providerLinks}`;
+  const issuing=`<p>${permission}</p><p>${ip}</p><p>발급 안내는 새 탭에서 열립니다.</p>${providerLinks}`;
   const guide=`<details class="spaced" data-broker-guide><summary>${names[provider]} 키 발급과 허용 IP</summary>${issuing}</details>`;
-  const paperLink=`<a class="button" href="${PAPER_HOME_ENTRY}" data-studio-route data-broker-paper-home>모의 홈으로</a>`;
+  const paperLink=brokerPaperReturnLink(route());
   const cancel='<button class="button" type="button" data-studio-action="close-dialog">취소</button>';
   if(!ready){
    const serverGuide=`<section class="spaced"><h3>2. VIV 서버 준비</h3>${networkBlocked?'<p>금융기관에서 허용 IP를 등록한 뒤 VIV 설치 폴더의 <code>.env</code>에 <code>BROKER_NETWORK_READY=true</code>를 설정하고 서버를 다시 시작하세요.</p>':''}${vaultBlocked?'<p>VIV 설치 때 생성한 <code>BROKER_VAULT_KEY</code> 설정을 서버에서 확인하세요.</p>':''}<p><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#서버-다시-시작" target="_blank" rel="noopener noreferrer">서버 다시 시작 방법 ↗</a></p></section>`;

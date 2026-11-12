@@ -565,8 +565,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T22:35:21.254Z",
-      "reason": "서버 준비 재확인과 재시작 후 같은 창 복구를 검증했다. 오류를 모바일의 보이는 영역에 표시하고 금융기관 안내 옆에 VIV 오류 해결 문서를 연결한다.",
+      "reviewedAt": "2026-11-12T02:35:43.6703386+00:00",
+      "reason": "실계좌 발급·키 입력 양쪽에서 같은 저장 모의 결과로 돌아가는 공용 링크와 복귀 안내. 기존 잔고 검증과 외부 링크 동작 보존.",
       "signature": "4404165fc5306c12c7befa8619f3dbde5c0930da888add503e8269f2d57bec76",
       "controls": [
         [
@@ -606,7 +606,7 @@
           1
         ]
       ],
-      "sourceHash": "5dbd1f02a0109c1917e1ab5b83883484fd76a77fd9ff6a9b3a5f38973cc30036",
+      "sourceHash": "0e8db61e2bc5a00a119c4be07d6969ae73848c26758c260cfcb094ac10445121",
       "customContainers": []
     },
     {
@@ -3203,9 +3203,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T02:08:18.7168143+00:00",
-      "reason": "첫 모의 판단의 과거 시세 실습과 현재 시세 준비 조건을 화면에서 대조하고 제한된 백테스트 링크의 마인드 문맥을 정리.",
-      "signature": "432e1202a5a62cbe9142f2c5aed84b4d9269b9bf231a1689cf9c91bbf6a9f8b5",
+      "reviewedAt": "2026-11-12T02:35:43.6703386+00:00",
+      "reason": "실전 계좌·자금 화면이 공용 모의 복귀 링크를 사용. 저장 결과 주소가 없으면 모의 홈으로 연결.",
+      "signature": "a8caa8bd67a45956f0aac8648b68ddc060b266a45b672717013b4e28722bc54a",
       "controls": [
         [
           "data-auto-action",
@@ -3273,7 +3273,7 @@
         ],
         [
           "element:a",
-          28
+          27
         ],
         [
           "element:button",
@@ -3308,7 +3308,7 @@
           1
         ]
       ],
-      "sourceHash": "e214b13302b1d7e4c29768453d766d6dbc33c33e039ceda15c1d9c6f044849bf",
+      "sourceHash": "b2f90fcd6870830ea3902ca48970651b9d535450b70a8f48cc0927c5160cc824",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

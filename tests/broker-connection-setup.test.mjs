@@ -2,8 +2,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {handleBrokerAPI} from '../server/broker-accounts.mjs';
-import {createBrokerConnections} from '../dist/ui/broker-connections.mjs';
+import {createBrokerConnections,brokerPaperReturnLink} from '../dist/ui/broker-connections.mjs';
+import {paperDecisionRecordHash,paperPracticeReportHash} from '../dist/system/paper-decision-links.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
+
+test('broker setup returns to a canonical paper result or the paper home',()=>{
+  const link=returnTo=>brokerPaperReturnLink({params:new URLSearchParams({returnTo})});
+  for(const hash of [paperPracticeReportHash('simulation-1'),paperDecisionRecordHash('mind-run-1')]){
+    assert.ok(link(hash).includes(hash.replaceAll('&','&amp;')));
+    assert.match(link(hash),/저장한 모의 결과로 돌아가기/);
+  }
+  for(const hash of ['//outside.invalid/path','https://outside.invalid','javascript:alert(1)','#trade?executionMode=live','#minds?view=simulations&executionMode=live&simulationId=simulation-1']){
+    assert.match(link(hash),/href="#home\?executionMode=paper"/);
+  }
+});
 
 test('Upbit connection reports the required step and preserves the last verified connection on failure',async()=>{
   const local=await openLocalDatabase(':memory:');

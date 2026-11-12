@@ -65,7 +65,7 @@ const schemas={
   read_mind_manifest:objectSchema({mindId:identifierSchema,format:{type:'string',enum:['json','yaml']}},['mindId','format']),
 };
 const descriptions={
-  viv_onboarding:'VIV 첫 시작 안내와 기존 모의 원화 예산을 조회합니다. 인수 없이 시작하고, 사용자가 분야와 금액을 선택하면 세 인수를 함께 보내 최초 공용 모의 예산만 생성합니다. action:pause·resume으로 중단·재개를 저장하고, action:complete로 실제 결과를 제공한 튜토리얼 번호를 기록합니다. 남은 과업과 저장 결과 링크를 반환합니다.',
+  viv_onboarding:'VIV 첫 시작 안내와 기존 모의 원화 예산을 조회합니다. 인수 없이 시작하고, 사용자가 분야와 금액을 선택하면 세 인수를 함께 보내 최초 공용 모의 예산만 생성합니다. action:pause·resume으로 중단·재개를 저장하고, action:complete로 실제 결과를 제공한 튜토리얼 번호를 기록합니다. 연결을 미루겠다는 선택은 action:defer_connection으로 저장하고 links.paperResume을 엽니다.',
   validate_strategy_ontology:'종목·계좌·자료·판단의 명시한 객체와 관계를 공용 온톨로지로 검사합니다. 관계 종류·개수·종목/계좌 일치·시점·자료 계보 순환을 검사하고 오류 대상과 경로를 반환합니다. complete가 false면 제공한 사실만 검사합니다. 주문·설정·저장을 수행하지 않습니다.',
   read_strategy_ontology:'노드 편집기와 API의 같은 온톨로지를 조회합니다. 종목·계좌·자료·판단·주문 관계, 역할 코호트, 포트 자료형·실제 연결 지원 상태와 공용 기능 계약을 반환합니다. 운용이나 설정을 변경하지 않습니다.',
  ...Object.fromEntries(HOURLY_LEARNING_ACTIONS.map(a=>[a.mcp_tool,a.description])),
@@ -113,7 +113,7 @@ function validArguments(name,args){
   if((schemas[name].required??[]).some(key=>!Object.hasOwn(args,key)))return false;
   if(name==='viv_onboarding'){
     const count=Object.keys(args).length;
-    if(args.action==='pause'||args.action==='resume')return count===1;
+    if(args.action==='pause'||args.action==='resume'||args.action==='defer_connection')return count===1;
     if(args.action==='complete'){
       if(!Number.isInteger(args.lesson)||args.lesson<1||args.lesson>4)return false;
       return args.lesson===4?count===2||count===3&&(id(args.decisionId)||id(args.simulationId)):count===3&&(id(args.documentId)||args.readOnly===true);
