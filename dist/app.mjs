@@ -157,7 +157,7 @@ document.addEventListener('click',event=>{
     return;
   }
   const paperGuide=routeHref?.startsWith('#trade?')&&parseStudioRoute(routeHref).params.has('firstDecision');
-  const destination=settingsLink||event.target.closest('[data-studio-jump-item], [data-broker-paper-home]')||(paperGuide?routeLink:null);
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide?routeLink:null);
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
     dialogLifecycleToken++;

@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T12:18:52.827Z",
-      "reason": "모바일 캘린더 월 이동·기록 상세 및 캐릭터 꾸미기에서 이름 저장을 검증",
+      "reviewedAt": "2026-11-12T17:00:36.602Z",
+      "reason": "화면 찾기에서 공개 복구 링크를 열고 기존 화면과 키보드 이동을 검토했다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "7aafc7201fbb9942241a27b772d9cfc4ee6dfa3ccd5cb1c0f19d4e3122f86b79",
+      "sourceHash": "b88608be833b5ef3785d1f2f4a387e6507d0794b9847d82ad05ffa13b0207335",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -3363,8 +3363,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T13:05:16.454Z",
-      "reason": "서비스 연결의 단일 복귀 링크가 출발 화면, 선택한 자료와 모의·실전 모드를 유지하는지 대조",
+      "reviewedAt": "2026-11-12T17:00:36.605Z",
+      "reason": "화면 찾기에서 공개 복구 링크를 열고 기존 화면과 키보드 이동을 검토했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3384,7 +3384,7 @@
           2
         ]
       ],
-      "sourceHash": "5756cbf3bf26b828baa49c22df63faaee5c82e170ca1f5eb32dcc6d73367e84c",
+      "sourceHash": "1797ef5fb5e060a4ee6d8c0fa30d2d5ffd4e209ec0a22483d9f5df9852f34c26",
       "customContainers": []
     },
     {
