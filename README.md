@@ -2,7 +2,7 @@
 
 VIV는 투자 전략을 구성하고 모의 예산으로 검토하는 앱입니다. Codex나 Claude Code를 연결하면 대화에서 모의계좌를 만들고, 판단과 조사 결과를 앱에서 열어볼 수 있습니다. 설치하고 보관한 BTC 시세로 첫 백테스트를 실행하기까지 금융기관·JEV API 키가 필요 없습니다.
 
-[PC 앱을 먼저 열기](#pc-앱을-먼저-열기) · [서버 다시 시작](docs/agents/operations/self-host.md#서버-다시-시작) · [연결 복구](docs/agents/operations/self-host.md#연결-복구) · [첫 모의 실습](docs/agents/operations/viv-mcp-playbook.md#첫-모의-실습) · [계좌 연결과 잔고 확인](docs/agents/operations/self-host.md#계좌-연결과-잔고-확인)
+[PC 앱을 먼저 열기](#pc-앱을-먼저-열기) · [앱이 열리지 않을 때](docs/agents/operations/self-host.md#앱-열기와-조회-복구) · [연결 복구](docs/agents/operations/self-host.md#연결-복구) · [첫 모의 실습](docs/agents/operations/viv-mcp-playbook.md#첫-모의-실습) · [계좌 연결과 잔고 확인](docs/agents/operations/self-host.md#계좌-연결과-잔고-확인)
 
 ## Windows에서 Git으로 설치
 
@@ -38,7 +38,7 @@ git clone https://github.com/HwigwanJi/viv.git viv; if ($LASTEXITCODE -eq 0) { p
 
 설치 결과를 닫았다면 PC 앱의 **설정 → 서비스 연결**에서 **AI 연결·복구 (MCP)** 또는 **휴대폰 연결·설치**를 열어 이어가세요. [터미널에서 연결 복구](docs/agents/operations/self-host.md#연결-복구)
 
-컴퓨터 재부팅 후 기존 앱 주소가 열리지 않으면 설치했던 VIV 폴더에서 [서버 다시 시작](docs/agents/operations/self-host.md#서버-다시-시작) 명령을 실행하세요. 같은 주소에서 저장한 기록을 이어 볼 수 있습니다. 폴더나 컴퓨터를 옮기는 경우에는 [기존 기록 복원](docs/agents/operations/self-host.md#기존-기록-복원)을 따르세요.
+앱이 시작되지 않거나 저장 기록을 읽지 못하면 [화면별 복구 안내](docs/agents/operations/self-host.md#앱-열기와-조회-복구)를 확인하세요. 폴더나 컴퓨터를 옮기는 경우에는 [기존 기록 복원](docs/agents/operations/self-host.md#기존-기록-복원)을 따르세요.
 
 `mcpStatus`가 `registered`면 Codex 또는 Claude Code에서 설치 결과의 `onboardingPrompt`를 입력하세요. 현재 대화에 도구가 보이지 않으면 새 대화에서 입력하세요.
 
