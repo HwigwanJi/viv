@@ -28,7 +28,7 @@
             <h2 data-install-connection-title>휴대폰 연결</h2>
             <p data-install-connection role="status" aria-live="polite"></p>
             <p data-install-handoff-help hidden>VIV 서버를 켜 두고 휴대폰을 같은 Tailscale 네트워크에 연결한 뒤 이 주소를 여세요.</p>
-            <div data-install-address hidden><label class="field">휴대폰 설치 주소<input type="url" readonly></label></div>
+            <div data-install-address hidden><label class="field">휴대폰 설치 주소<input type="url" aria-describedby="viv-install-address-check" readonly></label><p class="tiny muted" id="viv-install-address-check" hidden></p></div>
             <details class="spaced" data-install-retry-command hidden>
               <summary>이 PC에서 다시 실행할 명령</summary>
               <p>VIV 설치 폴더에서 실행하세요.</p>

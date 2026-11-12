@@ -49,8 +49,11 @@ test('desktop handoff exposes an HTTPS address only after matching its installat
     return new Response(null,{headers:{'X-VIV-Setup':identity}});
   };
   assert.deepEqual(await verifyMobileInstallAddress(origin,identity,verify),{status:'ready',url:origin+'/install.html'});
+  for(const headers of [{'X-VIV-Setup':'another-setup'},{}]){
+    const upstream=async()=>new Response(null,{headers});
+    assert.deepEqual(await verifyMobileInstallAddress(origin,identity,upstream),{status:'installation-mismatch'});
+  }
   for(const upstream of [
-    async()=>new Response(null,{headers:{'X-VIV-Setup':'another-setup'}}),
     async()=>new Response(null,{status:404,headers:{'X-VIV-Setup':identity}}),
     async()=>{throw Error('network');},
   ])assert.deepEqual(await verifyMobileInstallAddress(origin,identity,upstream),{status:'unreachable'});

@@ -86,8 +86,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T14:31:59.054Z",
-      "reason": "휴대폰 너비에서 연결 실패 때만 복구 문서 링크를 찾고 원래 설치 화면으로 돌아오는 동선을 확인",
+      "reviewedAt": "2026-11-12T23:30:12.074Z",
+      "reason": "휴대폰 설치 주소의 마지막 확인 시각과 재확인 상태를 표시하고 현재 확인된 주소에서만 복사한다.",
       "signature": "5fe6affb0976b5c09e8466e0a569889c2ab6d7dc7607474806e39a3bfbc08dc5",
       "controls": [
         [
@@ -135,7 +135,7 @@
           2
         ]
       ],
-      "sourceHash": "428b58e568ba2e3dad3c056791d0488505bb710b06d01eeb5369461497681957"
+      "sourceHash": "dcfcb4e991f502d8b83acbda3b44cbbe64988851ec0cd625221cfa1755b9c7b1"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -1391,8 +1391,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T08:09:10.552Z",
-      "reason": "iOS WebKit 설치 주소 복사와 권한 실패 복구, 기존 Android와 PC 설치 검토",
+      "reviewedAt": "2026-11-12T23:30:12.153Z",
+      "reason": "휴대폰 설치 주소의 마지막 확인 시각과 재확인 상태를 표시하고 현재 확인된 주소에서만 복사한다.",
       "signature": "7bca0d370340677205acc6ef7fc1bb7985de8dfd9184e69a151934d6855fcf7a",
       "controls": [
         [
@@ -1420,7 +1420,7 @@
           1
         ]
       ],
-      "sourceHash": "6670f629685daa21d953cada79d847cb0a3648b014de4eeaa6b5c008c6a77420"
+      "sourceHash": "2295a0bb9fb868b958686c074565ed359b88e24a4e5383471eadba4247bf824b"
     },
     {
       "file": "dist/ui/interface-motion.mjs",

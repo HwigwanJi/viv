@@ -36,9 +36,11 @@ async function installConnection(){
     });
     const route=privateMobileRouteStatus(JSON.parse(stdout),origin,'http://127.0.0.1:'+previewPort);
     if(route==='public')return {status:'public-route'};
-    if(route!=='ready')return {status:'unreachable'};
-    return await verifyMobileInstallAddress(origin,selfHostId);
-  }catch(error){return {status:error.code==='ENOENT'?'needs-setup':'unreachable'};}
+    if(route==='conflict')return {status:'installation-mismatch'};
+    if(route!=='ready')return {status:'needs-setup'};
+    const result=await verifyMobileInstallAddress(origin,selfHostId);
+    return result.status==='unreachable'?{status:'temporarily-unreachable'}:result;
+  }catch(error){return {status:error.code==='ENOENT'?'needs-setup':'temporarily-unreachable'};}
 }
 let mobileOrigin=null;
 if(!selfHostId){

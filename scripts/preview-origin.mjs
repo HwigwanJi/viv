@@ -21,7 +21,8 @@ export async function verifyMobileInstallAddress(origin,setupId,fetchImpl=fetch)
     if(!verifiedOrigin||!setupId)return {status:'unreachable'};
     const url=verifiedOrigin+'/install.html';
     const response=await fetchImpl(url,{method:'HEAD',redirect:'error',signal:AbortSignal.timeout(4000)});
-    if(response.ok&&response.headers.get('X-VIV-Setup')===setupId)return {status:'ready',url};
+    if(response.ok)return response.headers.get('X-VIV-Setup')===setupId
+      ?{status:'ready',url}:{status:'installation-mismatch'};
   }catch{}
   return {status:'unreachable'};
 }
