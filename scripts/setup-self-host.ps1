@@ -8,6 +8,7 @@ param(
     [switch]$StartOnly,
     [switch]$MobileOnly,
     [switch]$Resume,
+    [switch]$InstallRuntime,
     [ValidateRange(1024, 65535)][int]$Port = 4317
 )
 
@@ -23,6 +24,19 @@ $configCreated = $false
 $mobileError = $null
 $mcpError = $null
 $mcpRegistration = $null
+
+function Assert-RestoredConfig {
+    if ((Test-Path -LiteralPath $database -PathType Leaf) -and !(Test-Path -LiteralPath '.env' -PathType Leaf)) {
+        throw "이 VIV 데이터베이스를 열려면 원래 .env 파일이 필요합니다. 이 DB와 함께 사용하던 .env를 '$project'에 복원하세요. 새 폴더에서는 설치 명령을, 기존 설치에서는 다시 시작 명령을 실행하세요. 복원 안내는 docs/agents/operations/self-host.md에서 확인하세요."
+    }
+}
+
+function Test-VivNode {
+    $node = Get-Command node.exe -ErrorAction SilentlyContinue
+    if (!$node -or !(Get-Command npm.cmd -ErrorAction SilentlyContinue)) { return $false }
+    & $node.Source --disable-warning=ExperimentalWarning -e "require('node:sqlite');if(Number(process.versions.node.split('.')[0])<24)process.exit(1)" 2>$null
+    return $LASTEXITCODE -eq 0
+}
 
 function Test-App([string]$BaseUrl) {
     $identity = Invoke-WebRequest "$BaseUrl/" -UseBasicParsing -TimeoutSec 5 -MaximumRedirection 0
@@ -67,6 +81,7 @@ try {
     $idFile = Join-Path $runtime 'self-host-id'
     $database = Join-Path $runtime 'self-host.sqlite'
     $portFile = Join-Path $runtime 'self-host-port'
+    Assert-RestoredConfig
     if ($Resume) {
         if (!(Test-Path -LiteralPath $portFile) -or !(Test-Path -LiteralPath $idFile) -or !(Test-Path -LiteralPath $database)) {
             throw 'Run the installer once from the original VIV folder with its original port before using -Resume. See the server restart guide in README.md.'
@@ -88,6 +103,16 @@ try {
     }
     if ($Port -eq 4905) { throw 'Port 4905 is reserved for the managed trading host.' }
     $localUrl = "http://127.0.0.1:$Port"
+    if ($InstallRuntime -and !(Test-VivNode)) {
+        $winget = Get-Command winget.exe -ErrorAction SilentlyContinue
+        if (!$winget) { throw 'Node.js 24 이상과 npm이 필요합니다. 설치한 뒤 이 명령을 다시 실행하세요.' }
+        Write-Host 'VIV 서버에 필요한 Node.js LTS를 설치합니다.'
+        & $winget.Source install --id OpenJS.NodeJS.LTS --exact --source winget | Out-Host
+        if ($LASTEXITCODE -ne 0) { throw 'Node.js 설치가 완료되지 않았습니다. 설치 오류를 해결한 뒤 다시 실행하세요.' }
+        $standardNode = Join-Path $env:ProgramFiles 'nodejs'
+        if (Test-Path -LiteralPath (Join-Path $standardNode 'node.exe')) { $env:Path = "$standardNode;$env:Path" }
+        if (!(Test-VivNode)) { throw '새 PowerShell에서 VIV 설치 명령을 다시 실행하세요.' }
+    }
     $node = (Get-Command node.exe).Source
     & $node --disable-warning=ExperimentalWarning -e "require('node:sqlite'); if (Number(process.versions.node.split('.')[0]) < 24) process.exit(1)"
     if ($LASTEXITCODE -ne 0) { throw 'Install Node.js 24 LTS with npm and retry.' }
@@ -129,9 +154,7 @@ try {
     }
 
     if (!(Test-Path -LiteralPath '.env')) {
-        if (Test-Path -LiteralPath $database) {
-            throw 'Restore the original .env for this checkout before restarting.'
-        }
+        Assert-RestoredConfig
         & $node -e "const {writeFileSync}=require('node:fs'); const {randomBytes}=require('node:crypto'); writeFileSync('.env', 'BROKER_VAULT_KEY='+randomBytes(32).toString('hex')+'\n', {flag:'wx',mode:0o600})"
         if ($LASTEXITCODE -ne 0) { throw 'Could not create the local credential vault configuration.' }
     }

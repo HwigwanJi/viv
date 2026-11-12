@@ -59,6 +59,10 @@ if [[ -n "$port" ]] && { [[ ! "$port" =~ ^[1-9][0-9]{3,4}$ ]] || (( port < 1024 
   printf '%s\n' 'Choose a port from 1024 to 65535, excluding 4905.' >&2
   exit 2
 fi
+if [[ -f .runtime/self-host.sqlite && ! -f .env ]]; then
+  printf '%s\n' "이 VIV 데이터베이스를 열려면 원래 .env 파일이 필요합니다. 이 DB와 함께 사용하던 .env를 '$PWD'에 복원하세요. 새 폴더에서는 설치 명령을, 기존 설치에서는 다시 시작 명령을 실행하세요. 복원 안내는 docs/agents/operations/self-host.md에서 확인하세요." >&2
+  exit 1
+fi
 if [[ "$recovery" == resume && ( ! -f .runtime/self-host-port || ! -f .runtime/self-host-id || ! -f .runtime/self-host.sqlite ) ]]; then
   printf '%s\n' 'Run the installer once from the original VIV folder with its original port before using --resume. See the server restart guide in README.md.' >&2
   exit 1

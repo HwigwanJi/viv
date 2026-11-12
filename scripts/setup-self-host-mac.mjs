@@ -1,6 +1,6 @@
 import {spawn, spawnSync} from 'node:child_process';
 import {randomBytes} from 'node:crypto';
-import {closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync, writeFileSync} from 'node:fs';
+import {closeSync, existsSync, mkdirSync, openSync, readFileSync, statSync, unlinkSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {validateMobileOrigin,privateMobileRouteStatus} from './preview-origin.mjs';
@@ -19,6 +19,12 @@ if (!['pc', 'mobile'].includes(target) || !['codex', 'claude', 'manual'].include
 if(['.runtime/server-host-config.json','.runtime/server-host-state.json','.runtime/investment.sqlite'].some(existsSync)){
   throw new Error('Use a separate checkout for self-host setup. An existing server was detected.');
 }
+function assertRestoredConfig() {
+  if (statSync(database,{throwIfNoEntry:false})?.isFile() && !statSync('.env',{throwIfNoEntry:false})?.isFile()) {
+    throw new Error(`이 VIV 데이터베이스를 열려면 원래 .env 파일이 필요합니다. 이 DB와 함께 사용하던 .env를 '${process.cwd()}'에 복원하세요. 새 폴더에서는 설치 명령을, 기존 설치에서는 다시 시작 명령을 실행하세요. 복원 안내는 docs/agents/operations/self-host.md에서 확인하세요.`);
+  }
+}
+assertRestoredConfig();
 const savedPort = existsSync(portFile) ? readFileSync(portFile, 'utf8').trim() : null;
 if (resume && (savedPort === null || !existsSync('.runtime/self-host-id') || !existsSync(database))) {
   throw new Error('Run the installer once from the original VIV folder with its original port before using --resume.');
@@ -175,7 +181,6 @@ if (mobileOnly && (!existsSync('.runtime/self-host-id') || !existsSync(database)
 mkdirSync('.runtime', {recursive: true, mode: 0o700});
 const setupId = initializeFile('.runtime/self-host-id', randomBytes(16).toString('hex'));
 if (!/^[a-f0-9]{32}$/.test(setupId)) throw new Error('Invalid VIV installation ID.');
-if (existsSync(database) && !existsSync('.env')) throw new Error('Restore the original .env before starting this VIV database.');
 let serverPid = null;
 const fixed=savedPort!==null||existsSync(database)||mobileOnly||resume;
 const selection=await selectSelfHostPort(Number(port),setupId,!fixed&&!requestedPort);
@@ -195,6 +200,7 @@ if(selection.state!=='existing'){
       if (command('npm', args, {show: true}).status !== 0) throw new Error('VIV dependency installation or build failed.');
     }
   }
+  assertRestoredConfig();
   initializeFile('.env', 'BROKER_VAULT_KEY=' + randomBytes(32).toString('hex') + '\n');
   const log = openSync('.runtime/self-host.log', 'a', 0o600);
   const server = spawn(process.execPath, ['--env-file-if-exists=.env', 'scripts/preview.mjs', '--no-runners'], {

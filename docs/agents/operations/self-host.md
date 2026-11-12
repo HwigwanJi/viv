@@ -117,6 +117,12 @@ bash scripts/install-viv-mac.sh --target pc --client manual --port 4317
 
 VIV의 MCP 등록만 제거하려면 Codex에서 `codex mcp remove viv`, Claude Code에서 `claude mcp remove viv --scope user`를 실행하세요.
 
+## 기존 기록 복원
+
+새 폴더로 기존 VIV 기록을 옮길 때는 원래 서버를 종료하고, 그 설치 또는 같은 백업에서 `.runtime/self-host.sqlite`와 숨김 파일 `.env`를 함께 가져오세요. 새 VIV 폴더의 `.runtime` 안에 DB를, VIV 폴더 바로 아래에 `.env`를 둡니다. 원래 `.env`의 키로 저장된 계좌 연결을 읽습니다. 이 파일은 로컬에서만 옮기고 채팅이나 Git에 올리지 마세요.
+
+설치가 원래 `.env`를 요청하면 터미널에 표시된 VIV 폴더에 그 파일을 복원하고 같은 명령을 다시 실행하세요. 새 폴더라면 [Windows 설치](#windows-서버와-휴대폰) 또는 [Mac 설치](#mac-서버와-휴대폰)로 시작합니다. 기존 설치 폴더라면 [서버 다시 시작](#서버-다시-시작)을 사용하세요. 설치가 표시한 **VIV PC** 주소에서 **모의 → 마인드 → 전체 기록**을 열어 이전 기록을 확인합니다.
+
 ## 자기 API 키와 계좌
 
 | 필요한 기능 | 설치 후 설정 |

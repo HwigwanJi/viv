@@ -38,6 +38,18 @@ jobs:
           test ! -e .runtime
           mac_path=/usr/bin:/bin:/usr/sbin:/sbin
           port=4389
+          mkdir .runtime
+          printf 'restored fixture\n' > .runtime/self-host.sqlite
+          if blocked=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --target pc --client manual --port "$port" 2>&1); then
+            echo "Installation unexpectedly started with a missing original .env" >&2
+            exit 1
+          fi
+          grep -F '원래 .env 파일이 필요합니다' <<< "$blocked"
+          test "$(cat .runtime/self-host.sqlite)" = 'restored fixture'
+          test "$(ls -A .runtime)" = 'self-host.sqlite'
+          test ! -e .env && test ! -e node_modules
+          rm .runtime/self-host.sqlite
+          rmdir .runtime
           receipt=$(env PATH="$mac_path" /bin/bash scripts/install-viv-mac.sh --target pc --client manual --port "$port")
           node -e 'const r=JSON.parse(process.argv[1]); if(!r.serverPid || r.mcpStatus!=="endpoint-ready" || r.liveRunner!=="disabled") throw Error(JSON.stringify(r))' "$receipt"
           pid=$(node -p 'JSON.parse(process.argv[1]).serverPid' "$receipt")
