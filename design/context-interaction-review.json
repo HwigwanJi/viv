@@ -81,9 +81,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12",
-      "reason": "Native links, readonly address and disclosure support AI registration recovery, mobile setup and return to VIV.",
-      "signature": "2c07c9a6845043a65f4188d53b89d3ed9f1bd67d03e54575c985e4f2c5758e3e",
+      "reviewedAt": "2026-11-12T05:41:55.603Z",
+      "reason": "설치 확인, MCP 주소 복사와 확인 실패 및 키보드 재시도 시 초점 이동을 대조했습니다.",
+      "signature": "c4e4b9af830366066588a0153c7f80ac50c848b2ea062d54643990f0b760d768",
       "controls": [
         [
           "data-install-copy-command",
@@ -111,7 +111,7 @@
         ],
         [
           "element:button",
-          7
+          8
         ],
         [
           "element:dialog",
@@ -126,7 +126,7 @@
           2
         ]
       ],
-      "sourceHash": "dc8960d150d4b54ebb84801d0a9e04baf1775ccac29e6f3e67879fb864e70722"
+      "sourceHash": "bc5a8b04685d5e77eaa8d8d8f83cdea9173e77c1d23cc03ac317ebc4fa506d8a"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -362,8 +362,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12",
-      "reason": "Shared local MCP address validation retains the installed port and leaves mobile and hosted addresses out of desktop setup.",
+      "reviewedAt": "2026-11-12T05:41:55.604Z",
+      "reason": "설치 확인, MCP 주소 복사와 확인 실패 및 키보드 재시도 시 초점 이동을 대조했습니다.",
       "signature": "855a8476991a7abdd75d32f972c945ac64b1f17bb09135167fc4a52e8509389e",
       "controls": [
         [
@@ -375,7 +375,7 @@
           2
         ]
       ],
-      "sourceHash": "9dd3f83a6b744e3f8f6258305be91a1a6a1af876db4121b4cdc4d383d5a06ec1"
+      "sourceHash": "85f83518b3564e8ae781095b38559a27dbbb9e408099bb647abfac2f07598009"
     },
     {
       "file": "dist/ui/app-notifications.mjs",
@@ -1360,8 +1360,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12",
-      "reason": "Loopback desktop AI view provides the local address and supported client commands. Standalone users can stay on the mobile recovery screen.",
+      "reviewedAt": "2026-11-12T05:41:55.604Z",
+      "reason": "설치 확인, MCP 주소 복사와 확인 실패 및 키보드 재시도 시 초점 이동을 대조했습니다.",
       "signature": "7bca0d370340677205acc6ef7fc1bb7985de8dfd9184e69a151934d6855fcf7a",
       "controls": [
         [
@@ -1389,7 +1389,7 @@
           1
         ]
       ],
-      "sourceHash": "ac19a1eaa88525015a3f054b13c50492c5d2471fbd0f17895f1624a48e183b5f"
+      "sourceHash": "ace08fe4f688e1f23c7884e7b7ee9b61dd4b2e07be9b980860e8ae9505e14201"
     },
     {
       "file": "dist/ui/interface-motion.mjs",

@@ -79,13 +79,11 @@ if(aiView){
   const mode=params.get('executionMode')==='live'?'live':'paper';
   back.href='/#settings?view=connections&executionMode='+mode;
   back.textContent='서비스 연결로 돌아가기';
-  const url=desktop&&localMcpAddress(location);
-  if(url){
+  if(desktop&&localMcpAddress(location)){
     ai.querySelector('[data-install-mcp-pc]').hidden=true;
     const address=ai.querySelector('[data-install-mcp-address]'),field=address.querySelector('input');
-    address.hidden=false;field.value=url;
-    const port=new URL(url).port;
-    const system=navigator.platform;
+    const check=ai.querySelector('[data-install-mcp-check]'),again=ai.querySelector('[data-install-mcp-recheck]');
+    const port=location.port,system=navigator.platform;
     const command=system.startsWith('Win')
       ? client=>'powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\install-viv-mcp.ps1 -Port '+port+' -Client '+client
       : system.startsWith('Mac')?client=>'bash scripts/install-viv-mac.sh --target pc --port '+port+' --client '+client.toLowerCase():null;
@@ -97,10 +95,31 @@ if(aiView){
       ai.querySelector('[data-install-copy-mcp="claude"]').addEventListener('click',()=>copyCommand(claude,'Claude Code 명령'));
       ai.querySelector('[data-install-mcp-commands]').hidden=false;
     }
+    async function checkMcpAddress(){
+      const restoreFocus=document.activeElement===again;
+      address.hidden=true;field.value='';again.disabled=true;check.hidden=false;
+      check.textContent='이 VIV 설치의 MCP 주소를 확인하는 중입니다.';
+      try{
+        const response=await fetch('/',{method:'HEAD',cache:'no-store',redirect:'error',signal:AbortSignal.timeout(4000)});
+        const verified=response.ok&&localMcpAddress(location,response.headers.get('X-VIV-Setup'));
+        if(!verified)throw Error('VIV_INSTALLATION_ID');
+        field.value=verified;address.hidden=false;again.hidden=true;
+        check.textContent='이 설치에 연결되는 MCP 주소입니다.';
+      }catch{
+        check.textContent='이 설치를 확인할 수 없습니다. 원래 VIV 폴더에서 서버를 다시 시작한 뒤 주소를 다시 확인하세요.';
+        again.hidden=false;
+      }finally{
+        again.disabled=false;
+        if(restoreFocus&&[again,document.body].includes(document.activeElement))(field.value?field:again).focus();
+      }
+    }
+    again.addEventListener('click',checkMcpAddress);
     ai.querySelector('[data-install-copy-mcp="address"]').addEventListener('click',async()=>{
-      try{await navigator.clipboard.writeText(url);status.textContent='MCP 주소를 복사했습니다.';}
+      if(!field.value)return;
+      try{await navigator.clipboard.writeText(field.value);status.textContent='MCP 주소를 복사했습니다.';}
       catch{field.focus();field.select();status.textContent='선택한 MCP 주소를 복사하세요.';}
     });
+    checkMcpAddress();
   }
 }else{
   if(alreadyInstalled)document.querySelector('[data-install-steps]').hidden=true;

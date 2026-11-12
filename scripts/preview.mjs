@@ -82,7 +82,12 @@ const server = http.createServer(async (req,res)=>{
       requestOrigin=previewRequestOrigin(req,previewPort,origin);
     }catch{res.writeHead(403);res.end('Unrecognized app host');return;}
     if(selfHostId)res.setHeader('X-VIV-Setup',selfHostId);
-    const pathname=new URL(req.url,requestOrigin).pathname;
+    const requestUrl=new URL(req.url,requestOrigin),pathname=requestUrl.pathname;
+    if(pathname==='/mcp'&&requestUrl.searchParams.has('installation')&&(!selfHostId||requestUrl.searchParams.get('installation')!==selfHostId)){
+      res.writeHead(409,{'Content-Type':'application/json','Cache-Control':'no-store'});
+      res.end(JSON.stringify({error:{code:'VIV_INSTALLATION_MISMATCH',message:'이 MCP 주소는 다른 VIV 설치에 연결되어 있습니다. 원래 설치 폴더에서 서버를 다시 시작하세요.'}}));
+      return;
+    }
     if(pathname==='/api/install/mobile'&&req.method==='GET'){
       if(!requestOrigin.startsWith('http://')||req.headers['sec-fetch-site']==='cross-site'){res.writeHead(403);res.end();return;}
       const connection=await installConnection();

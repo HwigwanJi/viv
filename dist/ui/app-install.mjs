@@ -12,10 +12,13 @@ export function installPlatform(navigator){
   return /Android/.test(navigator.userAgent)?'android':'desktop';
 }
 
-export function localMcpAddress(location){
+export function localMcpAddress(location,setupId){
   if(location?.protocol!=='http:'||!['127.0.0.1','localhost'].includes(location.hostname))return null;
   const port=Number(location.port);
-  return Number.isInteger(port)&&port>=1024&&port<=65535&&port!==4905?'http://127.0.0.1:'+port+'/mcp':null;
+  if(!Number.isInteger(port)||port<1024||port>65535||port===4905)return null;
+  const address='http://127.0.0.1:'+port+'/mcp';
+  if(setupId===undefined)return address;
+  return /^[a-f0-9]{32}$/.test(setupId)?address+'?installation='+setupId:null;
 }
 
 export function manualInstallGuide(navigator){

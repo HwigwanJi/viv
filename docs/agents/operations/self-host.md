@@ -47,7 +47,7 @@ Windows와 Mac 모두 터미널에 앱·MCP·모바일 상태를 표시합니다
 
 ## 연결 복구
 
-이미 설치한 **VIV 폴더**에서 실행하세요. 서버가 저장한 포트를 사용합니다. 포트를 저장하기 전 버전으로 설치했다면 PC의 기존 VIV 주소에서 포트를 확인한 뒤 [서버 다시 시작](#서버-다시-시작)의 기존 설치 안내를 먼저 따르세요.
+이미 설치한 **VIV 폴더**에서 실행하세요. 서버가 저장한 포트를 사용합니다. 새 설치에서 기본 포트가 사용 중이면 설치 결과의 새 주소를 여세요. 기존 주소나 직접 지정한 포트가 다른 프로그램과 충돌하면 설치기가 포트와 복구 방법을 표시합니다. 포트를 저장하기 전 버전으로 설치했다면 PC의 기존 VIV 주소에서 포트를 확인한 뒤 [서버 다시 시작](#서버-다시-시작)의 기존 설치 안내를 먼저 따르세요.
 
 ### 모바일만 복구하기
 
@@ -83,7 +83,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-hos
 bash scripts/install-viv-mac.sh --target pc --client codex
 ```
 
-Claude Code는 Windows에서 `-Client Claude`, Mac에서 `--client claude`를 사용하세요. `registered`가 나오면 AI의 새 대화에 **VIV 시작하기**를 입력하세요. 수동 연결은 기존 PC 주소 끝에 `/mcp`를 붙여 클라이언트에 등록합니다. [MCP와 첫 대화](viv-mcp-playbook.md#연결)
+Claude Code는 Windows에서 `-Client Claude`, Mac에서 `--client claude`를 사용하세요. `registered`가 나오면 AI의 새 대화에 **VIV 시작하기**를 입력하세요. 수동 연결은 앱에서 복사한 `mcpUrl` 전체를 클라이언트에 등록하세요. 주소의 `installation` 값은 해당 VIV 설치를 확인합니다. `viv`가 다른 주소를 사용하면 새 연결은 `viv-포트번호`로 추가되며 그 이름도 사용 중이면 설치별 접미사를 붙입니다. 새 대화에서는 결과의 `mcpName` 또는 `onboardingPrompt`로 연결할 설치를 지정하세요. 예전에 등록한 `/mcp` 주소는 계속 동작하며 포트가 가리키는 서버에 연결됩니다. [MCP와 첫 대화](viv-mcp-playbook.md#연결)
 
 ## 서버 다시 시작
 

@@ -1,4 +1,4 @@
-# Run from a fresh Windows checkout. See docs/agents/operations/self-host.md.
+﻿# Run from a fresh Windows checkout. See docs/agents/operations/self-host.md.
 #Requires -Version 5.1
 [CmdletBinding()]
 param(
@@ -104,11 +104,21 @@ try {
     }
     $setupId = (Get-Content -LiteralPath $idFile -Raw).Trim()
     if ($setupId -cnotmatch '^[a-f0-9]{32}$') { throw 'The local VIV installation ID is invalid.' }
-    $status = $null
-    $listener = New-Object System.Net.Sockets.TcpListener([Net.IPAddress]::Loopback, $Port)
-    try { $listener.Start() } catch {
-        $status = Test-App $localUrl
-    } finally { $listener.Stop() }
+    $fallback = if (!$PSBoundParameters.ContainsKey('Port') -and !(Test-Path -LiteralPath $portFile) -and !(Test-Path -LiteralPath $database) -and !$StartOnly) { 'fallback' } else { 'fixed' }
+    $selection = & $node (Join-Path $PSScriptRoot 'self-host-binding.mjs') $Port $setupId $fallback | ConvertFrom-Json
+    if ($LASTEXITCODE -ne 0 -or !$selection) { throw 'Could not verify the local VIV port.' }
+    if ($selection.state -eq 'occupied') {
+        $who = if ($selection.otherViv) { '다른 VIV 설치' } else { '다른 프로그램' }
+        if ((Test-Path -LiteralPath $portFile) -or (Test-Path -LiteralPath $database) -or $StartOnly) {
+            throw "원래 VIV 주소의 $Port 포트는 현재 ${who}에서 사용 중입니다. 해당 프로그램을 확인한 뒤 이 폴더에서 -Resume을 다시 실행하세요."
+        }
+        $alternative = if ($selection.alternative) { " 새 설치에는 -Port $($selection.alternative) 옵션을 사용할 수 있습니다." } else { ' 새 설치에 쓸 다른 포트를 지정하세요.' }
+        throw "$Port 포트는 현재 ${who}에서 사용 중입니다.$alternative"
+    }
+    $Port = [int]$selection.port
+    $localUrl = "http://127.0.0.1:$Port"
+    if ($selection.previousPort) { Write-Host "기본 포트 $($selection.previousPort)를 사용 중이어서 새 VIV를 $Port 포트에 설치합니다." }
+    $status = if ($selection.state -eq 'existing') { Test-App $localUrl } else { $null }
 
     if (!$StartOnly -and !$status) {
         $npm = (Get-Command npm.cmd).Source
@@ -235,7 +245,8 @@ try {
         mobileError = $mobileError
         mobileRetryCommand = if ($mobileError) { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-host.ps1 -MobileOnly -Port $Port" } else { $null }
         existingMobileConfig = Test-Path -LiteralPath $mobileConfig
-        mcpUrl = "$localUrl/mcp"
+        mcpUrl = "$localUrl/mcp?installation=$setupId"
+        mcpName = $mcpRegistration.name
         mcpStatus = if ($MobileOnly) { 'not-requested' } elseif ($mcpRegistration) { $mcpRegistration.status } else { 'needs-action' }
         mcpError = $mcpError
         mcpRetryCommand = if ($mcpError) { "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv-mcp.ps1 -Client $Client -Port $Port" } else { $null }

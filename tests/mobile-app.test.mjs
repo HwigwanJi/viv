@@ -7,6 +7,10 @@ import {createAppInstall,chromeInstallLink,installPlatform,localMcpAddress,manua
 
 test('MCP setup preserves the installation port and stays on the server computer',()=>{
   assert.equal(localMcpAddress(new URL('http://localhost:4430/#settings')), 'http://127.0.0.1:4430/mcp');
+  const setupId='a'.repeat(32);
+  assert.equal(localMcpAddress(new URL('http://localhost:4430/'),setupId),'http://127.0.0.1:4430/mcp?installation='+setupId);
+  assert.equal(localMcpAddress(new URL('http://localhost:4430/'),null),null);
+  assert.equal(localMcpAddress(new URL('http://localhost:4430/'),'bad-id'),null);
   for(const origin of ['https://localhost:4430','http://localhost','http://localhost:4905','http://localhost.example:4430','https://pc.example.ts.net']){
     assert.equal(localMcpAddress(new URL(origin)),null);
   }

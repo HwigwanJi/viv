@@ -4,6 +4,7 @@ import {closeSync, existsSync, mkdirSync, openSync, readFileSync, unlinkSync, wr
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
 import {validateMobileOrigin,privateMobileRouteStatus} from './preview-origin.mjs';
+import {boundMcpUrl,selectSelfHostPort} from './self-host-binding.mjs';
 
 const [target, client, requestedPort = '', recovery = ''] = process.argv.slice(2);
 const mobileOnly = recovery === 'mobile-only';
@@ -15,19 +16,21 @@ if (!['pc', 'mobile'].includes(target) || !['codex', 'claude', 'manual'].include
     || recovery && !(mobileOnly && target === 'mobile' || resume && target === 'pc' && client === 'manual' && !requestedPort)) {
   throw new Error('Invalid VIV installation options.');
 }
+if(['.runtime/server-host-config.json','.runtime/server-host-state.json','.runtime/investment.sqlite'].some(existsSync)){
+  throw new Error('Use a separate checkout for self-host setup. An existing server was detected.');
+}
 const savedPort = existsSync(portFile) ? readFileSync(portFile, 'utf8').trim() : null;
 if (resume && (savedPort === null || !existsSync('.runtime/self-host-id') || !existsSync(database))) {
   throw new Error('Run the installer once from the original VIV folder with its original port before using --resume.');
 }
-const port = savedPort ?? (requestedPort || '4317');
+let port = savedPort ?? (requestedPort || '4317');
 if (!/^[1-9]\d{3,4}$/.test(port) || Number(port) < 1024 || Number(port) > 65535 || Number(port) === 4905) {
   throw new Error(savedPort === null ? 'Invalid VIV port.' : 'The saved VIV port is invalid. Check .runtime/self-host-port in the original VIV folder.');
 }
 if (savedPort !== null && requestedPort && requestedPort !== port) {
   throw new Error(`This VIV folder already uses port ${port}. Omit --port to use it. Use a separate checkout for another port.`);
 }
-const origin = 'http://127.0.0.1:' + port;
-const mcpUrl = origin + '/mcp';
+let origin,mcpUrl;
 
 function initializeFile(file, value) {
   try {
@@ -69,13 +72,13 @@ async function confirmInstallation(setupId) {
   }
 }
 
-async function verifyMcp() {
+async function verifyMcp(setupId) {
   const rpc = async (method, params) => {
     const res = await request(mcpUrl, {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({jsonrpc: '2.0', id: 1, method, params}),
     });
-    if (!res.ok) throw new Error('VIV MCP is unavailable.');
+    if (!res.ok || res.headers.get('X-VIV-Setup') !== setupId) throw new Error('MCP response does not belong to this VIV installation.');
     return (await res.json()).result;
   };
   if ((await rpc('initialize', {protocolVersion: '2025-11-25'}))?.serverInfo?.name !== 'viv'
@@ -85,31 +88,31 @@ async function verifyMcp() {
 }
 
 function registerMcp() {
-  if (client === 'manual') return 'endpoint-ready';
-  const inspect = () => command(client, client === 'codex' ? ['mcp', 'list', '--json'] : ['mcp', 'get', 'viv'], {timeout: 15000});
-  const readCodex = result => {
-    if (result.status !== 0) throw new Error('Could not read the Codex MCP configuration.');
-    return JSON.parse(result.stdout).find(entry => entry.name === 'viv');
-  };
-  let result = inspect();
-  if (result.error?.code === 'ENOENT') throw new Error(`Install the ${client} CLI and rerun this command.`);
-  const missing = client === 'codex'
-    ? !readCodex(result)
-    : result.status === 1 && (result.stderr + result.stdout).includes('No MCP server named "viv"');
-  if (missing) {
-    const args = client === 'codex' ? ['mcp', 'add', 'viv', '--url', mcpUrl] : ['mcp', 'add', '--transport', 'http', '--scope', 'user', 'viv', mcpUrl];
-    if (command(client, args, {show: true, timeout: 15000}).status !== 0) throw new Error('Could not register VIV MCP.');
-    result = inspect();
+  if (client === 'manual') return {name:'viv',status:'endpoint-ready'};
+  const codex = client === 'codex';
+  function inspect(name) {
+    const result=command(client,codex?['mcp','list','--json']:['mcp','get',name],{timeout:15000});
+    if(result.error?.code==='ENOENT')throw new Error('Install the '+client+' CLI and rerun this command.');
+    if(codex){
+      if(result.status!==0)throw new Error('Could not read the Codex MCP configuration.');
+      const entry=JSON.parse(result.stdout).find(value=>value.name===name);
+      return entry?{url:entry.transport?.url,ready:entry.enabled!==false}:null;
+    }
+    if(result.status===1&&(result.stderr+result.stdout).includes('No MCP server named "'+name+'"'))return null;
+    if(result.status!==0)throw new Error('Could not read the Claude Code MCP configuration.');
+    return {url:result.stdout.match(/^\s*URL:\s*(\S+)\s*$/m)?.[1],ready:/^\s*Status:[^\p{L}\r\n]*Connected\s*$/mu.test(result.stdout)};
   }
-  if (client === 'codex') {
-    const entry = readCodex(result);
-    if (entry?.transport?.url !== mcpUrl || entry.enabled === false) throw new Error('Check the existing viv MCP entry in Codex.');
-  } else {
-    const url = result.stdout?.match(/^\s*URL:\s*(\S+)\s*$/m)?.[1];
-    if (result.status !== 0 || url !== mcpUrl) throw new Error('Check the existing viv MCP entry in Claude Code.');
-    if (!/^\s*Status:[^\p{L}\r\n]*Connected\s*$/mu.test(result.stdout)) throw new Error('Claude Code could not connect to VIV MCP.');
+  let name='viv',entry=inspect(name);
+  if(entry&&entry.url!==mcpUrl){name='viv-'+port;entry=inspect(name);}
+  if(entry&&entry.url!==mcpUrl){name='viv-'+port+'-'+new URL(mcpUrl).searchParams.get('installation').slice(0,8);entry=inspect(name);}
+  if(!entry){
+    const args=codex?['mcp','add',name,'--url',mcpUrl]:['mcp','add','--transport','http','--scope','user',name,mcpUrl];
+    if(command(client,args,{show:true,timeout:15000}).status!==0)throw new Error('Could not register VIV MCP.');
+    entry=inspect(name);
   }
-  return 'registered';
+  if(entry?.url!==mcpUrl)throw new Error(client+'의 '+name+' 이름이 다른 주소에 연결되어 있습니다. 앱의 MCP 주소를 다른 이름으로 등록하세요.');
+  if(!entry.ready)throw new Error('Check the saved '+name+' MCP entry in '+client+'.');
+  return {name,status:'registered'};
 }
 
 async function connectMobile(setupId) {
@@ -174,11 +177,19 @@ const setupId = initializeFile('.runtime/self-host-id', randomBytes(16).toString
 if (!/^[a-f0-9]{32}$/.test(setupId)) throw new Error('Invalid VIV installation ID.');
 if (existsSync(database) && !existsSync('.env')) throw new Error('Restore the original .env before starting this VIV database.');
 let serverPid = null;
-const running = await request(origin + '/').catch(error => {
-  if (error.cause?.code !== 'ECONNREFUSED') throw error;
-  return null;
-});
-if (!running) {
+const fixed=savedPort!==null||existsSync(database)||mobileOnly||resume;
+const selection=await selectSelfHostPort(Number(port),setupId,!fixed&&!requestedPort);
+if(selection.state==='occupied'){
+  const who=selection.otherViv?'다른 VIV 설치':'다른 프로그램';
+  if(fixed)throw new Error('원래 VIV 주소의 '+port+' 포트는 현재 '+who+'에서 사용 중입니다. 해당 프로그램을 확인한 뒤 이 폴더에서 --resume을 다시 실행하세요.');
+  const alternative=selection.alternative?' 새 설치에는 --port '+selection.alternative+' 옵션을 사용할 수 있습니다.':' 새 설치에 쓸 다른 포트를 지정하세요.';
+  throw new Error(port+' 포트는 현재 '+who+'에서 사용 중입니다.'+alternative);
+}
+port=String(selection.port);
+origin='http://127.0.0.1:'+port;
+mcpUrl=boundMcpUrl(port,setupId);
+if(selection.previousPort)console.error('기본 포트 '+selection.previousPort+'를 사용 중이어서 새 VIV를 '+port+' 포트에 설치합니다.');
+if(selection.state!=='existing'){
   if (!mobileOnly && !resume) {
     for (const args of [['ci', '--no-audit', '--no-fund'], ['run', 'build:local']]) {
       if (command('npm', args, {show: true}).status !== 0) throw new Error('VIV dependency installation or build failed.');
@@ -212,11 +223,11 @@ if (!running) {
 } else await confirmInstallation(setupId);
 
 console.error('VIV PC: ' + origin);
-let mcpStatus = mobileOnly ? 'not-requested' : 'needs-action', mcpError = null, mobileInstallUrl = null, mobileError = null;
+let mcpStatus = mobileOnly ? 'not-requested' : 'needs-action', mcpName = null, mcpError = null, mobileInstallUrl = null, mobileError = null;
 if (!mobileOnly) {
   try {
-    await verifyMcp();
-    mcpStatus = registerMcp();
+    await verifyMcp(setupId);
+    ({name:mcpName,status:mcpStatus}=registerMcp());
   } catch (error) { mcpError = error.message; }
 }
 if (target === 'mobile') {
@@ -224,10 +235,10 @@ if (target === 'mobile') {
   catch (error) { mobileError = error.message; }
 }
 console.log(JSON.stringify({
-  serverPid, desktopUrl: origin, desktopInstallUrl: origin + '/install.html', desktopStatus: serverPid ? 'started' : 'reused', mcpUrl, mcpStatus, mcpError,
+  serverPid, desktopUrl: origin, desktopInstallUrl: origin + '/install.html', desktopStatus: serverPid ? 'started' : 'reused', mcpUrl, mcpName, mcpStatus, mcpError,
   restartCommand: 'bash scripts/install-viv-mac.sh --resume',
   mcpRetryCommand: mcpError ? ['bash scripts/install-viv-mac.sh --target pc --client', client, '--port', port].join(' ') : null,
-  onboardingPrompt: mcpStatus === 'registered' ? 'VIV 시작하기' : null,
+  onboardingPrompt: mcpStatus==='registered'?(mcpName==='viv'?'VIV 시작하기':mcpName+' 도구로 VIV 시작하기'):null,
   onboardingTool: mcpStatus === 'registered' ? 'viv_onboarding' : null,
   mobileInstallUrl, mobileError,
   mobileRetryCommand: mobileError ? 'bash scripts/install-viv-mac.sh --mobile-only --port ' + port : null,
