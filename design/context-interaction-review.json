@@ -2716,8 +2716,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T18:05:03.343Z",
-      "reason": "저장 보고서에서 실제 계산 설정과 보관 정책을 구분한다. 모바일에서 실행 근거를 열고 PC에서 내려받은 원본을 대조했다.",
+      "reviewedAt": "2026-11-12T18:08:25.374Z",
+      "reason": "저장 보고서의 계산 근거를 보관 정책과 구분하고, 재검증에서 같은 계산 설정과 원본으로의 복귀를 확인했다.",
       "signature": "dc0d94ae7cf480ce2915278886d8fb2042fa4068faf2828a3702acb34c7bb40a",
       "controls": [
         [
@@ -2789,7 +2789,7 @@
           2
         ]
       ],
-      "sourceHash": "c04534e5882a9c3abb9b470ed6ffafbb13944c6543476d0d961a687fa41efb21",
+      "sourceHash": "b2f874437b9107b1b549add870621cedafd02d4b14f18e39501cb67c07943d47",
       "customContainers": []
     },
     {

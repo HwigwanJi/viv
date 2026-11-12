@@ -357,13 +357,17 @@ export function createSimulationPlayground(hooks={},options={}){
     const basis=frameContract?helpTooltip('계획 결정 시점','시작 시각의 직전 확정봉으로 1회 결정하고, 선택한 '+number(coverage.totalBars,0)+'개 봉의 마감마다 결정해 총 '+number(coverage.totalDecisionFrames,0)+'개 시점을 평가합니다. 종료 시점의 결정은 체결 없이 저장합니다.',{id:'simulation-decision-count-help'}):'';
     const temporal=jevmode&&manifest?helpTooltip('정책 적용 시점',(pinned?'원본 실험에 고정한 정책 ':'현재 발행 정책 ')+esc(policy)+'를 선택한 과거 시세 기간에 적용하는 회고 실험입니다. 자료 준비 대기·실패·중지 시 실제 JEV 호출 수가 줄어듭니다.',{id:'simulation-policy-time-help'}):'';
     const estimatedCalls=preflight?.estimatedJevCalls??capabilities?.estimatedJevCalls;
+    const saved=simulation();
+    const mechanicalBasis=pinned&&saved?.id===d.sourceSimulationId
+      ?'기준 퀀트 전략 · '+simulationExecutionBasis(saved)
+      :'기준 퀀트 전략';
     const content=previewLoading?'실험 범위 확인 중…':preflight?
       row('검증한 가격 봉',finite(coverage.totalBars)?(market.portfolio||market.sessionRule?'일봉 ':'4시간봉 ')+number(coverage.totalBars,0)+'개 · 자료 준비됨':'실행 조건 확인 필요')+
       row('계획 결정 시점',number(coverage.totalDecisionFrames,0)+'개',basis)+
       (!jevmode&&coverage.modelReadiness?row('모델 준비 상태',(coverage.modelReadiness.comparisonEligibility==='PARTIAL_WINDOW'?'부분 평가 가능 · 전체 기간 비교 제외<br>':'')+esc(readinessText(coverage.modelReadiness))+helpTooltip('모델 준비 상태',readinessHelp(coverage.modelReadiness),{id:'simulation-model-readiness-help'})):'')+
       row('예상 최대 AI 호출',paid?(preflight.ok===true&&finite(estimatedCalls)?number(estimatedCalls,0)+'회':'확인 필요'):'0회')+
       (paid?row('호출 횟수 상한','<span data-simulation-budget>'+number(Number(d.maxJevCalls),0)+'회 상한</span>'):'')+
-      row('적용 기준',jevmode?(manifest?(pinned?'원본 실험 정책 ':'현재 발행 정책 '):'')+esc(policy):'기준 퀀트 전략'+(manifest?' · '+(pinned?'원본 정책':capabilities?.policySource==='WORKSPACE_BASELINE'?'기본 정책':'정책')+' v'+esc(manifest.version):''),temporal)+
+      row('적용 기준',jevmode?(manifest?(pinned?'원본 실험 정책 ':'현재 발행 정책 '):'')+esc(policy):esc(mechanicalBasis),temporal)+
       [...list(preflight.reasons),...list(capabilities?.blockedReasons)].filter((r,i,all)=>all.findIndex(v=>v.code===r.code&&v.message===r.message)===i).map(r=>'<p class="tiny error-text">'+esc(r.message||r.code)+'</p>').join(''):
       d.mindId?'실행 조건을 확인하지 못했습니다.':'기간을 정하면 자료 범위와 실행 조건을 확인합니다.';
     let readyAt=null;try{readyAt=simulationReadyStart(preflight,d.mode,simulationUtcTime(d.startAt),simulationUtcTime(d.endAt));}catch{}
@@ -383,7 +387,7 @@ export function createSimulationPlayground(hooks={},options={}){
     const step=setupStep(),stepper='<nav class="lab-stepper" aria-label="백테스트 준비">'+[['strategy','전략 선택'],['period','기간 선택'],['review','실행 검토']].map(([id,label],i)=>'<button type="button" data-simulation-action="setup-step" data-simulation-id="'+id+'" aria-current="'+(step===id?'step':'false')+'"><span>'+(i+1)+'</span>'+label+'</button>').join('')+'</nav>';
     return header(d.sourceSimulationId?'새 재검증':'새 백테스트',button(d.sourceSimulationId?'취소하고 원본으로':'실험 목록','cancel','',commandBusy?'disabled':''))+stepper+
       '<section class="simulation-editor simulation-focused-editor simulation-setup-workspace lab-staged-setup" data-setup-step="'+step+'"><form data-simulation-form="create"><div class="simulation-setup-main studio-sheet">'+
-      (d.sourceSimulationId?'<div class="simulation-repeat-context"><strong>원본 실험 조건 · '+esc(d.originalName)+'</strong>'+helpTooltip('재검증 조건','원본의 정책 버전과 기억·지식 스냅샷을 사용합니다. 기간과 비용을 바꿀 수 있습니다. 새 실험의 AI 호출 동의는 여기서 정합니다.',{id:'simulation-repeat-help'})+button('원래 조건으로 복원','repeat-restore')+'<p>저장하면 별도 실험을 만듭니다. 원본 결과는 이 화면을 닫으면 다시 볼 수 있습니다.</p></div>':'')+
+      (d.sourceSimulationId?'<div class="simulation-repeat-context"><strong>원본 실험 조건 · '+esc(d.originalName)+'</strong>'+helpTooltip('재검증 조건',d.mode==='MECHANICAL'?'원본 기준모델 설정을 사용합니다. 기간과 비용을 바꿀 수 있습니다.':'원본의 정책 버전과 기억·지식 스냅샷을 사용합니다. 기간과 비용을 바꿀 수 있습니다. 새 실험의 AI 호출 동의는 여기서 정합니다.',{id:'simulation-repeat-help'})+button('원래 조건으로 복원','repeat-restore')+'<p>저장하면 별도 실험을 만듭니다. 원본 결과는 이 화면을 닫으면 다시 볼 수 있습니다.</p></div>':'')+
       '<section class="simulation-setup-section" aria-labelledby="simulation-target-heading"'+(step!=='strategy'?' hidden':'')+'><div class="simulation-section-heading"><h2 id="simulation-target-heading">검증 대상</h2><span>'+esc(market.portfolio||market.sessionRule?market.label:'BTCUSDT · Binance · 4시간봉')+'</span></div><div class="simulation-target-fields"><label class="field">마인드<select name="mindId" required'+(d.sourceSimulationId?' disabled':'')+'>'+(d.mindId?'':'<option value="">마인드 선택</option>')+mindOptions+'</select></label>'+modeField+'</div>'+(practice?'<p class="tiny muted spaced">보관한 BTC 시세와 실험용 초기 자금으로 계산합니다. AI 호출은 0회입니다.</p>':'')+'</section>'+
       '<section class="simulation-setup-section simulation-period-section" aria-labelledby="simulation-period-heading"'+(step!=='period'?' hidden':'')+'><div class="simulation-section-heading"><h2 id="simulation-period-heading">테스트 기간</h2></div>'+
       '<input name="startAt" value="'+esc(d.startAt)+'" type="hidden"><input name="endAt" value="'+esc(d.endAt)+'" type="hidden">'+

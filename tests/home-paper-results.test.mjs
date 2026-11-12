@@ -69,7 +69,7 @@ test('saved keyless practice shows its inputs before the only execute button',as
 
 test('repeat opens read-only review and cancellation restores the same report',async()=>{
   const saved={
-    id:'original',status:'COMPLETED',config:{
+    id:'original',status:'COMPLETED',source:{mechanicalBaseline:{parametersSource:'DEFAULT_MODEL_CONFIG'}},config:{
       mindId:'mind-a',name:'원본',mode:'MECHANICAL',startAt:'2026-09-15T00:00:00Z',
       endAt:'2026-10-15T00:00:00Z',initialCash:13579,feeBps:13,slippageBps:2,
     },
@@ -89,7 +89,7 @@ test('repeat opens read-only review and cancellation restores the same report',a
       const url=new URL(path,'https://example.invalid');
       assert.ok(url.pathname.endsWith('/capabilities'));
       assert.equal(url.searchParams.get('sourceSimulationId'),'original');
-      return {canCreate:true,preflight:{ok:true}};
+      return {canCreate:true,currentManifest:{name:'원본 마인드',version:2},preflight:{ok:true}};
     },
   });
   const click=action=>handlers.at(-1)({preventDefault(){},target:{closest:()=>({dataset:{simulationAction:action,simulationId:'original'}})}});
@@ -99,6 +99,8 @@ test('repeat opens read-only review and cancellation restores the same report',a
     await click('repeat');
     assert.equal(params.get('setupStep'),'review');
     assert.match(app.render(),/data-setup-step="review"[^]*13,579[^]*예상 최대 AI 호출[^]*0회[^]*새 실험 저장/);
+    assert.match(app.render(),/적용 기준[^]*기준 퀀트 전략 · 기준모델 기본 설정/);
+    assert.doesNotMatch(app.render(),/원본 정책 v2/);
     await click('cancel');
     assert.equal(params.has('setupStep'),false);
     assert.equal(params.get('simulationId'),'original');
