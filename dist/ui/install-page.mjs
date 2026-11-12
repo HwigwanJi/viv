@@ -28,6 +28,7 @@ async function checkConnection(){
   if(recheck.disabled)return;
   const restoreFocus=document.activeElement===recheck;
   recheck.disabled=true;setup.hidden=true;help.hidden=true;retryCommand.hidden=true;
+  status.textContent='';
   showPreviousAddress();
   connection.textContent='연결을 확인하는 중입니다.';
   let temporaryFailure=true;
