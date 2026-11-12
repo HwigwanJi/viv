@@ -1,7 +1,7 @@
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const COLLECTION_TASKS = [['overview','마인드 목록'],['records','전체 기록'],['simulations','전체 시뮬레이션']];
-const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',simulations:'실험실 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서'};
+const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',simulations:'실험실 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서',connections:'AI 연결 MCP Codex Claude Code'};
 const BROKER_JUMP_KEYWORDS = '계좌 연결 잔고 자금 거래소 업비트 토스증권 API키';
 
 const TASK_GROUPS = Object.freeze({

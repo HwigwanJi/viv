@@ -3331,8 +3331,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T20:36:52.059Z",
-      "reason": "화면 찾기에서 모의 계좌와 실계좌 API 키 등록을 구분하고 실계좌의 읽기 전용 연결 화면으로 이동한다.",
+      "reviewedAt": "2026-11-12",
+      "reason": "Quick navigation keeps the current account view and matches AI client and MCP terms to Service Connections.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3352,7 +3352,7 @@
           2
         ]
       ],
-      "sourceHash": "8fa65adf9a0c1f31ca7365c2356ed74ff587c8942c3a4bb67c772fbb5263e607",
+      "sourceHash": "57cfd0e792aa65de3ff4ba18c5aad6821468a9ab3714c3004e7167b1e2f6b2a0",
       "customContainers": []
     },
     {

@@ -52,6 +52,20 @@ test('API key searches open real account setup while paper accounts keep their o
  assert.equal(parseStudioRoute(paper.href).params.get('executionMode'),'paper');
 });
 
+test('AI client searches take users to Service Connections in either account view',()=>{
+ for(const mode of ['paper','live']){
+  const route=parseStudioRoute('#home?executionMode='+mode);
+  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+  for(const query of ['MCP','Claude Code','Codex','AI 연결']){
+   const matches=entries.filter(item=>studioJumpMatches(item.label+' '+(item.keywords||''),query));
+   assert.equal(matches.length,1);
+   const destination=parseStudioRoute(matches[0].href);
+   assert.equal(destination.params.get('view'),'connections');
+   assert.equal(destination.params.get('executionMode'),mode);
+  }
+ }
+});
+
 const entry=(file,source,extra={})=>({file,owners:['card'],review:'SOURCE_REVIEWED',reviewedAt:'2026-11-04',reason:'카드의 상태별 기존 작업을 공용 메뉴로 연결한다.',...inspectContextSource(source),...extra});
 test('Git checkout line endings leave the context review fingerprint stable',()=>{
  const source='<button>열기</button>\n';
