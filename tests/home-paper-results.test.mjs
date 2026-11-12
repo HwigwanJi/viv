@@ -10,6 +10,31 @@ import {openLocalDatabase} from '../server/local-db.mjs';
 import {WorkspaceRepository} from '../server/repository.mjs';
 import {handleMindStudioAPI} from '../server/mind-studio.mjs';
 import {handleSimulationAPI} from '../server/simulations.mjs';
+import {buildTradingRecords} from '../server/trading-records.mjs';
+
+test('paper records search uses the dates displayed in Korea before paging',()=>{
+  const run={id:'mind-run-a',profileId:'mind-a',instrumentId:'crypto:okx:BTC-USDT',
+    asOf:'2026-11-11T14:59:00.000Z',decisionAt:'2026-11-11T14:59:30.000Z',
+    decisionCompletedAt:'2026-11-11T15:01:00.000Z',decision:{action:'hold'}};
+  const workspace={revision:1,investmentProfiles:[{id:'mind-a',name:'국면 추세'}],
+    mindRuns:[run,{...run,id:'mind-run-b',asOf:'2026-11-11T15:02:00.000Z',
+      decisionAt:null,decisionCompletedAt:null}],
+    mindPositions:[{kind:'PAPER_ACCOUNT',profileId:'mind-a',ledger:[{
+      id:'fill-a',runId:run.id,at:'2026-11-12T15:05:00.000Z',side:'buy',
+    }]}]};
+  const page=(search,kind='decisions',extra={})=>buildTradingRecords(workspace,{search,kind,...extra}).page;
+  assert.deepEqual(page('2026-11-11').items.map(x=>x.id),['mind-run-a']);
+  assert.equal(page('11. 12.').total,2);
+  assert.equal(page('2026. 11. 12.').total,2);
+  const first=page('2026-11-12','decisions',{pageSize:1});
+  assert.equal(first.items[0].id,'mind-run-b');
+  assert.equal(page('2026-11-12','decisions',{pageSize:1,cursor:first.nextCursor}).items[0].id,'mind-run-a');
+  assert.equal(page('2026-11-13','fills').items[0].id,'fill-a');
+  assert.equal(page('2026-11-12','fills').total,0);
+  assert.equal(page('2026-02-30').total,0);
+  assert.equal(page('mind-run-a').items[0].id,'mind-run-a');
+  assert.equal(page('btc-usdt').total,2);
+});
 
 test('saved keyless practice shows its inputs before the only execute button',async()=>{
   let simulation={

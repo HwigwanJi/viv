@@ -3227,8 +3227,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T11:31:08.100Z",
-      "reason": "모바일 카드와 상세에서 이름 변경·입력 검증·저장·새로고침 및 PC 실전 목록 표시를 검증",
+      "reviewedAt": "2026-11-12T11:38:29.898Z",
+      "reason": "모바일 모의 기록의 날짜 검색·결과 상세 및 PC 키보드의 MCP 기록 링크 재열기 검증",
       "signature": "1745e71be5ed9d17ccaba26f637407a1e508c7b613aeec1d73251c150dd1ca99",
       "controls": [
         [
@@ -3332,7 +3332,7 @@
           1
         ]
       ],
-      "sourceHash": "014847f03be9371ffb44a17a33b5c287cb1fe010aaae35e40ddf2cd75bbb0c57",
+      "sourceHash": "61ab516ace1fe5b0e146717d86af87ed672ecdc8d341ce837e03e6fbd9d45976",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
