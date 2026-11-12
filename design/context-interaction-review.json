@@ -673,9 +673,9 @@
         "navigation",
         "readonly"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-04",
-      "reason": "알림·마인드·운용·행·활동·일반 카드의 실행 선택자와 기본 메뉴 보존 그룹을 등록했다.",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T11:57:59.939Z",
+      "reason": "모바일 첫 화면에서 마인드 이름 옆 편집, 객체 메뉴, 키보드, 긴 이름 저장과 재조회 검증",
       "signature": "8880764730d0909ee8a94877ce2813e278a92cc9eed5e1d45b03dc908c95d049",
       "controls": [
         [
@@ -699,7 +699,7 @@
           1
         ]
       ],
-      "sourceHash": "62042d2a6d63b782b73d71b360eaf4465a0fb5ec0f291531513a9902ebf223f0",
+      "sourceHash": "6f12472cadc61dcc89f78db7c91b5f4af961d98f1e608d6212860bdb1fc9eb12",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -820,9 +820,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-09T05:06:38.757Z",
-      "reason": "028: full source reviewed; shared typeahead/IME guard, context name and exact actions, usable viewport bounds and canonical route focus tested; existing execution handlers preserved. 054: open menus reconcile in-place labels, disabled reasons, identity, computed href and copy payload; focus follows the same control through reorder, and removed/retargeted selections close safely. 320/1200px native browser tasks and production notification/activity/ledger bindings verified; execution handlers unchanged.",
-      "signature": "a24c6b2e107399bf41e3c0e8838c2bd43386aa05f0a289d3e288452e907735ab",
+      "reviewedAt": "2026-11-12T11:57:59.939Z",
+      "reason": "모바일 첫 화면에서 마인드 이름 옆 편집, 객체 메뉴, 키보드, 긴 이름 저장과 재조회 검증",
+      "signature": "130f2cc2e24e05d19a7c63b4749f6b691560ae781bef804529c998805dbd9c6e",
       "controls": [
         [
           "data-companion-action=\"archive\"",
@@ -842,6 +842,10 @@
         ],
         [
           "data-companion-action=\"manage\"",
+          1
+        ],
+        [
+          "data-companion-action=\"rename\"",
           1
         ],
         [
@@ -875,6 +879,10 @@
         [
           "data-mind-entity-open",
           2
+        ],
+        [
+          "data-mind-identity",
+          1
         ],
         [
           "data-simulation-action=\"open\"",
@@ -921,7 +929,7 @@
           2
         ]
       ],
-      "sourceHash": "5488aae5f212209f0f724a9157bb1e44c5bab74e1244b5f90f20286e26cccf61",
+      "sourceHash": "47eb150112b9640457e2e8b0bf5c1410e830cdcdb27a47a50e6dd223a21d19bd",
       "matrix": "design/context-action-matrix.json",
       "reviewAmendment": "aria-disabled 컨트롤도 native disabled와 동일하게 제목 또는 기본 상태 이유를 표시한다.",
       "customContainers": []
@@ -1903,9 +1911,9 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T11:31:08.101Z",
-      "reason": "모바일 카드와 상세에서 이름 변경·입력 검증·저장·새로고침 및 PC 실전 목록 표시를 검증",
-      "signature": "2d99930654dbf66a633fa4acd0efeaeadbf90b98d5dff94f57540a6eebd2c61b",
+      "reviewedAt": "2026-11-12T11:57:59.938Z",
+      "reason": "모바일 첫 화면에서 마인드 이름 옆 편집, 객체 메뉴, 키보드, 긴 이름 저장과 재조회 검증",
+      "signature": "89b59422e503ec0926a7cc1659ce7e5e6ea13967f9c86d28249ed6f9bf9860dd",
       "controls": [
         [
           "data-companion-action=\"archive\"",
@@ -1928,7 +1936,15 @@
           1
         ],
         [
+          "data-companion-action=\"rename\"",
+          1
+        ],
+        [
           "data-mind-companion-open",
+          1
+        ],
+        [
+          "data-mind-identity",
           1
         ],
         [
@@ -1988,7 +2004,7 @@
           1
         ]
       ],
-      "sourceHash": "0ecde8b7c0f6abdcf88813acc9a1b624031e553b02d8e350105e368c7a6c2dd2"
+      "sourceHash": "0a6e290147beed9c726dc10225d50aedbfb42a997722fb166ef0021ff2efc3f8"
     },
     {
       "file": "dist/ui/mind-game-resource.mjs",
