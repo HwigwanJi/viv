@@ -43,7 +43,7 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   }
   entries.push({
     label:'앱이 열리지 않을 때',group:'복구 안내',
-    keywords:'VIV 도움말 복구 시작 오류 실행 오류 시작 실패 앱 안 열림 안 열려요 부팅 무한 로딩 접속 안됨 연결 문제',
+    keywords:'VIV 도움말 복구 시작 오류 실행 오류 시작 실패 앱 안 열림 안 열려요 무한 부팅 무한 로딩 접속 안됨 연결 문제',
     href:'https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#앱-열기와-조회-복구',
     taskSuffix:'새 탭',searchOnly:true,external:true
   });
