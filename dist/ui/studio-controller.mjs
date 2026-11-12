@@ -219,6 +219,7 @@ export function parseStudioRoute(hash=''){
   if(page!=='library'||params.get('view')!=='documents'||params.has('versions')&&!['latest','all'].includes(params.get('versions')))params.delete('versions');
   if(page!=='library'||params.get('view')!=='documents')params.delete('knowledgeId');
   if(page==='settings'&&!SETTINGS_VIEWS.some(v=>v[0]===params.get('view')))params.set('view','connections');
+  if(page!=='settings'||params.get('view')!=='accounts'||params.get('executionMode')!=='live'||!['upbit','toss'].includes(params.get('brokerSetup')))params.delete('brokerSetup');
   if(page==='trade')params.delete('view');
   if(page==='home'){
     for(const name of [...params.keys()])if(!['executionMode','showcase','currency','portfolio'].includes(name))params.delete(name);

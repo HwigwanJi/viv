@@ -9,6 +9,12 @@ const quantity=(value,symbol,label,detailLabel='조회 수량')=>Number.isFinite
 const button=(label,action,id='',disabled=false)=>`<button type="button" class="button small" data-broker-action="${action}" data-broker-provider="${id}" ${disabled?'disabled':''}>${label}</button>`;
 const table=(headers,rows)=>renderDataTable(headers.map((header,i)=>({...(typeof header==='string'?{label:header}:header),numeric:i>0})),rows);
 
+const pcSetup=provider=>'#settings?view=accounts&executionMode=live&brokerSetup='+provider;
+function pcHandoff(provider){
+ const address=globalThis.location?.origin&&new URL(pcSetup(provider),globalThis.location.origin).href;
+ return `<section class="spaced" data-broker-handoff><h3>새 키는 PC 웹에서 발급</h3><p>PC에서 VIV 연결 화면을 먼저 열고, 발급한 키를 같은 PC의 VIV 입력창에 붙여 넣으세요.</p>${address?`<div class="actions">${button('PC 연결 주소 복사','copy-pc-link',provider)}</div><input type="url" class="input" aria-label="PC 연결 주소" value="${esc(address)}" readonly hidden><p class="tiny muted">다른 기기에는 연결 주소만 보내세요. 주소가 열리지 않으면 설치할 때 표시된 VIV PC 주소에서 계좌·자금을 여세요.</p>`:''}</section>`;
+}
+
 export function brokerPaperReturnLink(route){
  const href=paperResultReturnHash(route.params.get('returnTo'));
  return `<a class="button" href="${esc(href)}" data-studio-route data-broker-paper-home>${href===PAPER_HOME_ENTRY?'모의 홈으로':'저장한 모의 결과로 돌아가기'}</a>`;
@@ -38,10 +44,12 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
  async function load(){const current=route();if(current.page!=='settings'||current.params.get('view')!=='accounts'||current.params.get('executionMode')!=='live'||loading)return false;const generation=++readGeneration;loading=true;error='';retryProvider='';let loaded=false;try{const value=await request('/api/workspace/brokers');if(generation===readGeneration){data=value;loaded=true;}}catch(e){if(generation===readGeneration)error=e.serverResponse?e.message:'VIV 서버의 응답을 확인하지 못했습니다. 재시작 중이라면 VIV PC 주소가 열린 뒤 다시 확인하세요.';}finally{if(generation===readGeneration)loading=false;redraw();}return loaded;}
 
  function render(){
-  const sections=Object.entries(names).map(([provider,name])=>{const connection=data?.connections.find(c=>c.provider===provider),snapshot=connection?.snapshot;
+  const preferred=route().params.get('brokerSetup');
+  const providers=Object.hasOwn(names,preferred)?[preferred,...Object.keys(names).filter(provider=>provider!==preferred)]:Object.keys(names);
+  const sections=providers.map(provider=>{const name=names[provider];const connection=data?.connections.find(c=>c.provider===provider),snapshot=connection?.snapshot;
    const balances=(snapshot?.accounts??[]).map(a=>`<div class="studio-sheet-body">${snapshot.accounts.length>1||a.label!==name?`<h3>${esc(a.label)}</h3>`:''}${table(['통화',{label:provider==='toss'?'주문 가능 금액':'사용 가능 현금',help:provider==='toss'?'토스증권의 현금 주문 가능 금액입니다. 결제된 예수금과 총자산은 별도 항목입니다.':'미체결 주문에 묶인 금액을 제외한 현금입니다.'},'주문 중','보유 평가액','총자산'],a.currencies.map(c=>[esc(c.currency),money(c.available),money(c.locked),money(c.holdingsValue),money(c.equity)]))}${quoteAssetMarkup(a,provider)}${a.positions.length?table(['보유 종목','보유 수량',...(provider==='upbit'?['사용 가능 수량',{label:'주문 중 수량',help:'미체결 주문에 묶인 수량이며 보유 수량에 포함됩니다.'}]:[]),'현재가','평가액'],a.positions.map(p=>[esc(p.name||p.symbol),quantity(p.quantity,p.symbol,'보유 수량'),...(provider==='upbit'?[quantity(p.availableQuantity,p.symbol,'사용 가능 수량'),quantity(p.lockedQuantity,p.symbol,'주문 중 수량')]:[]),provider==='upbit'?quantity(p.marketPrice,p.currency,'현재가','조회 현재가'):money(p.marketPrice),money(p.marketValue)+' '+esc(p.currency)])):''}</div>`).join('');
    const canConnect=data?.canConnect===true;
-   const connectionHint=canConnect?'API 키를 입력하면 현금과 보유 종목을 조회할 수 있습니다.':'API 키를 등록하기 전에 VIV 서버를 준비해야 합니다.';
+   const connectionHint='새 API 키는 PC 웹에서 발급합니다. '+(canConnect?'발급한 키로 현금과 보유 종목을 조회할 수 있습니다.':'키를 입력하기 전에 VIV 서버를 준비하세요.');
    return `<section class="studio-sheet spaced" data-broker-section="${provider}" aria-labelledby="broker-${provider}-title"><div class="studio-sheet-head"><div><h2 id="broker-${provider}-title" tabindex="-1">${name}</h2>${snapshot?`<span class="tiny muted">저장 조회 ${esc(snapshotStamp(snapshot.asOf))}</span>`:''}</div><div class="actions">${connection?button(pendingProvider===provider&&pendingAction==='refresh'?'잔고 조회 중…':error&&retryProvider===provider?'다시 조회':'잔고 새로고침','refresh',provider,pending):''}${button(connection?'연결 정보 변경':canConnect?'계좌 연결':'연결 준비 보기','connect',provider,pending||!data)}</div></div>${error&&retryProvider===provider?`<div class="broker-snapshot-notice" role="alert"><strong>${name} 잔고 조회 실패</strong><span>${esc(error)}</span>${snapshot?'<span>표시된 잔고는 저장된 조회 결과입니다.</span>':''}</div>`:''}${pendingProvider===provider?`<p class="studio-sheet-body tiny" role="status">${pendingAction==='refresh'?'새 잔고를 조회하고 있습니다.':'연결 정보를 확인하고 있습니다.'}${snapshot?' 표시된 잔고는 저장된 조회 결과입니다.':''}</p>`:''}${snapshot?snapshotAgeNotice(snapshot,now())+valuationNotice(snapshot)+(snapshot.accounts.length?balances:'<div class="studio-sheet-body"><p class="muted">조회된 계좌가 없습니다.</p></div>'):`<div class="studio-sheet-body"><p class="muted">${connection?'연결 정보가 저장되어 있습니다. 잔고 새로고침으로 현금과 보유 종목을 조회하세요.':connectionHint}</p></div>`}</section>`;}).join('');
   return `<div>${error&&!retryProvider?`<p role="alert">${esc(error)} ${button('다시 조회','reload','',pending)}</p>`:''}${!data?(error?'':'<p class="empty" role="status">계좌 연결 정보를 불러오는 중…</p>'):sections}</div>`;
  }
@@ -52,20 +60,25 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
   const ip=data?.egressIp?`VIV에 설정된 공인 발신 IPv4는 <strong>${esc(data.egressIp)}</strong>입니다. 현재 서버의 발신 IP와 일치하는지 확인한 뒤 금융기관 허용 IP에 등록하세요. ${button('서버 IP 복사','copy-ip',provider)}`:'금융기관 허용 IP에 VIV 서버의 공인 발신 IPv4를 등록하세요. 직접 설치했다면 VIV가 실행 중인 PC의 인터넷 연결에서 확인하세요. 별도 서버라면 관리자에게 공인 발신 IPv4를 확인하세요.';
   const guideUrl=upbit?'https://docs.upbit.com/kr/docs/api-key':'https://developers.tossinvest.com/';
   const providerLinks=`<div class="actions"><a href="${urls[provider]}" target="_blank" rel="noopener noreferrer">${names[provider]} API 관리 열기 ↗</a><a href="${guideUrl}" target="_blank" rel="noopener noreferrer">공식 발급 안내 ↗</a><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#계좌-연결과-잔고-확인" target="_blank" rel="noopener noreferrer">VIV 연결 문제 해결 ↗</a></div>`;
-  const permission=upbit?'업비트 PC 웹에서 <strong>자산조회</strong> 권한만 선택해 잔고 조회용 키를 발급하세요.':'토스증권 PC 웹의 설정 → Open API에서 Client ID와 Client Secret을 발급하세요.';
+  const permission=upbit?'업비트 PC 웹의 마이페이지 → Open API 관리에서 <strong>자산조회</strong> 권한만 선택하세요. 2채널 인증 후 발급 화면에서 Secret Key를 확인하세요.':'토스증권 PC 웹의 설정 → Open API에서 Client ID와 Client Secret을 발급하세요.';
   const issuing=`<p>${permission}</p><p>${ip}</p><p>발급 안내는 새 탭에서 열립니다.</p>${providerLinks}`;
   const guide=`<details class="spaced" data-broker-guide><summary>${names[provider]} 키 발급과 허용 IP</summary>${issuing}</details>`;
   const paperLink=brokerPaperReturnLink(route());
   const cancel='<button class="button" type="button" data-studio-action="close-dialog">취소</button>';
   if(!ready){
    const serverGuide=`<section class="spaced"><h3>2. VIV 서버 준비</h3>${networkBlocked?'<p>금융기관에서 허용 IP를 등록한 뒤 VIV 설치 폴더의 <code>.env</code>에 <code>BROKER_NETWORK_READY=true</code>를 설정하고 서버를 다시 시작하세요.</p>':''}${vaultBlocked?'<p>VIV 설치 때 생성한 <code>BROKER_VAULT_KEY</code> 설정을 서버에서 확인하세요.</p>':''}<p><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#서버-다시-시작" target="_blank" rel="noopener noreferrer">서버 다시 시작 방법 ↗</a></p></section>`;
-   open(names[provider]+' 연결',`<p role="status"><strong>${rechecked?'아직 서버 준비가 필요합니다 · ':''}${issue}</strong></p><p data-broker-error role="alert"></p><section class="spaced"><h3>1. 키 발급과 허용 IP 등록</h3>${issuing}</section>${serverGuide}<section class="spaced"><h3>3. VIV 설정 확인</h3><p><strong>준비 상태 다시 확인</strong>은 VIV 서버의 설정을 읽습니다. 금융기관의 허용 IP와 키 권한은 키를 입력하고 잔고를 조회할 때 확인합니다.</p></section>`,paperLink+button('준비 상태 다시 확인','recheck',provider));
+   open(names[provider]+' 연결',`<p role="status"><strong>${rechecked?'아직 서버 준비가 필요합니다 · ':''}${issue}</strong></p><p data-broker-error role="alert"></p>${pcHandoff(provider)}<section class="spaced"><h3>1. 키 발급과 허용 IP 등록</h3>${issuing}</section>${serverGuide}<section class="spaced"><h3>3. VIV 설정 확인</h3><p><strong>준비 상태 다시 확인</strong>은 VIV 서버의 설정을 읽습니다. 금융기관의 허용 IP와 키 권한은 키를 입력하고 잔고를 조회할 때 확인합니다.</p></section>`,paperLink+button('준비 상태 다시 확인','recheck',provider));
    return;
   }
   const fields=upbit?[['accessKey','Access Key'],['secretKey','Secret Key']]:[['clientId','Client ID'],['clientSecret','Client Secret']];
-  open(names[provider]+' 연결',`<form data-broker-form="${provider}" autocomplete="off"><p>${rechecked?'VIV 서버 설정을 확인했습니다. ':''}잔고 조회를 요청하면 금융기관이 허용 IP와 키 권한을 확인합니다. 키는 이 창에 입력하세요. 서버에 암호화해 보관합니다.</p>${guide}<div class="form-grid">${fields.map(([name,label])=>`<label class="field">${label}<input class="input" type="password" name="${name}" autocomplete="off" spellcheck="false" required minlength="10" maxlength="8000" /></label>`).join('')}</div><p data-broker-status role="status" aria-live="polite"></p><p data-broker-error role="alert"></p><div class="form-actions">${paperLink}${cancel}<button class="button primary" type="submit">연결하고 잔고 조회</button></div></form>`,'');
+  open(names[provider]+' 연결',`${pcHandoff(provider)}<form data-broker-form="${provider}" autocomplete="off">${guide}<p>${rechecked?'VIV 서버 설정을 확인했습니다. ':''}잔고 조회를 요청하면 금융기관이 허용 IP와 키 권한을 확인합니다. 키는 아래 입력창에 넣으세요. 서버에 암호화해 보관합니다.</p><div class="form-grid">${fields.map(([name,label])=>`<label class="field">${label}<input class="input" type="password" name="${name}" autocomplete="off" spellcheck="false" required minlength="10" maxlength="8000" /></label>`).join('')}</div><p data-broker-status role="status" aria-live="polite"></p><p data-broker-error role="alert"></p><div class="form-actions">${paperLink}${cancel}<button class="button primary" type="submit">연결하고 잔고 조회</button></div></form>`,'');
  }
- async function click(event){const node=event.target.closest?.('[data-broker-action]');if(!node||node.disabled)return;event.preventDefault();const action=node.dataset.brokerAction,provider=node.dataset.brokerProvider;if(action==='connect'&&!pending)return connect(provider);if(action==='copy-ip'&&data?.egressIp){
+ async function click(event){const node=event.target.closest?.('[data-broker-action]');if(!node||node.disabled)return;event.preventDefault();const action=node.dataset.brokerAction,provider=node.dataset.brokerProvider;if(action==='connect'&&!pending)return connect(provider);if(action==='copy-pc-link'){
+   const address=node.closest('[data-broker-handoff]').querySelector('input');
+   try{await navigator.clipboard.writeText(address.value);toast('PC 연결 주소를 복사했습니다.');}
+   catch{address.hidden=false;address.focus();address.select();}
+   return;
+  }if(action==='copy-ip'&&data?.egressIp){
    try{await navigator.clipboard.writeText(data.egressIp);toast('서버 IP를 복사했습니다.');}catch{toast('화면의 서버 IP를 선택해 복사하세요.');}
    return;
   }if(action==='recheck'&&!pending){

@@ -569,9 +569,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T02:35:43.6703386+00:00",
-      "reason": "실계좌 발급·키 입력 양쪽에서 같은 저장 모의 결과로 돌아가는 공용 링크와 복귀 안내. 기존 잔고 검증과 외부 링크 동작 보존.",
-      "signature": "4404165fc5306c12c7befa8619f3dbde5c0930da888add503e8269f2d57bec76",
+      "reviewedAt": "2026-11-12T07:34:38.029Z",
+      "reason": "계좌·자금 카드와 연결 창의 PC 기기 전환, 선택한 금융기관 복원 및 주소 복사",
+      "signature": "c9ee810793ed4f81a1095748ca4ba02c8267564f7dcad55be7a45f1aa77a2aa4",
       "controls": [
         [
           "data-broker-action",
@@ -595,7 +595,7 @@
         ],
         [
           "element:input",
-          1
+          2
         ],
         [
           "element:summary",
@@ -603,14 +603,14 @@
         ],
         [
           "helper:button(",
-          5
+          6
         ],
         [
           "helper:renderDataTable(",
           1
         ]
       ],
-      "sourceHash": "0e8db61e2bc5a00a119c4be07d6969ae73848c26758c260cfcb094ac10445121",
+      "sourceHash": "f2c6d8412356ec97484292512f9317140aa954013cb9cd8360a91e04e61c4749",
       "customContainers": []
     },
     {
@@ -3215,8 +3215,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T07:09:21.528Z",
-      "reason": "첫 모의 판단에서 국면 추세 정책 검토, 자금·시세 준비와 기존 모의 화면 복귀를 대조했습니다.",
+      "reviewedAt": "2026-11-12T07:34:38.028Z",
+      "reason": "계좌·자금 카드와 연결 창의 PC 기기 전환, 선택한 금융기관 복원 및 주소 복사",
       "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
       "controls": [
         [
@@ -3320,7 +3320,7 @@
           1
         ]
       ],
-      "sourceHash": "1d3d5684159d038aba26baa428537256551665313899f88c6b300683be961657",
+      "sourceHash": "e4d3d1c6d374759aea19c09949963a2f3b89a8c53ef9ee5ff2bab8c7d8ec42a3",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

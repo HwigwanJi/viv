@@ -125,3 +125,35 @@ test('checking broker readiness recovers from a VIV server restart without sendi
   assert.doesNotMatch(connections.render(),/서버의 응답을 확인하지 못했습니다/);
   assert.deepEqual(calls,Array.from({length:3},()=>({path:'/api/workspace/brokers',body:undefined})));
 });
+
+test('broker PC handoff opens the selected card and copies only its setup address',async t=>{
+  const params=new URLSearchParams({view:'accounts',executionMode:'live',brokerSetup:'upbit'});
+  const calls=[],copied=[],toasts=[];
+  let modal;
+  const connections=createBrokerConnections({
+    request:async(path,body)=>{calls.push({path,body});return {connections:[],canConnect:true};},
+    route:()=>({page:'settings',params}),redraw:()=>{},open:(_,body)=>modal=body,
+    toast:message=>toasts.push(message),
+  });
+  globalThis.location={origin:'https://viv.example.test'};
+  t.after(()=>{delete globalThis.location;delete navigator.clipboard;});
+  await connections.load();
+  const first=connections.render();
+  assert.ok(first.indexOf('data-broker-section="upbit"')<first.indexOf('data-broker-section="toss"'));
+  assert.match(first,/새 API 키는 PC 웹에서 발급/);
+  const click=(action,extra={})=>connections.click({preventDefault(){},target:{closest:()=>({dataset:{brokerAction:action,brokerProvider:'upbit'},...extra})}});
+  await click('connect');
+  const address={value:'https://viv.example.test/#settings?view=accounts&executionMode=live&brokerSetup=upbit',hidden:true,focus(){this.focused=true;},select(){this.selected=true;}};
+  assert.ok(modal.includes(address.value.replaceAll('&','&amp;')));
+  assert.ok(modal.indexOf('새 키는 PC 웹에서 발급')<modal.indexOf('name="secretKey"'));
+  Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>copied.push(text)}});
+  const findInput={closest:()=>({querySelector:()=>address})};
+  await click('copy-pc-link',findInput);
+  assert.deepEqual(copied,[address.value]);
+  assert.deepEqual(toasts,['PC 연결 주소를 복사했습니다.']);
+  navigator.clipboard.writeText=async()=>{throw Error('clipboard unavailable');};
+  await click('copy-pc-link',findInput);
+  assert.equal(address.hidden,false);
+  assert.equal(address.selected,true);
+  assert.deepEqual(calls,[{path:'/api/workspace/brokers',body:undefined}]);
+});
