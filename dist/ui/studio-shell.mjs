@@ -1,7 +1,8 @@
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const COLLECTION_TASKS = [['overview','마인드 목록'],['records','전체 기록'],['simulations','전체 시뮬레이션']];
-const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',simulations:'실험실 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서',connections:'AI 연결 MCP Codex Claude Code'};
+const MIND_TASKS = [['operations','운용'],['principles','전략'],['records','기록'],['knowledge','자료'],['simulations','실험실']];
+const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',principles:'규칙 정책 노드',simulations:'백테스트 실험 결과 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서',connections:'AI 연결 MCP Codex Claude Code'};
 const BROKER_JUMP_KEYWORDS = '계좌 연결 잔고 자금 거래소 업비트 토스증권 API키';
 
 const TASK_GROUPS = Object.freeze({
@@ -9,12 +10,27 @@ const TASK_GROUPS = Object.freeze({
 });
 
 export function studioJumpItems(route,navigation,{routeHash,primary,library,settings}) {
-  const keywords=route.params.get('executionMode')==='live'?JUMP_TASK_KEYWORDS:
-    {...JUMP_TASK_KEYWORDS,records:JUMP_TASK_KEYWORDS.records+' 모의 판단',simulations:JUMP_TASK_KEYWORDS.simulations+' 백테스트 실험 결과'};
+  const live=route.params.get('executionMode')==='live';
+  const keywords=live?JUMP_TASK_KEYWORDS:{...JUMP_TASK_KEYWORDS,records:JUMP_TASK_KEYWORDS.records+' 모의 판단'};
+  const minds=[...(navigation.minds??[])].sort((a,b)=>a.name.localeCompare(b.name,'ko'));
+  const nameCounts=new Map();
+  for(const mind of minds)nameCounts.set(mind.name,(nameCounts.get(mind.name)??0)+1);
+  const mindSource={...route,params:new URLSearchParams([...route.params].filter(([key])=>route.page==='minds'?key==='returnTo':key!=='returnTo'))};
+  const mindHref=(profileId,view)=>routeHash(mindSource,'minds',{profileId,view,executionMode:view==='simulations'||!live?'paper':'live'});
   const entries=primary.map(([page,,label])=>({label,group:'주요 화면',href:routeHash(route,page,page==='minds'?{profileId:'all',view:'overview'}:{})}));
-  for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label,group:'전체 마인드',keywords:keywords[view]||'',href:routeHash(route,'minds',{profileId:'all',view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
-  for(const mind of navigation.minds??[])if(mind.id!==navigation.selectedMindId)for(const [view,label]of [['operations','운용'],['records','기록']])entries.push({label:mind.name+' / '+label,taskLabel:mind.name,taskSuffix:label,group:'마인드',keywords:keywords[view]||'',href:routeHash(route,'minds',{profileId:mind.id,view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
-  if(navigation.selectedMindId&&navigation.selectedMindId!=='all')for(const [view,label]of [['operations','운용'],['principles','전략'],['records','기록'],['knowledge','자료'],['simulations','실험실']])entries.push({label:navigation.scopeName+' / '+label,taskLabel:label,context:navigation.scopeName,group:'현재 마인드',keywords:keywords[view]||'',href:routeHash(route,'minds',{profileId:navigation.selectedMindId,view,cursor:null,simulationId:null,knowledgePage:null,tab:null,search:null,kind:null})});
+  for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label:view==='simulations'&&live?'전체 모의 시뮬레이션':label,group:'전체 마인드',keywords:keywords[view]||'',href:mindHref('all',view)});
+  for(const mind of minds){
+    const selected=mind.id===navigation.selectedMindId;
+    const context=selected?mind.name+(navigation.scopeStatus==='보관됨'?' · 보관됨':''):'';
+    const identity=nameCounts.get(mind.name)>1?[mind.createdLabel&&'생성 '+mind.createdLabel,mind.id.slice(-8)].filter(Boolean).join(' · '):'';
+    for(const [view,label]of MIND_TASKS){
+      if(view==='knowledge'&&!selected)continue;
+      const task=view==='simulations'&&live?'모의 '+label:label;
+      entries.push({label:mind.name+' / '+task,taskLabel:selected?task:mind.name,taskSuffix:selected?'':task,identity,
+        context,group:selected?'현재 마인드':'마인드',keywords:keywords[view]||'',
+        searchOnly:!selected&&['principles','simulations'].includes(view),href:mindHref(mind.id,view)});
+    }
+  }
   for(const [page,items]of [['library',library],['settings',settings]])for(const [view,label]of items){
     if(page==='settings'&&view==='accounts'){
       if(route.params.get('executionMode')!=='live')entries.push({label:'모의 '+label,group:'설정',href:routeHash(route,page,{view,cursor:null})});
@@ -25,8 +41,8 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
 }
 
 export function studioJumpMatches(text,query){
-  const target=text.toLocaleLowerCase();
-  return query.toLocaleLowerCase().trim().split(/\s+/).every(term=>target.includes(term));
+  const target=text.normalize('NFKC').toLocaleLowerCase();
+  return query.normalize('NFKC').toLocaleLowerCase().trim().split(/\s+/).every(term=>target.includes(term));
 }
 
 export function renderStudioJump(entries,{modeLabel='',loading=false,error=''}={}) {
@@ -34,7 +50,7 @@ export function renderStudioJump(entries,{modeLabel='',loading=false,error=''}={
   for(const entry of entries){if(!groups.has(entry.group))groups.set(entry.group,[]);groups.get(entry.group).push(entry);}
   const ordered=[...groups].sort(([a],[b])=>(a==='현재 마인드'?-1:b==='현재 마인드'?1:0));
   let optionIndex=0;
-  return '<div class="studio-jump"><div class="studio-jump-search"><label class="field">화면 찾기<input type="search" data-studio-jump-query role="combobox" aria-autocomplete="list" aria-expanded="true" placeholder="계좌, 전략, 학습 자료…" autocomplete="off" aria-controls="studio-jump-results" aria-describedby="studio-jump-count studio-jump-help"></label>'+(modeLabel?'<span class="pill">'+escape(modeLabel)+' 화면</span>':'')+'</div><p id="studio-jump-count" class="tiny muted" data-studio-jump-count role="status" aria-live="polite">'+entries.length+'개 화면</p><div class="studio-jump-problem" data-studio-jump-problem'+(error&&!loading?'':' hidden')+'><p class="error-text" data-studio-jump-error role="alert">'+escape(error)+'</p><button type="button" class="button small" data-studio-jump-retry>다시 조회</button></div><p class="tiny muted" data-studio-jump-loading role="status"'+(loading?'':' hidden')+'>마인드 목록을 불러오는 중…</p><div id="studio-jump-results" class="studio-jump-results" role="listbox" aria-label="이동할 화면">'+ordered.map(([group,items],index)=>'<section class="studio-jump-group" role="group" data-studio-jump-group aria-labelledby="studio-jump-group-'+index+'"><h3 id="studio-jump-group-'+index+'">'+escape(group)+(items[0].context?'<span class="studio-jump-context">'+escape(items[0].context)+'</span>':'')+'</h3>'+items.map(item=>'<a id="studio-jump-item-'+optionIndex+++'" role="option" aria-selected="false" tabindex="-1" data-studio-jump-item data-studio-route data-studio-jump-search="'+escape(item.label+' '+group+(item.keywords?' '+item.keywords:''))+'" href="'+escape(item.href)+'" title="'+escape(item.label)+'"><span>'+escape(item.taskLabel||item.label)+'</span>'+(item.taskSuffix?'<span class="studio-jump-task">'+escape(item.taskSuffix)+'</span>':'')+'<span class="studio-jump-arrow" aria-hidden="true">→</span></a>').join('')+'</section>').join('')+'</div><div class="studio-jump-empty" data-studio-jump-empty hidden><p>검색한 화면이 없습니다.</p><button type="button" class="button small" data-studio-jump-clear>검색어 지우기</button></div><p id="studio-jump-help" class="sr-only">위아래 방향키로 화면을 고르고 Enter로 엽니다. Esc로 닫습니다.</p><div class="studio-jump-keys" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span></div></div>';
+  return '<div class="studio-jump"><div class="studio-jump-search"><label class="field">화면 찾기<input type="search" data-studio-jump-query role="combobox" aria-autocomplete="list" aria-expanded="true" placeholder="마인드 이름, 전략, 계좌…" autocomplete="off" aria-controls="studio-jump-results" aria-describedby="studio-jump-count studio-jump-help"></label>'+(modeLabel?'<span class="pill">'+escape(modeLabel)+' 화면</span>':'')+'</div><p id="studio-jump-count" class="tiny muted" data-studio-jump-count role="status" aria-live="polite">'+entries.length+'개 화면</p><div class="studio-jump-problem" data-studio-jump-problem'+(error&&!loading?'':' hidden')+'><p class="error-text" data-studio-jump-error role="alert">'+escape(error)+'</p><button type="button" class="button small" data-studio-jump-retry>다시 조회</button></div><p class="tiny muted" data-studio-jump-loading role="status"'+(loading?'':' hidden')+'>마인드 목록을 불러오는 중…</p><div id="studio-jump-results" class="studio-jump-results" role="listbox" aria-label="이동할 화면">'+ordered.map(([group,items],index)=>'<section class="studio-jump-group" role="group" data-studio-jump-group aria-labelledby="studio-jump-group-'+index+'"><h3 id="studio-jump-group-'+index+'">'+escape(group)+(items[0].context?'<span class="studio-jump-context">'+escape(items[0].context)+'</span>':'')+'</h3>'+items.map(item=>'<a id="studio-jump-item-'+optionIndex+++'" role="option" aria-selected="false" tabindex="-1" data-studio-jump-item data-studio-route'+(item.searchOnly?' data-studio-jump-search-only hidden':'')+' data-studio-jump-search="'+escape([item.label,group,item.keywords,item.identity].filter(Boolean).join(' '))+'" href="'+escape(item.href)+'" title="'+escape(item.label)+'"><span>'+escape(item.taskLabel||item.label)+(item.identity?'<small class="studio-jump-context">'+escape(item.identity)+'</small>':'')+'</span>'+(item.taskSuffix?'<span class="studio-jump-task">'+escape(item.taskSuffix)+'</span>':'')+'<span class="studio-jump-arrow" aria-hidden="true">→</span></a>').join('')+'</section>').join('')+'</div><div class="studio-jump-empty" data-studio-jump-empty hidden><p>검색한 화면이 없습니다.</p><button type="button" class="button small" data-studio-jump-clear>검색어 지우기</button></div><p id="studio-jump-help" class="sr-only">위아래 방향키로 화면을 고르고 Enter로 엽니다. Esc로 닫습니다.</p><div class="studio-jump-keys" aria-hidden="true"><span><kbd>↑</kbd><kbd>↓</kbd> 이동</span><span><kbd>Enter</kbd> 열기</span><span><kbd>Esc</kbd> 닫기</span></div></div>';
 }
 
 export function selectStudioJump(root,item){
@@ -48,7 +64,8 @@ export function selectStudioJump(root,item){
 
 export function filterStudioJump(root,query){
   let count=0;
-  for(const item of root.querySelectorAll('[data-studio-jump-item]')){item.hidden=!studioJumpMatches(item.dataset.studioJumpSearch,query);if(!item.hidden)count++;}
+  const searching=Boolean(query.trim());
+  for(const item of root.querySelectorAll('[data-studio-jump-item]')){item.hidden=(!searching&&item.hasAttribute('data-studio-jump-search-only'))||!studioJumpMatches(item.dataset.studioJumpSearch,query);if(!item.hidden)count++;}
   for(const group of root.querySelectorAll('[data-studio-jump-group]'))group.hidden=![...group.querySelectorAll('[data-studio-jump-item]')].some(item=>!item.hidden);
   const empty=root.querySelector('[data-studio-jump-empty]'),message=empty.querySelector?.('p');empty.hidden=count>0;
   if(message)message.textContent=root.querySelector('[data-studio-jump-loading]')?.hidden===false?'목록이 도착하면 검색 결과에 반영합니다.':'검색한 화면이 없습니다.';
@@ -72,7 +89,7 @@ export function renderMindWorkspace(navigation, route, {parseRoute, routeHash}) 
   }
   if (!navigation.scopeLoaded) return '';
   const current=route.params.get('view')||'overview';
-  const items = [['operations','운용',['overview','operations']],['principles','전략',['principles']],['records','기록',['records']],['knowledge','자료',['knowledge']],['simulations','실험실',['simulations']]].map(([id,label,views])=>({...navigation.items.find(item=>item.id===id),id,label,active:views.includes(current)}));
+  const items = MIND_TASKS.map(([id,label])=>({...navigation.items.find(item=>item.id===id),id,label,active:id===current||id==='operations'&&current==='overview'}));
   const returnLink = studioReturnLink(route,parseRoute,routeHash);
   const actions = ['overview','operations'].includes(current) ? navigation.scopeAutomationMarkup||'' : '';
   const scopeActions = actions?'<div class="studio-mind-workspace-actions" role="group" aria-label="마인드 편집">'+actions+'</div>':'';

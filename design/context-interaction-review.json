@@ -3212,7 +3212,7 @@
       ],
       "review": "BROWSER_VERIFIED",
       "reviewedAt": "2026-11-12",
-      "reason": "Starter help uses a native disclosure and the same public walkthrough from Feature List. An explicitly reviewed new starter returns to its own paper strategy after publication; shared review and live behavior are exercised separately.",
+      "reason": "Mind navigation exposes creation context for duplicate-name results while retaining archived scope filtering.",
       "signature": "3037014b83eb4f42f49c43cc661707357ef5cf55a1196b1b1dcaeec2b89b8e28",
       "controls": [
         [
@@ -3316,7 +3316,7 @@
           1
         ]
       ],
-      "sourceHash": "ce7768720bc8595053205c7325fef7194a988618db1c3da6878257e2bffd2d03",
+      "sourceHash": "87fadaa890c7d805607ccc2f5796a8d418571ab238756d227a02c53a051a45e7",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3332,7 +3332,7 @@
       ],
       "review": "BROWSER_VERIFIED",
       "reviewedAt": "2026-11-12",
-      "reason": "Quick navigation keeps the current account view and matches AI client and MCP terms to Service Connections.",
+      "reason": "Quick navigation links names to scoped Strategy and Lab, distinguishes duplicates, and discloses paper-only destinations.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3352,7 +3352,7 @@
           2
         ]
       ],
-      "sourceHash": "57cfd0e792aa65de3ff4ba18c5aad6821468a9ab3714c3004e7167b1e2f6b2a0",
+      "sourceHash": "85350d080c133bb1613f7e21bd4817de1ab578355470f3bc6173e268e7991176",
       "customContainers": []
     },
     {

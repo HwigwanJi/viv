@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {contextSourceFiles,inspectContextSource,inspectContextReview,inspectContextMatrix,checkContextInteractions} from '../scripts/check-context-interactions.mjs';
 import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
 import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS} from '../dist/ui/studio-controller.mjs';
-import {studioJumpItems,studioJumpMatches} from '../dist/ui/studio-shell.mjs';
+import {renderStudioJump,studioJumpItems,studioJumpMatches} from '../dist/ui/studio-shell.mjs';
 import {terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
 
 test('paper decision previews separate the outcome from model response measures',()=>{
@@ -64,6 +64,35 @@ test('AI client searches take users to Service Connections in either account vie
    assert.equal(destination.params.get('executionMode'),mode);
   }
  }
+});
+
+test('mind name and task search finds matching strategies and distinguishes duplicate names',()=>{
+ const route=parseStudioRoute('#home?executionMode=paper');
+ const minds=[{id:'profile-long',name:'국면 추세 실습'},{id:'profile-aa11aa11',name:'국면 추세',createdLabel:'2026. 11. 12. 09:00 KST'},{id:'profile-bb22bb22',name:'국면 추세'}];
+ const entries=studioJumpItems(route,{minds},{routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+ const search=query=>entries.filter(item=>studioJumpMatches(item.label+' '+item.keywords,query));
+ const strategies=search('국면 추세 전략'.normalize('NFD'));
+ assert.deepEqual(strategies.map(item=>parseStudioRoute(item.href).params.get('profileId')),['profile-aa11aa11','profile-bb22bb22','profile-long']);
+ assert.deepEqual(strategies.map(item=>item.identity),['생성 2026. 11. 12. 09:00 KST · aa11aa11','bb22bb22','']);
+ assert.ok(strategies.every(item=>item.searchOnly&&parseStudioRoute(item.href).params.get('view')==='principles'));
+ assert.match(renderStudioJump(strategies),/data-studio-jump-search-only hidden/);
+ const labs=search('국면 추세 백테스트');
+ assert.equal(labs.length,3);
+ assert.ok(labs.every(item=>parseStudioRoute(item.href).params.get('view')==='simulations'));
+});
+
+test('quick navigation opens a clean mind destination and labels a live-to-paper lab jump',()=>{
+ const route=parseStudioRoute('#minds?executionMode=live&profileId=profile-one&view=simulations&simulationId=old&lab=compare&a=old&setup=new&practice=quant&practiceMind=profile-one&expQuery=old');
+ const minds=[{id:'profile-one',name:'마인드 하나'},{id:'profile-two',name:'마인드 둘'}];
+ const entries=studioJumpItems(route,{minds,selectedMindId:'profile-one'},{routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+ const links=entries.filter(item=>item.label.includes('마인드 둘'));
+ const lab=links.find(item=>item.taskSuffix==='모의 실험실');
+ const next=parseStudioRoute(lab.href);
+ assert.deepEqual(Object.fromEntries(next.params),{profileId:'profile-two',view:'simulations',executionMode:'paper',tab:'overview'});
+ const strategy=parseStudioRoute(links.find(item=>item.taskSuffix==='전략').href);
+ assert.equal(strategy.params.get('executionMode'),'live');
+ const current=entries.find(item=>item.group==='현재 마인드'&&item.taskLabel==='모의 실험실');
+ assert.equal(current.searchOnly,false);
 });
 
 const entry=(file,source,extra={})=>({file,owners:['card'],review:'SOURCE_REVIEWED',reviewedAt:'2026-11-04',reason:'카드의 상태별 기존 작업을 공용 메뉴로 연결한다.',...inspectContextSource(source),...extra});
