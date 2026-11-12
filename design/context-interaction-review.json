@@ -2676,8 +2676,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T01:03:13.430Z",
-      "reason": "저장 보고서의 ID와 원본 식별값을 좁은 화면에서 모두 읽고 JSON 내려받기가 현재 화면의 식별값과 같은 바이트를 사용하는지 검증했다.",
+      "reviewedAt": "2026-11-12T02:08:18.7168143+00:00",
+      "reason": "키 없는 기준 퀀트 실습에서 이전 마인드를 검증하여 미리 선택하고 기존 실행·결과 경로로 연결.",
       "signature": "7b4380677e532db54ded7cb64bda064e8b0d5c0b5c968e46ad60e961f7f7a3e6",
       "controls": [
         [
@@ -2749,7 +2749,7 @@
           2
         ]
       ],
-      "sourceHash": "34f7ffa9a3b5caaf0f54c352251db46f2f9d0ca430e7ad430ecedee9fc5633d7",
+      "sourceHash": "db2d5ec2ac22249fc0774f2b12640ddaa5cecd331ae62dc86f13ac51eb33d75d",
       "customContainers": []
     },
     {
@@ -3203,9 +3203,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T21:38:37.117Z",
-      "reason": "저장된 모의 판단과 연결된 체결 수를 먼저 표시하고 후속 관측의 조회·검토·저장 행동을 구분한다.",
-      "signature": "e5f0e5ba3cce05b08d10040d1585290abd70bbc20ccfd6f068c06b3688babb1f",
+      "reviewedAt": "2026-11-12T02:08:18.7168143+00:00",
+      "reason": "첫 모의 판단의 과거 시세 실습과 현재 시세 준비 조건을 화면에서 대조하고 제한된 백테스트 링크의 마인드 문맥을 정리.",
+      "signature": "432e1202a5a62cbe9142f2c5aed84b4d9269b9bf231a1689cf9c91bbf6a9f8b5",
       "controls": [
         [
           "data-auto-action",
@@ -3281,7 +3281,7 @@
         ],
         [
           "element:input",
-          29
+          30
         ],
         [
           "element:select",
@@ -3308,7 +3308,7 @@
           1
         ]
       ],
-      "sourceHash": "d65c54289692a6aa0697fa0c9944510831af18aec488cd198cd436b948a0353f",
+      "sourceHash": "e214b13302b1d7e4c29768453d766d6dbc33c33e039ceda15c1d9c6f044849bf",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3399,8 +3399,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T21:38:37.118Z",
-      "reason": "결정 미리보기는 행동과 결과를 표시하고 모델 수치는 설명과 함께 펼쳐 확인한다.",
+      "reviewedAt": "2026-11-12T02:08:18.7168143+00:00",
+      "reason": "기존 모의 판단의 키 없는 대안에서 선택한 마인드를 백테스트 준비로 전달. 기존 시세·자금·키 복구 및 실행 컨트롤 유지.",
       "signature": "a1dd9ae1335bff6ea81099fe978c300d14f7573d12d0c63f81aba04f9a60d8e1",
       "controls": [
         [
@@ -3488,7 +3488,7 @@
           39
         ]
       ],
-      "sourceHash": "c00e33e9a7efc27b0a83fd049ea03117be4a5993bcfe980dd62b9fc52188de33",
+      "sourceHash": "ed5e087f794a9a6ee3acbf3b757c893dc2aa3471b1c88a72bfae5c7ed40bb165",
       "customContainers": []
     },
     {

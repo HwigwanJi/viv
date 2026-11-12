@@ -220,6 +220,7 @@ export function parseStudioRoute(hash=''){
   }
   const records=page==='minds'&&params.get('view')==='records';
   const simulations=page==='minds'&&params.get('view')==='simulations';
+  if(!simulations||params.get('practice')!=='quant'||params.get('setup')!=='new')params.delete('practiceMind');
   if(simulations&&!SIMULATION_TABS.some(t=>t[0]===params.get('tab')))params.set('tab','overview');
   if(page==='minds'&&!simulations)params.delete('tab');
   if(!simulations)for(const name of ['simulationId','lab','a','b','draftId','comparisonA','comparisonB','archived','learningId','previousLearningId','learningView','learningStep','labView','labStep','setup','setupStep','practice','expQuery','expKind','expStatus','expArchived','expCursor'])params.delete(name);
@@ -918,13 +919,16 @@ export function createStudioController(hooks={},options={}){
     const rows=existingBudgets.map(b=>[esc(b.quoteCurrency),accountMoney(b.totalBudget,b.quoteCurrency),accountMoney(b.exactAvailable??b.available,b.quoteCurrency),accountMoney(b.allocated,b.quoteCurrency),accountMoney(b.exactHoldingsValue??b.holdingsValue,b.quoteCurrency),accountMoney(b.exactEquity??b.equity,b.quoteCurrency),button(b.configured?'예산 수정':'예산 설정','budget-edit',b.quoteCurrency)]);
     const setup=setupBudgets.length?'<div class="studio-budget-setup" data-paper-budget-setup><h3>통화 예산 설정</h3><div class="actions">'+setupBudgets.map(b=>button(b.quoteCurrency+' 예산 설정','budget-edit',b.quoteCurrency)).join('')+'</div></div>':'';
     const practice=existingBudgets.some(b=>b.configured)&&!list(workspace.mindRuns).length&&!list(workspace.decisionRecords).length
-      ?'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>첫 모의 판단</h2></div><div class="studio-sheet-body"><p>현재 시세에서 마인드의 판단을 실행하거나, 보관한 BTC 과거 시세로 기준 퀀트 전략을 연습할 수 있습니다.</p><div class="actions spaced"><a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>모의 판단 시작</a><a class="button" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>키 없이 과거 데이터로 실습</a></div></div></section>':'';
+      ?'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>첫 모의 판단</h2></div><div class="studio-sheet-body"><p>처음이라면 키 없이 보관한 BTC 시세로 연습하세요. 현재 시세 판단에는 종목의 결제 통화로 배정한 모의 자금과 최신 시세가 필요합니다. AI를 호출하는 전략에는 JEV 키도 필요합니다.</p><div class="actions spaced"><a class="button primary" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>키 없이 과거 데이터로 실습</a><a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>현재 시세로 모의 판단</a></div></div></section>':'';
     return title('계좌·자금')+practice+head+readState+(rows.length?table(['통화','총 예산','배정 가능','마인드 배정','보유 평가액','총자산',''],rows):'')+setup+'</section><section class="studio-sheet spaced" data-paper-accounts aria-busy="'+batch.loading+'"><div class="studio-sheet-head"><h2>마인드별 자금</h2>'+button('마인드에 배정','mind-account')+'</div>'+table(['마인드','통화','현금','보유 평가액','평가자산',''],accounts.map(a=>[esc(profileName(a.profileId)),esc(a.quoteCurrency),accountMoney(a.cash,a.quoteCurrency),accountMoney(a.holdingsValue,a.quoteCurrency),accountMoney(a.equity,a.quoteCurrency),a.eventPaperId?button('모의 운용 열기','mind-view',a.profileId,'data-studio-view="operations"'):button('배정·회수','funding-edit',a.id)]),existingBudgets.length?'아직 마인드에 배정한 자금이 없습니다.':'통화 예산을 설정한 뒤 마인드에 자금을 배정하세요.')+'</section>';
   }
   function renderBrokerConnections(){return '<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>증권·거래소 계좌</h2></div><div class="studio-sheet-body">'+row('토스증권','<a href="https://www.tossinvest.com/signin?redirectUrl=%2Fopen-api%2Flanding" target="_blank" rel="noopener">토스증권 연결 준비 ↗</a>')+row('업비트','<a href="https://upbit.com/mypage/open_api_management" target="_blank" rel="noopener">업비트 연결 준비 ↗</a>')+'</div></section>';}
-  function openBudgetForm(currency='USDT'){
+  function openBudgetForm(currency='USDT',mindId=''){
     const b=paperBudgetSummary(workspace,currency);
-    form('모의 예산 설정','paper-budget',select('통화','quoteCurrency',['KRW','USD','USDT','BTC'].map(c=>[c,c]),currency)+field('총 모의 예산','totalBudget',b.totalBudget||({KRW:10000000,USD:10000,USDT:10000,BTC:0.1}[currency]),'number','min="0.00000001" max="1000000000000" step="any"')+'<div class="full">'+helpLabel('배정된 자금 보존','현재 마인드에 배정된 원금을 포함한 총 예산입니다. 배정 가능 금액만 줄일 수 있습니다.')+'</div>','','저장');
+    const currencyField=mindId
+      ?'<div class="full">'+row('종목의 결제 통화',esc(currency))+'<p>예산을 저장한 뒤 '+esc(profileName(mindId))+'에 배정할 금액을 선택합니다.</p></div><input type="hidden" name="quoteCurrency" value="'+esc(currency)+'">'
+      :select('통화','quoteCurrency',['KRW','USD','USDT','BTC'].map(c=>[c,c]),currency);
+    form('모의 예산 설정','paper-budget',currencyField+field('총 모의 예산','totalBudget',b.totalBudget||({KRW:10000000,USD:10000,USDT:10000,BTC:0.1}[currency]),'number','min="0.00000001" max="1000000000000" step="any"')+'<div class="full">'+helpLabel('배정된 자금 보존','현재 마인드에 배정된 원금을 포함한 총 예산입니다. 배정 가능 금액만 줄일 수 있습니다.')+'</div>',mindId,mindId?'예산 저장 후 배정':'저장');
   }
   function renderEventPaperAutomation(){
     const state=eventPaperBatch.state(),items=list(eventPaperBatch.items()),head='<section class="studio-sheet spaced" aria-busy="'+state.loading+'"><div class="studio-sheet-head"><h2>분봉 모의운용</h2></div>';
@@ -1431,7 +1435,10 @@ export function createStudioController(hooks={},options={}){
     if(!mindId||mindId==='all')return form('자금 배정·회수','mind-account',picker+'<p class="full">자금을 배정하거나 회수할 마인드를 선택하세요.</p>','','계속');
     if(usesEventPaperFunding(mindId))return form('자금 배정·회수','mind-account',picker+'<p class="full">분봉 모의운용 화면에서 배정 금액을 정하고 시작 조건을 검토하세요. 자금 회수도 같은 화면에서 진행합니다.</p>','','분봉 모의운용 준비 열기');
     const instrument=currentRoute().page==='trade'?selectedIdentity().instrument:mindInstrument(mindId),currency=overrides.quoteCurrency||instrument?.quoteCurrency||'USDT',b=paperBudgetSummary(workspace,currency);
-    if(!b.configured){hooks.open?.('모의 예산 설정',row('통화',esc(currency))+row('예산','설정에서 공용 예산을 만든 뒤 마인드에 배정하세요.'),button('예산 설정','budget-edit',currency)+button('계좌·자금 열기','accounts-settings'));return;}
+    if(!b.configured){
+      if(currentRoute().page==='trade')return openBudgetForm(currency,mindId);
+      hooks.open?.('모의 예산 설정',row('통화',esc(currency))+row('예산','설정에서 공용 예산을 만든 뒤 마인드에 배정하세요.'),button('예산 설정','budget-edit',currency)+button('계좌·자금 열기','accounts-settings'));return;
+    }
     form('자금 배정·회수','mind-account',picker+select('통화','quoteCurrency',['KRW','USD','USDT','BTC'].map(c=>[c,c]),currency)+select('자금 이동','direction',[['allocate','배정'],['release','회수']],'allocate')+field('금액','amount',Math.min(b.available,currency==='KRW'?1000000:currency==='BTC'?0.01:1000),'number','min="0.00000001" max="1000000000000" step="any"')+'<div class="full" data-funding-capacity>'+row('배정 가능',money(b.available,currency)+' '+esc(currency))+'</div>','','자금 이동');
   }
   async function openMindOrderReview(id){const dialogToken=openRecordLoading('모의 체결 검토');try{const value=await request('/api/workspace/decisions/detail?id='+encodeURIComponent(id));if(disposed||!dialogIsCurrent(dialogToken))return;const run=value.decision.run||value.decision.record,hold=run.decision?.action==='hold';hooks.open?.(hold?'후속 관측 기준 검토':'모의 체결 검토',row('종목',esc(run.instrumentId))+row('마인드',esc(profileName(run.profileId)))+row('행동',esc(({buy:'매수',sell:'매도',hold:'유지'})[run.decision?.action]||run.decision?.action))+row('목표 비중',pct(run.risk?.targetWeight))+row('선택 확신도',pct(run.decision?.confidence))+'<p class="tiny muted spaced">'+(hold?'기준을 저장하면 새 시세와 계좌 상태를 후속 관측에 사용합니다.':'저장된 결정과 계좌를 대조하고 새 실행 가격·위험·비용 조건을 확인한 뒤 모의 원장에 체결합니다.')+'</p>'+raw(run.risk,'위험·비용 검사')+(run.execution?.reason?row('실행 사유',esc(run.execution.reason)):'')+raw(run.execution,'모의 주문 상태'),button(hold?'후속 관측 기준 저장':'모의 체결 실행','mind-order-execute',id,busy?'disabled':''));}catch(problem){if(!disposed&&dialogIsCurrent(dialogToken))hooks.open?.('모의 체결 검토','<p class="empty error-text" role="alert">'+esc(problem.message)+'</p>',button('다시 조회','mind-order-review',id));}}
@@ -1684,7 +1691,14 @@ export function createStudioController(hooks={},options={}){
         const account=list(workspace.mindPositions).find(a=>a.kind==='PAPER_ACCOUNT'&&a.profileId===id&&a.quoteCurrency===values.quoteCurrency),current=account?account.initialCash+list(account.fundingLedger).reduce((sum,f)=>sum+f.amount,0):0,target=Number(values.capitalLimit),delta=Math.round((target-current)*1e8)/1e8;
         if(!Number.isFinite(target)||target<=0)throw Error('운용 금액을 입력하세요.');if(delta)await mutate('',{mindId:id,quoteCurrency:values.quoteCurrency,amount:Math.abs(delta),direction:delta>0?'allocate':'release'},'/api/workspace/accounts/allocate');
       }
-      else if(kind==='paper-budget')await mutate('',{quoteCurrency:values.quoteCurrency,totalBudget:Number(values.totalBudget)},'/api/workspace/accounts/budget');
+      else if(kind==='paper-budget'){
+        await mutate('',{quoteCurrency:values.quoteCurrency,totalBudget:Number(values.totalBudget)},'/api/workspace/accounts/budget');
+        if(id&&dialogIsCurrent(dialogToken)&&currentRoute().page==='trade'){
+          clearFormDraft(formNode);
+          const {profileId,instrument}=selectedIdentity();
+          if(profileId===id&&instrument.quoteCurrency===values.quoteCurrency)return openAccountForm({mindId:id,quoteCurrency:values.quoteCurrency});
+        }
+      }
       else if(kind==='mind-account'){if(!list(mindData?.minds).some(m=>m.id===values.mindId))throw new Error('자금을 이동할 마인드를 선택하세요.');if(usesEventPaperFunding(values.mindId)){if(dialogIsCurrent(dialogToken))hooks.close?.();hooks.navigate?.('minds',{profileId:values.mindId,view:'operations',executionMode:'paper'});return;}if(!values.quoteCurrency||!values.direction||!values.amount)return openAccountForm({mindId:values.mindId});await mutate('',{mindId:values.mindId,quoteCurrency:values.quoteCurrency,amount:Number(values.amount),direction:values.direction},'/api/workspace/accounts/allocate');}
       else if(kind==='paper-adaptation-restart'){
         const trial=restartablePaperTrial(id);if(!trial||trial.id!==values.trialId)throw new Error('중단된 비교를 다시 조회한 뒤 시작하세요.');if(values.confirmed!=='true')throw new Error('새 비교를 시작할 조건을 확인하세요.');

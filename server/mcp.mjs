@@ -28,7 +28,7 @@ const learningSourceSchema={oneOf:[objectSchema({assetMode:{const:'UPBIT_EVENT_S
 const researchReferenceSchema=objectSchema({kind:{enum:['MARKET_KNOWLEDGE','MIND_DOCUMENT','EVENT_PAPER_RECORD','LIVE_AUTOMATION_EVENT']},id:identifierSchema,contentHash:hashSchema,subscriptionId:identifierSchema,activationId:identifierSchema},['kind','id','contentHash']);
 const learningResearchSchema=objectSchema({contractVersion:{const:'EXTERNAL_RESEARCH_PROTOCOL_V1'},hypothesis:{type:'string',minLength:1,maxLength:6000},cutoffAt:{type:'string',format:'date-time'},sourceManifestHash:hashSchema,references:{type:'array',minItems:1,maxItems:32,items:researchReferenceSchema}},['contractVersion','hypothesis','cutoffAt','sourceManifestHash','references']);
 const schemas={
-  viv_onboarding:objectSchema({interest:{enum:['stocks','crypto','both']},amountKrw:{type:'integer',minimum:1,maximum:1e12},idempotencyKey:identifierSchema,action:{enum:VIV_TUTORIAL_ACTIONS},lesson:{type:'integer',minimum:1,maximum:4},documentId:identifierSchema,decisionId:identifierSchema,readOnly:{const:true}}),
+  viv_onboarding:objectSchema({interest:{enum:['stocks','crypto','both']},amountKrw:{type:'integer',minimum:1,maximum:1e12},idempotencyKey:identifierSchema,action:{enum:VIV_TUTORIAL_ACTIONS},lesson:{type:'integer',minimum:1,maximum:4},documentId:identifierSchema,decisionId:identifierSchema,simulationId:identifierSchema,readOnly:{const:true}}),
   validate_strategy_ontology:ONTOLOGY_VALIDATION_SCHEMA,
   read_strategy_ontology:objectSchema(),
  ...Object.fromEntries(HOURLY_LEARNING_ACTIONS.map(a=>[a.mcp_tool,a.inputSchema])),
@@ -116,7 +116,7 @@ function validArguments(name,args){
     if(args.action==='pause'||args.action==='resume')return count===1;
     if(args.action==='complete'){
       if(!Number.isInteger(args.lesson)||args.lesson<1||args.lesson>4)return false;
-      return args.lesson===4?count===2||count===3&&id(args.decisionId):count===3&&(id(args.documentId)||args.readOnly===true);
+      return args.lesson===4?count===2||count===3&&(id(args.decisionId)||id(args.simulationId)):count===3&&(id(args.documentId)||args.readOnly===true);
     }
     return count===0||count===3&&['stocks','crypto','both'].includes(args.interest)&&Number.isSafeInteger(args.amountKrw)&&args.amountKrw>0&&args.amountKrw<=1e12&&id(args.idempotencyKey);
   }

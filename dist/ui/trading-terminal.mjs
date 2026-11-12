@@ -1,5 +1,5 @@
 import {getInstrument} from '../domain/instruments.mjs';
-import {PAPER_PRACTICE_ENTRY} from '../system/paper-decision-links.mjs';
+import {paperPracticeEntry} from '../system/paper-decision-links.mjs';
 import {currencyAmount,currencyPrecision} from './currency-format.mjs';
 import {graphDecisionMethod} from './decision-method.mjs';
 import {helpTooltip} from './help-tooltip.mjs';
@@ -280,7 +280,7 @@ export function createTradingTerminal(hooks={}){
         <div class="terminal-mind-filter"><label class="visually-hidden" for="terminal-mind-select">마인드</label><select id="terminal-mind-select" data-terminal-mind aria-label="트레이딩 마인드"><option value="all"${model.selectedMindId==='all'?' selected':''}>모든 마인드</option>${list(model.profiles).filter(p=>p.status!=='ARCHIVED'&&!p.archived||p.id===model.selectedMindId).map(p=>`<option value="${esc(p.id)}"${model.selectedMindId===p.id?' selected':''}${p.status==='ARCHIVED'||p.archived?' disabled':''}>${esc(p.name)}${p.status==='ARCHIVED'||p.archived?' · 보관됨':''}</option>`).join('')}</select></div>
         <div class="terminal-header-actions">${hooks.onRun&&!(primary.action==='choose-mind'&&model.selectedMindId==='all')?button(primary.label==='운용 보기'?'마인드 열기':primary.label,primary.canonical&&primary.action!=='run'?'run-recovery':primary.action,primary.action==='profile'?model.selectedMindId:instrument?.id||'',`class="terminal-primary-action"${primary.disabled?' disabled':''}${(disclosure||requirements?.message&&!requirements.message.includes('실전 운용은 마인드에서'))?' aria-describedby="terminal-run-message"':''}`):''}${actionsMenu()}</div>
       </header>
-      ${disclosure||requirements?.message&&!requirements.message.includes('실전 운용은 마인드에서')?`<div class="terminal-run-requirement" id="terminal-run-requirement" tabindex="-1"><span id="terminal-run-message" role="status">${esc(disclosure||requirements.message)}</span>${requirements?.action?.nextEligibleAt?timeLabel('다음 실행',requirements.action.nextEligibleAt):''}${failedEventId?button('요청 기록 확인','provider-failure',failedEventId):''}${alternate?'<a class="button small" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>키 없이 과거 데이터로 실습</a>':''}</div>`:''}
+      ${disclosure||requirements?.message&&!requirements.message.includes('실전 운용은 마인드에서')?`<div class="terminal-run-requirement" id="terminal-run-requirement" tabindex="-1"><span id="terminal-run-message" role="status">${esc(disclosure||requirements.message)}</span>${requirements?.action?.nextEligibleAt?timeLabel('다음 실행',requirements.action.nextEligibleAt):''}${failedEventId?button('요청 기록 확인','provider-failure',failedEventId):''}${alternate?'<a class="button small" href="'+esc(paperPracticeEntry(model.selectedMindId))+'" data-studio-route>키 없이 과거 데이터로 실습</a>':''}</div>`:''}
       <div class="terminal-layout">
         ${instrumentSidebar()}
         <div class="terminal-center">

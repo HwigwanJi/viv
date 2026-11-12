@@ -4,6 +4,7 @@ import {handleMcp} from '../server/mcp.mjs';
 import {querySimulationCollection} from '../server/simulation-collection.mjs';
 import {terminalErrorRecovery} from '../server/terminal-readiness.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
+import {handleMindStudioAPI} from '../server/mind-studio.mjs';
 
 test('VIV MCP negotiates, guides first use, creates a paper budget and preserves it on replay',async()=>{
   const local=await openLocalDatabase(':memory:');
@@ -99,6 +100,44 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
     const quant=await tool('draft_quant_strategy',{name:'VIV 튜토리얼 검사 전략',definition:library.templates[0].definition,expectedRevision:library.revision,idempotencyKey:'viv-strategy'});
     assert.equal(quant.entry.status,'DRAFT');
     assert.match(quant.openUrl,/#library\?view=quant&section=components/);
+  }finally{local.close();}
+});
+
+test('VIV resumes a completed keyless practice with its own saved report',async()=>{
+  const local=await openLocalDatabase(':memory:');
+  const id='simulation-practice';
+  const onboarding=async(args,owner='practice-owner')=>{
+    const request=new Request('http://localhost:4317/mcp',{method:'POST',headers:{'oai-authenticated-user-id':owner},
+      body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'viv_onboarding',arguments:args}})});
+    const response=await handleMcp(request,{DB:local.db},{studioHandler:(request,env,options)=>{
+      const url=new URL(request.url);
+      if(!url.pathname.endsWith('/simulations/item'))return handleMindStudioAPI(request,env,options);
+      const item=url.searchParams.get('id');
+      if(request.headers.get('oai-authenticated-user-id')!=='practice-owner')return Response.json({code:'SIMULATION_NOT_FOUND'},{status:404});
+      return Response.json({simulation:{id:item,status:item===id||item==='ai-backtest'?'COMPLETED':'CREATED',report:{},config:{mode:item==='ai-backtest'?'JEV_RETROSPECTIVE':'MECHANICAL'}}});
+    }});
+    return (await response.json()).result.structuredContent;
+  };
+  try{
+    const setup={interest:'crypto',amountKrw:1000000,idempotencyKey:'practice-setup'};
+    await onboarding(setup);
+    await onboarding(setup,'other-owner');
+    const complete={action:'complete',lesson:4};
+    for(const simulationId of ['unfinished','ai-backtest']){
+      assert.equal((await onboarding({...complete,simulationId})).code,'VIV_TUTORIAL_SIMULATION_REQUIRED');
+    }
+    assert.equal((await onboarding({...complete,simulationId:id},'other-owner')).code,'VIV_TUTORIAL_SIMULATION_REQUIRED');
+    assert.equal((await onboarding({...complete,simulationId:id,decisionId:'other-kind'})).code,'INVALID_TOOL_ARGUMENTS');
+    const finished=await onboarding({...complete,simulationId:id});
+    assert.ok(!finished.lessons.some(lesson=>lesson.number===4));
+    const [receipt]=finished.tutorial.completed;
+    assert.equal(receipt.simulationId,id);
+    assert.equal(new URL(receipt.openUrl).hash,'#minds?profileId=all&view=simulations&executionMode=paper&simulationId='+id+'&tab=report');
+    await onboarding(complete);
+    await onboarding({action:'pause'});
+    const resumed=await onboarding({action:'resume'});
+    assert.deepEqual(resumed.tutorial.completed,[receipt]);
+    assert.deepEqual((await onboarding({},'other-owner')).tutorial.completed,[]);
   }finally{local.close();}
 });
 
