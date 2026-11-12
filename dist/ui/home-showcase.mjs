@@ -165,8 +165,11 @@ export function createHomeShowcase({request,mutate,getRoute,render,navigate,open
   if(!force&&key===nextKey&&state.performance&&lastRevision===revision)return;
   if(pending&&key===nextKey)return pending;
   const token=++generation,commandToken=commandGeneration;if(key!==nextKey){state={...state,performance:null,market:null};index=0;}key=nextKey;state={...state,loading:true,marketReadPending:true,error:''};redraw();
-  pending=(async()=>{const results=await Promise.allSettled([request('/api/workspace/home-performance?'+new URLSearchParams({executionMode:mode,includeInvestorMetrics:'true',...((force||!state.performance)?{refreshValuations:'true'}:{})})),request('/api/workspace/home-market').then(value=>{if(token===generation){state={...state,...(commandToken===commandGeneration?{market:value}:{}),marketReadPending:false};redraw();}return value;},error=>{if(token===generation){state={...state,marketReadPending:false,...(commandToken===commandGeneration?{error:error.message}:{})};redraw();}throw error;})]);if(token!==generation)return;let problems=[];
-   if(results[0].status==='fulfilled'){state.performance=results[0].value.performance;lastRevision=results[0].value.revision;}else problems.push(results[0].reason.message);
+  pending=(async()=>{const results=await Promise.allSettled([
+   request('/api/workspace/home-performance?'+new URLSearchParams({executionMode:mode,includeInvestorMetrics:'true',...((force||!state.performance)?{refreshValuations:'true'}:{})})).then(({performance,revision})=>{if(token===generation){state.performance=performance;lastRevision=revision;redraw();}}),
+   request('/api/workspace/home-market').then(value=>{if(token===generation){state={...state,...(commandToken===commandGeneration?{market:value}:{}),marketReadPending:false};redraw();}return value;},error=>{if(token===generation){state={...state,marketReadPending:false,...(commandToken===commandGeneration?{error:error.message}:{})};redraw();}throw error;})
+  ]);if(token!==generation)return;let problems=[];
+   if(results[0].status==='rejected')problems.push(results[0].reason.message);
    if(results[1].status==='rejected'&&commandToken===commandGeneration)problems.push(results[1].reason.message);
    state={...state,loading:false,error:[...problems,...(commandToken!==commandGeneration&&state.error?[state.error]:[])].join(' · ')};redraw();
   })().finally(()=>{if(token===generation)pending=null;});return pending;

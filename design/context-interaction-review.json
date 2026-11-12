@@ -1137,8 +1137,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T09:06:01.006Z",
-      "reason": "화면 찾기와 첫 방문 모의 홈에서 같은 모의 판단 안내로 이동하고 저장 후 홈에서 결과를 여는 흐름을 검토했습니다.",
+      "reviewedAt": "2026-11-12T09:11:15.582Z",
+      "reason": "시장 요약이 늦을 때 모의 홈에서 저장된 판단을 바로 열 수 있는 흐름을 브라우저에서 검증했습니다.",
       "signature": "702d5ac2be0d2b3682cd4c305d7c5ff59a854d29fae9325eb8f7b78003ab81e8",
       "controls": [
         [
@@ -1226,7 +1226,7 @@
           19
         ]
       ],
-      "sourceHash": "8e59289b4b5b5b25d79270ededc419be321f462b8f2372bcc79ff13115ce9e6e",
+      "sourceHash": "c336848049536acafcb2098493d41725a932eb595c499033a1b23e53e300708f",
       "customContainers": []
     },
     {

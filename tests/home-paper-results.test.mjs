@@ -177,6 +177,22 @@ test('paper home links to saved decisions and latest completed experiments indep
   assert.doesNotMatch(renderHomeShowcase({performance:live},{params:new URLSearchParams('executionMode=live')}),/>전체 시뮬레이션/);
 });
 
+test('paper decision links render while the market summary is still loading',async()=>{
+  let resolveMarket;
+  const market=new Promise(resolve=>{resolveMarket=resolve;});
+  const home=createHomeShowcase({
+    getRoute:()=>({page:'home',params:new URLSearchParams('executionMode=paper')}),
+    request:async path=>path.includes('home-performance?')?{performance:{latestPaperDecision:null},revision:1}:market,
+  });
+  const pending=home.load();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(home.state().marketReadPending,true);
+  assert.match(home.render(),/<strong>첫 모의 판단<\/strong>/);
+  resolveMarket({});
+  await pending;
+  assert.equal(home.state().marketReadPending,false);
+});
+
 test('returning to paper home reloads completed experiments at the same workspace revision',async()=>{
   let page='home';
   const reads=[];
