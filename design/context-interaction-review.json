@@ -2672,9 +2672,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T00:12:27.459Z",
-      "reason": "재검증에서 새 실험의 기간·비용·호출 상한을 먼저 확인하고 취소하면 원본 보고서와 초점으로 돌아간다. 저장과 실행을 각각 검증했다.",
-      "signature": "7edb8dd3e444a5d8369d66b63a0e248cd76f485104defb4b587cab4e6b681168",
+      "reviewedAt": "2026-11-12T00:16:05.857Z",
+      "reason": "재검증의 기간·비용·호출 상한을 먼저 확인하고 취소하면 같은 원본 보고서와 초점으로 돌아간다. 기간 목록이 실패할 때 입력 보존과 키보드 재시도를 검증했다.",
+      "signature": "7b4380677e532db54ded7cb64bda064e8b0d5c0b5c968e46ad60e961f7f7a3e6",
       "controls": [
         [
           "data-simulation-action",
@@ -2698,7 +2698,7 @@
         ],
         [
           "data-simulation-action=\"preflight-retry\"",
-          1
+          2
         ],
         [
           "data-simulation-action=\"repeat\"",
@@ -2738,14 +2738,14 @@
         ],
         [
           "helper:button(",
-          56
+          57
         ],
         [
           "helper:renderActionMenu(",
           2
         ]
       ],
-      "sourceHash": "9d05feb613a2d908ea28784801b5893513f55bd2001d1716f114a6060628392d",
+      "sourceHash": "04458ea20d90f492204150ed7796c4ed481de4cfa3176058f98bb28694b8a459",
       "customContainers": []
     },
     {
