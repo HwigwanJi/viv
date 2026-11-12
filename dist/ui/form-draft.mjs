@@ -1,7 +1,11 @@
 const allowed={studio:new Set(['profile','manifest-profile','document','document-note','universe-policy','strategy-plan','knowledge-policy','sector-import']),library:new Set(['create','import']),quant:new Set(['import','edit']),strategyLibrary:new Set(['deployment'])};
 const managers=new WeakMap();
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export function draftFormType(form){for(const type of Object.keys(allowed)){const kind=form?.dataset?.[type+'Form'];if(allowed[type].has(kind))return type+':'+kind;}return null;}
+export function draftFormType(form){
+ if(form?.dataset?.studioForm==='document-publish'&&form.querySelector?.('[data-paper-review-reason]'))return 'studio:paper-policy-review';
+ for(const type of Object.keys(allowed)){const kind=form?.dataset?.[type+'Form'];if(allowed[type].has(kind))return type+':'+kind;}
+ return null;
+}
 const selectedValues=value=>{try{const parsed=JSON.parse(value);if(Array.isArray(parsed)&&parsed.every(item=>typeof item==='string'))return parsed;}catch{}return [value];};
 const fieldValue=field=>['checkbox','radio'].includes(field.type)?String(field.checked):field.type==='select-multiple'?JSON.stringify([...field.selectedOptions].map(option=>option.value)):field.value;
 function setFieldValue(field,value){if(['checkbox','radio'].includes(field.type))field.checked=value==='true';else if(field.type==='select-multiple'){const selected=selectedValues(value);for(const option of field.options)option.selected=selected.includes(option.value);}else field.value=value;}

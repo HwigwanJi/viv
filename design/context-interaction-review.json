@@ -1085,8 +1085,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-10T12:21:38.422Z",
-      "reason": "115: 퀀트 설정과 JSON 원문의 저장 권한을 한 모드 영역으로 묶고 선택한 입력만 활성화. 기존 checkbox 이름·원문·노드 입력·초안 및 버리기/되돌리기 계약 보존. 실패 인라인 오류에 공용 초점·스크롤 적용. 기존 quant 임시 저장 키의 checkbox 순서·fieldset 목록 보존. 신규/초안수정/새버전 공용 편집기, 제출·오류·키보드·닫기 및 모든 기존 작업 문맥 검토.",
+      "reviewedAt": "2026-11-12T15:33:24.216Z",
+      "reason": "첫 모의 발행 양식만 해당 초안의 사유를 같은 탭에서 복구하고 성공하면 임시 값을 정리하는 동선을 확인",
       "signature": "a1f46858e787d263533ef9cec92f8e595c3410a9b76a02c6e2efbec0456c44f6",
       "controls": [
         [
@@ -1110,7 +1110,7 @@
           1
         ]
       ],
-      "sourceHash": "047e9ce789be9f32b13eb1898802cc1356716fbd740648a1ee7b4990333ce93e"
+      "sourceHash": "94d6858c4494d608aa98bad29587a34a862365c44b03e29de846fbc2e730386c"
     },
     {
       "file": "dist/ui/help-tooltip.mjs",
@@ -3230,9 +3230,9 @@
         "primitive",
         "navigation"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-12T15:05:59.790Z",
-      "reason": "모의 계좌의 두 실습에서 JEV 키가 불필요하고 현재 시세 실습에는 별도 USDT가 필요하다는 안내를 실제 과업과 대조",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T15:33:24.221Z",
+      "reason": "같은 전략 초안 재열기, 검토 사유 길이 안내, 발행과 결정 실행의 경계 및 저장된 근거 재조회를 확인",
       "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
       "controls": [
         [
@@ -3336,7 +3336,7 @@
           1
         ]
       ],
-      "sourceHash": "dec84cae283b53ac44293fa694aa5866fc23bceb4e9124aeb0f56e3db6f94eee",
+      "sourceHash": "7b75dd982c5e265ac2ce7187ec307db6235e645d9cef873cb71d5a3e13c53a7d",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
