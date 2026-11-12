@@ -6,7 +6,7 @@ import {renderMindHud} from './mind-hud.mjs';
 import {cardGame} from '../domain/mind-game.mjs';
 import {helpTooltip} from './help-tooltip.mjs';
 import {getInstrument} from '../domain/instruments.mjs';
-import {paperDecisionRecordHash,PAPER_PRACTICE_ENTRY} from '../system/paper-decision-links.mjs';
+import {paperDecisionRecordHash,PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY} from '../system/paper-decision-links.mjs';
 import {cssToken,numberToken} from './design-tokens.mjs';
 import {selectMindActivity,mindActivityModel} from './mind-activity.mjs';
 
@@ -93,16 +93,15 @@ function paperResultsMarkup(performance,practice){
  const decision=performance?.latestPaperDecision,experiment=performance?.latestPaperExperiment;
  let instrument='';
  if(decision?.instrumentId){try{instrument=getInstrument(decision.instrumentId).name;}catch{instrument=decision.instrumentId.split(':').at(-1);}}
- const decisionInfo=decision?[instrument,({buy:'매수',hold:'유지',sell:'매도'})[decision.action]].filter(Boolean).join(' · '):'전체 모의 기록 보기';
- const decisionContext=decision?[decision.profileName,stamp(decision.savedAt)].filter(Boolean).join(' · '):'';
+ const decisionLink=decision
+  ?[paperDecisionRecordHash(decision.id),'최근 모의 판단',[instrument,({buy:'매수',hold:'유지',sell:'매도'})[decision.action]].filter(Boolean).join(' · '),[decision.profileName,stamp(decision.savedAt)].filter(Boolean).join(' · ')]
+  :performance?.latestPaperDecision===null?[PAPER_DECISION_ENTRY,'첫 모의 판단','현재 확정 시세로 연습']
+  :[mindUrl('all','paper','records'),'모의 판단 기록','전체 모의 기록 보기'];
  const experimentLink=experiment
   ?[paperExperimentUrl(experiment),'최근 완료 실험',[experiment.profileName,experiment.name].filter(Boolean).join(' · '),stamp(experiment.completedAt)]
   :practice?[practice.href,practice.label,practice.info]
   :[paperExperimentUrl(),'백테스트 결과','전체 시뮬레이션 보기'];
- const links=[
-  [decision?paperDecisionRecordHash(decision.id):mindUrl('all','paper','records'),decision?'최근 모의 판단':'모의 판단 기록',decisionInfo,decisionContext],
-  experimentLink,
- ];
+ const links=[decisionLink,experimentLink];
  return '<nav class="home-paper-results" aria-label="모의 결과">'+links.map(([href,label,info,context])=>routeLink(href,
   '<span><strong>'+esc(label)+'</strong><small>'+esc(info)+'</small>'+(context?'<small>'+esc(context)+'</small>':'')+'</span>'+arrow)).join('')+'</nav>';
 }

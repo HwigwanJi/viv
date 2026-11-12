@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T06:39:18.050Z",
-      "reason": "빠른 이동의 기존 조작과 저장 자료 검색, 버전별 열기, 조회 실패 후 전체 목록 경로를 대조했습니다.",
+      "reviewedAt": "2026-11-12T09:06:01.004Z",
+      "reason": "화면 찾기와 첫 방문 모의 홈에서 같은 모의 판단 안내로 이동하고 저장 후 홈에서 결과를 여는 흐름을 검토했습니다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "0a89f428f38b2986f9c00bdda46369ba3082bd56a725a99d74e9438a2601aff5",
+      "sourceHash": "6a7b6d2153db03f72ff84e36de291e4321f9f7021b1599cf018547f3692691be",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -1137,8 +1137,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-11T23:03:47.078Z",
-      "reason": "모의 홈에서 최근 완료 실험과 전체 시뮬레이션 진입을 데스크톱·모바일에서 확인했다.",
+      "reviewedAt": "2026-11-12T09:06:01.006Z",
+      "reason": "화면 찾기와 첫 방문 모의 홈에서 같은 모의 판단 안내로 이동하고 저장 후 홈에서 결과를 여는 흐름을 검토했습니다.",
       "signature": "702d5ac2be0d2b3682cd4c305d7c5ff59a854d29fae9325eb8f7b78003ab81e8",
       "controls": [
         [
@@ -1226,7 +1226,7 @@
           19
         ]
       ],
-      "sourceHash": "6124060cc471ccfecb22da47b0d763f9846ca670c777122ff40baa52cded545b",
+      "sourceHash": "8e59289b4b5b5b25d79270ededc419be321f462b8f2372bcc79ff13115ce9e6e",
       "customContainers": []
     },
     {
@@ -3223,8 +3223,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T08:38:15.930Z",
-      "reason": "모의 판단 실행 간격 중 저장된 같은 봉의 기록을 열 수 있는 공용 버튼",
+      "reviewedAt": "2026-11-12T09:06:01.011Z",
+      "reason": "화면 찾기와 첫 방문 모의 홈에서 같은 모의 판단 안내로 이동하고 저장 후 홈에서 결과를 여는 흐름을 검토했습니다.",
       "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
       "controls": [
         [
@@ -3328,7 +3328,7 @@
           1
         ]
       ],
-      "sourceHash": "9ea2cc818a8f95c614d67db28b6edbb6baeb28ac214e553d7dfde3a7a0f9fb5f",
+      "sourceHash": "0d13f2e838a89a0eb84206b1f82c4bc7384e89e2d15aefb890b262b68bc46436",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3343,8 +3343,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T06:39:18.051Z",
-      "reason": "빠른 이동의 기존 조작과 저장 자료 검색, 버전별 열기, 조회 실패 후 전체 목록 경로를 대조했습니다.",
+      "reviewedAt": "2026-11-12T09:06:01.012Z",
+      "reason": "화면 찾기와 첫 방문 모의 홈에서 같은 모의 판단 안내로 이동하고 저장 후 홈에서 결과를 여는 흐름을 검토했습니다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3364,7 +3364,7 @@
           2
         ]
       ],
-      "sourceHash": "5ce11388f6ca6d766cb38d4b0829aaa1a98898f60d01db1a4f1d776cf1f548e2",
+      "sourceHash": "69f2fac01a521b072f4af6b6c8299081d03e1ad088f78eeaeac06e6cbcf8157f",
       "customContainers": []
     },
     {

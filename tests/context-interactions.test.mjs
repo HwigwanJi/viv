@@ -74,6 +74,22 @@ test('API key searches open real account setup while paper accounts keep their o
  assert.equal(parseStudioRoute(paper.href).params.get('executionMode'),'paper');
 });
 
+test('first decision searches open the same paper practice from either account view',()=>{
+ for(const mode of ['paper','live']){
+  const route=parseStudioRoute('#home?executionMode='+mode);
+  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+  for(const query of ['첫 모의 판단','첫모의판단','모의 실습','현재 시세']){
+   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
+   assert.equal(matches.length,1);
+   const [entry]=matches,destination=parseStudioRoute(entry.href);
+   assert.equal(destination.page,'trade');
+   assert.equal(destination.params.get('executionMode'),'paper');
+   assert.equal(destination.params.get('firstDecision'),'1');
+   assert.equal(entry.taskSuffix,mode==='live'?'모의 화면으로 이동':'');
+  }
+ }
+});
+
 test('AI client searches take users to Service Connections in either account view',()=>{
  for(const mode of ['paper','live']){
   const route=parseStudioRoute('#home?executionMode='+mode);

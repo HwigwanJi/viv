@@ -602,7 +602,7 @@ export function createStudioController(hooks={},options={}){
         '아래 트레이딩 화면에서 현재 준비 상태와 다음 행동을 확인하세요.';
       actions='<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>';
     }
-    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision">첫 모의 판단</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+actions+'</div></div></section>';
+    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">첫 모의 판단</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+actions+'</div></div></section>';
   }
   function mindContext(){const id=currentRoute().params.get('profileId')||'all',profile=byId(workspace.investmentProfiles,id),manifest=savedMind(id)?.manifest,version=profileVersion(profile?.currentVersionId);return {id,profile,manifest,policy:manifest?.data,settings:manifest?.data.profileSettings||version?.settings,version,memory:byId(workspace.memoryVersions,profile?.currentMemoryVersionId)};}
   function mindHeading(label,actions='',secondary=''){

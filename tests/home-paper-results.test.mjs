@@ -169,6 +169,8 @@ test('paper home links to saved decisions and latest completed experiments indep
   const empty=renderHomeShowcase({performance:null},{params:new URLSearchParams()});
   assert.match(empty,/profileId=all[^"]*view=records[^"]*"[^>]*>[^]*?모의 판단 기록/);
   assert.match(empty,/profileId=all[^"]*view=simulations[^"]*"[^>]*>[^]*?백테스트 결과/);
+  const first=renderHomeShowcase({performance:{...performance,latestPaperDecision:null}},{params:new URLSearchParams()});
+  assert.match(first,/<a [^>]*href="#trade\?[^"]*firstDecision=1[^"]*"[^>]*><span><strong>첫 모의 판단<\/strong>/);
   const live=buildHomePerformance({workspace,executionMode:'live',asOf});
   assert.equal(Object.hasOwn(live,'latestPaperDecision'),false);
   assert.doesNotMatch(renderHomeShowcase({performance:live},{params:new URLSearchParams('executionMode=live')}),/home-paper-results/);

@@ -14,6 +14,7 @@ import {pixelToken} from './ui/design-tokens.mjs';
 import {installHelpTooltips} from './ui/help-tooltip.mjs';
 import {installActionMenus} from './ui/action-menu.mjs';
 import {renderStudioContext,renderMindWorkspace,studioPrimaryDestination,studioBreadcrumbs,renderStudioBreadcrumbs,createStudioRouteFocus,createStudioDialogNavigation,studioJumpItems,studioJumpResearchItems,renderStudioJump,filterStudioJump,selectStudioJump} from './ui/studio-shell.mjs';
+import {PAPER_DECISION_ENTRY} from './system/paper-decision-links.mjs';
 
 installHelpTooltips(document);
 installActionMenus(document,{window});
@@ -63,7 +64,7 @@ function render(){
   hudRenderPending=false;
   const sameRoute=document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash;
   const active=document.activeElement;
-  const retainedFocus=sameRoute&&['.studio-content h1[tabindex="-1"]','[data-capability-guide]'].find(selector=>active?.matches(selector));
+  const retainedFocus=sameRoute&&['.studio-content h1[tabindex="-1"]','[data-capability-guide]','#first-paper-decision'].find(selector=>active?.matches(selector));
   const activeHud=active?.closest?.('[data-mind-hud]'),hudFocus=sameRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:active.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>active.dataset[key]!==undefined)}:null;
   if(hudFocus&&hudFocus.selector!=='[data-hud-viewport]'){const key=hudFocus.selector;hudFocus.selector=key?'[data-'+key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+'="'+CSS.escape(document.activeElement.dataset[key])+'"]':null;}
   const token=++renderGeneration,route=parseStudioRoute(location.hash),navigation=studio.navigation(route),railOnly=['home','minds'].includes(route.page);
@@ -148,7 +149,10 @@ document.addEventListener('click',event=>dialogFocus.rememberInteraction(event.t
 document.addEventListener('click',event=>{
   if(studio.state().formSaving){event.preventDefault();event.stopImmediatePropagation();return;}
   const settingsLink=event.target.closest('.studio-page-settings .studio-task-nav a[data-studio-route]');
-  const destination=settingsLink||event.target.closest('[data-studio-jump-item], [data-broker-paper-home]');
+  const routeLink=event.target.closest('a[data-studio-route]');
+  const routeHref=routeLink?.getAttribute('href');
+  const paperGuide=routeHref===PAPER_DECISION_ENTRY||routeHref?.startsWith(PAPER_DECISION_ENTRY+'&returnTo=');
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item], [data-broker-paper-home]')||(paperGuide?routeLink:null);
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
     dialogLifecycleToken++;
@@ -159,7 +163,7 @@ document.addEventListener('click',event=>{
     if(destination.dataset.studioJumpResearch==='reader'){
       navigateToHeading(href,'[data-library-result-heading]');
       if(sameRoute)void studio.openResearch(parseStudioRoute(href).params.get('knowledgeId'),{showLoading:true}).catch(()=>{});
-    }else navigateToHeading(href);
+    }else navigateToHeading(href,paperGuide?'#first-paper-decision':undefined);
     return;
   }
   const nav=event.target.closest('[data-nav]');

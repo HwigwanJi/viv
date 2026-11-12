@@ -1,3 +1,5 @@
+import {PAPER_DECISION_ENTRY} from '../system/paper-decision-links.mjs';
+
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 const COLLECTION_TASKS = [['overview','마인드 목록'],['records','전체 기록'],['simulations','전체 시뮬레이션']];
@@ -18,6 +20,8 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   const mindSource={...route,params:new URLSearchParams([...route.params].filter(([key])=>route.page==='minds'?key==='returnTo':key!=='returnTo'))};
   const mindHref=(profileId,view)=>routeHash(mindSource,'minds',{profileId,view,executionMode:view==='simulations'||!live?'paper':'live'});
   const entries=primary.map(([page,,label])=>({label,group:'주요 화면',href:routeHash(route,page,page==='minds'?{profileId:'all',view:'overview'}:{})}));
+  entries.push({label:'첫 모의 판단',group:'모의 실습',keywords:'실습 연습 모의투자 현재 확정 시세 BTC-USDT 4시간봉',
+    taskSuffix:live?'모의 화면으로 이동':'',href:PAPER_DECISION_ENTRY});
   for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label:view==='simulations'&&live?'전체 모의 시뮬레이션':label,group:'전체 마인드',keywords:keywords[view]||'',href:mindHref('all',view)});
   for(const mind of minds){
     const selected=mind.id===navigation.selectedMindId;
