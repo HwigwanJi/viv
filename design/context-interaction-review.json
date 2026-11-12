@@ -224,8 +224,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T18:35:53.631Z",
-      "reason": "격리 서버 종료 후 PC·모바일에서 정적 복구 안내를 열고 재시작한 뒤 원래 경로와 보고서 식별값을 확인.",
+      "reviewedAt": "2026-11-12T18:46:14.641Z",
+      "reason": "격리 서버 종료·복귀, 320px에서 키보드 포커스의 2px 강조와 도움말 연결 확인.",
       "signature": "e6861bd04471a8240c61ecd228a49b29c68992e57f4fa66bbc75edd31af582e3",
       "controls": [
         [
@@ -241,7 +241,7 @@
           1
         ]
       ],
-      "sourceHash": "00053612a77ac7e52ed80c41c04bc665067acc5fca70cb48638466b1b279119a",
+      "sourceHash": "352e23161cf3d7323f997fd487e1ddee7479680e583f9bcc079efd89bd6f0e66",
       "customContainers": []
     },
     {

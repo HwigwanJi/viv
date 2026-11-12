@@ -35,6 +35,7 @@ const connectionHelp=`<!doctype html>
     h1{font-size:1.6rem;line-height:1.35}
     button{padding:.65rem 1rem;border:0;border-radius:.6rem;background:#dafa66;color:#161c13;font:inherit;font-weight:650;cursor:pointer}
     a{color:#dafa66}
+    :focus-visible{outline:2px solid #dafa66;outline-offset:4px}
     details{margin:1.25rem 0}
     summary{cursor:pointer}
     code{display:block;margin:.25rem 0 .8rem;overflow-wrap:anywhere}
