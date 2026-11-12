@@ -52,7 +52,7 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
   const local=await openLocalDatabase(':memory:');
   try{
     const rpc=async(method,params={},owner='viv-test-owner')=>{
-      const response=await handleMcp(new Request('http://localhost:4317/mcp',{method:'POST',headers:{'oai-authenticated-user-id':owner},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}),{DB:local.db});
+      const response=await handleMcp(new Request('http://localhost:4317/mcp?installation=fixture',{method:'POST',headers:{'oai-authenticated-user-id':owner},body:JSON.stringify({jsonrpc:'2.0',id:1,method,params})}),{DB:local.db});
       return (await response.json()).result;
     };
     const init=await rpc('initialize',{protocolVersion:'2025-11-25'});
@@ -80,6 +80,12 @@ test('VIV MCP negotiates, guides first use, creates a paper budget and preserves
       executionMode:'paper',firstDecision:'1',instrumentId:'crypto:okx:BTC-USDT',timeframe:'4h'
     });
     assert.equal(new URL(saved.structuredContent.links.paperPractice).hash,'#minds?profileId=all&view=simulations&executionMode=paper&setup=new&practice=quant');
+    const briefing=(await rpc('tools/call',{name:'read_investment_status',arguments:{}})).structuredContent;
+    assert.deepEqual(briefing.recentDecisions,[]);
+    assert.deepEqual(briefing.links,{
+      paperDecision:saved.structuredContent.links.paperDecision,
+      paperPractice:saved.structuredContent.links.paperPractice,
+    });
     assert.match(saved.structuredContent.playbook,/종목·마인드·시각과 일치하는 항목의 openUrl/);
     const repeated=await onboarding({interest:'both',amountKrw:4000000,idempotencyKey:'viv-2'});
     assert.deepEqual(repeated.structuredContent.paperBudget,{amountKrw:2000000,existing:true});

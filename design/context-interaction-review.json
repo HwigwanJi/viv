@@ -3230,9 +3230,9 @@
         "primitive",
         "navigation"
       ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T13:05:16.453Z",
-      "reason": "JEV 설정 확인과 키 없는 실습을 데스크톱 키보드·모바일 터치로 확인",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-12T15:05:59.790Z",
+      "reason": "모의 계좌의 두 실습에서 JEV 키가 불필요하고 현재 시세 실습에는 별도 USDT가 필요하다는 안내를 실제 과업과 대조",
       "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
       "controls": [
         [
@@ -3336,7 +3336,7 @@
           1
         ]
       ],
-      "sourceHash": "ee3ba4dfa462a517f0a53bbe14900f24c960888dfdd58001e740b73c63a3b0e2",
+      "sourceHash": "dec84cae283b53ac44293fa694aa5866fc23bceb4e9124aeb0f56e3db6f94eee",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
