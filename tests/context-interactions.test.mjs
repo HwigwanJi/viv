@@ -5,7 +5,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {contextSourceFiles,inspectContextSource,inspectContextReview,inspectContextMatrix,checkContextInteractions} from '../scripts/check-context-interactions.mjs';
 import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
-import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS} from '../dist/ui/studio-controller.mjs';
+import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS,paperTrendDecisionBasis} from '../dist/ui/studio-controller.mjs';
 import {renderStudioJump,studioJumpItems,studioJumpMatches,studioJumpResearchItems} from '../dist/ui/studio-shell.mjs';
 import {terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
 import {terminalPrimaryAction,terminalRunRequirement} from '../dist/ui/terminal-workspace-controls.mjs';
@@ -43,6 +43,27 @@ test('a saved paper decision can be read during the execution cooldown',()=>{
  model.terminalReadiness.purpose='LIVE_READ_ONLY';
  data.blockers=[wait,saved];
  assert.equal(terminalPrimaryAction(model).disabled,true);
+});
+
+test('paper trend lesson explains no order only when the saved result supports it',()=>{
+ const record={decision:{action:'hold'},execution:{status:'NO_ORDER_REQUIRED'},strategyEvaluation:{
+  modules:[{moduleId:'SMA_TREND',ready:true,indicators:{close:80,slowMA:100,lookbackBars:480}}],
+  graphEvaluation:{trace:[{nodeId:'trend-decision',output:{decision:{action:'sell',targetWeight:0}}}],output:{currentWeight:0,deltaWeight:0}},
+ }};
+ const basis=paperTrendDecisionBasis(record,'USDT',[]);
+ assert.match(basis,/<h3[^>]*>판단에 사용한 시세<\/h3>/);
+ assert.match(basis,/이동평균보다 낮아 목표 보유 비중은 0%/);
+ assert.match(basis,/BTC 보유 비중도 0%여서.*모의 주문 없이 유지/);
+ assert.doesNotMatch(paperTrendDecisionBasis(record,'USDT',undefined),/매도할 수량/);
+ assert.doesNotMatch(paperTrendDecisionBasis({...record,execution:{status:'RISK_BLOCKED'}},'USDT',[]),/매도할 수량/);
+ record.strategyEvaluation.graphEvaluation.output.currentWeight=.3;
+ assert.doesNotMatch(paperTrendDecisionBasis(record,'USDT',[]),/매도할 수량/);
+ record.strategyEvaluation.graphEvaluation.output.currentWeight=0;
+ delete record.strategyEvaluation.modules[0].ready;
+ assert.match(paperTrendDecisionBasis(record,'USDT',[]),/480봉 이동평균/);
+ assert.doesNotMatch(paperTrendDecisionBasis(record,'USDT',[]),/매도할 수량/);
+ delete record.strategyEvaluation.modules[0].indicators;
+ assert.equal(paperTrendDecisionBasis(record,'USDT',[]),'');
 });
 
 test('help queries find the capability catalog in the current viewing mode',()=>{

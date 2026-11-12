@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T09:06:01.004Z",
-      "reason": "화면 찾기와 첫 방문 모의 홈에서 같은 모의 판단 안내로 이동하고 저장 후 홈에서 결과를 여는 흐름을 검토했습니다.",
+      "reviewedAt": "2026-11-12T09:35:12.756Z",
+      "reason": "저장된 첫 모의 판단의 시세와 체결 결과를 모바일에서 읽고 같은 마인드의 모의 트레이딩으로 이어지는 동선을 대조했습니다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "6a7b6d2153db03f72ff84e36de291e4321f9f7021b1599cf018547f3692691be",
+      "sourceHash": "f221a9fcf26f422207a1826bdd91925158ea0dd63a266d4ed4302b51d0106532",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -3223,9 +3223,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T09:06:01.011Z",
-      "reason": "화면 찾기와 첫 방문 모의 홈에서 같은 모의 판단 안내로 이동하고 저장 후 홈에서 결과를 여는 흐름을 검토했습니다.",
-      "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
+      "reviewedAt": "2026-11-12T09:35:12.754Z",
+      "reason": "저장된 첫 모의 판단의 시세와 체결 결과를 모바일에서 읽고 같은 마인드의 모의 트레이딩으로 이어지는 동선을 대조했습니다.",
+      "signature": "1745e71be5ed9d17ccaba26f637407a1e508c7b613aeec1d73251c150dd1ca99",
       "controls": [
         [
           "data-auto-action",
@@ -3293,7 +3293,7 @@
         ],
         [
           "element:a",
-          34
+          35
         ],
         [
           "element:button",
@@ -3328,7 +3328,7 @@
           1
         ]
       ],
-      "sourceHash": "0d13f2e838a89a0eb84206b1f82c4bc7384e89e2d15aefb890b262b68bc46436",
+      "sourceHash": "6ac7b122d61e012e67afe5a66626b8ab2522aefd18efafd7a549994b121f37a1",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

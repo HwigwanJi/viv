@@ -14,7 +14,6 @@ import {pixelToken} from './ui/design-tokens.mjs';
 import {installHelpTooltips} from './ui/help-tooltip.mjs';
 import {installActionMenus} from './ui/action-menu.mjs';
 import {renderStudioContext,renderMindWorkspace,studioPrimaryDestination,studioBreadcrumbs,renderStudioBreadcrumbs,createStudioRouteFocus,createStudioDialogNavigation,studioJumpItems,studioJumpResearchItems,renderStudioJump,filterStudioJump,selectStudioJump} from './ui/studio-shell.mjs';
-import {PAPER_DECISION_ENTRY} from './system/paper-decision-links.mjs';
 
 installHelpTooltips(document);
 installActionMenus(document,{window});
@@ -151,7 +150,7 @@ document.addEventListener('click',event=>{
   const settingsLink=event.target.closest('.studio-page-settings .studio-task-nav a[data-studio-route]');
   const routeLink=event.target.closest('a[data-studio-route]');
   const routeHref=routeLink?.getAttribute('href');
-  const paperGuide=routeHref===PAPER_DECISION_ENTRY||routeHref?.startsWith(PAPER_DECISION_ENTRY+'&returnTo=');
+  const paperGuide=routeHref?.startsWith('#trade?')&&parseStudioRoute(routeHref).params.has('firstDecision');
   const destination=settingsLink||event.target.closest('[data-studio-jump-item], [data-broker-paper-home]')||(paperGuide?routeLink:null);
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
