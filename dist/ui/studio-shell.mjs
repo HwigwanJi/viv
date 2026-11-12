@@ -153,8 +153,15 @@ export function studioReturnLink(route, parseRoute, routeHash) {
   if (!saved || !/^#(?:home|trade|minds|library|settings)(?:\?|$)/.test(saved)) return null;
   const target = parseRoute(saved);
   if (target.page === route.page) return null;
-  const label = {home:'홈으로 돌아가기',trade:'트레이딩으로 돌아가기',minds:'마인드로 돌아가기',library:'라이브러리로 돌아가기',settings:'설정으로 돌아가기'}[target.page];
-  return {label, href:routeHash(target,target.page,{executionMode:route.params.get('executionMode') || 'paper'})};
+  const labels = {home:'홈으로 돌아가기',trade:'트레이딩으로 돌아가기',minds:'마인드로 돌아가기',library:'라이브러리로 돌아가기',settings:'설정으로 돌아가기'};
+  const connections = route.page==='settings' && route.params.get('view')==='connections';
+  if(connections){
+    labels.home='투자 홈으로 돌아가기';
+    labels.trade='같은 트레이딩 화면으로 돌아가기';
+    if(target.params.has('knowledgeId'))labels.library='같은 자료로 돌아가기';
+  }
+  const executionMode=(connections&&target.params.get('executionMode'))||route.params.get('executionMode')||'paper';
+  return {label:labels[target.page], href:routeHash(target,target.page,{executionMode})};
 }
 
 export function renderStudioContext(navigation, route, {parseRoute, routeHash}) {

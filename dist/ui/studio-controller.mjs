@@ -46,7 +46,8 @@ import {assertMindDocument,parseMindDocument,serializeMindDocument,mindDocumentH
 import {investmentFilename} from './brand.mjs';
 import {createQuantStrategyLibrary,labelQuantStrategyInstance} from './quant-strategy-library.mjs';
 import {attachQuantStrategy,createQuantStrategyMindGraph} from '../domain/quant-strategy-library.mjs';
-import {createMarketLibrary,KNOWLEDGE_LABELS,knowledgePublicationLabel,knowledgeReaderHash} from './market-library.mjs';
+import {createMarketLibrary,KNOWLEDGE_LABELS,knowledgePublicationLabel} from './market-library.mjs';
+import {studioReturnLink} from './studio-shell.mjs';
 import {disabledExternalKnowledge} from '../domain/external-knowledge-policy.mjs';
 import {createNewsComparisonUI} from './news-comparison.mjs';
 import {MIND_APPEARANCE_OPTIONS,readMindAppearance} from '../domain/workspace.mjs';
@@ -1048,18 +1049,16 @@ export function createStudioController(hooks={},options={}){
   }
   async function collectCapture(){if(captureCollecting||captureLoading||captureStatusError||busy||captureData?.canCollect!==true)return;if(isDataSettings())restoreMindActionFocus('capture-collect','');captureCollecting=true;captureActionError='';captureMessage='';redraw();try{const value=await mutate('',{provider:'okx',instrumentId:'crypto:okx:BTC-USDT'},'/api/workspace/market-captures/collect',{onCommitted:invalidateTerminal});captureData=value.collection;captureMessage=value.result?.reused?'이미 보관한 확정 시세를 확인했습니다.':'확정 시세 원문을 수집해 보관했습니다.';if(currentRoute().page==='trade')await loadTerminal();}catch(problem){captureActionError=problem.message;if(problem.collection)captureData=problem.collection;}finally{captureCollecting=false;await loadCaptureStatus();redraw();}}
   function connectionSummary(){
-    const connections=mindData?.connections||{},korean=connections.koreanStocks,us=connections.usStocks,live=executionModeOf(currentRoute())==='live',items=liveActivity.items(),enabled=live?items?.filter(item=>item.status==='ENABLED').length:list(workspace.mindSubscriptions).filter(item=>item.status==='ENABLED').length;
+    const route=currentRoute(),connections=mindData?.connections||{},korean=connections.koreanStocks,us=connections.usStocks,live=executionModeOf(route)==='live',items=liveActivity.items(),enabled=live?items?.filter(item=>item.status==='ENABLED').length:list(workspace.mindSubscriptions).filter(item=>item.status==='ENABLED').length;
     const jevConfigured=connections.jev?.configured??status?.jev?.configured;
-    const reviewKey=currentRoute().params.get('jevReview')==='1';
-    const source=reviewKey?savedRouteFor(currentRoute(),'library'):null;
-    const knowledgeId=source?.params.get('view')==='documents'?source.params.get('knowledgeId'):null;
-    const sourceReturn=knowledgeId?'<a class="button small" href="'+esc(knowledgeReaderHash(source,knowledgeId))+'" data-studio-route>같은 자료로 돌아가기</a>':'';
-    const current=row('현재 보기',live?'실전':'모의')+row('자동 운용',live&&liveActivity.state().error?'운용 상태 조회 실패':enabled===undefined?'상태 조회 중':num(enabled,0)+'개 운용 중')+row('JEV 연결 설정',jevConfigured?'키 설정값 있음 · 연결 미확인':'연결 설정 필요');
-    const jevSetup='<details class="spaced"'+(!jevConfigured||reviewKey?' open':'')+'><summary>AI 판단용 JEV 키 설정</summary><ol class="spaced"><li><a href="https://console.typesafe.ai/" target="_blank" rel="noopener">TypeSafe 콘솔에서 키 발급·관리 ↗</a></li><li>VIV 서버가 실행되는 컴퓨터에서 설치 폴더의 <code>.env</code>에 <code>TYPESAFE_API_KEY</code>를 설정하세요.</li><li>VIV 서버를 다시 시작한 뒤 '+(knowledgeId?'자료로 돌아가 분류 상태를 확인하세요.':'트레이딩으로 돌아가 판단을 다시 실행하세요.')+'</li></ol>'+sourceReturn+'<p class="spaced">모의 판단에는 거래소 API 키가 필요하지 않습니다.</p>'+(!live?'<p><a href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>키 없이 과거 데이터로 실습</a></p>':'')+'</details>';
+    const back=studioReturnLink(route,parseStudioRoute,studioRouteHash),reviewKey=route.params.get('jevReview')==='1';
+    const current=row('현재 보기',live?'실전':'모의')+row('자동 운용',live&&liveActivity.state().error?'운용 상태 조회 실패':enabled===undefined?'상태 조회 중':num(enabled,0)+'개 운용 중')+row('JEV 키',jevConfigured===true?'서버 설정 확인 · 키 유효성 미확인':jevConfigured===false?'설정 안 됨':'설정 상태 조회 필요');
+    const jevSetup='<details class="spaced"'+(back||reviewKey?' open':'')+'><summary>AI 판단용 JEV 키 설정</summary><p class="spaced">JEV를 호출하는 판단·분류·추천에 사용합니다. 설정은 VIV 서버가 실행되는 컴퓨터에서 진행하세요.</p><ol class="spaced"><li><a href="https://console.typesafe.ai/keys" target="_blank" rel="noopener noreferrer">TypeSafe 콘솔에서 키 발급·관리 ↗</a></li><li>VIV 설치 폴더의 <code>.env</code>에 <code>TYPESAFE_API_KEY</code>를 설정하세요.</li><li>VIV 서버를 다시 시작하고 이 화면의 <strong>상태 새로고침</strong>을 누르세요. 키 유효성은 다음 JEV 요청의 결과로 확인합니다.</li></ol></details>';
+    const next=live?'':'<p class="spaced"><a class="button small" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>키 없이 과거 데이터로 실습</a></p>';
     const links='<div class="actions spaced"><a class="button small" href="'+esc(studioRouteHash(currentRoute(),'settings',{view:'accounts'}))+'" data-studio-route>'+ (live?'API 키 등록·계좌 관리':'모의 계좌 관리')+'</a>'+(!live?'<a class="button small" href="'+esc(studioRouteHash(currentRoute(),'settings',{view:'accounts',executionMode:'live'}))+'" data-studio-route>실계좌 API 키 등록</a>':'')+'<a class="button small" href="'+esc(studioRouteHash(currentRoute(),'settings',{view:'automation'}))+'" data-studio-route>자동 운용 보기</a><a class="button small" href="/install.html">휴대폰 연결·설치</a></div>';
     const mcp='<p class="spaced"><a class="button small" href="/install.html?connect=ai&amp;executionMode='+executionModeOf(currentRoute())+'">AI 연결·복구 (MCP)</a></p>';
     const sources=row('코인 시세',connections.crypto?.mode==='PUBLIC_CONFIRMED_CANDLES'?'OKX · 공개 시세':'상태 조회 필요')+row('한국 주식',korean?.provider==='TOSS'?'토스증권 · 일봉':korean?.provider==='KIS'?'한국투자증권 · 일봉':korean?.provider==='NAVER_REFERENCE'?'네이버 금융 · 참조 일봉':'상태 조회 필요')+row('미국 주식',us?.provider==='TOSS'&&us.status==='CONFIGURED'?'토스증권 · 일봉':us?.status==='CONFIGURED'?'한국투자증권 · 시세':us?.status==='CONNECT_REQUIRED'?'한국투자증권 연결 필요':'상태 조회 필요')+row('매크로·뉴스',connections.macro?.status==='APPROVED_DOCUMENTS'&&connections.news?.status==='APPROVED_DOCUMENTS'?'검토한 투자 자료':'자료 검토 필요');
-    return current+mcp+jevSetup+links+connectionDetails('sources','시세·자료 연결',sources);
+    return current+next+jevSetup+mcp+links+connectionDetails('sources','시세·자료 연결',sources);
   }
   const isDataSettings=()=>currentRoute().page==='settings'&&currentRoute().params.get('view')==='data';
   const mindFocusScope=()=>currentRoute().page+'?'+currentRoute().params.toString();

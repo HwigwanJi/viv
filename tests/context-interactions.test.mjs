@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {contextSourceFiles,inspectContextSource,inspectContextReview,inspectContextMatrix,checkContextInteractions} from '../scripts/check-context-interactions.mjs';
 import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
 import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS,paperTrendDecisionBasis} from '../dist/ui/studio-controller.mjs';
-import {renderStudioJump,studioJumpItems,studioJumpMatches,studioJumpResearchItems} from '../dist/ui/studio-shell.mjs';
+import {renderStudioJump,studioJumpItems,studioJumpMatches,studioJumpResearchItems,studioReturnLink} from '../dist/ui/studio-shell.mjs';
 import {terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
 import {terminalPrimaryAction,terminalRunRequirement} from '../dist/ui/terminal-workspace-controls.mjs';
 import {queryMarketKnowledge} from '../server/market-knowledge.mjs';
@@ -239,3 +239,13 @@ test('current authored UI sources all have a current context interaction review'
 test('the action matrix requires every runtime and native owner plus state rules and real source references',()=>{assert.ok(inspectContextMatrix({schemaVersion:1,groups:[]},new Set()).some(v=>v.code==='CONTEXT_MATRIX_OWNER_MISSING'));assert.ok(inspectContextMatrix({schemaVersion:1,groups:[{id:'bad',owner:'unregistered',actions:['열기'],sources:['missing.mjs']}]},new Set()).some(v=>v.code==='CONTEXT_MATRIX_GROUP_INVALID'));});
 
 test('new TSX components and standalone HTML outside the original screen directories enter the review gate',async()=>{const root=await mkdtemp(path.join(os.tmpdir(),'cji-context-scan-'));try{for(const name of ['dist/ui','dist/research','dist/new-screen'])await mkdir(path.join(root,name),{recursive:true});await writeFile(path.join(root,'dist/ui/new.tsx'),'<button>열기</button>');await writeFile(path.join(root,'dist/new-screen/index.html'),'<button>열기</button>');const files=await contextSourceFiles(root);assert.ok(files.includes('dist/ui/new.tsx'));assert.ok(files.includes('dist/new-screen/index.html'));}finally{assert.equal(path.dirname(path.resolve(root)),path.resolve(os.tmpdir()));assert.ok(path.basename(root).startsWith('cji-context-scan-'));await rm(root,{recursive:true,force:true});}});
+test('JEV setup returns to the originating trade, home view or saved document',()=>{
+ const recovery=returnTo=>studioReturnLink(parseStudioRoute('#settings?'+new URLSearchParams({view:'connections',executionMode:'live',returnTo})),parseStudioRoute,studioRouteHash);
+ const trade='#trade?executionMode=paper&profileId=mind-one&instrumentId=crypto%3Aokx%3ABTC-USDT&timeframe=4h&tab=decisions';
+ const home='#home?executionMode=paper&showcase=experiments&currency=BTC';
+ assert.deepEqual(recovery(trade),{href:trade,label:'같은 트레이딩 화면으로 돌아가기'});
+ assert.deepEqual(recovery(home),{href:home,label:'투자 홈으로 돌아가기'});
+ const document='#library?view=documents&executionMode=paper&knowledgeId=source-one';
+ assert.deepEqual(recovery(document),{href:document,label:'같은 자료로 돌아가기'});
+ for(const invalid of ['https://example.com/#trade','#//example.com','#settings?view=accounts','#trade/other'])assert.equal(recovery(invalid),null);
+});
