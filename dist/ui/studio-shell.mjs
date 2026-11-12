@@ -42,7 +42,9 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
 
 export function studioJumpMatches(text,query){
   const target=text.normalize('NFKC').toLocaleLowerCase();
-  return query.normalize('NFKC').toLocaleLowerCase().trim().split(/\s+/).every(term=>target.includes(term));
+  const compact=target.replace(/\s+/g,'');
+  return query.normalize('NFKC').toLocaleLowerCase().trim().split(/\s+/).every(term=>
+    target.includes(term)||/\p{Script=Hangul}/u.test(term)&&compact.includes(term));
 }
 
 export function renderStudioJump(entries,{modeLabel='',loading=false,error=''}={}) {

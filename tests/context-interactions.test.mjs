@@ -72,11 +72,13 @@ test('mind name and task search finds matching strategies and distinguishes dupl
  const entries=studioJumpItems(route,{minds},{routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
  const search=query=>entries.filter(item=>studioJumpMatches(item.label+' '+item.keywords,query));
  const strategies=search('국면 추세 전략'.normalize('NFD'));
+ assert.deepEqual(search('국면추세 전략'),strategies);
  assert.deepEqual(strategies.map(item=>parseStudioRoute(item.href).params.get('profileId')),['profile-aa11aa11','profile-bb22bb22','profile-long']);
  assert.deepEqual(strategies.map(item=>item.identity),['생성 2026. 11. 12. 09:00 KST · aa11aa11','bb22bb22','']);
  assert.ok(strategies.every(item=>item.searchOnly&&parseStudioRoute(item.href).params.get('view')==='principles'));
  assert.match(renderStudioJump(strategies),/data-studio-jump-search-only hidden/);
  const labs=search('국면 추세 백테스트');
+ assert.deepEqual(search('국면추세 백테스트'),labs);
  assert.equal(labs.length,3);
  assert.ok(labs.every(item=>parseStudioRoute(item.href).params.get('view')==='simulations'));
 });
