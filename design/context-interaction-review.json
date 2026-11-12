@@ -81,8 +81,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T05:41:55.603Z",
-      "reason": "설치 확인, MCP 주소 복사와 확인 실패 및 키보드 재시도 시 초점 이동을 대조했습니다.",
+      "reviewedAt": "2026-11-12T08:09:10.550Z",
+      "reason": "iOS WebKit 설치 주소 복사와 권한 실패 복구, 기존 Android와 PC 설치 검토",
       "signature": "c4e4b9af830366066588a0153c7f80ac50c848b2ea062d54643990f0b760d768",
       "controls": [
         [
@@ -126,7 +126,7 @@
           2
         ]
       ],
-      "sourceHash": "bc5a8b04685d5e77eaa8d8d8f83cdea9173e77c1d23cc03ac317ebc4fa506d8a"
+      "sourceHash": "7559e69081c6cd9cc01f6a660c125b12d3116914ad70ba68e0680f96f3ee97cc"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -362,9 +362,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T05:41:55.604Z",
-      "reason": "설치 확인, MCP 주소 복사와 확인 실패 및 키보드 재시도 시 초점 이동을 대조했습니다.",
-      "signature": "855a8476991a7abdd75d32f972c945ac64b1f17bb09135167fc4a52e8509389e",
+      "reviewedAt": "2026-11-12T08:09:10.551Z",
+      "reason": "iOS WebKit 설치 주소 복사와 권한 실패 복구, 기존 Android와 PC 설치 검토",
+      "signature": "b94777f199b7c43220f9104b3d043a43ddada3b2299626128cc4a05c1d42c74c",
       "controls": [
         [
           "element:a",
@@ -372,10 +372,14 @@
         ],
         [
           "element:button",
-          2
+          3
+        ],
+        [
+          "element:textarea",
+          1
         ]
       ],
-      "sourceHash": "85f83518b3564e8ae781095b38559a27dbbb9e408099bb647abfac2f07598009"
+      "sourceHash": "b24c29aad1203b66107fa895b70a2f519d09d900dc39a1fce55a69bc2a13b30b"
     },
     {
       "file": "dist/ui/app-notifications.mjs",
@@ -1364,8 +1368,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T05:41:55.604Z",
-      "reason": "설치 확인, MCP 주소 복사와 확인 실패 및 키보드 재시도 시 초점 이동을 대조했습니다.",
+      "reviewedAt": "2026-11-12T08:09:10.552Z",
+      "reason": "iOS WebKit 설치 주소 복사와 권한 실패 복구, 기존 Android와 PC 설치 검토",
       "signature": "7bca0d370340677205acc6ef7fc1bb7985de8dfd9184e69a151934d6855fcf7a",
       "controls": [
         [
@@ -1393,7 +1397,7 @@
           1
         ]
       ],
-      "sourceHash": "ace08fe4f688e1f23c7884e7b7ee9b61dd4b2e07be9b980860e8ae9505e14201"
+      "sourceHash": "6670f629685daa21d953cada79d847cb0a3648b014de4eeaa6b5c008c6a77420"
     },
     {
       "file": "dist/ui/interface-motion.mjs",

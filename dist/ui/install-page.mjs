@@ -10,7 +10,7 @@ const recheck=document.querySelector('[data-install-recheck]'),setup=document.qu
 const retryCommand=document.querySelector('[data-install-retry-command]'),retryCode=retryCommand.querySelector('code');
 let installUrl=null;
 function showAddress(url){
-  installUrl=url;copy.hidden=!url;address.hidden=!url||!desktop;
+  installUrl=url;copy.hidden=!url||safariHandoff;address.hidden=!url||!desktop;
   address.querySelector('input').value=url||'';
 }
 async function checkConnection(){
@@ -70,6 +70,8 @@ const install=createAppInstall({window,navigator,open(title,body,actions){
 }});
 document.addEventListener('click',event=>{if(event.target.closest('[data-app-install]'))install.install();if(event.target.closest('[data-install-close]'))dialog.close();});
 const alreadyInstalled=!install.button();
+const browser=document.querySelector('[data-install-browser]');
+const safariHandoff=aiView?'':install.safariHandoff();
 if(aiView){
   guide.hidden=true;
   document.title=document.querySelector('[data-install-title]').textContent='AI 연결·복구 (MCP)';
@@ -123,10 +125,11 @@ if(aiView){
   }
 }else{
   if(alreadyInstalled)document.querySelector('[data-install-steps]').hidden=true;
+  browser.innerHTML=safariHandoff;
   checkConnection();
 }
 const chrome=!aiView&&!alreadyInstalled&&platform==='android'?chromeInstallLink(location.href):null;
-if(chrome){const link=document.createElement('a');link.className='button';link.href=chrome;link.textContent='채팅 앱에서 열었다면 Chrome으로 이동';document.querySelector('[data-install-browser]').append(link);}
+if(chrome){const link=document.createElement('a');link.className='button';link.href=chrome;link.textContent='채팅 앱에서 열었다면 Chrome으로 이동';browser.append(link);}
 const apk=document.querySelector('[data-apk-download]');
 if(chrome&&apk){
   fetch(apk.querySelector('a').href,{method:'HEAD'}).then(response=>{

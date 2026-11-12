@@ -40,6 +40,12 @@ body {
   @apply text-ui-md;
 }
 
+.viv-install-page {
+  @apply text-foreground;
+}
+[data-app-safari-handoff] textarea:not([hidden]) {
+  @apply block w-full;
+}
 button,input,textarea,select {
   font: inherit;
 }

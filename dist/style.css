@@ -5331,6 +5331,13 @@ body {
   margin: 0px;
   font-size: var(--ds-font-size-md);
 }
+.viv-install-page {
+  color: var(--ds-text-default);
+}
+[data-app-safari-handoff] textarea:not([hidden]) {
+  display: block;
+  width: 100%;
+}
 button,input,textarea,select {
   font: inherit;
 }

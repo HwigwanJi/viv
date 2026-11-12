@@ -71,10 +71,10 @@ test('private same-origin requests reach the existing handler while foreign Orig
   }
 });
 
-function installFixture({standalone=false,apple=false,pathname='/'}={}){
+function installFixture({standalone=false,apple=false,pathname='/',clipboard}={}){
   const events=new Map(),button={},nativeButton={dataset:{appInstallNative:''}},dialogs=[],errors=[],notices=[];
-  const window={location:{href:origin+pathname+'?private=value#mind',pathname},matchMedia:()=>({matches:standalone}),document:{querySelectorAll:()=>[button,nativeButton]},addEventListener:(key,handler)=>events.set(key,handler)};
-  const app=createAppInstall({window,navigator:{userAgent:apple?'iPhone':'Android'},open:(...args)=>dialogs.push(args),onError:value=>errors.push(value),onInstalled:()=>notices.push('installed'),onDismissed:()=>notices.push('dismissed')});
+  const window={location:{href:origin+pathname+'?private=value#mind',pathname},matchMedia:()=>({matches:standalone}),document:{querySelectorAll:selector=>selector==='[data-app-install]'?[button,nativeButton]:[]},addEventListener:(key,handler)=>events.set(key,handler)};
+  const app=createAppInstall({window,navigator:{userAgent:apple?'iPhone':'Android',clipboard},open:(...args)=>dialogs.push(args),onError:value=>errors.push(value),onInstalled:()=>notices.push('installed'),onDismissed:()=>notices.push('dismissed')});
   return {app,events,button,nativeButton,dialogs,errors,notices};
 }
 test('native installation uses the user gesture once, blocks duplicate clicks, and removes the installed action',async()=>{
@@ -113,6 +113,31 @@ test('manual install uses the device menu, avoids a loop on the install page and
   await f.app.install();
   assert.deepEqual(f.notices,['dismissed']);
   assert.equal(f.nativeButton.hidden,true);
+});
+
+test('Apple browser handoff copies only the canonical install address and selects it on denial',async()=>{
+  const writes=[],status={};
+  let denied=false;
+  const clipboard={async writeText(url){if(denied)throw Error('denied');writes.push(url);}};
+  const f=installFixture({apple:true,pathname:'/settings',clipboard});
+  const canonical=origin+'/install.html';
+  assert.match(f.app.safariHandoff(),/Safari용 주소 복사/);
+  assert.ok(f.app.safariHandoff().includes(canonical));
+  assert.doesNotMatch(f.app.safariHandoff(),/private=value|#mind/);
+  const field={hidden:true,focus(){this.focused=true;},select(){this.selected=true;}};
+  const panel={querySelector:selector=>selector==='textarea'?field:status};
+  const click={target:{closest:()=>({closest:()=>panel})}};
+  await f.events.get('click')(click);
+  assert.deepEqual(writes,[canonical]);
+  assert.match(status.textContent,/주소를 복사했습니다/);
+  denied=true;
+  await f.events.get('click')(click);
+  assert.deepEqual([field.hidden,field.focused,field.selected],[false,true,true]);
+  assert.match(status.textContent,/선택한 주소/);
+  assert.equal(installFixture().app.safariHandoff(),'');
+  assert.equal(installFixture({standalone:true,apple:true}).app.safariHandoff(),'');
+  await f.app.install();
+  assert.match(f.dialogs[0][1],/Safari용 주소 복사/);
 });
 
 test('manifest launches the shared app with correctly sized PNG icons and the embedded build preserves binary bytes',async()=>{
