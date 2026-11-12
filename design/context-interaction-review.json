@@ -3227,8 +3227,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T11:38:29.898Z",
-      "reason": "모바일 모의 기록의 날짜 검색·결과 상세 및 PC 키보드의 MCP 기록 링크 재열기 검증",
+      "reviewedAt": "2026-11-12T11:42:15.936Z",
+      "reason": "모바일 검색 동선과 날짜·종목 함께 입력하는 예시, 결과 상세 및 기존 MCP 링크",
       "signature": "1745e71be5ed9d17ccaba26f637407a1e508c7b613aeec1d73251c150dd1ca99",
       "controls": [
         [
@@ -3332,7 +3332,7 @@
           1
         ]
       ],
-      "sourceHash": "61ab516ace1fe5b0e146717d86af87ed672ecdc8d341ce837e03e6fbd9d45976",
+      "sourceHash": "4e9891b23d9b67b1865ab28438275bcc2bad087dc67ca09bdd80848274ca2255",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

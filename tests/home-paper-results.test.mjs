@@ -17,7 +17,7 @@ test('paper records search uses the dates displayed in Korea before paging',()=>
     asOf:'2026-11-11T14:59:00.000Z',decisionAt:'2026-11-11T14:59:30.000Z',
     decisionCompletedAt:'2026-11-11T15:01:00.000Z',decision:{action:'hold'}};
   const workspace={revision:1,investmentProfiles:[{id:'mind-a',name:'국면 추세'}],
-    mindRuns:[run,{...run,id:'mind-run-b',asOf:'2026-11-11T15:02:00.000Z',
+    mindRuns:[run,{...run,id:'mind-run-b',instrumentId:'crypto:okx:ETH-USDT',asOf:'2026-11-11T15:02:00.000Z',
       decisionAt:null,decisionCompletedAt:null}],
     mindPositions:[{kind:'PAPER_ACCOUNT',profileId:'mind-a',ledger:[{
       id:'fill-a',runId:run.id,at:'2026-11-12T15:05:00.000Z',side:'buy',
@@ -33,7 +33,11 @@ test('paper records search uses the dates displayed in Korea before paging',()=>
   assert.equal(page('2026-11-12','fills').total,0);
   assert.equal(page('2026-02-30').total,0);
   assert.equal(page('mind-run-a').items[0].id,'mind-run-a');
-  assert.equal(page('btc-usdt').total,2);
+  assert.equal(page('btc-usdt').total,1);
+  assert.deepEqual(page('2026-11-12 btc-usdt').items.map(x=>x.id),['mind-run-a']);
+  assert.deepEqual(page('eth-usdt 2026-11-12').items.map(x=>x.id),['mind-run-b']);
+  assert.equal(page('2026-11-11 eth-usdt').total,0);
+  assert.equal(page('국면 추세 2026-11-12').total,2);
 });
 
 test('saved keyless practice shows its inputs before the only execute button',async()=>{
