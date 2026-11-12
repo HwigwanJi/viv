@@ -622,33 +622,6 @@
       "customContainers": []
     },
     {
-      "file": "dist/ui/brokerage-report.mjs",
-      "owners": [
-        "readonly",
-        "navigation",
-        "primitive"
-      ],
-      "controls": [
-        [
-          "element:a",
-          6
-        ],
-        [
-          "element:summary",
-          3
-        ],
-        [
-          "helper:renderDataTable(",
-          1
-        ]
-      ],
-      "signature": "f0da04e992781fa3170a596a30e9363b1839417c7e1c9b194875884c93fbb107",
-      "sourceHash": "2455a366b338229bc6aa4162601e7bb1584fbc02af2b9fd814a55775b0b80414",
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-08T23:41:37.517Z",
-      "reason": "운영 서버의 실제 운용 더보기→운용보고서→보고서 새 창, 알림함→정정 보고서→보고서 새 창, CSV 실제 다운로드, 1280px/390px 화면, 표·12개 항목과 PDF를 대조했다. 증거 artifacts/cji-brokerage-report-20261108/browser-verification.json 및 report-*.png, app-report-*.png."
-    },
-    {
       "file": "dist/ui/capability-catalog.mjs",
       "owners": [
         "primitive",
@@ -1662,38 +1635,6 @@
         ]
       ],
       "sourceHash": "635e83d63c67afefa45ed35bc22c6050418f680cbca8b6b50023e2581c99f217"
-    },
-    {
-      "file": "dist/ui/managed-portfolio.mjs",
-      "owners": [
-        "editing",
-        "navigation",
-        "primitive",
-        "readonly"
-      ],
-      "controls": [
-        [
-          "element:a",
-          2
-        ],
-        [
-          "element:button",
-          2
-        ],
-        [
-          "element:input",
-          1
-        ],
-        [
-          "element:select",
-          1
-        ]
-      ],
-      "signature": "6453c3aca1724b79116ae3fbb4eaec829c74a3f67483e82412019455e1d51ac4",
-      "sourceHash": "661c8ba2610778e345afe2873d261dcf3697f381a50078e5b6e04253fce3f53e",
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-08",
-      "reason": "공용 학습 제어 또는 통합 조회 원본 전체와 호출부 검토. 방향 고정·revision/대상·중복 요청·단계별 닫기·늦은 응답·오류/재시도 검사 및 실제 모듈의 전후 브라우저 조작. 금융 승인/학습설정 변경은 격리 응답에서만 실행. 증거022-dark-ai-patterns."
     },
     {
       "file": "dist/ui/market-library.mjs",
@@ -3427,6 +3368,36 @@
       "customContainers": []
     },
     {
+      "file": "dist/ui/workspace-calendar.mjs",
+      "owners": [
+        "navigation",
+        "readonly"
+      ],
+      "controls": [
+        [
+          "data-studio-action=\"calendar-refresh\"",
+          1
+        ],
+        [
+          "element:a",
+          1
+        ],
+        [
+          "element:button",
+          1
+        ],
+        [
+          "helper:routeLink(",
+          6
+        ]
+      ],
+      "signature": "5f5b30d62fb3033f505273df47c939758132d44ce946f9ea7843d0cc8f573c89",
+      "sourceHash": "d0ca87c513dd9a4101c7c295655902df1ea9e757d41c8a441d6a6dd7249d1020",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T12:18:52.828Z",
+      "reason": "모바일 캘린더 월 이동·기록 상세 및 캐릭터 꾸미기에서 이름 저장을 검증"
+    },
+    {
       "file": "dist/ui/terminal-universe.mjs",
       "owners": [
         "readonly"
@@ -3466,19 +3437,6 @@
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
       "sourceHash": "4d8e771c1dcf3b72e2b281a85f6667e6e6783d6631ffc481516a9da634f89f8a"
-    },
-    {
-      "file": "dist/ui/trade-fill-summary.mjs",
-      "owners": [
-        "readonly",
-        "primitive"
-      ],
-      "controls": [],
-      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "sourceHash": "f2e787c2045eee27d1f20de8d4829a6748cc2e432ed0f1203b796b7d61e8e848",
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-08T18:36:05.754Z",
-      "reason": "033: 실제 체결 금액/수량의 평균 가격·금액·수수료 표시, native 개별체결 details/응답형 공용 표, 누락/미체결 분리. 주문 생성/승인 액션 추가 없음. 공용 입력/링크/기존 객체 메뉴 보존."
     },
     {
       "file": "dist/ui/trading-terminal.mjs",
@@ -3716,27 +3674,6 @@
       "sourceHash": "24105fc6ccdd8e5e9e5a01968173182eb1a731e026d3ededbfeada031db9a728"
     },
     {
-      "file": "dist/ui/viv-startup.js",
-      "owners": [
-        "primitive"
-      ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T00:38:10.688Z",
-      "reason": "설치 안내와 첫 시작의 재시도에서 연결 실패 시 같은 화면과 키보드 초점을 유지하고 앱 주소를 다시 연다.",
-      "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
-      "controls": [
-        [
-          "data-install-open",
-          1
-        ],
-        [
-          "data-viv-open-status",
-          1
-        ]
-      ],
-      "sourceHash": "e1206145a69339449d8b96f58f5719174affd15b983e33d27693b6dc2eb51f3d"
-    },
-    {
       "file": "dist/ui/workflow-state.mjs",
       "owners": [
         "readonly"
@@ -3747,36 +3684,6 @@
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
       "sourceHash": "8747bac9e31f920ef1c3467b902e975dbfe6a84b4094607ae650819725317034"
-    },
-    {
-      "file": "dist/ui/workspace-calendar.mjs",
-      "owners": [
-        "navigation",
-        "readonly"
-      ],
-      "controls": [
-        [
-          "data-studio-action=\"calendar-refresh\"",
-          1
-        ],
-        [
-          "element:a",
-          1
-        ],
-        [
-          "element:button",
-          1
-        ],
-        [
-          "helper:routeLink(",
-          6
-        ]
-      ],
-      "signature": "5f5b30d62fb3033f505273df47c939758132d44ce946f9ea7843d0cc8f573c89",
-      "sourceHash": "d0ca87c513dd9a4101c7c295655902df1ea9e757d41c8a441d6a6dd7249d1020",
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T12:18:52.828Z",
-      "reason": "모바일 캘린더 월 이동·기록 상세 및 캐릭터 꾸미기에서 이름 저장을 검증"
     },
     {
       "file": "scripts/server-update-view.html",
@@ -3846,6 +3753,99 @@
         ]
       ],
       "sourceHash": "db9b07615866f79ce5915ff69b81c90ce7ae0c957f30ceb60b7f9c8cc0ee7d35"
+    },
+    {
+      "file": "dist/ui/brokerage-report.mjs",
+      "owners": [
+        "readonly",
+        "navigation",
+        "primitive"
+      ],
+      "controls": [
+        [
+          "element:a",
+          6
+        ],
+        [
+          "element:summary",
+          3
+        ],
+        [
+          "helper:renderDataTable(",
+          1
+        ]
+      ],
+      "signature": "f0da04e992781fa3170a596a30e9363b1839417c7e1c9b194875884c93fbb107",
+      "sourceHash": "2455a366b338229bc6aa4162601e7bb1584fbc02af2b9fd814a55775b0b80414",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-08T23:41:37.517Z",
+      "reason": "운영 서버의 실제 운용 더보기→운용보고서→보고서 새 창, 알림함→정정 보고서→보고서 새 창, CSV 실제 다운로드, 1280px/390px 화면, 표·12개 항목과 PDF를 대조했다. 증거 artifacts/cji-brokerage-report-20261108/browser-verification.json 및 report-*.png, app-report-*.png."
+    },
+    {
+      "file": "dist/ui/managed-portfolio.mjs",
+      "owners": [
+        "editing",
+        "navigation",
+        "primitive",
+        "readonly"
+      ],
+      "controls": [
+        [
+          "element:a",
+          2
+        ],
+        [
+          "element:button",
+          2
+        ],
+        [
+          "element:input",
+          1
+        ],
+        [
+          "element:select",
+          1
+        ]
+      ],
+      "signature": "6453c3aca1724b79116ae3fbb4eaec829c74a3f67483e82412019455e1d51ac4",
+      "sourceHash": "661c8ba2610778e345afe2873d261dcf3697f381a50078e5b6e04253fce3f53e",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-08",
+      "reason": "공용 학습 제어 또는 통합 조회 원본 전체와 호출부 검토. 방향 고정·revision/대상·중복 요청·단계별 닫기·늦은 응답·오류/재시도 검사 및 실제 모듈의 전후 브라우저 조작. 금융 승인/학습설정 변경은 격리 응답에서만 실행. 증거022-dark-ai-patterns."
+    },
+    {
+      "file": "dist/ui/trade-fill-summary.mjs",
+      "owners": [
+        "readonly",
+        "primitive"
+      ],
+      "controls": [],
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "sourceHash": "f2e787c2045eee27d1f20de8d4829a6748cc2e432ed0f1203b796b7d61e8e848",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-08T18:36:05.754Z",
+      "reason": "033: 실제 체결 금액/수량의 평균 가격·금액·수수료 표시, native 개별체결 details/응답형 공용 표, 누락/미체결 분리. 주문 생성/승인 액션 추가 없음. 공용 입력/링크/기존 객체 메뉴 보존."
+    },
+    {
+      "file": "dist/ui/viv-startup.js",
+      "owners": [
+        "primitive"
+      ],
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-12T00:38:10.688Z",
+      "reason": "설치 안내와 첫 시작의 재시도에서 연결 실패 시 같은 화면과 키보드 초점을 유지하고 앱 주소를 다시 연다.",
+      "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
+      "controls": [
+        [
+          "data-install-open",
+          1
+        ],
+        [
+          "data-viv-open-status",
+          1
+        ]
+      ],
+      "sourceHash": "e1206145a69339449d8b96f58f5719174affd15b983e33d27693b6dc2eb51f3d"
     }
   ],
   "actionMatrix": "design/context-action-matrix.json",
