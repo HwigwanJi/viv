@@ -60,7 +60,7 @@ test('VIV keeps the recovery screen until the same page and JavaScript respond',
   const urls = [];
   const app = setup(async (url, options) => {
     urls.push(url);
-    assert.equal(options.method, 'HEAD');
+    assert.equal(options.method, url.startsWith('/') ? 'HEAD' : 'GET');
     assert.equal(options.cache, 'no-store');
     assert.equal(options.mode, 'same-origin');
     assert.equal(options.redirect, 'error');
@@ -115,7 +115,7 @@ test('VIV retries failed same-origin script downloads before leaving recovery', 
   const gets = [];
   const app = setup(async (url, options) => {
     assert.equal(options.cache, 'no-store');
-    if (options.method === 'HEAD') return asset(url.startsWith('/') ? 'text/html' : 'text/javascript');
+    if (options.method === 'HEAD') return asset('text/html');
     gets.push(url);
     if (unavailable && url === dependency) return asset('text/html');
     return new Response('export {};', {headers: {'content-type': 'application/javascript'}});
@@ -125,22 +125,22 @@ test('VIV retries failed same-origin script downloads before leaving recovery', 
   assert.equal(app.reloads(), 0);
   assert.match(app.message.textContent, /앱 파일/);
   assert.equal(app.attributes.has('aria-disabled'), false);
-  assert.deepEqual(gets, [dependency, legacy, wrongType]);
+  assert.deepEqual(gets, ['http://localhost/app.mjs', dependency, legacy, wrongType]);
   unavailable = false;
   await app.button.click();
   assert.equal(app.reloads(), 1);
-  assert.deepEqual(gets, [dependency, legacy, wrongType, dependency, legacy, wrongType]);
+  assert.deepEqual(gets.slice(4), ['http://localhost/app.mjs', dependency, legacy, wrongType]);
 });
 
 test('VIV checks the workspace module when a browser reports only the entry error', async () => {
   const urls = [];
   const app = setup(async (url, {method}) => {
     urls.push([url, method]);
-    return method === 'GET' ? asset('text/html', 404) : asset(url.startsWith('/') ? 'text/html' : 'text/javascript');
+    return method === 'GET' && url.endsWith('/app.mjs') ? asset('text/html', 404) : asset(method === 'HEAD' ? 'text/html' : 'text/javascript');
   });
   app.events.error({target: {id: 'viv-app-entry'}});
   await app.button.click();
-  assert.deepEqual(urls.at(-1), ['http://localhost/ui/studio-controller.mjs', 'GET']);
+  assert.deepEqual(urls.slice(1), [['http://localhost/app.mjs', 'GET'], ['http://localhost/ui/studio-controller.mjs', 'GET']]);
   assert.equal(app.reloads(), 0);
   assert.match(app.message.textContent, /앱 파일/);
 });

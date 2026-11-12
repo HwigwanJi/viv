@@ -40,15 +40,11 @@
         if (entryUrl) {
           problem = '앱 파일을 불러올 수 없습니다. VIV 서버의 파일을 확인한 뒤 다시 시도하세요.';
           status.textContent = 'VIV 앱 파일을 확인하는 중…';
-          var entry = await fetch(entryUrl, options);
-          ready = entry.ok && javascriptType.test(entry.headers.get('content-type'));
-          if (ready) {
-            var targets = failedScripts();
-            // shortcut: check the workspace module when the browser omits failed URLs, extend if other boot dependencies need this fallback.
-            if (moduleLoadFailed && targets.length === 0) targets.push(new URL('./ui/studio-controller.mjs', entryUrl).href);
-            var scripts = await Promise.all(targets.map(function (url) { return scriptAvailable(url, options); }));
-            ready = scripts.every(Boolean);
-          }
+          var targets = failedScripts();
+          // shortcut: check the workspace module when the browser omits failed URLs, extend if other boot dependencies need this fallback.
+          if (moduleLoadFailed && targets.length === 0) targets.push(new URL('./ui/studio-controller.mjs', entryUrl).href);
+          var scripts = await Promise.all([...new Set([entryUrl, ...targets])].map(function (url) { return scriptAvailable(url, options); }));
+          ready = scripts.every(Boolean);
         }
         if (ready) {
           if (control.isConnected) open();

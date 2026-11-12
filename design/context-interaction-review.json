@@ -3832,8 +3832,8 @@
         "primitive"
       ],
       "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-12T13:33:41.784Z",
-      "reason": "기존 다시 열기 버튼의 실패 모듈 재조회와 복구 화면 유지, 원래 주소 보존을 검토",
+      "reviewedAt": "2026-11-12T13:40:53.917Z",
+      "reason": "실패한 앱 파일과 진입 파일의 GET 확인, 복구 화면 유지와 원래 주소 보존을 검토",
       "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
       "controls": [
         [
@@ -3845,7 +3845,7 @@
           1
         ]
       ],
-      "sourceHash": "1de7f7c34f0af7c1b866e081ab834cfa90c69ab0da13435c0c11d5db8e433217"
+      "sourceHash": "bcd35d429a04411e1abe40f4310c9b2d982bb1326d3f206c4dc8d5c96b379a54"
     }
   ],
   "actionMatrix": "design/context-action-matrix.json",
