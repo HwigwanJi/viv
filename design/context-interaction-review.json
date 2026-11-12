@@ -1085,8 +1085,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T15:33:24.216Z",
-      "reason": "첫 모의 발행 양식만 해당 초안의 사유를 같은 탭에서 복구하고 성공하면 임시 값을 정리하는 동선을 확인",
+      "reviewedAt": "2026-11-12T16:02:40.498Z",
+      "reason": "브라우저 세션 저장소 접근 예외를 검토했다. 기존 화면 조작과 저장 키를 유지한다.",
       "signature": "a1f46858e787d263533ef9cec92f8e595c3410a9b76a02c6e2efbec0456c44f6",
       "controls": [
         [
@@ -1110,7 +1110,7 @@
           1
         ]
       ],
-      "sourceHash": "94d6858c4494d608aa98bad29587a34a862365c44b03e29de846fbc2e730386c"
+      "sourceHash": "def09242b809d46cd4261c0c990798480fde8837c83869c6d22ccbbeff039293"
     },
     {
       "file": "dist/ui/help-tooltip.mjs",
@@ -2022,8 +2022,8 @@
         "readonly"
       ],
       "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-09T07:20:59.660Z",
-      "reason": "목록 항목은 공용 행/카드 메뉴를 상속한다. 미리보기·설치·서버 갱신·선택·탭·필터·입력은 업무 객체의 삭제 작업과 구별한 직접 조작이다. 읽기와 브라우저 기본 메뉴를 보존한다. 자산 합계는 RELEASED 배정의 역사 평가액만 제외하며 두 공용 호출부와 기존 조작을 보존함.",
+      "reviewedAt": "2026-11-12T16:02:40.500Z",
+      "reason": "브라우저 세션 저장소 접근 예외를 검토했다. 기존 화면 조작과 저장 키를 유지한다.",
       "signature": "907dc42d0ec167a2a546203fd19e9cede6fb8e534014c679f7e1adfa7781325b",
       "controls": [
         [
@@ -2039,7 +2039,7 @@
           8
         ]
       ],
-      "sourceHash": "9a1ad3df16d630946a80e054ea8f1bdf4f21f4d62791b659694af75fc1041d26"
+      "sourceHash": "f420ddcad62425c6f273e88b53f1a1d31b73a304bb57483848cfbdb3266e6d54"
     },
     {
       "file": "dist/ui/mind-hud.mjs",
@@ -2400,11 +2400,11 @@
         "readonly"
       ],
       "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-04",
-      "reason": "공용 포맷·상태·자료 접근 또는 기본 컨트롤의 소유 모듈을 검토했다. 지속 객체의 작업은 호출 화면의 등록된 행/카드/전용 편집기에서 제공한다.",
+      "reviewedAt": "2026-11-12T16:02:40.500Z",
+      "reason": "브라우저 세션 저장소 접근 예외를 검토했다. 기존 화면 조작과 저장 키를 유지한다.",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "b8193bbfbe47ae86b6853454f456641847366e79147b5d4e6be3536c08fbbcf7"
+      "sourceHash": "79dee51f39280bfde63facefe47127b55a8dc227e90825283dd6297d44291616"
     },
     {
       "file": "dist/ui/portfolio-route.mjs",
@@ -2549,6 +2549,18 @@
       ],
       "sourceHash": "ecf0daf6bba6db55a03299adb41af3790257d3c8907b7609169c9fc4346220be",
       "matrix": "design/context-action-matrix.json"
+    },
+    {
+      "file": "dist/ui/session-storage.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-12T16:02:40.501Z",
+      "reason": "브라우저 세션 저장소 접근 예외를 검토했다. 기존 화면 조작과 저장 키를 유지한다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "controls": [],
+      "sourceHash": "4639951dead76c832a32a9715e932463c5557165647b4c504e195ae1c326856a"
     },
     {
       "file": "dist/ui/shell.mjs",
@@ -3231,8 +3243,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T15:33:24.221Z",
-      "reason": "같은 전략 초안 재열기, 검토 사유 길이 안내, 발행과 결정 실행의 경계 및 저장된 근거 재조회를 확인",
+      "reviewedAt": "2026-11-12T16:02:40.505Z",
+      "reason": "브라우저 세션 저장소 접근 예외를 검토했다. 기존 화면 조작과 저장 키를 유지한다.",
       "signature": "54aa4db8fcbb1ec64242a57209339eb29cbc1b9dd8fa181847319df2b1856cd2",
       "controls": [
         [
@@ -3336,7 +3348,7 @@
           1
         ]
       ],
-      "sourceHash": "7b75dd982c5e265ac2ce7187ec307db6235e645d9cef873cb71d5a3e13c53a7d",
+      "sourceHash": "6c2bfd00f6da4bd1593d4293581a55ea7676b663b8173137e63021830f41289d",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

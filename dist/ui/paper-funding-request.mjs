@@ -1,5 +1,6 @@
+import {optionalSessionStorage} from './session-storage.mjs';
 // Keep the original request envelope until a definitive receipt arrives.
-export async function submitFunding(request,path,body,{storage=globalThis.sessionStorage}={}){
+export async function submitFunding(request,path,body,{storage=optionalSessionStorage()}={}){
   const key='cji-paper-funding:'+JSON.stringify({path,payload:Object.fromEntries(Object.entries(body).filter(([k])=>!['idempotencyKey','expectedRevision'].includes(k)))});
   let envelope=body;
   try{const saved=storage?.getItem(key);if(saved){const parsed=JSON.parse(saved);if(parsed.path===path&&typeof parsed.body?.idempotencyKey==='string')envelope=parsed.body;}storage?.setItem(key,JSON.stringify({path,body:envelope}));}catch{}

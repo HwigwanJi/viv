@@ -1,3 +1,4 @@
+import {optionalSessionStorage} from './session-storage.mjs';
 import {MIND_CHARACTERS,MIND_MOTIONS,gameUnits,gameDecimal} from '../domain/mind-game.mjs';
 import {renderMindAvatar} from './mind-avatar.mjs';
 import {currencyAmount} from './currency-format.mjs';
@@ -38,7 +39,7 @@ export function renderMotionGallery(){
  }).join('')+'</div></section>';
 }
 
-export function createMindGameRuntime({environment=globalThis,storage=environment.sessionStorage,onCredit=()=>{},onSettlement=null}={}){
+export function createMindGameRuntime({environment=globalThis,storage=optionalSessionStorage(environment),onCredit=()=>{},onSettlement=null}={}){
  const seen=new Set(),initialized=new Set(),effects=new Set();let container=null,listener=null,timer=null,motionIndex=0,sound=false,audio=null;
  try{sound=environment.localStorage?.getItem('cji-mind-sound')==='on';}catch{}
  const doc=environment.document;

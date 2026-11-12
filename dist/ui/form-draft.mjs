@@ -1,3 +1,4 @@
+import {optionalSessionStorage} from './session-storage.mjs';
 const allowed={studio:new Set(['profile','manifest-profile','document','document-note','universe-policy','strategy-plan','knowledge-policy','sector-import']),library:new Set(['create','import']),quant:new Set(['import','edit']),strategyLibrary:new Set(['deployment'])};
 const managers=new WeakMap();
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -17,8 +18,7 @@ const isFieldList=values=>Array.isArray(values)&&values.every(v=>v&&typeof v.nam
 const signature=form=>[...form.elements].filter(el=>['kind','mindId','documentId','manifestId'].includes(el.name)).map(el=>[el.name,el.value]);
 // Keep the pre-grouping field order so existing quant drafts survive the editor layout change.
 function quantDraftFieldNames(form){const names=[...form.elements].filter(el=>!el.matches?.('[data-quant-settings]')).map(el=>el.name),mode=names.indexOf('editSource');if(mode>=0){names.splice(mode,1);names.splice(names.indexOf('definition'),0,'editSource');}return names;}
-export function createFormDrafts(doc,{storage,getScope=()=>''}={}){
- if(storage===undefined)try{storage=globalThis.sessionStorage;}catch{storage=null;}
+export function createFormDrafts(doc,{storage=optionalSessionStorage(),getScope=()=>''}={}){
  const states=new WeakMap(),fallbacks=new Map();let active=null,applying=false;
  function changed(form,state){return state.conflicts.length>0||JSON.stringify(formValues(form))!==JSON.stringify(state.base);}
  function update(form,text,error=false){const state=states.get(form),note=form.querySelector('[data-form-draft-status]');if(note){const message=text+(state.memoryOnly?' 이 탭에서만 보관 중 · 새로고침하면 사라집니다.':'');if(note.textContent!==message)note.textContent=message;const role=error?'alert':'status';if(note.getAttribute?.('role')!==role)note.setAttribute('role',role);}const discard=form.querySelector('[data-draft-action="discard"]'),undo=form.querySelector('[data-draft-action="undo"]');if(discard)discard.hidden=state.committed||!changed(form,state);if(undo)undo.hidden=state.committed||!state.undo;}

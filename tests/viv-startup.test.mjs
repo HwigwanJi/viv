@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {runInNewContext} from 'node:vm';
+import {optionalSessionStorage} from '../dist/ui/session-storage.mjs';
+import {submitPaperFunding} from '../dist/ui/paper-funding-request.mjs';
 
 const script = readFileSync(new URL('../dist/ui/viv-startup.js', import.meta.url), 'utf8');
 
@@ -176,4 +178,35 @@ test('install entry keeps its own page on failure and retains normal modified li
   await link.click(click);
   assert.deepEqual(urls, ['/', '/']);
   assert.deepEqual(opened, [link.href]);
+});
+
+test('optional session storage keeps the available store and handles a rejected getter', () => {
+  const storage = {};
+  assert.equal(optionalSessionStorage({sessionStorage: storage}), storage);
+  assert.equal(optionalSessionStorage({}), null);
+  assert.equal(optionalSessionStorage({
+    get sessionStorage() { throw new DOMException('Storage blocked', 'SecurityError'); }
+  }), null);
+});
+
+test('funding retries with the same envelope if the session storage getter is blocked', async () => {
+  const original = Object.getOwnPropertyDescriptor(globalThis, 'sessionStorage');
+  Object.defineProperty(globalThis, 'sessionStorage', {
+    configurable: true,
+    get() { throw new DOMException('Storage blocked', 'SecurityError'); }
+  });
+  try {
+    const body = {idempotencyKey: 'same-request', expectedRevision: 7};
+    const attempts = [];
+    const receipt = await submitPaperFunding(async (path, envelope) => {
+      attempts.push({path, envelope});
+      if (attempts.length === 1) throw new TypeError('Connection lost');
+      return {ok: true};
+    }, '/api/workspace/accounts/budget', body);
+    assert.deepEqual(receipt, {ok: true});
+    assert.deepEqual(attempts, Array(2).fill({path: '/api/workspace/accounts/budget', envelope: body}));
+  } finally {
+    if (original) Object.defineProperty(globalThis, 'sessionStorage', original);
+    else delete globalThis.sessionStorage;
+  }
 });
