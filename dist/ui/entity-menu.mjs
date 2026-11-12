@@ -31,7 +31,7 @@ export function entityMenuDescriptor(entity){
   }else
   if(entity.matches('[data-mind-companion],[data-mind-entity]')){
     kind='mind';id=entity.dataset.profileId;
-    nodes=controls(entity,'[data-mind-companion-open],[data-mind-entity-open],[data-companion-action="rename"],[data-companion-action="customize"],[data-companion-action="edit"],[data-companion-action="manage"],[data-companion-action="automation"],[data-companion-action="archive"]');
+    nodes=controls(entity,'[data-mind-companion-open],[data-mind-entity-open],[data-companion-action="customize"],[data-companion-action="edit"],[data-companion-action="manage"],[data-companion-action="automation"],[data-companion-action="archive"]');
   }else{
     const instrument=entity.querySelector('[data-terminal-action="instrument"]'),library=entity.querySelector('[data-library-action="detail"]'),simulation=entity.querySelector('[data-simulation-action="open"],[data-simulation-action="row-detail"]'),record=entity.querySelector('[data-studio-action="decision"],[data-terminal-action="decision"],[data-studio-action="document-detail"],[data-studio-action="experience"],[data-studio-action="candidate"],[data-studio-action="mind-observation"]');
     if(instrument){kind='instrument';id=instrument.dataset.terminalId;nodes=controls(entity,'[data-terminal-action="instrument"],[data-terminal-action="watchlist"]');}
@@ -139,7 +139,7 @@ export function createEntityMenu({document:doc=globalThis.document,window:win=gl
       if(entity.closest?.('.react-flow')||entity.querySelector('[data-ui-menu-trigger]'))continue;
       const value=entityMenuDescriptor(entity);if(!value||moreFor(entity))continue;
       const button=doc.createElement('button');button.type='button';button.className='entity-menu-more';button.dataset.entityMenuMore=value.kind;button.setAttribute('aria-label',value.label);button.setAttribute('aria-haspopup','menu');button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls','entity-context-menu');button.textContent='⋯';
-      if(entity.matches('tbody tr'))(entity.lastElementChild?.querySelector('.studio-table-cell-value')||entity.lastElementChild)?.append(button);else if(entity.matches('button')){continue;}else (entity.querySelector('[data-mind-identity]')??entity).append(button);
+      if(entity.matches('tbody tr'))(entity.lastElementChild?.querySelector('.studio-table-cell-value')||entity.lastElementChild)?.append(button);else if(entity.matches('button')){continue;}else entity.append(button);
     }
   }
   function mount(container){

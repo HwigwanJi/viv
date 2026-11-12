@@ -1,0 +1,52 @@
+@reference "../theme.css";
+
+.viv-calendar{@apply max-w-7xl mx-auto pt-ui-6 pb-ui-11}
+.viv-calendar h1,.viv-calendar h2,.viv-calendar p{@apply m-0}
+.viv-calendar h1{@apply text-ui-3xl leading-tight tracking-tight font-ui-semibold}
+.viv-calendar h2{@apply text-ui-md font-ui-semibold leading-ui-md}
+.viv-cal-head,.viv-cal-toolbar{@apply flex items-center justify-between gap-ui-4}
+.viv-cal-head{@apply mb-ui-6}
+.viv-cal-head p{@apply mt-ui-2}
+.viv-cal-layout{@apply grid items-start gap-ui-5;grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.viv-cal-side{@apply grid gap-ui-4 min-w-0}
+.viv-cal-panel{@apply min-w-0 p-ui-4 border border-subtle rounded-ui-xl bg-surface}
+.viv-cal-toolbar{@apply mb-ui-3}
+.viv-cal-toolbar .button{@apply min-w-control-touch text-ui-lg}
+.viv-cal-grid{@apply grid grid-cols-7 gap-ui-1}
+.viv-cal-week{@apply py-ui-2 text-center text-secondary text-ui-xs}
+.viv-cal-cell{@apply flex flex-col gap-ui-1 min-h-20 p-ui-2 border border-transparent rounded-ui-lg bg-canvas text-foreground no-underline tabular-nums overflow-hidden}
+.viv-cal-cell[aria-hidden]{@apply bg-transparent}
+.viv-cal-cell:hover,.viv-cal-cell[aria-current="date"]{@apply border-accent}
+.viv-cal-cell[aria-current="date"]{background:var(--lab-selection-bg)}
+.viv-cal-cell:focus-visible,.viv-cal-list a:focus-visible{outline:var(--ui-border-emphasis) solid var(--ds-focus);outline-offset:var(--ds-focus-offset-inset)}
+.viv-cal-number{@apply flex items-center gap-ui-2 font-ui-semibold}
+.viv-cal-cell[data-today] .viv-cal-number{@apply text-accent}
+.viv-cal-marker{@apply w-ui-2 h-ui-2 rounded-full bg-accent}
+.viv-cal-pnl{@apply block text-ui-xs font-ui-semibold tabular-nums;overflow-wrap:anywhere}
+.viv-cal-amount-compact{@apply hidden}
+.viv-cal-pnl[data-tone="gain"]{@apply text-positive}
+.viv-cal-pnl[data-tone="loss"]{@apply text-negative}
+.viv-cal-cell small,.viv-cal-list small{@apply text-secondary}
+.viv-cal-note{@apply text-ui-xs pt-ui-3}
+.viv-cal-totals{@apply flex flex-wrap gap-ui-2 my-ui-3}
+.viv-cal-totals .viv-cal-pnl{@apply bg-surface p-ui-2 rounded-ui-lg}
+.viv-cal-list{@apply list-none grid gap-ui-1 mt-ui-3 mb-0 p-0 max-h-80 overflow-auto}
+.viv-cal-list a{@apply flex gap-ui-3 items-center justify-between min-h-control-touch p-ui-2 rounded-ui-lg bg-canvas text-inherit no-underline}
+.viv-cal-list a:hover{@apply bg-hover}
+.viv-cal-list a span:first-child{@apply min-w-0}
+.viv-cal-list strong,.viv-cal-list small{@apply block;overflow-wrap:anywhere}
+.viv-cal-list small,.viv-cal-status{@apply text-ui-xs}
+.viv-cal-status{@apply text-secondary text-right shrink-0}
+.viv-cal-panel h2+p,.viv-cal-panel p+.button{@apply mt-ui-3}
+@variant max-md{
+  .viv-cal-layout{@apply flex flex-col gap-ui-3}
+  .viv-cal-side{@apply contents}
+  .viv-cal-panel{@apply w-full p-ui-3}
+  .viv-cal-active{@apply order-first}
+  .viv-cal-active .viv-cal-list{@apply max-h-40}
+  .viv-cal-cell{@apply min-h-control-touch p-ui-1 text-ui-xs}
+  .viv-cal-cell .viv-cal-pnl{@apply text-ui-xs tracking-tight}
+  .viv-cal-cell .viv-cal-amount-full{@apply sr-only}
+  .viv-cal-amount-compact{@apply block truncate}
+  .viv-cal-amount-compact small{@apply block text-current}
+}

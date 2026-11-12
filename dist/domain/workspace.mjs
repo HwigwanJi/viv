@@ -114,6 +114,13 @@ function emptyMemory(state, profileId, now, sourceProfileId = null) {
   const version = { id: id('memory'), investmentProfileId: profileId, version: 1, previousVersionId: null, items: [], sourceProfileId, approvedAt: now, availableAt: now, createdAt: now };
   state.memoryVersions.push(version); return version;
 }
+function setProfileDisplayName(state,profile,name,now,actorId){
+  check(text(name,120),'INVALID_NAME','마인드 이름을 120자 이내로 입력하세요.');
+  if(name.trim()===(profile.displayName??profile.name))return;
+  profile.displayName=name.trim();
+  profile.displayNameUpdatedAt=now;
+  event(state,'PROFILE_RENAMED',{type:'profile',id:profile.id},now,actorId,{name:profile.displayName});
+}
 function addProfile(state, payload, now, actorId, sourceProfileId = null) {
   check(text(payload.name, 120), 'INVALID_PROFILE', '프로필 이름을 입력하세요.');
   const profile = { id: id('profile'), name: payload.name.trim(), currentVersionId: null, currentMemoryVersionId: null, createdAt: now, updatedAt: now, templateKey: payload.templateKey ?? null, sourceProfileId };
@@ -204,14 +211,12 @@ function handleAction(state, type, p, now, actorId) {
   if(type==='profile.rename'){
     fields(p,['profileId','name'],['profileId','name']);
     const profile=find(state.investmentProfiles,p.profileId);
-    check(text(p.name,120),'INVALID_NAME','마인드 이름을 120자 이내로 입력하세요.');
-    profile.displayName=p.name.trim();
-    profile.displayNameUpdatedAt=now;
-    event(state,'PROFILE_RENAMED',{type:'profile',id:profile.id},now,actorId,{name:profile.displayName});
+    setProfileDisplayName(state,profile,p.name,now,actorId);
     return {profile:clone(profile)};
   }
   if(type==='profile.appearance.set'){
-    fields(p,['profileId','config'],['profileId','config']);find(state.investmentProfiles,p.profileId);const errors=validateMindAppearanceConfig(p.config);check(!errors.length,'INVALID_MIND_APPEARANCE',errors[0]?.message);
+    fields(p,['profileId','config','name'],['profileId','config']);const profile=find(state.investmentProfiles,p.profileId);const errors=validateMindAppearanceConfig(p.config);check(!errors.length,'INVALID_MIND_APPEARANCE',errors[0]?.message);
+    if(p.name!==undefined)setProfileDisplayName(state,profile,p.name,now,actorId);
     const appearance={schemaVersion:1,config:clone(p.config),updatedAt:now,updatedBy:actorId};
     state.uiPreferences={schemaVersion:1,mindCompanions:{...state.uiPreferences?.mindCompanions,[p.profileId]:appearance}};
     event(state,'MIND_APPEARANCE_UPDATED',{type:'profile',id:p.profileId},now,actorId,{config:clone(p.config)});

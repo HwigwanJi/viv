@@ -26,7 +26,7 @@
     },
     "checker": {
       "path": "scripts/check-mind-companion-ui.mjs",
-      "sha256": "329a337008d32dd8146bfa3701e0db34ff560581d3adcf482c6aed2dbfb6e62a"
+      "sha256": "83d4732c1cf304d36127a65d6d92900926b8b37d937e09530d6aea6e1b98e04e"
     }
   },
   "devDependencies": {

@@ -4,7 +4,7 @@ const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&
 
 const COLLECTION_TASKS = [['overview','마인드 목록'],['records','전체 기록'],['simulations','전체 시뮬레이션']];
 const MIND_TASKS = [['operations','운용'],['principles','전략'],['records','기록'],['knowledge','자료'],['simulations','실험실']];
-const JUMP_TASK_KEYWORDS = {records:'체결 거래 주문 원장',principles:'규칙 정책 노드',simulations:'백테스트 실험 결과 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서',connections:'AI 연결 MCP Codex Claude Code'};
+const JUMP_TASK_KEYWORDS = {calendar:'모의검증 일정 날짜 손익 스케줄',records:'체결 거래 주문 원장',principles:'규칙 정책 노드',simulations:'백테스트 실험 결과 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서',connections:'AI 연결 MCP Codex Claude Code'};
 const BROKER_JUMP_KEYWORDS = '계좌 연결 잔고 자금 거래소 업비트 토스증권 API키';
 
 const TASK_GROUPS = Object.freeze({
@@ -19,7 +19,7 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   for(const mind of minds)nameCounts.set(mind.name,(nameCounts.get(mind.name)??0)+1);
   const mindSource={...route,params:new URLSearchParams([...route.params].filter(([key])=>route.page==='minds'?key==='returnTo':key!=='returnTo'))};
   const mindHref=(profileId,view)=>routeHash(mindSource,'minds',{profileId,view,executionMode:view==='simulations'||!live?'paper':'live'});
-  const entries=primary.map(([page,,label])=>({label,group:'주요 화면',href:routeHash(route,page,page==='minds'?{profileId:'all',view:'overview'}:{})}));
+  const entries=primary.map(([page,,label])=>({label,group:'주요 화면',keywords:keywords[page]||'',href:routeHash(route,page,page==='minds'?{profileId:'all',view:'overview'}:{})}));
   entries.push({label:'첫 모의 판단',group:'모의 실습',keywords:'실습 연습 모의투자 현재 확정 시세 BTC-USDT 4시간봉',
     taskSuffix:live?'모의 화면으로 이동':'',href:PAPER_DECISION_ENTRY});
   for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label:view==='simulations'&&live?'전체 모의 시뮬레이션':label,group:'전체 마인드',keywords:keywords[view]||'',href:mindHref('all',view)});

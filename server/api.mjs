@@ -8,6 +8,7 @@ import {handleAutomatedTradingAPI} from './automated-trading.mjs';
 import {handleBrokerAPI} from './broker-accounts.mjs';
 import {handleStrategyLearningAPI} from './strategy-learning.mjs';
 import {handleVampModelAPI} from './vamp-model-api.mjs';
+import {handleWorkspaceCalendar} from './workspace-calendar.mjs';
 import {handleHomeAPI} from './home-api.mjs';
 import {handleHomeMarketAPI} from './home-market.mjs';
 import {handleWorkspaceReset} from './workspace-reset.mjs';
@@ -27,6 +28,7 @@ export async function handleAPI(request, env = {}, { fetchImpl = fetch, now = ()
     return json({ok:true,manifest:capabilityManifest()});
   }
   if(url.pathname.startsWith('/api/workspace/hourly-learning'))return handleHourlyLearningAPI(request,env,{fetchImpl,now});
+  if(url.pathname==='/api/workspace/calendar')return handleWorkspaceCalendar(request,env,now);
   if(url.pathname.startsWith('/api/workspace/event-paper'))return handleEventPaperAPI(request,env,{fetchImpl,now});
   if(url.pathname.startsWith('/api/workspace/automated-trading'))return handleAutomatedTradingAPI(request,env,{fetchImpl,now});
   if(url.pathname.startsWith('/api/workspace/paper-adaptation'))return handlePaperAdaptationAPI(request,env,{fetchImpl,now});

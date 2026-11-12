@@ -1,0 +1,96 @@
+import {calendarDay,calendarMonth,moveCalendarMonth} from '../system/calendar-date.mjs';
+import {currencyAmount} from './currency-format.mjs';
+
+const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dateTitle=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short',timeZone:'UTC'});
+const scheduleTime=new Intl.DateTimeFormat('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul',hour12:false});
+const calendarHref=(month,date)=>'#calendar?'+new URLSearchParams(date?{month,date}:{month});
+const routeLink=(href,label,extra='')=>'<a data-studio-route href="'+esc(href)+'" '+extra+'>'+label+'</a>';
+const today=()=>calendarDay(Date.now());
+const monthFor=route=>calendarMonth(route.params.get('month'))??today().slice(0,7);
+const money=(amount,currency)=>{
+  const value=Number(amount),magnitude=Math.abs(value);
+  const display=value===0?'0':magnitude<1e-8?value.toExponential(2):currencyAmount(value,currency,magnitude<.01?8:2);
+  return (value>0?'+':'')+display+' '+currency;
+};
+const tone=amount=>Number(amount)>0?'gain':Number(amount)<0?'loss':'even';
+const compactAmount=new Intl.NumberFormat('ko-KR',{notation:'compact',signDisplay:'exceptZero',maximumFractionDigits:2});
+const pnl=(rows,cell=false)=>rows.map(({currency,amount})=>{
+  const full='<span class="viv-cal-amount-full">'+esc(money(amount,currency))+'</span>';
+  const short=cell?'<span aria-hidden="true" class="viv-cal-amount-compact">'+esc(Number(amount)!==0&&Math.abs(Number(amount))<.01?(Number(amount)>0?'+':'')+Number(amount).toExponential(1):compactAmount.format(Number(amount)))+'<small>'+esc(currency)+'</small></span>':'';
+  return '<span class="viv-cal-pnl" data-tone="'+tone(amount)+'">'+full+short+'</span>';
+}).join('');
+const dateFor=(route,month,now)=>{
+  const selected=route.params.get('date'),day=selected?.startsWith(month+'-')?new Date(selected+'T00:00:00Z'):null;
+  if(day&&Number.isFinite(day.getTime())&&day.toISOString().slice(0,10)===selected)return selected;
+  return now.startsWith(month+'-')?now:month+'-01';
+};
+
+function monthGrid(data,selected){
+  const {month,today,days}=data,first=new Date(month+'-01T00:00:00Z'),offset=(first.getUTCDay()+6)%7;
+  const count=new Date(moveCalendarMonth(month,1)+'-01T00:00:00Z').getTime()/86400000-first.getTime()/86400000;
+  const values=new Map(days.map(day=>[day.date,day]));
+  const cells=Array.from({length:Math.ceil((offset+count)/7)*7},(_,index)=>{
+    const number=index-offset+1;
+    if(number<1||number>count)return '<span class="viv-cal-cell" aria-hidden="true"></span>';
+    const key=month+'-'+String(number).padStart(2,'0'),day=values.get(key),entries=day?.entries??[],scheduled=entries.filter(row=>row.kind==='schedule').length;
+    const amounts=day?.pnl??[],mark=scheduled?'<span class="viv-cal-marker" aria-hidden="true"></span>':'';
+    const label=[key,key===today?'오늘':'',entries.length?'일정·기록 '+entries.length+'건':'',...amounts.map(row=>money(row.amount,row.currency)),day?.unknown?'일부 원장 미확인':''].filter(Boolean).join(', ');
+    return routeLink(calendarHref(month,key),'<span class="viv-cal-number">'+number+mark+'</span>'+pnl(amounts,true)+(entries.length&&!amounts.length?'<small>'+entries.length+'건</small>':''),'class="viv-cal-cell" data-cal-date="'+key+'" aria-label="'+esc(label)+'"'+(key===selected?' aria-current="date"':'')+(key===today?' data-today':''));
+  });
+  return '<div class="viv-cal-grid" aria-label="월간 일정">'+['월','화','수','목','금','토','일'].map(day=>'<span class="viv-cal-week">'+day+'</span>').join('')+cells.join('')+'</div>';
+}
+
+function agenda(day,selected){
+  const records=day?.entries??[];
+  return '<section class="viv-cal-panel viv-cal-day" aria-labelledby="viv-cal-day-title"><h2 id="viv-cal-day-title">'+esc(dateTitle.format(new Date(selected+'T00:00:00Z')))+'</h2>'+
+    '<div class="viv-cal-totals">'+(day?.pnl.length?pnl(day.pnl):'<span class="muted">실현 손익 기록 없음</span>')+'</div>'+
+    (day?.unknown?'<p class="muted">일부 체결의 손익을 확인할 수 없습니다.</p>':'')+
+    (records.length?'<ul class="viv-cal-list">'+records.map(row=>'<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(row.label)+' · '+esc(scheduleTime.format(new Date(row.at)))+'</small></span>'+(Number.isFinite(row.totalReturn)?'<span class="viv-cal-pnl" data-tone="'+tone(row.totalReturn)+'">'+esc(new Intl.NumberFormat('ko-KR',{style:'percent',signDisplay:'exceptZero',maximumFractionDigits:2}).format(row.totalReturn))+'</span>':row.amount!==undefined?pnl([row]):'<span aria-hidden="true">↗</span>'))+'</li>').join('')+'</ul>':'<p class="muted">이 날짜에 확인된 일정이나 기록이 없습니다.</p>')+'</section>';
+}
+
+function ongoing(rows){
+  return '<section class="viv-cal-panel viv-cal-active" aria-labelledby="viv-cal-active-title"><h2 id="viv-cal-active-title">모의검증 현황 <span class="muted">'+rows.length+'건</span></h2>'+
+    (rows.length?'<ul class="viv-cal-list">'+rows.map(row=>{
+      const detail=row.at?row.atLabel+' '+scheduleTime.format(new Date(row.at)):row.progress?.total>0?row.progress.completed+' / '+row.progress.total+' 처리':'';
+      return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc([row.kind==='experiment'?'과거 시세 검증':'모의 운용',detail].filter(Boolean).join(' · '))+'</small></span><span class="viv-cal-status">'+esc(row.state)+'</span>')+'</li>';
+    }).join('')+'</ul>':
+      '<p class="muted">진행하거나 확인할 모의검증이 없습니다.</p>'+routeLink('#minds?profileId=all&view=simulations&executionMode=paper','실험실 열기','class="button small"'))+'</section>';
+}
+
+export function createWorkspaceCalendar({getRoute,request,render}){
+  let data=null,error='',pending=null,controller=null;
+  async function load({force=false}={}){
+    const route=getRoute();
+    if(route.page!=='calendar'){controller?.abort();return;}
+    const month=monthFor(route);
+    if(pending===month||!force&&data?.month===month)return;
+    controller?.abort();
+    const task=new AbortController();
+    controller=task;pending=month;error='';render();
+    try{
+      const value=await request('/api/workspace/calendar?month='+encodeURIComponent(month),undefined,{signal:task.signal});
+      if(!task.signal.aborted)data=value;
+    }catch(problem){if(!task.signal.aborted)error=problem.message;}
+    finally{if(controller===task){pending=null;if(getRoute().page==='calendar')render();}}
+  }
+  function markup(){
+    const route=getRoute(),month=monthFor(route),current=data?.month===month?data:null,now=current?.today??today(),selected=dateFor(route,month,now);
+    const [year,mon]=month.split('-').map(Number);
+    const monthLink=(offset,label,icon)=>{
+      const next=calendarMonth(moveCalendarMonth(month,offset));
+      return next?routeLink(calendarHref(next),icon,'class="button" aria-label="'+label+'"'):'';
+    };
+    return '<section class="viv-calendar"><header class="viv-cal-head"><div><h1 tabindex="-1">캘린더</h1><p class="muted">모의검증 일정과 날짜별 실현 손익 · 한국 시간</p></div>'+
+      routeLink(calendarHref(now.slice(0,7),now),'오늘','class="button"')+'</header>'+
+      '<div class="viv-cal-layout"><section class="viv-cal-panel viv-cal-month" aria-label="월간 캘린더"><div class="viv-cal-toolbar">'+monthLink(-1,'이전 달','‹')+
+      '<h2>'+year+'년 '+mon+'월</h2>'+monthLink(1,'다음 달','›')+'</div>'+
+      (pending&&!current?'<p role="status">일정을 불러오는 중…</p>':'')+
+      (error?'<p role="alert">'+esc(error)+'</p><button type="button" class="button" data-studio-action="calendar-refresh">다시 조회</button>':'')+
+      monthGrid(current??{month,today:now,days:[]},selected)+
+      '<p class="viv-cal-note muted">매도에서 확정된 손익을 통화별로 표시합니다. 과거 시세 검증은 완료 또는 결과 갱신 날짜에 표시합니다.</p>'+
+      (current?.eventLedgerUnavailable?'<p class="viv-cal-note" role="status">일부 분봉 모의 원장을 확인하지 못했습니다.</p>':'')+
+      '</section><div class="viv-cal-side">'+(current?ongoing(current.active)+agenda(current.days.find(day=>day.date===selected),selected):'')+'</div></div></section>';
+  }
+  return {load,render:markup,destroy(){controller?.abort();}};
+}
