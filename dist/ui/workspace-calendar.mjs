@@ -83,14 +83,15 @@ export function createWorkspaceCalendar({getRoute,request,render}){
     };
     return '<section class="viv-calendar"><header class="viv-cal-head"><div><h1 tabindex="-1">캘린더</h1><p class="muted">모의검증 일정과 날짜별 실현 손익 · 한국 시간</p></div>'+
       routeLink(calendarHref(now.slice(0,7),now),'오늘','class="button"')+'</header>'+
-      '<div class="viv-cal-layout"><section class="viv-cal-panel viv-cal-month" aria-label="월간 캘린더"><div class="viv-cal-toolbar">'+monthLink(-1,'이전 달','‹')+
+      '<div class="viv-cal-layout">'+(current?ongoing(current.active):'')+
+      '<section class="viv-cal-panel viv-cal-month" aria-label="월간 캘린더"><div class="viv-cal-toolbar">'+monthLink(-1,'이전 달','‹')+
       '<h2>'+year+'년 '+mon+'월</h2>'+monthLink(1,'다음 달','›')+'</div>'+
       (pending&&!current?'<p role="status">일정을 불러오는 중…</p>':'')+
       (error?'<p role="alert">'+esc(error)+'</p><button type="button" class="button" data-studio-action="calendar-refresh">다시 조회</button>':'')+
       monthGrid(current??{month,today:now,days:[]},selected)+
       '<p class="viv-cal-note muted">매도에서 확정된 손익을 통화별로 표시합니다. 과거 시세 검증은 완료 또는 결과 갱신 날짜에 표시합니다.</p>'+
       (current?.eventLedgerUnavailable?'<p class="viv-cal-note" role="status">일부 분봉 모의 원장을 확인하지 못했습니다.</p>':'')+
-      '</section><div class="viv-cal-side">'+(current?ongoing(current.active)+agenda(current.days.find(day=>day.date===selected),selected):'')+'</div></div></section>';
+      '</section>'+(current?agenda(current.days.find(day=>day.date===selected),selected):'')+'</div></section>';
   }
   return {load,render:markup,destroy(){controller?.abort();}};
 }

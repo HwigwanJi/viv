@@ -4,6 +4,7 @@ import {buildWorkspaceCalendar,handleWorkspaceCalendar} from '../server/workspac
 import {calendarDay,moveCalendarMonth} from '../dist/system/calendar-date.mjs';
 import {createWorkspace,dispatchWorkspaceAction} from '../dist/domain/workspace.mjs';
 import {mindAvatarIdentity} from '../dist/ui/mind-avatar.mjs';
+import {createWorkspaceCalendar} from '../dist/ui/workspace-calendar.mjs';
 
 test('calendar buckets settled paper PnL by Korean date and preserves currencies',()=>{
   const now='2026-11-15T02:00:00.000Z',month='2026-11';
@@ -42,6 +43,19 @@ test('calendar only accepts owner-scoped month reads',async()=>{
   assert.equal((await handleWorkspaceCalendar(new Request(url,{method:'POST',headers}),{},Date.now)).status,405);
   assert.equal((await handleWorkspaceCalendar(new Request(url,{headers:{...headers,Origin:'https://elsewhere.example'}}),{},Date.now)).status,403);
   assert.equal((await handleWorkspaceCalendar(new Request(url+'&month=2026-12',{headers}),{},Date.now)).status,400);
+});
+
+test('calendar presents active checks before the month and selected date',async()=>{
+  const month='2026-11',today='2026-11-12';
+  const calendar=createWorkspaceCalendar({
+    getRoute:()=>({page:'calendar',params:new URLSearchParams({month,date:today})}),
+    request:async()=>({month,today,days:[],active:[{name:'모의 검증',kind:'forward',state:'일시중지',href:'#minds'}]}),
+    render:()=>{},
+  });
+  await calendar.load();
+  const markup=calendar.render();
+  const order=['id="viv-cal-active-title"','aria-label="월간 캘린더"','id="viv-cal-day-title"'].map(label=>markup.indexOf(label));
+  assert.ok(order[0]>=0&&order[0]<order[1]&&order[1]<order[2]);
 });
 
 test('character editing saves appearance and display name without a policy revision',()=>{

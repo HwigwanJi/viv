@@ -3400,10 +3400,10 @@
         ]
       ],
       "signature": "5f5b30d62fb3033f505273df47c939758132d44ce946f9ea7843d0cc8f573c89",
-      "sourceHash": "d0ca87c513dd9a4101c7c295655902df1ea9e757d41c8a441d6a6dd7249d1020",
+      "sourceHash": "021e19cf309f546d032edf44d093c278846504b3a5234912e4aac49b4537540b",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T12:18:52.828Z",
-      "reason": "모바일 캘린더 월 이동·기록 상세 및 캐릭터 꾸미기에서 이름 저장을 검증"
+      "reviewedAt": "2026-11-12T14:37:05.671Z",
+      "reason": "PC·모바일에서 현황 → 월간 달력 → 선택 날짜 순서를 확인하고 키보드로 모의 운용을 열어 월 이동 뒤 같은 주소를 대조"
     },
     {
       "file": "dist/ui/terminal-universe.mjs",

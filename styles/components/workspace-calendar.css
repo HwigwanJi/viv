@@ -7,8 +7,10 @@
 .viv-cal-head,.viv-cal-toolbar{@apply flex items-center justify-between gap-ui-4}
 .viv-cal-head{@apply mb-ui-6}
 .viv-cal-head p{@apply mt-ui-2}
-.viv-cal-layout{@apply grid items-start gap-ui-5;grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
-.viv-cal-side{@apply grid gap-ui-4 min-w-0}
+.viv-cal-layout{@apply grid items-start gap-x-ui-5 gap-y-ui-4;grid-template-columns:minmax(0,2fr) minmax(0,1fr);grid-template-rows:auto 1fr;grid-template-areas:"month active" "month day"}
+.viv-cal-active{grid-area:active}
+.viv-cal-month{grid-area:month}
+.viv-cal-day{grid-area:day}
 .viv-cal-panel{@apply min-w-0 p-ui-4 border border-subtle rounded-ui-xl bg-surface}
 .viv-cal-toolbar{@apply mb-ui-3}
 .viv-cal-toolbar .button{@apply min-w-control-touch text-ui-lg}
@@ -40,9 +42,7 @@
 .viv-cal-panel h2+p,.viv-cal-panel p+.button{@apply mt-ui-3}
 @variant max-md{
   .viv-cal-layout{@apply flex flex-col gap-ui-3}
-  .viv-cal-side{@apply contents}
   .viv-cal-panel{@apply w-full p-ui-3}
-  .viv-cal-active{@apply order-first}
   .viv-cal-active .viv-cal-list{@apply max-h-40}
   .viv-cal-cell{@apply min-h-control-touch p-ui-1 text-ui-xs}
   .viv-cal-cell .viv-cal-pnl{@apply text-ui-xs tracking-tight}
