@@ -81,9 +81,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T08:09:10.550Z",
-      "reason": "iOS WebKit 설치 주소 복사와 권한 실패 복구, 기존 Android와 PC 설치 검토",
-      "signature": "c4e4b9af830366066588a0153c7f80ac50c848b2ea062d54643990f0b760d768",
+      "reviewedAt": "2026-11-12T11:08:06.844Z",
+      "reason": "복원 안내 링크, 키보드 이동, MCP 주소 복사와 권한 실패 시 선택, 휴대폰 PC 안내를 검토",
+      "signature": "cdb057a9050d8256b85907caaf4c430922d0f037a11b4c00e8a582fa05a00062",
       "controls": [
         [
           "data-install-copy-command",
@@ -107,7 +107,7 @@
         ],
         [
           "element:a",
-          4
+          5
         ],
         [
           "element:button",
@@ -126,7 +126,7 @@
           2
         ]
       ],
-      "sourceHash": "7559e69081c6cd9cc01f6a660c125b12d3116914ad70ba68e0680f96f3ee97cc"
+      "sourceHash": "c670c5ea247ee82380c42e4f7c9b7b630a00b4f98b49d2b45787c34fbddbf610"
     },
     {
       "file": "dist/knowledge.mjs",

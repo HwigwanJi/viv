@@ -22,7 +22,7 @@ Git이 설치된 Mac 터미널에서 아래 한 줄을 실행하세요. Node.js�
 git clone https://github.com/HwigwanJi/viv.git viv && bash viv/scripts/install-viv-mac.sh
 ```
 
-Claude Code를 쓰면 위 명령 끝에 `--client claude`를 붙이세요. Mac만 쓸지 모바일도 쓸지 고르면 VIV가 앱·서버를 준비하고 MCP를 등록합니다. `registered`가 나오면 AI에서 **VIV 시작하기**를 입력하세요.
+Claude Code를 쓰면 위 명령 끝에 `--client claude`를 붙이세요. Mac만 쓸지 모바일도 쓸지 고르면 VIV가 앱·서버를 준비하고 MCP를 등록합니다.
 
 ## Windows에서 Claude Code로 설치
 
@@ -38,9 +38,9 @@ git clone https://github.com/HwigwanJi/viv.git viv; if ($LASTEXITCODE -eq 0) { p
 
 설치 결과를 닫았다면 PC 앱의 **설정 → 서비스 연결**에서 **AI 연결·복구 (MCP)** 또는 **휴대폰 연결·설치**를 열어 이어가세요. [터미널에서 연결 복구](docs/agents/operations/self-host.md#연결-복구)
 
-컴퓨터 재부팅 후 기존 앱 주소가 열리지 않으면 설치했던 VIV 폴더에서 [서버 다시 시작](docs/agents/operations/self-host.md#서버-다시-시작) 명령을 실행하세요. 같은 주소에서 저장한 기록을 이어 볼 수 있습니다.
+컴퓨터 재부팅 후 기존 앱 주소가 열리지 않으면 설치했던 VIV 폴더에서 [서버 다시 시작](docs/agents/operations/self-host.md#서버-다시-시작) 명령을 실행하세요. 같은 주소에서 저장한 기록을 이어 볼 수 있습니다. 폴더나 컴퓨터를 옮기는 경우에는 [기존 기록 복원](docs/agents/operations/self-host.md#기존-기록-복원)을 따르세요.
 
-`mcpStatus`가 `registered`면 Codex 또는 Claude Code에 **VIV 시작하기**를 입력하세요. 현재 대화에 도구가 보이지 않으면 새 대화에서 입력하세요.
+`mcpStatus`가 `registered`면 Codex 또는 Claude Code에서 설치 결과의 `onboardingPrompt`를 입력하세요. 현재 대화에 도구가 보이지 않으면 새 대화에서 입력하세요.
 
 ## AI 에이전트로 설치
 

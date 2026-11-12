@@ -37,9 +37,9 @@ Windows와 Mac 모두 터미널에 앱·MCP·모바일 상태를 표시합니다
 | --- | --- |
 | `desktopStatus: started` 또는 `reused` | `desktopUrl`을 열어 VIV 화면을 확인하세요. `started`는 새 서버를 시작한 경우이고 `reused`는 실행 중인 서버를 그대로 쓰는 경우입니다. |
 | `restartCommand` | 앱 주소가 열리지 않을 때 기존 VIV 폴더에서 이 명령을 실행하세요. |
-| `mcpStatus: registered` | AI 대화에 `onboardingPrompt`에 표시된 **VIV 시작하기**를 입력하세요. [첫 모의 실습](viv-mcp-playbook.md#첫-모의-실습)으로 이어갑니다. |
+| `mcpStatus: registered` | AI 대화에 `onboardingPrompt`의 문장을 입력하세요. [첫 모의 실습](viv-mcp-playbook.md#첫-모의-실습)으로 이어갑니다. |
 | `mcpStatus: not-requested` | 모바일 복구만 실행했습니다. AI를 연결하려면 [MCP만 복구하기](#mcp만-복구하기)를 따르세요. |
-| `mcpStatus: endpoint-ready` | VIV의 MCP 서버가 응답합니다. 기존에 연결한 AI에서 **VIV 시작하기**를 입력해 확인하세요. 첫 수동 연결이라면 AI 클라이언트에 `mcpUrl`을 등록하세요. |
+| `mcpStatus: endpoint-ready` | VIV 서버의 MCP 주소가 응답합니다. AI에 같은 `mcpUrl`이 이미 등록돼 있으면 그 연결을 쓰세요. 새 주소라면 [MCP만 복구하기](#mcp만-복구하기)에서 등록합니다. |
 | `mobileStatus: phone-install-pending` | PC에서 비공개 HTTPS 주소를 검증했습니다. `desktopInstallUrl`에서도 설치 주소를 확인하고 복사할 수 있습니다. 휴대폰에서 `mobileInstallUrl`을 열고 홈 화면 아이콘에서 VIV가 열리는지 확인하세요. |
 | `mobileStatus: not-requested` | 이번 실행에서 모바일 설정을 진행하지 않았습니다. 이전에 연결한 휴대폰에서는 기존 VIV 아이콘을 열어 확인하세요. 새 연결이나 복구는 [모바일만 복구하기](#모바일만-복구하기)를 따르세요. |
 | `mobileStatus: needs-action` | `mobileError`를 확인하고 `mobileRetryCommand`를 실행하세요. [모바일만 복구하기](#모바일만-복구하기) |
@@ -83,7 +83,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup-self-hos
 bash scripts/install-viv-mac.sh --target pc --client codex
 ```
 
-Claude Code는 Windows에서 `-Client Claude`, Mac에서 `--client claude`를 사용하세요. `registered`가 나오면 AI의 새 대화에 **VIV 시작하기**를 입력하세요. 수동 연결은 앱에서 복사한 `mcpUrl` 전체를 클라이언트에 등록하세요. 주소의 `installation` 값은 해당 VIV 설치를 확인합니다. `viv`가 다른 주소를 사용하면 새 연결은 `viv-포트번호`로 추가되며 그 이름도 사용 중이면 설치별 접미사를 붙입니다. 새 대화에서는 결과의 `mcpName` 또는 `onboardingPrompt`로 연결할 설치를 지정하세요. 예전에 등록한 `/mcp` 주소는 계속 동작하며 포트가 가리키는 서버에 연결됩니다. [MCP와 첫 대화](viv-mcp-playbook.md#연결)
+Claude Code는 Windows에서 `-Client Claude`, Mac에서 `--client claude`를 사용하세요. 등록에 성공하면 결과의 `onboardingPrompt` 또는 MCP 전용 명령의 `startMessage`를 AI의 새 대화에 입력하세요. `viv`가 다른 주소에 등록돼 있으면 설치기가 새 이름을 선택합니다. 예를 들어 새 이름이 `viv-4499`이면 **viv-4499 도구로 VIV 시작하기**를 입력합니다.
+
+수동 연결은 앱에서 복사한 MCP 주소 전체를 등록하세요. 주소의 `installation` 값은 해당 설치를 확인합니다. 예전에 등록한 `/mcp` 주소는 포트가 가리키는 서버에 연결되므로 설치가 여러 개일 때는 각 앱에서 복사한 주소로 등록하세요. [MCP와 첫 대화](viv-mcp-playbook.md#연결)
 
 ## 서버 다시 시작
 
@@ -115,13 +117,23 @@ bash scripts/install-viv-mac.sh --target pc --client manual --port 4317
 
 이후 위 재실행 명령을 사용하세요. 주소가 다른 설치나 서비스에 속한다는 오류가 나오면 기존 VIV 주소와 포트를 점유한 프로그램을 확인하세요. 해당 프로그램에서 포트를 해제한 뒤 같은 명령을 다시 실행하세요.
 
-VIV의 MCP 등록만 제거하려면 Codex에서 `codex mcp remove viv`, Claude Code에서 `claude mcp remove viv --scope user`를 실행하세요.
+VIV의 MCP 등록을 제거하려면 해당 연결의 `mcpName`을 확인하고 Codex에서 `codex mcp remove <이름>`, Claude Code에서 `claude mcp remove <이름> --scope user`를 실행하세요.
 
 ## 기존 기록 복원
 
 새 폴더로 기존 VIV 기록을 옮길 때는 원래 서버를 완전히 종료하고, 그 설치 또는 같은 백업에서 `.runtime/self-host.sqlite`와 숨김 파일 `.env`를 함께 가져오세요. 새 VIV 폴더의 `.runtime` 안에 DB를, VIV 폴더 바로 아래에 `.env`를 둡니다. 같은 원본에 `.runtime/self-host.sqlite-wal`이 남아 있으면 최신 기록을 보존할 수 있도록 그 파일도 DB 옆에 둡니다. 원래 `.env`의 키로 저장된 계좌 연결을 읽습니다. 이 파일은 로컬에서만 옮기고 채팅이나 Git에 올리지 마세요. [SQLite WAL 안내](https://sqlite.org/wal.html#the_wal_file)
 
-설치가 원래 `.env`를 요청하면 터미널에 표시된 VIV 폴더에 그 파일을 복원하고 같은 명령을 다시 실행하세요. 새 폴더라면 [Windows 설치](#windows-서버와-휴대폰) 또는 [Mac 설치](#mac-서버와-휴대폰)로 시작합니다. 기존 설치 폴더라면 [서버 다시 시작](#서버-다시-시작)을 사용하세요. 설치가 표시한 **VIV PC** 주소에서 **모의 → 마인드 → 전체 기록**을 열어 이전 기록을 확인합니다.
+설치가 원래 `.env`를 요청하면 터미널에 표시된 VIV 폴더에 그 파일을 복원하고 같은 명령을 다시 실행하세요.
+
+### 같은 폴더에서 다시 시작
+
+[서버 다시 시작](#서버-다시-시작)을 실행한 뒤 기존 **VIV PC** 주소와 기존 AI 연결 이름을 사용하세요.
+
+### 새 폴더에 복원한 뒤 AI에서 기록 열기
+
+1. 새 폴더에서 [Windows 설치](#windows-서버와-휴대폰) 또는 [Mac 설치](#mac-서버와-휴대폰)를 실행하세요. 터미널에 표시된 **VIV PC** 주소에서 **모의 → 마인드 → 전체 기록**을 열어 옮긴 기록을 확인합니다.
+2. 새 폴더에는 별도의 MCP 주소가 생깁니다. 설치 결과가 `registered`라면 결과에 표시된 `mcpName`을 사용하세요. AI를 수동으로 연결하거나 예전 설치가 열린다면 새 **VIV PC** 주소의 **설정 → 서비스 연결 → AI 연결·복구 (MCP)**에서 해당 클라이언트의 명령을 실행하거나 새 MCP 주소 전체를 복사해 등록하세요. 기존 연결은 등록된 이름으로 계속 열 수 있습니다. [MCP만 복구하기](#mcp만-복구하기)
+3. AI의 새 대화에 “**[설치 결과의 MCP 이름] 도구로 복원한 최근 모의 판단의 이유와 체결 건수를 알려주고, 저장된 기록 링크를 열어줘**”라고 입력하세요. 링크에서 해당 행의 **상세**를 열면 앱에서 확인한 같은 판단을 볼 수 있습니다. 최근 목록에 없는 판단은 **전체 기록**에서 종목·마인드·일자로 찾아 열 수 있습니다.
 
 ## 자기 API 키와 계좌
 
