@@ -3259,9 +3259,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T14:06:04.572Z",
-      "reason": "발행 전략과 별도 초안이 함께 있을 때 같은 버튼 색과 읽기 조작, 초안 버전별 검토 사유 및 초점 복원을 확인했다.",
-      "signature": "e008be78931d8672e53149e3739ccb6fe579938795c5aed5b2be78089a49b1a9",
+      "reviewedAt": "2026-11-13T16:03:17.057Z",
+      "reason": "동일한 저장 판단 링크에서 종목·마인드·시각을 확인하고 터치와 키보드로 근거와 체결을 열어 같은 모의 실습으로 돌아왔다.",
+      "signature": "0e930ee30dc9e244989e2abe8f5e108533c5fb153cfd5fc54230ea5c97efce5f",
       "controls": [
         [
           "data-auto-action",
@@ -3357,7 +3357,7 @@
         ],
         [
           "helper:button(",
-          179
+          180
         ],
         [
           "helper:renderActionMenu(",
@@ -3368,7 +3368,7 @@
           1
         ]
       ],
-      "sourceHash": "8e4d1d9d72c8ca73368e15abad801429d3685532681caa17f413385b8d0d2229",
+      "sourceHash": "c83aa78032c482b60639e671918fb71bcb442bdb970ca5990f2f20c17b43eb0d",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

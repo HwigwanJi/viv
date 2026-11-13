@@ -5,7 +5,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {contextSourceFiles,inspectContextSource,inspectContextReview,inspectContextMatrix,checkContextInteractions} from '../scripts/check-context-interactions.mjs';
 import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
-import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS,paperTrendDecisionBasis} from '../dist/ui/studio-controller.mjs';
+import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS,paperTrendDecisionBasis,exactPaperDecisionRecord} from '../dist/ui/studio-controller.mjs';
 import {renderStudioJump,studioJumpItems,studioJumpMatches,studioJumpResearchItems,studioReturnLink} from '../dist/ui/studio-shell.mjs';
 import {terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
 import {terminalPrimaryAction,terminalRunRequirement} from '../dist/ui/terminal-workspace-controls.mjs';
@@ -107,6 +107,19 @@ test('help queries find the capability catalog in the current viewing mode',()=>
   assert.equal(destination.params.get('view'),'capabilities');
   assert.equal(destination.params.get('executionMode'),'live');
  }
+});
+
+test('the saved decision action requires one exact decision ID in the filtered results',()=>{
+ const query=new URLSearchParams({kind:'decisions',search:'mind-run-1'});
+ const item={kind:'decision',decisionId:'mind-run-1'};
+ assert.equal(exactPaperDecisionRecord(query,{total:1,items:[item]}),item);
+ assert.equal(exactPaperDecisionRecord(query,{total:2,items:[item]}),null);
+ assert.equal(exactPaperDecisionRecord(query,{total:1,items:[{...item,decisionId:'mind-run-10'}]}),null);
+ assert.equal(exactPaperDecisionRecord(query,{total:1,items:[{...item,kind:'fill'}]}),null);
+ assert.equal(exactPaperDecisionRecord(query,undefined),null);
+ assert.equal(exactPaperDecisionRecord(query,{total:1}),null);
+ query.set('kind','all');
+ assert.equal(exactPaperDecisionRecord(query,{total:1,items:[item]}),null);
 });
 
 test('startup recovery searches open the public guide in a separate tab',()=>{
