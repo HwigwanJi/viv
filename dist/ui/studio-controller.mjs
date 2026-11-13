@@ -1291,12 +1291,13 @@ export function createStudioController(hooks={},options={}){
       </details>
     </div>`;
     const horizon=select('투자 기간','horizon',[['1m','1분봉'],['3m','3분봉'],['5m','5분봉'],['1h','1시간봉'],['4h','4시간봉'],['1d','일봉'],['multi-day','여러 날']],s.horizon||'4h');
-    form(p?'마인드 원칙 편집':'마인드 추가',manifest?'manifest-profile':'profile',
-      starterPicker+field('이름','name',manifest?.data.name||p?.name||'')+(p?horizon:`<div data-manual-horizon>${horizon}</div>`)+
+    const profileFields=field('이름','name',manifest?.data.name||p?.name||'')+(p?horizon:`<div data-manual-horizon>${horizon}</div>`)+
       field('주요 근거 · 쉼표 구분','evidencePreferences',list(s.evidencePreferences).join(', '),'text')+area('투자 철학','philosophy',s.philosophy||'')+
-      area('손실·비용·반대 근거 검토 원칙','discipline',s.discipline||'')+
+      area('손실·비용·반대 근거 검토 원칙','discipline',s.discipline||'');
+    form(p?'마인드 원칙 편집':'마인드 추가',manifest?'manifest-profile':'profile',
+      starterPicker+(p?profileFields:`<details class="full" data-starter-fields${guided?'':' open'}><summary${guided?'':' hidden'}>이름과 원칙 편집 (선택)</summary><div class="form-grid spaced">${profileFields}</div></details>`)+
       (manifest?'<div class="full">'+helpLabel('정책 초안 저장','원칙을 새 정책 초안으로 저장합니다. 정책 양식에서 가중치·투자 범위·자료·실행 조건을 함께 편집하고 발행할 수 있습니다.')+'</div>':''),id,manifest?'정책 초안 저장':guided?'마인드 만들고 전략 초안 저장':'마인드 생성');
-    if(guided&&typeof document!=='undefined'){
+    if(!p&&typeof document!=='undefined'){
       const picker=document.querySelector('#detail-dialog select[name="starterId"]');
       if(picker)updateStarterPreview(picker);
     }
@@ -1310,18 +1311,22 @@ export function createStudioController(hooks={},options={}){
       formNode.querySelector('button[type="submit"]').textContent=starter?'마인드 만들고 전략 초안 저장':'마인드 생성';
     }
     const defaults=starter?starterProfileDefaults(starter):{};
-    for(const name of ['name','philosophy','discipline','evidencePreferences']){
+    const fields=['name','philosophy','discipline','evidencePreferences'];
+    for(const name of fields){
       const control=formNode.elements[name];
       control.required=!starter;
       control.placeholder=defaults[name]||'';
     }
     formNode.elements.horizon.disabled=!!starter;
     formNode.querySelector('[data-manual-horizon]').hidden=!!starter;
+    const customization=formNode.querySelector('[data-starter-fields]');
+    customization.querySelector('summary').hidden=!starter;
+    customization.open=!starter||fields.some(name=>formNode.elements[name].value.trim());
     const preview=formNode.querySelector('[data-starter-preview]');
     if(!starter){preview.replaceChildren();return;}
     const timeframe=starter.timeframe==='1h'?'1시간봉':'4시간봉';
     const instruments=starter.universe.map(id=>getInstrument(id).symbol).join(', ');
-    preview.innerHTML=`<span>${esc(starter.description)}</span><small class="muted">${timeframe} · ${esc(instruments)}</small><small class="muted">빈 항목에는 프리셋 기본값이 적용됩니다. 생성한 전략은 검토·발행 후 실험에서 선택할 수 있습니다.</small>`;
+    preview.innerHTML=`<strong>기본 이름 · ${esc(defaults.name)}</strong><span>${esc(starter.description)}</span><small class="muted">${timeframe} · ${esc(instruments)}</small><small class="muted">그대로 저장하면 프리셋 기본값으로 전략 초안을 만듭니다. 저장한 초안에서 전략을 확인하고 발행할 수 있습니다.</small>`;
   }
   function chooseDocumentMind(operation,kind='mind-policy'){
     return form('마인드 선택','document-target','<input type="hidden" name="operation" value="'+esc(operation)+'"><input type="hidden" name="kind" value="'+esc(kind)+'">'+select('적용할 마인드','mindId',[['','마인드를 선택하세요'],...list(workspace.investmentProfiles).map(p=>[p.id,profileName(p.id)])],''),'','계속');
