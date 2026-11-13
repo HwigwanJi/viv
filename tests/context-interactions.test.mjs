@@ -64,6 +64,18 @@ test('a guided report makes a missing JEV key visible before paper funding',()=>
  assert.equal(terminalPrimaryAction(model).action,'timeframe');
 });
 
+test('first paper decision funding labels resume from the saved currency budget',()=>{
+ const account={code:'PAPER_ACCOUNT_REQUIRED',category:'ACCOUNT',action:{action:'account',label:'모의 자금 설정'}};
+ const model={selectedMindId:'test',profiles:[{id:'test'}],runRequirement:account};
+ const funding={currency:'USDT',budgetSaved:false};
+ assert.equal(terminalPrimaryAction(model).label,'모의 자금 설정');
+ assert.equal(terminalPrimaryAction({...model,paperFundingStep:funding}).label,'USDT 모의 예산 설정');
+ const executionReadiness={canRun:false,primaryAction:account.action,blockers:[account]};
+ const ready={...model,paperFundingStep:{...funding,budgetSaved:true},terminalReadiness:{schemaVersion:1,purpose:'FORWARD_PAPER',executionReadiness}};
+ assert.equal(terminalPrimaryAction(ready).label,'USDT 모의 자금 배정');
+ assert.equal(executionReadiness.primaryAction.label,'모의 자금 설정');
+});
+
 test('paper trend lesson explains no order only when the saved result supports it',()=>{
  const record={decision:{action:'hold'},execution:{status:'NO_ORDER_REQUIRED'},strategyEvaluation:{
   modules:[{moduleId:'SMA_TREND',ready:true,indicators:{close:80,slowMA:100,lookbackBars:480}}],

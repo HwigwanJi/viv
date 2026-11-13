@@ -3267,9 +3267,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T08:35:15.655Z",
-      "reason": "첫 모의 판단과 계좌·자금에서 저장한 모의 판단의 기록 검색 링크로 연결한다.",
-      "signature": "f1a81afd93ce9f1bdd179d38ff0e65eaf612315d968dbbf3470d8078b828dc40",
+      "reviewedAt": "2026-11-13T11:01:39.672Z",
+      "reason": "첫 모의 판단의 통화별 예산 저장과 새로고침 뒤 같은 마인드 자금 배정을 모바일 브라우저에서 검증했다.",
+      "signature": "e5b1ef09aca10d92524a89229d81e690a0677e5bc75ac88289713a29bb9f4ab7",
       "controls": [
         [
           "data-auto-action",
@@ -3349,7 +3349,7 @@
         ],
         [
           "element:input",
-          31
+          32
         ],
         [
           "element:select",
@@ -3376,7 +3376,7 @@
           1
         ]
       ],
-      "sourceHash": "fa0078224d41557bdca12bd29d9340ac2aebadbed2264888c270983a39cbdd0e",
+      "sourceHash": "3d71959d01da183512e3d0f0a99aeb57e4f3e4b58146a8e0717d4028ff5ae6b0",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3473,11 +3473,11 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T06:07:25.818Z",
-      "reason": "보고서 기반 모의 실습에서 누락된 JEV 키 조건을 모의 자금·시세 설정보다 먼저 안내한다. 기존 범위·저장 결과 우선순위는 유지한다.",
+      "reviewedAt": "2026-11-13T11:01:39.674Z",
+      "reason": "첫 모의 판단의 통화별 예산 저장과 새로고침 뒤 같은 마인드 자금 배정을 모바일 브라우저에서 검증했다.",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "b77e581fa89c794e7185df7572442af72792cd940e526001bbcef6a73c0c9e5f"
+      "sourceHash": "e199ee34097f3ac148549fdf323948dc6faf7360588a480551f6a25229e93f36"
     },
     {
       "file": "dist/ui/theme-init.js",

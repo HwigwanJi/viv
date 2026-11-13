@@ -611,7 +611,14 @@ export function createStudioController(hooks={},options={}){
       return `<section class="studio-loading">${heading}${error?`<p role="alert">${esc(error)}</p>${button('다시 조회','refresh')}`:'<p>서버에 저장된 종목·마인드·투자 기록을 조회합니다.</p>'}</section>`;
     }
     const notice=error?`<div class="callout warning section" role="alert">${esc(error)} ${button('새로고침','refresh')}</div>`:'';
-    const trade=()=>{const view={...model(),guidedDecision:!!firstDecisionReport(routeValue)};return renderFirstDecision(view)+terminal.render({...view,instrumentUniverse:terminalUniverseModel()});};
+    const trade=()=>{
+      const view={...model(),guidedDecision:!!firstDecisionReport(routeValue)};
+      if(firstPaperDecision(routeValue)){
+        const {instrument}=selectedIdentity(),currency=instrument.quoteCurrency;
+        view.paperFundingStep={currency,budgetSaved:!!paperBudgetFor(workspace,currency)};
+      }
+      return renderFirstDecision(view)+terminal.render({...view,instrumentUniverse:terminalUniverseModel()});
+    };
     return notice+({home:()=>home.render(),trade,minds:renderMinds,calendar:calendar.render,library:renderLibrary,settings:renderSettings}[routeValue.page]||trade)();
   }
   function renderFirstDecision(view){
@@ -644,7 +651,9 @@ export function createStudioController(hooks={},options={}){
       const readiness=view.terminalReadiness?.executionReadiness,requirement=terminalRunRequirement(view),step=requirement?.action?.action??readiness?.primaryAction?.action;
       const jevMissing=isJevKeyRequirement(requirement);
       message=readiness?.canRun?'결정 실행을 누르면 판단 근거와 모의 체결 상태를 확인할 수 있습니다.':
-        step==='account'?'종목의 결제 통화로 모의 자금을 배정하세요. 처음 설정한 원화 예산은 별도로 보관됩니다.':
+        step==='account'?(view.paperFundingStep.budgetSaved
+          ?view.paperFundingStep.currency+' 모의 예산이 준비됐습니다. 이 마인드에 배정할 금액을 선택하세요.'
+          :view.paperFundingStep.currency+' 모의 예산을 만든 뒤 이 마인드에 자금을 배정하세요.'):
         step==='data'?'시세를 수집한 뒤 트레이딩으로 돌아오면 같은 마인드에서 판단을 계속할 수 있습니다.':
         step==='records'?'저장된 결정 보기에서 현재 봉의 판단과 근거를 다시 확인할 수 있습니다.'+
           (list(readiness?.blockers).some(blocker=>blocker.code==='CANDLE_ALREADY_EVALUATED')?' 다음 모의 판단에는 새로 확정된 시세가 필요합니다.':''):
@@ -1539,7 +1548,7 @@ export function createStudioController(hooks={},options={}){
     const {profileId,instrument}=selectedIdentity(),params=recovery?.params||{};
     switch(recovery?.action){
       case 'choose-mind': {const picker=root?.querySelector('[data-terminal-mind]');picker?.focus();try{picker?.showPicker?.();}catch{}return;}
-      case 'account': return openAccountForm({mindId:profileId,quoteCurrency:instrument.quoteCurrency});
+      case 'account': return openAccountForm({mindId:profileId,quoteCurrency:instrument.quoteCurrency,guided:firstPaperDecision(currentRoute())});
       case 'connections': return openTerminalConnections({reviewKey:Boolean(params.eventId)});
       case 'data': return openTerminalData();
       case 'profile': return hooks.navigate?.('minds',{profileId,view:'operations'});
@@ -1622,6 +1631,15 @@ export function createStudioController(hooks={},options={}){
     if(!b.configured){
       if(currentRoute().page==='trade')return openBudgetForm(currency,mindId);
       hooks.open?.('모의 예산 설정',row('통화',esc(currency))+row('예산','설정에서 공용 예산을 만든 뒤 마인드에 배정하세요.'),button('예산 설정','budget-edit',currency)+button('계좌·자금 열기','accounts-settings'));return;
+    }
+    if(overrides.guided){
+      const title=currency+' 모의 자금 배정';
+      form(title,'guided-paper-allocation','<div class="full">'+row('마인드',esc(profileName(mindId)))+row('종목의 결제 통화',esc(currency))+
+        row('배정 가능',money(b.available,currency)+' '+esc(currency))+'</div>'+
+        field('금액','amount',Math.min(b.available,currency==='KRW'?1000000:currency==='BTC'?0.01:1000),'number','min="0.00000001" max="'+b.available+'" step="any"')+
+        '<input type="hidden" name="quoteCurrency" value="'+esc(currency)+'">',
+        mindId,currency+' 배정');
+      return;
     }
     form('자금 배정·회수','mind-account',picker+select('통화','quoteCurrency',['KRW','USD','USDT','BTC'].map(c=>[c,c]),currency)+select('자금 이동','direction',[['allocate','배정'],['release','회수']],'allocate')+field('금액','amount',Math.min(b.available,currency==='KRW'?1000000:currency==='BTC'?0.01:1000),'number','min="0.00000001" max="1000000000000" step="any"')+'<div class="full" data-funding-capacity>'+row('배정 가능',money(b.available,currency)+' '+esc(currency))+'</div>','','자금 이동');
   }
@@ -1898,8 +1916,13 @@ export function createStudioController(hooks={},options={}){
         if(id&&dialogIsCurrent(dialogToken)&&currentRoute().page==='trade'){
           clearFormDraft(formNode);
           const {profileId,instrument}=selectedIdentity();
-          if(profileId===id&&instrument.quoteCurrency===values.quoteCurrency)return openAccountForm({mindId:id,quoteCurrency:values.quoteCurrency});
+          if(profileId===id&&instrument.quoteCurrency===values.quoteCurrency)return openAccountForm({mindId:id,quoteCurrency:values.quoteCurrency,guided:firstPaperDecision(currentRoute())});
         }
+      }
+      else if(kind==='guided-paper-allocation'){
+        const {profileId,instrument}=selectedIdentity();
+        if(!firstPaperDecision(currentRoute())||profileId!==id||instrument.quoteCurrency!==values.quoteCurrency||usesEventPaperFunding(id))throw Error('현재 모의 판단에서 자금 배정을 다시 열어 주세요.');
+        await mutate('',{mindId:id,quoteCurrency:instrument.quoteCurrency,amount:Number(values.amount),direction:'allocate'},'/api/workspace/accounts/allocate');
       }
       else if(kind==='mind-account'){if(!list(mindData?.minds).some(m=>m.id===values.mindId))throw new Error('자금을 이동할 마인드를 선택하세요.');if(usesEventPaperFunding(values.mindId)){if(dialogIsCurrent(dialogToken))hooks.close?.();hooks.navigate?.('minds',{profileId:values.mindId,view:'operations',executionMode:'paper'});return;}if(!values.quoteCurrency||!values.direction||!values.amount)return openAccountForm({mindId:values.mindId});await mutate('',{mindId:values.mindId,quoteCurrency:values.quoteCurrency,amount:Number(values.amount),direction:values.direction},'/api/workspace/accounts/allocate');}
       else if(kind==='paper-adaptation-restart'){
