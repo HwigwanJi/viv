@@ -153,6 +153,16 @@
 .studio-jump-search { @apply flex items-end gap-ui-4; }
 .studio-jump-search .field { @apply flex-1 min-w-0; }
 .studio-jump-search .pill { @apply shrink-0 mb-ui-3; }
+@media (forced-colors: active) {
+  .studio-jump-search .field input:focus-visible {
+    outline: var(--ds-focus-width) solid Highlight;
+    outline-offset: var(--ds-focus-offset);
+  }
+  .studio-jump-results a[aria-selected="true"] {
+    outline: var(--ds-focus-width) solid Highlight;
+    outline-offset: calc(-1 * var(--ds-focus-width));
+  }
+}
 .studio-jump-results { @apply flex flex-col overflow-y-auto; @apply max-h-(--ui-command-max-height); }
 .studio-jump-group + .studio-jump-group { @apply mt-ui-4 pt-ui-4 border-t border-default; }
 .studio-jump-group h3 { @apply px-ui-5 py-ui-3 text-ui-xs font-ui-semibold text-secondary; }

@@ -3494,6 +3494,16 @@
   margin-bottom: var(--ds-space-3);
   flex-shrink: 0;
 }
+@media (forced-colors: active) {
+  .studio-jump-search .field input:focus-visible {
+    outline: var(--ds-focus-width) solid Highlight;
+    outline-offset: var(--ds-focus-offset);
+  }
+  .studio-jump-results a[aria-selected="true"] {
+    outline: var(--ds-focus-width) solid Highlight;
+    outline-offset: calc(-1 * var(--ds-focus-width));
+  }
+}
 .studio-jump-results {
   display: flex;
   flex-direction: column;

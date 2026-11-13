@@ -588,7 +588,7 @@
     },
     {
       "path": "styles/components/studio-shell.css",
-      "sha256": "cb8a507bc89b3e8d421b3355798281a2f5f09a9ae0067565806e87743415ecd8"
+      "sha256": "7579c539e782cdcf6c9a912309ef7a0362c2f5c350e6bf6c09e7cf85f32dfa80"
     },
     {
       "path": "styles/components/surfaces.css",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "f46d9c48d9da092e4158ac3374d992bd7dc1c0f1d4f7d865e3ce6ad309595b9b",
+  "inputHash": "ef0569e68299bcc76eeefd969a3bcbc2ec3d036f8ff1d7dbb85c8c96c1204aeb",
   "pages": [
     {
       "path": "dist/index.html",
@@ -794,7 +794,7 @@
     },
     {
       "path": "dist/ui/trading-terminal.css",
-      "sha256": "07ace70468f8eb02cd2c82a2d1618f25094cd9d10a47c7bfa064d47d89ebb5b6"
+      "sha256": "ff9ba1f069697f7c566529d354a642ae47fff81e5db249decbda861b221c003c"
     },
     {
       "path": "dist/ui/mind-avatar.css",
