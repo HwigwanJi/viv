@@ -96,7 +96,8 @@ function render(){
       const {selector,section}=calendarReturn;
       const target=$(selector)||calendarEntryFallback(section);
       calendarReturn=null;
-      if(target&&(document.activeElement===document.body||document.activeElement.dataset.calControl==='retry')){
+      const retainedUserFocus=retainedCalendar&&calendarControl!=='retry'&&$(retainedCalendar);
+      if(target&&!retainedUserFocus&&(document.activeElement===document.body||document.activeElement.dataset.calControl==='retry')){
         target.focus({preventScroll:true});
         target.scrollIntoView({block:'nearest'});
       }

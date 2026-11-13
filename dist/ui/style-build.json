@@ -4,7 +4,7 @@
   "inputs": [
     {
       "path": "dist/app.mjs",
-      "sha256": "ab0d3b0e5be954d8009ec4e7e17e3d04ef76ee9ca807f3676c19fadcca698c39"
+      "sha256": "7008666b4ed25da7039d302dac4622550064a91e93822f5b8896b2f6c6159625"
     },
     {
       "path": "dist/index.html",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "a7ea602eac5e2599bd6e8f4fa31e087640ca5583cb72ca79b9ec18cb27b69cb8",
+  "inputHash": "380dbca32e03675662249bcfea9f0e1bab9e9ccc2480c7dcf9c824781c30b9d2",
   "pages": [
     {
       "path": "dist/index.html",
