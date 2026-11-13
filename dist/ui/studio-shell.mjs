@@ -53,7 +53,10 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
     keywords:'VIV 도움말 복구 시작 오류 실행 오류 시작 실패 앱 안 열림 안 열려요 무한 부팅 무한 로딩 접속 안됨 연결 문제 '
       +'확인할 앱 파일 설치 화면 다시 확인 설치 화면의 연결 확인을 불러오지 못했습니다. VIV를 시작하지 못했습니다. '
       +'HTML 응답 · 원래 PC 주소와 비교 응답 형식 오류 · JavaScript 필요 파일 응답 비교 '
-      +'이 주소에서 다른 웹페이지가 응답했습니다. VIV 서버 상태 응답을 확인할 수 없습니다. 서버 상태 응답 비교',
+      +'이 주소에서 다른 웹페이지가 응답했습니다. VIV 서버 상태 응답을 확인할 수 없습니다. 서버 상태 응답 비교 '
+      +'PC에서 확인한 VIV 설치 주소와 비교하세요. 네트워크 로그인이 필요하면 브라우저에서 연결한 뒤 연결 다시 확인을 누르세요. '
+      +'설치한 컴퓨터에서 VIV PC 주소를 열어 확인한 뒤 연결 다시 확인을 누르세요. '
+      +'PC에서 확인한 VIV 설치 주소와 비교한 뒤 다시 열어 보세요. 설치한 컴퓨터에서 VIV PC 주소를 확인한 뒤 다시 열어 보세요.',
     href:'https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#시작-오류가-반복될-때',
     taskSuffix:'새 탭',searchOnly:true,external:true
   });

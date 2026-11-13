@@ -1,5 +1,5 @@
 import test from 'node:test';
-import {mkdtemp,mkdir,writeFile,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -141,7 +141,7 @@ test('the saved decision action requires one exact decision ID in the filtered r
  assert.equal(exactPaperDecisionRecord(query,{total:1,items:[item]}),null);
 });
 
-test('startup recovery searches open the public guide in a separate tab',()=>{
+test('startup recovery searches open the public guide in a separate tab',async()=>{
  const route=parseStudioRoute('#home?executionMode=paper');
  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
  for(const query of ['앱이 열리지 않을 때','복구','시작 오류','앱 안 열림','무한 로딩','무한부팅','앱 무한부팅',
@@ -155,6 +155,14 @@ test('startup recovery searches open the public guide in a separate tab',()=>{
   const markup=renderStudioJump(matches);
   assert.match(markup,/data-studio-jump-item target="_blank" rel="noopener noreferrer" data-studio-jump-search-only hidden/);
   assert.doesNotMatch(markup,/data-studio-route/);
+ }
+ for(const source of ['dist/ui/install-page.mjs','dist/ui/viv-startup.js']){
+  const messages=(await readFile(new URL('../'+source,import.meta.url),'utf8')).match(/'(?:이 주소에서 다른 웹페이지가 응답했습니다\.|VIV 서버 상태 응답을 확인할 수 없습니다\.)[^']+'/g)??[];
+  assert.equal(messages.length,2);
+  for(const message of messages){
+   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),message.slice(1,-1)));
+   assert.deepEqual(matches.map(item=>item.label),['앱이 열리지 않을 때']);
+  }
  }
 });
 

@@ -3380,7 +3380,7 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T20:28:20.270Z",
+      "reviewedAt": "2026-11-13T20:38:02.492Z",
       "reason": "휴대폰 설치 화면의 상태 오류 두 문구와 문서 제목으로 복구 안내를 새 탭에서 열고 원래 캘린더 날짜와 모의 손익을 확인했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
@@ -3401,7 +3401,7 @@
           2
         ]
       ],
-      "sourceHash": "702708c5dd8b32bbad0e3d7c5e7940dc51f3c5606c1b26ada160699a4a47c6e5",
+      "sourceHash": "fae899519f8af8f748ff9b7723c6fe905e495df3e39b4fecf8b27c78d0991321",
       "customContainers": []
     },
     {
