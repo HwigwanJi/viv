@@ -1,4 +1,4 @@
-import {PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY} from '../system/paper-decision-links.mjs';
+import {PAPER_DECISION_ENTRY,PAPER_HOME_ENTRY,PAPER_PRACTICE_ENTRY,paperBrokerReturnHash} from '../system/paper-decision-links.mjs';
 import {CALENDAR_GUIDE_URL} from './workspace-calendar.mjs';
 
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -42,7 +42,10 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   for(const [page,items]of [['library',library],['settings',settings]])for(const [view,label]of items){
     if(page==='settings'&&view==='accounts'){
       if(route.params.get('executionMode')!=='live')entries.push({label:'모의 '+label,group:'설정',href:routeHash(route,page,{view,cursor:null})});
-      entries.push({label:'실계좌 API 키 등록',group:'설정',keywords:BROKER_JUMP_KEYWORDS,href:routeHash(route,page,{view,cursor:null,executionMode:'live'})});
+      const current=paperBrokerReturnHash('#'+route.page+'?'+route.params);
+      const returnTo=current===PAPER_HOME_ENTRY?paperBrokerReturnHash(route.params.get('returnTo')):current;
+      entries.push({label:'실계좌 API 키 등록',group:'설정',keywords:BROKER_JUMP_KEYWORDS,
+        href:routeHash(route,page,{view,cursor:null,executionMode:'live',returnTo:returnTo===PAPER_HOME_ENTRY?null:returnTo})});
     }else entries.push({label,group:page==='library'?'라이브러리':'설정',keywords:JUMP_TASK_KEYWORDS[view]||'',href:routeHash(route,page,{view,cursor:null})});
   }
   entries.push({

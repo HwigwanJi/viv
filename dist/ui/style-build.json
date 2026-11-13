@@ -76,7 +76,7 @@
     },
     {
       "path": "dist/ui/broker-connections.mjs",
-      "sha256": "36e4acd0e16f82c486941d00bb1d92d0277d272ed06398e6591749fb685fd231"
+      "sha256": "6f0f9c3d768cd08a4c2ac44034c413f2c36e5d7c481b94632c711fe198eeb7b7"
     },
     {
       "path": "dist/ui/brokerage-report.mjs",
@@ -392,7 +392,7 @@
     },
     {
       "path": "dist/ui/studio-shell.mjs",
-      "sha256": "3f86c383eb56917e18b838976329e946598a7822dc0ba6e331e22e43facd8d0b"
+      "sha256": "f394195aa9f9c8add49e81c821f322859de91ff682e59d90952aa6fa8bc74671"
     },
     {
       "path": "dist/ui/terminal-universe.mjs",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "9b393e2a8b44d8dd98c2b20b247aea5629f3b71a73534a93846f41bfe6760cff",
+  "inputHash": "1e7c53d62b92be69e432809cdd5aa8d7bfc89cd371cb7ecd6d871d2919c8e12f",
   "pages": [
     {
       "path": "dist/index.html",

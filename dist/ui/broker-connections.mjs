@@ -1,6 +1,6 @@
 import {helpLabel,readonlyTooltip} from './help-tooltip.mjs';
 import {renderDataTable} from './data-table.mjs';
-import {PAPER_HOME_ENTRY,paperResultReturnHash} from '../system/paper-decision-links.mjs';
+import {PAPER_HOME_ENTRY,paperBrokerReturnHash} from '../system/paper-decision-links.mjs';
 const names={toss:'토스증권',upbit:'업비트'};
 const urls={toss:'https://www.tossinvest.com/open-api/landing',upbit:'https://upbit.com/mypage/open_api_management'};
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -10,7 +10,7 @@ const button=(label,action,id='',disabled=false)=>`<button type="button" class="
 const table=(headers,rows)=>renderDataTable(headers.map((header,i)=>({...(typeof header==='string'?{label:header}:header),numeric:i>0})),rows);
 
 function pcHandoff(provider,route){
- const paperReturn=paperResultReturnHash(route.params.get('returnTo'));
+ const paperReturn=paperBrokerReturnHash(route.params.get('returnTo'));
  const params=new URLSearchParams({view:'accounts',executionMode:'live',brokerSetup:provider});
  if(paperReturn!==PAPER_HOME_ENTRY)params.set('returnTo',paperReturn);
  const address=globalThis.location?.origin&&new URL('#settings?'+params,globalThis.location.origin).href;
@@ -18,8 +18,9 @@ function pcHandoff(provider,route){
 }
 
 export function brokerPaperReturnLink(route){
- const href=paperResultReturnHash(route.params.get('returnTo'));
- return `<a class="button" href="${esc(href)}" data-studio-route data-broker-paper-home>${href===PAPER_HOME_ENTRY?'모의 홈으로':'저장한 모의 결과로 돌아가기'}</a>`;
+ const href=paperBrokerReturnHash(route.params.get('returnTo'));
+ const label=href.startsWith('#trade?')?'진행하던 모의 판단으로 돌아가기':href===PAPER_HOME_ENTRY?'모의 홈으로':'저장한 모의 결과로 돌아가기';
+ return `<a class="button" href="${esc(href)}" data-studio-route data-broker-paper-home>${label}</a>`;
 }
 const issueLabels={MARKET_UNAVAILABLE:'원화 거래쌍 없음',MARKET_CATALOG_UNAVAILABLE:'거래 목록 조회 필요',QUOTE_UNAVAILABLE:'시세 조회 필요',QUOTE_INVALID:'시세 응답 확인 필요'};
 function valuationNotice(snapshot){

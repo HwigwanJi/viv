@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {handleBrokerAPI} from '../server/broker-accounts.mjs';
 import {createBrokerConnections,brokerPaperReturnLink} from '../dist/ui/broker-connections.mjs';
-import {paperDecisionRecordHash,paperPracticeReportHash} from '../dist/system/paper-decision-links.mjs';
+import {paperBrokerReturnHash,paperDecisionRecordHash,paperPracticeReportHash} from '../dist/system/paper-decision-links.mjs';
 import {openLocalDatabase} from '../server/local-db.mjs';
 
 test('broker setup returns to a canonical paper result or the paper home',()=>{
@@ -15,6 +15,21 @@ test('broker setup returns to a canonical paper result or the paper home',()=>{
   for(const hash of ['//outside.invalid/path','https://outside.invalid','javascript:alert(1)','#trade?executionMode=live','#minds?view=simulations&executionMode=live&simulationId=simulation-1']){
     assert.match(link(hash),/href="#home\?executionMode=paper"/);
   }
+});
+
+test('broker setup preserves only the guided paper trading context',()=>{
+  const report=paperPracticeReportHash('simulation-1');
+  const trade='#trade?'+new URLSearchParams({executionMode:'paper',firstDecision:'1',instrumentId:'crypto:okx:BTC-USDT',timeframe:'4h',profileId:'mind-1',tab:'positions',returnTo:report});
+  const source=trade+'&unknown=credential-marker';
+  assert.equal(paperBrokerReturnHash(source),trade);
+  const link=brokerPaperReturnLink({params:new URLSearchParams({returnTo:source})});
+  assert.ok(link.includes(trade.replaceAll('&','&amp;')));
+  assert.match(link,/진행하던 모의 판단으로 돌아가기/);
+  assert.doesNotMatch(link,/credential-marker/);
+  assert.equal(paperBrokerReturnHash(trade.replace('executionMode=paper','executionMode=live')),'#home?executionMode=paper');
+  assert.equal(paperBrokerReturnHash(trade.replace('timeframe=4h','timeframe=3m')),'#home?executionMode=paper');
+  assert.equal(paperBrokerReturnHash(trade+'&comparisonId=comparison-1'),'#home?executionMode=paper');
+  assert.equal(paperBrokerReturnHash(trade.replace('firstDecision=1','firstDecision=0')),'#home?executionMode=paper');
 });
 
 test('Upbit connection reports the required step and preserves the last verified connection on failure',async()=>{

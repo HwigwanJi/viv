@@ -237,6 +237,17 @@ test('quick navigation opens a clean mind destination and labels a live-to-paper
  assert.equal(current.searchOnly,false);
 });
 
+test('explicit broker setup in screen search carries the current paper lesson',()=>{
+ const hash='#trade?executionMode=paper&firstDecision=1&instrumentId=crypto%3Aokx%3ABTC-USDT&timeframe=4h&profileId=mind-one';
+ const find=route=>studioJumpItems(route,{minds:[]},{routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS})
+   .find(item=>item.label==='실계좌 API 키 등록');
+ const first=parseStudioRoute(find(parseStudioRoute(hash)).href);
+ assert.equal(first.params.get('executionMode'),'live');
+ assert.equal(first.params.get('returnTo'),hash);
+ assert.equal(parseStudioRoute(find(first).href).params.get('returnTo'),hash);
+ assert.equal(parseStudioRoute(find(parseStudioRoute('#home?executionMode=paper')).href).params.has('returnTo'),false);
+});
+
 test('first paper decision guidance survives its data return and stays in paper trading',()=>{
  const route=parseStudioRoute('#trade?executionMode=paper&firstDecision=1&profileId=mind-one&timeframe=4h');
  const trade=studioRouteHash(route,'trade',{returnTo:null});

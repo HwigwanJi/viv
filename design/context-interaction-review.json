@@ -597,8 +597,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T09:02:26.548Z",
-      "reason": "휴대폰에서 복사한 연결 주소에 검증된 모의 결과 복귀 경로를 유지한다.",
+      "reviewedAt": "2026-11-13T11:30:59.933Z",
+      "reason": "모의 판단에서 금융기관 연결을 열고 모바일과 PC에서 같은 마인드와 기록 탭으로 돌아오는 조작을 확인했다.",
       "signature": "c13b708d6cf87c9d3c11f3c0fc4ce99626cdefea7a510b5e8c843ae446845b9c",
       "controls": [
         [
@@ -642,7 +642,7 @@
           1
         ]
       ],
-      "sourceHash": "36e4acd0e16f82c486941d00bb1d92d0277d272ed06398e6591749fb685fd231",
+      "sourceHash": "6f0f9c3d768cd08a4c2ac44034c413f2c36e5d7c481b94632c711fe198eeb7b7",
       "customContainers": []
     },
     {
@@ -3391,8 +3391,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T10:29:29.944Z",
-      "reason": "캘린더 안내를 직접 또는 화면 찾기로 새 탭에 열고 기존 월·날짜·보고서와 키보드 사용을 대조했다.",
+      "reviewedAt": "2026-11-13T11:30:59.934Z",
+      "reason": "모의 판단에서 금융기관 연결을 열고 모바일과 PC에서 같은 마인드와 기록 탭으로 돌아오는 조작을 확인했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3412,7 +3412,7 @@
           2
         ]
       ],
-      "sourceHash": "3f86c383eb56917e18b838976329e946598a7822dc0ba6e331e22e43facd8d0b",
+      "sourceHash": "f394195aa9f9c8add49e81c821f322859de91ff682e59d90952aa6fa8bc74671",
       "customContainers": []
     },
     {
