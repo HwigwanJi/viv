@@ -4,6 +4,7 @@ import {currencyAmount} from './currency-format.mjs';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dateTitle=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short',timeZone:'UTC'});
 const scheduleTime=new Intl.DateTimeFormat('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul',hour12:false});
+const periodTime=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'numeric',day:'numeric',timeZone:'Asia/Seoul'});
 const routeLink=(href,label,extra='')=>'<a data-studio-route href="'+esc(href)+'" '+extra+'>'+label+'</a>';
 const today=()=>calendarDay(Date.now());
 const monthFor=route=>calendarMonth(route.params.get('month'))??today().slice(0,7);
@@ -51,7 +52,10 @@ function agenda(day,selected){
 function ongoing(rows){
   return '<section class="viv-cal-panel viv-cal-active" aria-labelledby="viv-cal-active-title"><h2 id="viv-cal-active-title">모의검증 현황 <span class="muted">'+rows.length+'건</span></h2>'+
     (rows.length?'<ul class="viv-cal-list">'+rows.map(row=>{
-      const detail=row.at?row.atLabel+' '+scheduleTime.format(new Date(row.at)):row.progress?.total>0?row.progress.completed+' / '+row.progress.total+' 처리':'';
+      const start=Date.parse(row.period?.startAt),end=Date.parse(row.period?.endAt);
+      const detail=row.at?row.atLabel+' '+scheduleTime.format(new Date(row.at)):
+        Number.isFinite(start)&&Number.isFinite(end)&&start<=end?'테스트 기간 '+periodTime.formatRange(start,end):
+        row.progress?.total>0?row.progress.completed+' / '+row.progress.total+' 처리':'';
       return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc([row.kind==='experiment'?'과거 시세 검증':'모의 운용',detail].filter(Boolean).join(' · '))+'</small></span><span class="viv-cal-status">'+esc(row.state)+'</span>')+'</li>';
     }).join('')+'</ul>':
       '<p class="muted">진행하거나 확인할 모의검증이 없습니다.</p>'+routeLink('#minds?profileId=all&view=simulations&executionMode=paper','실험실 열기','class="button small"'))+'</section>';

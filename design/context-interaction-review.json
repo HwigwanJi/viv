@@ -3427,7 +3427,7 @@
         ]
       ],
       "signature": "5f5b30d62fb3033f505273df47c939758132d44ce946f9ea7843d0cc8f573c89",
-      "sourceHash": "e5e3327b79bb695f0a9d1da8f126f1d830b9cb6bc07956b473e27c200aa47ffe",
+      "sourceHash": "b791652cf7c15d5511bd853be345dc72ff44b0ce9946a47a982ce4e1bc3c6a46",
       "review": "BROWSER_VERIFIED",
       "reviewedAt": "2026-11-13T00:38:41.902Z",
       "reason": "월 이동 버튼과 다시 조회에 포커스 키를 붙이고 진행 중 재시도와 조회 성공 뒤 선택 날짜의 복구를 검증했다."

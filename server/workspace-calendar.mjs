@@ -78,7 +78,8 @@ export function buildWorkspaceCalendar(workspace,events,experiments,{month,now,r
     if(row.archivedAt||row.status==='DRAFT')continue;
     const href=labLink(row.route);
     const state=experimentStates.get(row.status);
-    if(state)active.push({name:row.name,kind:'experiment',state,progress:row.progress,href});
+    if(state)active.push({name:row.name,kind:'experiment',state,progress:row.progress,href,
+      ...(['CREATED','READY'].includes(row.status)?{period:row.period}:{})});
     if(row.status==='COMPLETED')add(row.completedAt??row.updatedAt,{kind:'experiment',label:row.completedAt?'과거 시세 검증 완료':'과거 시세 결과 갱신',name:row.name,href,totalReturn:row.metrics?.totalReturn});
   }
   return {month,today:calendarDay(now),asOf:now,active,eventLedgerUnavailable,
