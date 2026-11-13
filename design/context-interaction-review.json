@@ -3380,8 +3380,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T15:36:45.055Z",
-      "reason": "설치 화면에서 본 오류 문구로 기존 공개 복구 문서를 새 탭에서 열고 캘린더 선택과 모의 손익을 유지하는 동선을 터치와 키보드로 대조했다.",
+      "reviewedAt": "2026-11-13T20:28:20.270Z",
+      "reason": "휴대폰 설치 화면의 상태 오류 두 문구와 문서 제목으로 복구 안내를 새 탭에서 열고 원래 캘린더 날짜와 모의 손익을 확인했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3401,7 +3401,7 @@
           2
         ]
       ],
-      "sourceHash": "c5fe65aa5fcba004854766c25d79fe9dd91bd23e37ac8e40cb505aa46f89f89c",
+      "sourceHash": "702708c5dd8b32bbad0e3d7c5e7940dc51f3c5606c1b26ada160699a4a47c6e5",
       "customContainers": []
     },
     {
