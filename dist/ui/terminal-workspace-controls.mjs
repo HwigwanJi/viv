@@ -2,6 +2,7 @@ const list=value=>Array.isArray(value)?value:[];
 const recoveryActions=new Set(['choose-mind','profile','archive','account','connections','records','wait','run','data','refresh','timeframe','knowledge','paper']);
 const readiness=model=>model.terminalReadiness?.schemaVersion===1?model.terminalReadiness:null;
 export const isJevKeyRequirement=reason=>reason?.code==='JEV_CONNECTION_REQUIRED'||reason?.category==='JEV_AUTH';
+export const JEV_DECISION_DISCLOSURE='결정 실행을 누르면 선택한 시세·마인드 입력이 JEV로 전송될 수 있으며 제공사 이용료가 발생할 수 있습니다.';
 const captureError=model=>/^(MARKET_CAPTURE_REQUIRED|CANONICAL_CAPTURE_(REQUIRED|STALE|BOUNDARY)|MIND_MARKET_BOUNDARY_CHANGED|MIND_CANONICAL_SOURCE)$/.test(model.errorCode||model.runRequirement?.code||'')||/기존 수집 정본|최신 확정 봉.*필요|확정 시세.*수집/.test(model.error||'');
 
 function savedPaperDecisionDuringCooldown(model){

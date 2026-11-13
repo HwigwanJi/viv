@@ -2728,8 +2728,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T01:35:18.687Z",
-      "reason": "보고서에서 현재 모의 판단의 발행 정책·JEV·USDT 조건을 확인하고 같은 보고서 및 포커스로 돌아온다.",
+      "reviewedAt": "2026-11-13T19:03:58.233Z",
+      "reason": "저장 백테스트의 AI 호출 이력과 현재 모의 판단을 실행할 때의 JEV 전송·이용료 안내를 구분한다.",
       "signature": "dc0d94ae7cf480ce2915278886d8fb2042fa4068faf2828a3702acb34c7bb40a",
       "controls": [
         [
@@ -2801,7 +2801,7 @@
           2
         ]
       ],
-      "sourceHash": "06221a466a22edd8a43159b33516e401780cccddc8463a43af57d13037d4cab8",
+      "sourceHash": "cb2face19d8839bd5a1a0a18d095b7a910e1bd25644d705eb579498f831f90d1",
       "customContainers": []
     },
     {
@@ -3255,8 +3255,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T18:35:15.013Z",
-      "reason": "첫 모의 판단 시세 오류에서 같은 화면의 조회와 과거 시세 실습을 연결한다.",
+      "reviewedAt": "2026-11-13T19:03:58.240Z",
+      "reason": "저장 백테스트의 AI 호출 이력과 현재 모의 판단을 실행할 때의 JEV 전송·이용료 안내를 구분한다.",
       "signature": "9b6995caacca9a68a887195b6de270d32ab245e24a8ef0f8df09c4b16caa17e1",
       "controls": [
         [
@@ -3364,7 +3364,7 @@
           1
         ]
       ],
-      "sourceHash": "8431bc7d0550794694d5dd61ae111a51654681f81467acd63d804e200ee0cff1",
+      "sourceHash": "23713d1c82502d00f9e682b6741922b5d1ea6f74fa6de1e2fee10304615218e3",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3461,11 +3461,12 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T11:01:39.674Z",
-      "reason": "첫 모의 판단의 통화별 예산 저장과 새로고침 뒤 같은 마인드 자금 배정을 모바일 브라우저에서 검증했다.",
+      "reviewedAt": "2026-11-13T19:03:58.241Z",
+      "reason": "저장 백테스트의 AI 호출 이력과 현재 모의 판단을 실행할 때의 JEV 전송·이용료 안내를 구분한다.",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "e199ee34097f3ac148549fdf323948dc6faf7360588a480551f6a25229e93f36"
+      "sourceHash": "1a1083ec59037636a4642b1070415222602be72bbdee990d30eda0bbb9a838c9",
+      "customContainers": []
     },
     {
       "file": "dist/ui/theme-init.js",
@@ -3490,8 +3491,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T18:35:15.017Z",
-      "reason": "첫 모의 판단 시세 오류에서 같은 화면의 조회와 과거 시세 실습을 연결한다.",
+      "reviewedAt": "2026-11-13T19:03:58.244Z",
+      "reason": "저장 백테스트의 AI 호출 이력과 현재 모의 판단을 실행할 때의 JEV 전송·이용료 안내를 구분한다.",
       "signature": "a1dd9ae1335bff6ea81099fe978c300d14f7573d12d0c63f81aba04f9a60d8e1",
       "controls": [
         [
@@ -3579,7 +3580,7 @@
           39
         ]
       ],
-      "sourceHash": "f92d249a5555705c9b8c7825ee369a5bb294abd642f413db0968a0f0729110da",
+      "sourceHash": "b9c1e28fe91beb15d70a9744a17a884044b37ca6c8b833d4f994ab17c9df6921",
       "customContainers": []
     },
     {

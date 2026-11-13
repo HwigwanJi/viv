@@ -86,6 +86,15 @@ test('the first decision guide owns the retry while other terminal recovery acti
  assert.match(terminal.render({...model,guidedMarketRetry:true,terminalReadiness:{schemaVersion:1,executionReadiness:{primaryAction:funding.action,blockers:[funding]}}}),/>모의 자금 설정<\/button>/);
 });
 
+test('the terminal describes data transmission and possible fees on a JEV run',()=>{
+ const terminal=createTradingTerminal({onRun(){}});
+ const model={selectedMindId:'test',profiles:[{id:'test'}],canRun:true};
+ const render=requiresJev=>terminal.render({...model,terminalReadiness:{schemaVersion:1,executionReadiness:{requiresJev,canRun:true}}});
+ assert.match(render(true),/aria-describedby="terminal-run-message"[^>]*>결정 실행/);
+ assert.match(render(true),/시세·마인드 입력이 JEV로 전송될 수 있으며 제공사 이용료/);
+ assert.doesNotMatch(render(false),/제공사 이용료/);
+});
+
 test('paper trend lesson explains no order only when the saved result supports it',()=>{
  const record={decision:{action:'hold'},execution:{status:'NO_ORDER_REQUIRED'},strategyEvaluation:{
   modules:[{moduleId:'SMA_TREND',ready:true,indicators:{close:80,slowMA:100,lookbackBars:480}}],

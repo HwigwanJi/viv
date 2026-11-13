@@ -4,7 +4,7 @@ import {currencyAmount,currencyPrecision} from './currency-format.mjs';
 import {graphDecisionMethod} from './decision-method.mjs';
 import {helpTooltip} from './help-tooltip.mjs';
 import {cssToken, numberToken, pixelToken} from './design-tokens.mjs';
-import {isJevKeyRequirement,terminalPrimaryAction,terminalRecoveryAction,terminalRunRequirement,terminalMarketMessage} from './terminal-workspace-controls.mjs';
+import {isJevKeyRequirement,JEV_DECISION_DISCLOSURE,terminalPrimaryAction,terminalRecoveryAction,terminalRunRequirement,terminalMarketMessage} from './terminal-workspace-controls.mjs';
 import {renderMindActivityFeed} from './mind-activity.mjs';
 import {renderFilterSummary} from './workflow-state.mjs';
 
@@ -270,7 +270,7 @@ export function createTradingTerminal(hooks={}){
     const readiness=model.terminalReadiness?.executionReadiness;
     const alternate=model.executionMode!=='live'&&!(model.guidedDecision&&isJevKeyRequirement(requirements))&&list(readiness?.blockers).some(isJevKeyRequirement);
     const failedEventId=requirement?.category==='JEV_AUTH'?requirement.action?.params?.eventId:null;
-    const disclosure=primary.action==='run'&&readiness?.requiresJev===true?'실행하면 선택한 시세·마인드 입력을 JEV에 보내며 공급자 이용료가 발생할 수 있습니다.':'';
+    const disclosure=primary.action==='run'&&readiness?.requiresJev===true?JEV_DECISION_DISCLOSURE:'';
     const equityDay=instrument?.assetClass==='equity'&&validTradeDate(last?.tradeDate)?last.tradeDate:null,tossEquity=instrument?.assetClass==='equity'&&model.sourceSnapshot?.provider==='toss';
     const footerBasis=tossEquity?(model.sourceSnapshot.adjustment==='PROVIDER_ADJUSTED'?'수정주가':model.sourceSnapshot.adjustment==='UNADJUSTED'?'원주가':'일봉'):model.dataModeLabel||'확정 봉',footerMessage=tossEquity&&model.statusMessage==='거래일 일봉 · 종가 참고 자료'?'':model.statusMessage||'';
     const priceHelp=[equityDay?'거래일 '+equityDay+' · 확정 판정 기준 '+stamp(last.closeAt):'',equityDay&&model.sourceSnapshot?.receivedAt?'원문 수신 '+stamp(model.sourceSnapshot.receivedAt):'',nextCloseAt?'다음 확정 '+stamp(nextCloseAt):'',executionQuote?'최근 실행 시세 '+currencyAmount(executionQuote.price,executionQuote.currency||instrument?.quoteCurrency,instrument?.priceDecimals??2)+' '+(executionQuote.currency||instrument?.quoteCurrency||'')+' · 시세 기준 '+stamp(executionQuote.asOf):''].filter(Boolean).join(' · ');

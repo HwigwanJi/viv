@@ -397,7 +397,7 @@ test('saved simulation summaries identify the settings used for their execution 
     await app.load({force:true});
     const context=app.render().match(/class="lab-context-line">([\s\S]*?)<\/div>/)?.[1]||'';
     assert.ok(context.includes(expected),context);
-    assert.equal(context.includes('AI 호출 0회'),mode==='MECHANICAL');
+    assert.equal(context.includes('이 백테스트의 AI 호출 0회'),mode==='MECHANICAL');
     assert.equal(context.includes('마인드 정책 v2'),mode==='GRAPH_CANONICAL');
   }
 });

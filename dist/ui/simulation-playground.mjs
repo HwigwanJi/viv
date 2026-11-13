@@ -1,5 +1,6 @@
 import {isMindStrategyPlanActive} from '../domain/mind-strategy-plan.mjs';
 import {graphRequiresJev} from '../domain/strategy-graph.mjs';
+import {JEV_DECISION_DISCLOSURE} from './terminal-workspace-controls.mjs';
 import {PAPER_DECISION_INSTRUMENT,PAPER_DECISION_TIMEFRAME} from '../system/paper-decision-links.mjs';
 import {JEV_EXECUTION_CALL_LIMIT} from '../domain/jev-question.mjs';
 import {preProviderRecoveryCandidate,canPreparePreProviderRecovery,renderPreProviderRecovery} from './simulation-pre-provider-recovery.mjs';
@@ -344,10 +345,10 @@ export function createSimulationPlayground(hooks={},options={}){
       const plan=currentPolicy?.data.strategyPlan;
       const needsJev=currentPolicy&&(plan?.graph?.schemaVersion!==2||!isMindStrategyPlanActive(plan,new Date().toISOString())||graphRequiresJev(plan.graph));
       const policy=currentPolicy?'현재 발행 정책 v'+currentPolicy.data.version+' 기준으로 준비 상태를 확인합니다. ':'발행 정책을 먼저 준비해야 합니다. ';
-      const ai=currentPolicy?(needsJev?'JEV 연결이 필요하며 제공사 요금이 적용될 수 있습니다. ':'JEV 키 없이 계산합니다. '):'AI 조건은 발행 정책에서 확인합니다. ';
-      nextPractice='<div class="actions spaced"><a class="button small" href="'+esc(practiceHref)+'" data-studio-route>현재 시세 모의 판단 준비</a><span class="tiny muted">'+esc(policy+ai+'BTC-USDT 확정 시세와 USDT 모의 자금이 필요합니다. 준비가 끝나면 결정 실행을 눌러 판단합니다.')+'</span></div>';
+      const ai=currentPolicy?(needsJev?'JEV 연결이 필요합니다. '+JEV_DECISION_DISCLOSURE+' ':'JEV 키 없이 계산합니다. '):'AI 조건은 발행 정책에서 확인합니다. ';
+      nextPractice='<div class="actions spaced"><a class="button small" href="'+esc(practiceHref)+'" data-studio-route>현재 시세 모의 판단 준비</a><span class="tiny muted">'+esc(policy+'BTC-USDT 확정 시세와 USDT 모의 자금이 필요합니다. '+ai)+'</span></div>';
     }
-    return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls,s.status==='COMPLETED')+(s.status==='COMPLETED'?'<span id="simulation-result-status" class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+'</span><span>'+esc(simulationExecutionBasis(s))+'</span>'+(s.config.mode==='MECHANICAL'?'<span>AI 호출 0회</span>':'')+'<span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(id==='overview'&&prepared?'저장한 조건':label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
+    return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls,s.status==='COMPLETED')+(s.status==='COMPLETED'?'<span id="simulation-result-status" class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+'</span><span>'+esc(simulationExecutionBasis(s))+'</span>'+(s.config.mode==='MECHANICAL'?'<span>이 백테스트의 AI 호출 0회</span>':'')+'<span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(id==='overview'&&prepared?'저장한 조건':label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
   }
   function runStatus(s){
     if(s.status!=='ACTION_REQUIRED')return `<div class="simulation-run-status" role="status" aria-live="polite"><strong>${running?'실행 중':s.status==='RUNNING'?'이어서 실행 가능':statusLabel(s.status)}</strong><span>${esc(commandStatus)}</span>${s.lastError?'<span class="error-text">'+esc(s.lastError.message||s.lastError.code)+'</span>':''}</div>`;

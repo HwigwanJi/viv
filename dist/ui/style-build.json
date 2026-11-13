@@ -336,7 +336,7 @@
     },
     {
       "path": "dist/ui/simulation-playground.mjs",
-      "sha256": "06221a466a22edd8a43159b33516e401780cccddc8463a43af57d13037d4cab8"
+      "sha256": "6dba958c6383fd8def106ad071658e593904c35a6afc5568d77c485a73e5eec1"
     },
     {
       "path": "dist/ui/simulation-pre-provider-recovery.mjs",
@@ -388,7 +388,7 @@
     },
     {
       "path": "dist/ui/studio-controller.mjs",
-      "sha256": "8431bc7d0550794694d5dd61ae111a51654681f81467acd63d804e200ee0cff1"
+      "sha256": "23713d1c82502d00f9e682b6741922b5d1ea6f74fa6de1e2fee10304615218e3"
     },
     {
       "path": "dist/ui/studio-shell.mjs",
@@ -400,7 +400,7 @@
     },
     {
       "path": "dist/ui/terminal-workspace-controls.mjs",
-      "sha256": "e199ee34097f3ac148549fdf323948dc6faf7360588a480551f6a25229e93f36"
+      "sha256": "1a1083ec59037636a4642b1070415222602be72bbdee990d30eda0bbb9a838c9"
     },
     {
       "path": "dist/ui/tokens/foundation.css",
@@ -428,7 +428,7 @@
     },
     {
       "path": "dist/ui/trading-terminal.mjs",
-      "sha256": "f92d249a5555705c9b8c7825ee369a5bb294abd642f413db0968a0f0729110da"
+      "sha256": "b9c1e28fe91beb15d70a9744a17a884044b37ca6c8b833d4f994ab17c9df6921"
     },
     {
       "path": "dist/ui/universe-catalog-picker.mjs",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "6bad72c1c1a83e8be20f7053cfa0d060ccad0ce70c80a537d438b889993bcb82",
+  "inputHash": "c7e3d0e23f4311c4507754e77206e80b4ab1ac014c16b8ea84620832d970ee26",
   "pages": [
     {
       "path": "dist/index.html",
