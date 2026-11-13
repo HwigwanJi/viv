@@ -7,7 +7,7 @@ import {contextSourceFiles,inspectContextSource,inspectContextReview,inspectCont
 import {CONTEXT_SURFACES} from '../dist/ui/context-interactions.mjs';
 import {parseStudioRoute,studioRouteHash,WORKSPACE_NAV,LIBRARY_VIEWS,SETTINGS_VIEWS,paperTrendDecisionBasis,exactPaperDecisionRecord} from '../dist/ui/studio-controller.mjs';
 import {renderStudioJump,studioJumpItems,studioJumpMatches,studioJumpResearchItems,studioReturnLink} from '../dist/ui/studio-shell.mjs';
-import {terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
+import {createTradingTerminal,terminalModelMeasures,terminalTooltipContent} from '../dist/ui/trading-terminal.mjs';
 import {terminalPrimaryAction,terminalRunRequirement} from '../dist/ui/terminal-workspace-controls.mjs';
 import {queryMarketKnowledge} from '../server/market-knowledge.mjs';
 import {marketKnowledgeExample} from '../dist/domain/market-knowledge.mjs';
@@ -74,6 +74,16 @@ test('first paper decision funding labels resume from the saved currency budget'
  const ready={...model,paperFundingStep:{...funding,budgetSaved:true},terminalReadiness:{schemaVersion:1,purpose:'FORWARD_PAPER',executionReadiness}};
  assert.equal(terminalPrimaryAction(ready).label,'USDT 모의 자금 배정');
  assert.equal(executionReadiness.primaryAction.label,'모의 자금 설정');
+});
+
+test('the first decision guide owns the retry while other terminal recovery actions remain available',()=>{
+ const terminal=createTradingTerminal({onRun(){},onRefresh(){},onAccount(){}});
+ const model={selectedMindId:'test',profiles:[{id:'test'}],status:'error',error:'시세 조회 실패'};
+ const retryLabel=/>다시 조회<\/button>/g;
+ assert.equal([...terminal.render(model).matchAll(retryLabel)].length,2);
+ assert.equal([...terminal.render({...model,guidedMarketRetry:true}).matchAll(retryLabel)].length,0);
+ const funding={code:'PAPER_ACCOUNT_REQUIRED',action:{action:'account',label:'모의 자금 설정'}};
+ assert.match(terminal.render({...model,guidedMarketRetry:true,terminalReadiness:{schemaVersion:1,executionReadiness:{primaryAction:funding.action,blockers:[funding]}}}),/>모의 자금 설정<\/button>/);
 });
 
 test('paper trend lesson explains no order only when the saved result supports it',()=>{

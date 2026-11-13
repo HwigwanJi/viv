@@ -3255,9 +3255,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T16:37:14.337Z",
-      "reason": "저장된 유지 판단의 후속 관측 기준 검토, 복귀, 명시적 저장과 원래 결과 재조회를 격리 브라우저에서 확인했다.",
-      "signature": "d551d14d316483e28a69d6bbfde5f0eeedeb4ea6024b2077938eef53cf44b18d",
+      "reviewedAt": "2026-11-13T18:35:15.013Z",
+      "reason": "첫 모의 판단 시세 오류에서 같은 화면의 조회와 과거 시세 실습을 연결한다.",
+      "signature": "9b6995caacca9a68a887195b6de270d32ab245e24a8ef0f8df09c4b16caa17e1",
       "controls": [
         [
           "data-auto-action",
@@ -3353,7 +3353,7 @@
         ],
         [
           "helper:button(",
-          181
+          182
         ],
         [
           "helper:renderActionMenu(",
@@ -3364,7 +3364,7 @@
           1
         ]
       ],
-      "sourceHash": "004fc892e6deba10eea8af871aba380cc72a9467832cf75110a5a29444a9c29c",
+      "sourceHash": "8431bc7d0550794694d5dd61ae111a51654681f81467acd63d804e200ee0cff1",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3490,8 +3490,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T16:37:14.339Z",
-      "reason": "유지 판단의 시세 재시도는 후속 관측 기준 검토로 연결한다. 320px WebKit 유지 재시도와 데스크톱 키보드 매수 재시도의 진행 및 오류를 확인했다.",
+      "reviewedAt": "2026-11-13T18:35:15.017Z",
+      "reason": "첫 모의 판단 시세 오류에서 같은 화면의 조회와 과거 시세 실습을 연결한다.",
       "signature": "a1dd9ae1335bff6ea81099fe978c300d14f7573d12d0c63f81aba04f9a60d8e1",
       "controls": [
         [
@@ -3579,7 +3579,7 @@
           39
         ]
       ],
-      "sourceHash": "7f45f78568c1df4b39400baf76d59ba14ad51535f6f1d5e0fc16246210076556",
+      "sourceHash": "f92d249a5555705c9b8c7825ee369a5bb294abd642f413db0968a0f0729110da",
       "customContainers": []
     },
     {

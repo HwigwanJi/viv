@@ -632,6 +632,9 @@ export function createStudioController(hooks={},options={}){
     const report=firstDecisionReport(current);
     const heading=report?'현재 시세 모의 판단 준비':'첫 모의 판단';
     const saved=view.selectedInstrumentId===PAPER_DECISION_INSTRUMENT?recentPaperPracticeDecision(workspace,selected==='all'?null:selected):null;
+    const marketIssue=view.terminalReadiness?.marketRecovery?.issue;
+    const marketFailed=selected!=='all'&&(terminalProblem()||marketIssue?.category==='MARKET_READ');
+    const marketLoading=selected!=='all'&&view.status==='loading';
     let message,actions='';
     if(selected==='all'){
       const budget=paperBudgetFor(workspace,'USDT');
@@ -656,6 +659,12 @@ export function createStudioController(hooks={},options={}){
         }).join('');
       }
       actions+=firstDecisionPracticeLink(current);
+    }else if(marketFailed){
+      message='시세를 불러오지 못했습니다. 다시 조회하거나 과거 시세로 연습할 수 있습니다.';
+      actions=button('시세 다시 조회','first-decision-retry','','','primary')+firstDecisionPracticeLink(current);
+      view.guidedMarketRetry=true;
+    }else if(marketLoading){
+      message='현재 확정 시세를 확인하는 중입니다.';
     }else{
       const readiness=view.terminalReadiness?.executionReadiness,requirement=terminalRunRequirement(view),step=requirement?.action?.action??readiness?.primaryAction?.action;
       const jevMissing=isJevKeyRequirement(requirement);
@@ -676,7 +685,7 @@ export function createStudioController(hooks={},options={}){
       actions=(report?(jevMissing?keylessCurrentDecisionLink(current):''):
         (step==='data'?firstDecisionPracticeLink(current):'')+'<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>');
     }
-    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">'+heading+'</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+recentPaperPracticeLink(saved,report)+actions+paperReportReturnLink(report)+'</div></div></section>';
+    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">'+heading+'</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p'+(marketFailed?' role="alert"':marketLoading?' role="status"':'')+'>'+esc(message)+'</p><div class="actions spaced">'+recentPaperPracticeLink(saved,report)+actions+paperReportReturnLink(report)+'</div></div></section>';
   }
   function mindContext(){const id=currentRoute().params.get('profileId')||'all',profile=byId(workspace.investmentProfiles,id),manifest=savedMind(id)?.manifest,version=profileVersion(profile?.currentVersionId);return {id,profile,manifest,policy:manifest?.data,settings:manifest?.data.profileSettings||version?.settings,version,memory:byId(workspace.memoryVersions,profile?.currentMemoryVersionId)};}
   function mindHeading(label,actions='',secondary=''){
@@ -1692,6 +1701,10 @@ export function createStudioController(hooks={},options={}){
     try{
       if(action==='live-record-search-clear'){clearTimeout(searchTimer);searchDraft=null;search='';recordFieldFocus={start:0,end:0};recordCursors.reset();hooks.navigate?.('minds',{view:'records',search:null,cursor:null});redraw();return;}
       if(action==='home-recommendation-details')return home.showDetails('recommendation');
+      if(action==='first-decision-retry'&&firstPaperDecision(currentRoute())&&!terminalPending()){
+        if(document.activeElement===node)root?.querySelector('#first-paper-decision')?.focus({preventScroll:true});
+        return loadTerminal({force:true});
+      }
       if(action==='knowledge-filters-clear'){const changes={documentKind:null,documentStatus:null,knowledgePage:null},next=parseStudioRoute(studioRouteHash(currentRoute(),'minds',changes));mindActionFocus={action,id:'',scope:next.page+'?'+next.params.toString(),fallback:null};return hooks.navigate?.('minds',changes);}
       if(action==='refresh'){const route=currentRoute(),keepFocus=route.page==='settings'&&route.params.get('view')==='capabilities'&&typeof document!=='undefined'&&document.activeElement===node;try{return await refresh();}finally{const next=currentRoute();if(keepFocus&&next.page===route.page&&next.params.toString()===route.params.toString()&&document.activeElement===document.body)root?.querySelector('[data-studio-action="refresh"]')?.focus({preventScroll:true});}}
       if(action==='companion-refresh')return await refresh();
