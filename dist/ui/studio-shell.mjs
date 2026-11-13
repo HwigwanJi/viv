@@ -42,7 +42,7 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   for(const [page,items]of [['library',library],['settings',settings]])for(const [view,label]of items){
     if(page==='settings'&&view==='accounts'){
       if(route.params.get('executionMode')!=='live')entries.push({label:'모의 '+label,group:'설정',href:routeHash(route,page,{view,cursor:null})});
-      const current=paperBrokerReturnHash('#'+route.page+'?'+route.params);
+      const current=route.page==='trade'?paperBrokerReturnHash('#trade?'+route.params):PAPER_HOME_ENTRY;
       const returnTo=current===PAPER_HOME_ENTRY?paperBrokerReturnHash(route.params.get('returnTo')):current;
       entries.push({label:'실계좌 API 키 등록',group:'설정',keywords:BROKER_JUMP_KEYWORDS,
         href:routeHash(route,page,{view,cursor:null,executionMode:'live',returnTo:returnTo===PAPER_HOME_ENTRY?null:returnTo})});

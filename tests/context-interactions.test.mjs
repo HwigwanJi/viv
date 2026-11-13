@@ -246,6 +246,8 @@ test('explicit broker setup in screen search carries the current paper lesson',(
  assert.equal(first.params.get('returnTo'),hash);
  assert.equal(parseStudioRoute(find(first).href).params.get('returnTo'),hash);
  assert.equal(parseStudioRoute(find(parseStudioRoute('#home?executionMode=paper')).href).params.has('returnTo'),false);
+ const list=parseStudioRoute('#minds?view=records&kind=decisions&executionMode=paper&search=BTC-USDT');
+ assert.equal(parseStudioRoute(find(list).href).params.has('returnTo'),false);
 });
 
 test('first paper decision guidance survives its data return and stays in paper trading',()=>{
