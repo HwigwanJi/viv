@@ -41,11 +41,19 @@ async function checkConnection(){
   connection.textContent='연결을 확인하는 중입니다.';
   let temporaryFailure=true;
   let statusCode=0;
+  let responseProblem='';
   try{
-    const response=await fetch(localDesktop?'/api/install/mobile':'/api/status',{cache:'no-store',signal:AbortSignal.timeout(9000)});
+    const response=await fetch(localDesktop?'/api/install/mobile':'/api/status',{cache:'no-store',redirect:'manual',signal:AbortSignal.timeout(9000)});
     statusCode=response.status;
     temporaryFailure=response.status>=500;
+    const contentType=response.headers.get('content-type')||'';
+    if(response.type==='opaqueredirect'||(response.ok&&/^text\/html\b/i.test(contentType))){
+      responseProblem='이 주소에서 다른 웹페이지가 응답했습니다. PC에서 확인한 VIV 설치 주소와 비교하세요. 네트워크 로그인이 필요하면 브라우저에서 연결한 뒤 연결 다시 확인을 누르세요.';
+      throw Error('INSTALL_WEB_PAGE');
+    }
     if(!response.ok)throw Error('INSTALL_STATUS');
+    responseProblem='VIV 서버 상태 응답을 확인할 수 없습니다. 설치한 컴퓨터에서 VIV PC 주소를 열어 확인한 뒤 연결 다시 확인을 누르세요.';
+    if(!/^application\/json\b/i.test(contentType))throw Error('INSTALL_STATUS');
     const value=await response.json();
     if(localDesktop&&!['ready','needs-setup','unreachable','temporarily-unreachable','public-route','installation-mismatch','unsupported'].includes(value?.status))throw Error('INSTALL_STATUS');
     if(localDesktop&&value.status==='ready'){
@@ -74,7 +82,7 @@ async function checkConnection(){
   }catch{
     if(!temporaryFailure){lastVerified=null;showAddress(null);}
     setup.hidden=!(localDesktop||privateOrigin);
-    connection.textContent=connectionFailure(statusCode);
+    connection.textContent=responseProblem||connectionFailure(statusCode);
   }finally{
     recheck.disabled=false;
     if(restoreFocus&&document.activeElement===document.body)recheck.focus();

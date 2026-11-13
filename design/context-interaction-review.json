@@ -1388,8 +1388,8 @@
         "readonly"
       ],
       "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-13T17:00:27.215Z",
-      "reason": "앱 열기 실패 뒤 기존 링크를 유지해 같은 탭에서 다시 시도한다.",
+      "reviewedAt": "2026-11-13T19:29:58.205Z",
+      "reason": "설치 상태 확인과 앱 열기 직전 응답을 구분하고 같은 탭에서 다시 확인한다.",
       "signature": "fc56ea2c278425f79e92f9c3be96b9f92a1ef938058d959803af087a80f32803",
       "controls": [
         [
@@ -1417,7 +1417,8 @@
           1
         ]
       ],
-      "sourceHash": "c4ebc28d8167b7a5d902b7f63d4d61adea81d3c5be7cfc97df278a256d73f990"
+      "sourceHash": "10b17d5fc03a0a26f7abe874a41773043bc951139441fb40bd33eba78365608d",
+      "customContainers": []
     },
     {
       "file": "dist/ui/interface-motion.mjs",
@@ -3874,8 +3875,8 @@
         "primitive"
       ],
       "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-13T17:00:27.216Z",
-      "reason": "앱 열기 실패 뒤 기존 링크를 유지해 같은 탭에서 다시 시도한다.",
+      "reviewedAt": "2026-11-13T19:29:58.213Z",
+      "reason": "설치 상태 확인과 앱 열기 직전 응답을 구분하고 같은 탭에서 다시 확인한다.",
       "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
       "controls": [
         [
@@ -3887,7 +3888,7 @@
           1
         ]
       ],
-      "sourceHash": "ca5122f3e44e48d6379a4ae44ef5c0eb2791d3053a5953001d623552787ba044",
+      "sourceHash": "3e4de83f7ef457aff8fe71a1efef216309dd49566acd5ef378f9d631abdd9125",
       "customContainers": []
     }
   ],

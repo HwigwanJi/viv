@@ -95,9 +95,16 @@
           problem = '이 주소에서 VIV 서버 응답을 확인할 수 없습니다. 설치할 때 받은 VIV 주소인지 확인하세요.';
           ready = /<script\b[^>]*\bid=["']viv-app-entry["']/i.test(await page.text());
           if (ready) {
-            var health = await fetch('/api/status', {...options, method: 'GET'});
+            problem = 'VIV 서버에 연결할 수 없습니다. 설치한 컴퓨터에서 서버를 켠 뒤 다시 시도하세요.';
+            var health = await fetch('/api/status', {...options, method: 'GET', redirect: 'manual'});
             problem = connectionIssue(health.status) || problem;
-            ready = health.ok && /^application\/json\b/i.test(health.headers.get('content-type')) &&
+            var healthType = health.headers.get('content-type') || '';
+            if (health.type === 'opaqueredirect' || (health.ok && /^text\/html\b/i.test(healthType))) {
+              problem = '이 주소에서 다른 웹페이지가 응답했습니다. PC에서 확인한 VIV 설치 주소와 비교한 뒤 다시 열어 보세요.';
+            } else if (health.ok) {
+              problem = 'VIV 서버 상태 응답을 확인할 수 없습니다. 설치한 컴퓨터에서 VIV PC 주소를 확인한 뒤 다시 열어 보세요.';
+            }
+            ready = health.ok && /^application\/json\b/i.test(healthType) &&
               (await health.json())?.storage === 'server';
           }
         }

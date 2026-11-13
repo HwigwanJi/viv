@@ -345,7 +345,7 @@ test('install entry keeps its own page on failure and retains normal modified li
   const fetch = async (url, options) => {
     urls.push([url, options.method]);
     assert.equal(options.mode, 'same-origin');
-    assert.equal(options.redirect, 'error');
+    assert.equal(options.redirect, url === '/api/status' ? 'manual' : 'error');
     assert.equal(options.cache, 'no-store');
     return replies.shift();
   };
@@ -355,7 +355,7 @@ test('install entry keeps its own page on failure and retains normal modified li
   await link.click({...click, ctrlKey: true});
   assert.equal(prevented, 0);
   assert.deepEqual(urls, []);
-  for (const expected of [/VIV 앱 화면을 불러오지 못했습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/]) {
+  for (const expected of [/VIV 앱 화면을 불러오지 못했습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /다른 웹페이지가 응답했습니다/, /VIV 서버 상태 응답을 확인할 수 없습니다/]) {
     await link.click(click);
     assert.match(status.textContent, expected);
     assert.equal(attrs.has('aria-disabled'), false);
