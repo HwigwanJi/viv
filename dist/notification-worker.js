@@ -6,13 +6,15 @@ self.addEventListener('fetch',event=>{
  const url=new URL(request.url);
  if(url.origin!==self.location.origin||!['/','/index.html','/install.html'].includes(url.pathname))return;
  event.respondWith((async()=>{
+  let gatewayUnavailable=false;
   try{
    const response=await fetch(request);
    if(![502,503,504].includes(response.status))return response;
+   gatewayUnavailable=true;
   }catch{
    // A stopped server can fail before sending any response.
   }
-  return new Response(connectionHelp,{status:503,headers:{
+  return new Response(connectionHelp(gatewayUnavailable),{status:503,headers:{
    'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store',
    'Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'",
    'Referrer-Policy':'no-referrer'
@@ -21,7 +23,7 @@ self.addEventListener('fetch',event=>{
 });
 
 // The worker carries just the public help page, with no runtime cache.
-const connectionHelp=`<!doctype html>
+const connectionHelp=gatewayUnavailable=>`<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
@@ -45,7 +47,7 @@ const connectionHelp=`<!doctype html>
   <main>
     <p><strong>VIV</strong></p>
     <h1>VIV 서버에 연결할 수 없어요</h1>
-    <p>VIV를 설치한 컴퓨터가 켜져 있는지 확인하세요. 휴대폰에서 열었다면 컴퓨터와 같은 Tailscale 네트워크에 연결되어 있는지도 확인하세요.</p>
+    <p>${gatewayUnavailable?'연결 경로가 VIV 서버에 닿지 않습니다. 설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요.':'인터넷 연결을 확인하세요. 휴대폰에서 열었다면 설치한 컴퓨터와 같은 Tailscale 네트워크에 연결되어 있는지도 확인하세요.'}</p>
     <button type="button">다시 연결</button>
     <details>
       <summary>서버 다시 시작</summary>

@@ -58,7 +58,7 @@ async function checkConnection(){
     }else if(value?.storage==='server'){
       if(location.protocol==='https:')showAddress(new URL('/install.html',location.origin).href);
       help.hidden=!desktop||!privateOrigin;
-      connection.textContent='VIV 서버에 연결했습니다.';
+      connection.textContent='마지막 확인 '+new Intl.DateTimeFormat('ko-KR',{timeStyle:'medium'}).format(new Date())+' · VIV 서버 응답 확인';
     }else throw Error('INSTALL_STATUS');
   }catch{
     if(!temporaryFailure){lastVerified=null;showAddress(null);}

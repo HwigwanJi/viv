@@ -53,6 +53,12 @@
     }
   }
 
+  function connectionIssue(status) {
+    if (status === 401 || status === 403) return '이 주소에 대한 접근이 거부되었습니다. 휴대폰에서 PC와 같은 Tailscale 네트워크에 로그인했는지 확인하세요.';
+    if (status === 502 || status === 503 || status === 504) return '연결 경로가 VIV 서버에 닿지 않습니다. 설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요.';
+    return '';
+  }
+
   async function confirmAndOpen(control, status, pageUrl, entryUrl, open, fileStatus) {
     if (control.getAttribute('aria-disabled') === 'true') return;
     control.setAttribute('aria-disabled', 'true');
@@ -64,6 +70,7 @@
     var problem = 'VIV 서버에 연결할 수 없습니다. 설치한 컴퓨터에서 서버를 켠 뒤 다시 시도하세요.';
     try {
       var page = await fetch(pageUrl, options);
+      problem = connectionIssue(page.status) || problem;
       if (page.ok && /^text\/html\b/i.test(page.headers.get('content-type'))) {
         var ready = true;
         if (entryUrl) {
@@ -78,6 +85,12 @@
           showFailedFiles(fileStatus, urls.map(function (url, index) {
             return {url, issue: typeof scripts[index] === 'string' ? scripts[index] : ''};
           }));
+        } else {
+          problem = '이 주소에서 VIV 서버 응답을 확인할 수 없습니다. 설치할 때 받은 VIV 주소인지 확인하세요.';
+          var health = await fetch('/api/status', {...options, method: 'GET'});
+          problem = connectionIssue(health.status) || problem;
+          ready = health.ok && /^application\/json\b/i.test(health.headers.get('content-type')) &&
+            (await health.json())?.storage === 'server';
         }
         if (ready) {
           if (control.isConnected) open();

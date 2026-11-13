@@ -39,7 +39,9 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
       const fallback = await navigate(path);
       assert.equal(fallback.status, 503);
       assert.equal(fallback.headers.get('Cache-Control'), 'no-store');
-      assert.match(await fallback.text(), /VIV 서버에 연결할 수 없어요[^]*다시 연결/);
+      const content = await fallback.text();
+      assert.match(content, /VIV 서버에 연결할 수 없어요[^]*다시 연결/);
+      assert.match(content, status ? /연결 경로가 VIV 서버에 닿지 않습니다/ : /인터넷 연결을 확인하세요/);
     }
   }
   assert.equal(navigate('/api/workspace'), undefined);
@@ -124,7 +126,7 @@ test('VIV keeps the recovery screen until the same page and JavaScript respond',
   });
   app.events[12000]();
   await app.button.click();
-  assert.match(app.message.textContent, /VIV 서버/);
+  assert.match(app.message.textContent, /연결 경로가 VIV 서버에 닿지 않습니다/);
   assert.equal(app.reloads(), 0);
   assert.equal(app.attributes.has('aria-disabled'), false);
   await app.button.click();
@@ -282,9 +284,19 @@ test('install entry keeps its own page on failure and retains normal modified li
   const nodes = {'[data-install-open]': link, '[data-viv-open-status]': status, '[data-viv-open-help]': help};
   const document = {querySelector: selector => nodes[selector] ?? null};
   const window = {setTimeout: () => 1, clearTimeout() {}};
-  const fetch = async url => {
-    urls.push(url);
-    return asset('text/html', urls.length === 1 ? 503 : 200);
+  const replies = [
+    asset('text/html', 502),
+    asset('text/html', 403),
+    asset('text/html'), asset('text/html'),
+    asset('text/html'), Response.json({storage: 'other'}),
+    asset('text/html'), Response.json({storage: 'server'}),
+  ];
+  const fetch = async (url, options) => {
+    urls.push([url, options.method]);
+    assert.equal(options.mode, 'same-origin');
+    assert.equal(options.redirect, 'error');
+    assert.equal(options.cache, 'no-store');
+    return replies.shift();
   };
   runInNewContext(script, {document, window, location: {assign: url => opened.push(url)}, AbortController, fetch});
   let prevented = 0;
@@ -293,12 +305,19 @@ test('install entry keeps its own page on failure and retains normal modified li
   assert.equal(prevented, 0);
   assert.equal(help.hidden, true);
   assert.deepEqual(urls, []);
+  for (const expected of [/연결 경로가 VIV 서버에 닿지 않습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/]) {
+    await link.click(click);
+    assert.match(status.textContent, expected);
+    assert.equal(help.hidden, false);
+    assert.deepEqual(opened, []);
+  }
   await link.click(click);
-  assert.match(status.textContent, /VIV 서버/);
-  assert.equal(help.hidden, false);
-  assert.deepEqual(opened, []);
-  await link.click(click);
-  assert.deepEqual(urls, ['/', '/']);
+  assert.deepEqual(urls, [
+    ['/', 'HEAD'], ['/', 'HEAD'],
+    ['/', 'HEAD'], ['/api/status', 'GET'],
+    ['/', 'HEAD'], ['/api/status', 'GET'],
+    ['/', 'HEAD'], ['/api/status', 'GET'],
+  ]);
   assert.deepEqual(opened, [link.href]);
 });
 
