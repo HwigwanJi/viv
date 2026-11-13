@@ -641,10 +641,10 @@ export function createStudioController(hooks={},options={}){
     if(view==='records')return renderRecords();
     if(view==='operations')return renderMindOperations();
     if(view==='simulations'){
-      const back=(route.params.get('profileId')||'all')==='all'&&firstDecisionOrigin(route)
-        ?studioReturnLink(route,parseStudioRoute,studioRouteHash):null;
+      const origin=firstDecisionOrigin(route);
+      const back=origin?studioRouteHash(origin,'trade',{returnTo:null}):null;
       return '<section data-simulation-execution-mode="paper" aria-label="모의 실험실"><p class="tiny muted">모의 실험</p>'+
-        (back?'<a class="studio-return-link" href="'+esc(back.href)+'" data-studio-route>첫 모의 판단으로 돌아가기</a>':'')+
+        (back?'<a class="studio-return-link" href="'+esc(back)+'" data-studio-route>첫 모의 판단으로 돌아가기</a>':'')+
         simulations.render()+'</section>';
     }
     if(view==='principles')return renderMindPrinciples();
