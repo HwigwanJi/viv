@@ -38,6 +38,9 @@
 .viv-cal-head p {
   margin-top: var(--ds-space-2);
 }
+.viv-cal-head p a {
+  text-decoration-line: underline;
+}
 .viv-cal-layout {
   display: grid;
   align-items: flex-start;

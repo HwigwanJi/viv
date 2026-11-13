@@ -208,6 +208,7 @@ document.addEventListener('click',event=>{
     else navigateToHeading(href,paperGuide?'#first-paper-decision':paperReportReturn?'#simulation-result-heading':undefined);
     return;
   }
+  if(event.target.closest('[data-studio-jump-item][target="_blank"]')&&isPlainNavigationClick(event))closeDialog();
   const nav=event.target.closest('[data-nav]');
   if(nav){if(!isPlainNavigationClick(event))return;event.preventDefault();navigatePrimary(nav.dataset.nav);return;}
   if(event.target.closest('[data-app-install]')){appInstall.install();return;}

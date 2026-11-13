@@ -1,4 +1,5 @@
 import {PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY} from '../system/paper-decision-links.mjs';
+import {CALENDAR_GUIDE_URL} from './workspace-calendar.mjs';
 
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
@@ -50,6 +51,8 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
     href:'https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#시작-오류가-반복될-때',
     taskSuffix:'새 탭',searchOnly:true,external:true
   });
+  entries.push({label:'캘린더 사용법',group:'사용 안내',keywords:'캘린더 도움말',href:CALENDAR_GUIDE_URL,
+    taskSuffix:'새 탭',searchOnly:true,external:true});
   return entries;
 }
 

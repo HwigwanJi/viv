@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T08:07:40.485Z",
-      "reason": "같은 캘린더 날짜에서 항목을 열고 돌아오면 해당 링크의 초점과 가시성을 복원한다. 링크의 기본 탐색을 유지한다.",
+      "reviewedAt": "2026-11-13T10:29:29.941Z",
+      "reason": "캘린더 안내를 직접 또는 화면 찾기로 새 탭에 열고 기존 월·날짜·보고서와 키보드 사용을 대조했다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "b1808f28fafa48f5440db15b862a96e738b6e087a1f92d665fcb33290f69826e",
+      "sourceHash": "ab0d3b0e5be954d8009ec4e7e17e3d04ef76ee9ca807f3676c19fadcca698c39",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3391,8 +3391,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T17:15:49.975Z",
-      "reason": "사용자가 쓰는 시작 오류 표현으로 공개 복구 안내를 찾고 기존 화면 이동을 검토했다.",
+      "reviewedAt": "2026-11-13T10:29:29.944Z",
+      "reason": "캘린더 안내를 직접 또는 화면 찾기로 새 탭에 열고 기존 월·날짜·보고서와 키보드 사용을 대조했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3412,7 +3412,7 @@
           2
         ]
       ],
-      "sourceHash": "5515be3bffab9bebd6a3bccad7395563e7f50f6e65f2c571acb423ef5b3659fa",
+      "sourceHash": "3f86c383eb56917e18b838976329e946598a7822dc0ba6e331e22e43facd8d0b",
       "customContainers": []
     },
     {
@@ -3432,7 +3432,7 @@
         ],
         [
           "element:a",
-          1
+          2
         ],
         [
           "element:button",
@@ -3443,11 +3443,11 @@
           6
         ]
       ],
-      "signature": "fe8006d39afe8f9c5fbe2dd3a7fa4f0f48a8a8692fadac85da189c6bec58b0b0",
-      "sourceHash": "4c4d2942d0ad92580b38a7b68a1aea9ec6281a4d535c02e9d923415dc1e26b87",
+      "signature": "8187cf5bc17bb4f722605938729bf3916a473e07f999346e231d0fd4a95a7131",
+      "sourceHash": "cf2c78b4dddce1e84a07e65c2271fd3e485794aefba2494f376ab8a98082381c",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T10:02:02.323Z",
-      "reason": "좁은 모바일 화면에서 동명 완료 항목을 테스트 기간과 수익률로 구분하고 조회 실패 뒤 같은 보고서를 열었다.",
+      "reviewedAt": "2026-11-13T10:32:24.950Z",
+      "reason": "캘린더 안내를 직접 또는 화면 찾기로 새 탭에 열고 기존 월·날짜·보고서와 키보드 사용을 대조했다.",
       "customContainers": []
     },
     {

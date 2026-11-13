@@ -4,7 +4,7 @@
   "inputs": [
     {
       "path": "dist/app.mjs",
-      "sha256": "b1808f28fafa48f5440db15b862a96e738b6e087a1f92d665fcb33290f69826e"
+      "sha256": "ab0d3b0e5be954d8009ec4e7e17e3d04ef76ee9ca807f3676c19fadcca698c39"
     },
     {
       "path": "dist/index.html",
@@ -392,7 +392,7 @@
     },
     {
       "path": "dist/ui/studio-shell.mjs",
-      "sha256": "5515be3bffab9bebd6a3bccad7395563e7f50f6e65f2c571acb423ef5b3659fa"
+      "sha256": "3f86c383eb56917e18b838976329e946598a7822dc0ba6e331e22e43facd8d0b"
     },
     {
       "path": "dist/ui/terminal-universe.mjs",
@@ -448,7 +448,7 @@
     },
     {
       "path": "dist/ui/workspace-calendar.mjs",
-      "sha256": "4c4d2942d0ad92580b38a7b68a1aea9ec6281a4d535c02e9d923415dc1e26b87"
+      "sha256": "cf2c78b4dddce1e84a07e65c2271fd3e485794aefba2494f376ab8a98082381c"
     },
     {
       "path": "package-lock.json",
@@ -612,7 +612,7 @@
     },
     {
       "path": "styles/components/workspace-calendar.css",
-      "sha256": "1255933a9fc2fea45ae7d7207792fd1cd230a6f2d7b396f17dd7e06f405b9f47"
+      "sha256": "d936479325714f91e9bff5e5d1a65f91975a08855098361dc904c8800fdeb684"
     },
     {
       "path": "styles/theme.css",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "4e466d6a491e864c6d4d658edcb297723b37983eefd606f95b1cbc64e3d7580c",
+  "inputHash": "a0b9e31581c28d9f1a7ffa336df3ff4e77cb6dac536987668afd89c77169d788",
   "pages": [
     {
       "path": "dist/index.html",
@@ -814,7 +814,7 @@
     },
     {
       "path": "dist/ui/workspace-calendar.css",
-      "sha256": "f067e624f787042b64007d9bd9c1d2d939f064de9b16f057ce9a180ccefafbb5"
+      "sha256": "ad5793fb87a3a048a660851a28b7122c8bd6694cdec37e14414349361adc5065"
     },
     {
       "path": "dist/benchmark.css",

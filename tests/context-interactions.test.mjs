@@ -90,7 +90,6 @@ test('help queries find the capability catalog in the current viewing mode',()=>
  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
  for(const query of ['도움말','사용 안내','가이드','사용법','VIV 도움말']){
   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
-  assert.equal(matches.length,query.includes('도움말')?2:1);
   const destination=parseStudioRoute(matches[0].href);
   assert.equal(destination.page,'settings');
   assert.equal(destination.params.get('view'),'capabilities');
@@ -184,6 +183,13 @@ test('calendar task searches identify paper results from either account view',()
    const [item]=matches;
    assert.equal(item.taskSuffix,'모의검증 일정과 모의 실현 손익');
    assert.equal(item.href,'#calendar?executionMode='+mode);
+  }
+  for(const query of ['캘린더 사용법','캘린더사용법','캘린더 도움말']){
+   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
+   assert.equal(matches.length,1,query);
+   assert.equal(matches[0].taskSuffix,'새 탭');
+   assert.match(matches[0].href,/\/viv-mcp-playbook\.md#캘린더에서-백테스트-이어가기$/);
+   assert.match(renderStudioJump(matches),/target="_blank" rel="noopener noreferrer" data-studio-jump-search-only hidden/);
   }
  }
 });

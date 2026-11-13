@@ -98,6 +98,7 @@ test('calendar presents active checks before the month and selected date',async(
   assert.ok(order[0]>=0&&order[0]<order[1]&&order[1]<order[2]);
   assert.match(markup,/aria-label="모의 실현 손익"[^]*\+800.00 KRW/);
   assert.match(markup,/완료된 비교[^]*테스트 기간[^]*B 수익률[^]*\+15%/);
+  assert.match(markup,/href="https:\/\/github\.com\/HwigwanJi\/viv\/blob\/main\/docs\/agents\/operations\/viv-mcp-playbook\.md#캘린더에서-백테스트-이어가기" target="_blank" rel="noopener noreferrer">캘린더 사용법 \(새 탭\)/);
   const calendarLinks=[...markup.matchAll(/href="(#calendar\?[^"\n]+)"/g)];
   assert.ok(calendarLinks.length>3);
   assert.ok(calendarLinks.every(([,href])=>new URLSearchParams(href.replaceAll('&amp;','&').split('?')[1]).get('executionMode')==='live'));
