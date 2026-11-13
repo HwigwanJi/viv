@@ -597,8 +597,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T06:33:49.169Z",
-      "reason": "휴대폰에서 복사한 금융기관별 주소가 PC에서 준비 상태 또는 키 입력을 연다. 키보드 닫기, 서버 응답 복구 및 기본 카드 동선을 검증했다.",
+      "reviewedAt": "2026-11-13T09:02:26.548Z",
+      "reason": "휴대폰에서 복사한 연결 주소에 검증된 모의 결과 복귀 경로를 유지한다.",
       "signature": "c13b708d6cf87c9d3c11f3c0fc4ce99626cdefea7a510b5e8c843ae446845b9c",
       "controls": [
         [
@@ -642,7 +642,7 @@
           1
         ]
       ],
-      "sourceHash": "e18a1412a85e13da666f57ad11dbc375061736cd2e5732312c16568cabb443a8",
+      "sourceHash": "36e4acd0e16f82c486941d00bb1d92d0277d272ed06398e6591749fb685fd231",
       "customContainers": []
     },
     {

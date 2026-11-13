@@ -161,8 +161,10 @@ test('broker handoff waits for a successful read and respects navigation and ano
   assert.deepEqual(opened,['토스증권 연결']);
 });
 
-test('broker PC handoff opens the selected setup once and copies only its address',async t=>{
+test('broker PC handoff preserves only a canonical paper result and opens the selected setup once',async t=>{
   const params=new URLSearchParams({view:'accounts',executionMode:'live',brokerSetup:'upbit'});
+  const paperResult=paperDecisionRecordHash('mind-run-1');
+  params.set('returnTo',paperResult+'&extra=unrelated');
   const calls=[],copied=[],toasts=[];
   let modal,opens=0;
   const connections=createBrokerConnections({
@@ -180,7 +182,7 @@ test('broker PC handoff opens the selected setup once and copies only its addres
   assert.ok(first.indexOf('data-broker-section="upbit"')<first.indexOf('data-broker-section="toss"'));
   assert.match(first,/새 API 키는 PC 웹에서 발급/);
   const click=(action,extra={})=>connections.click({preventDefault(){},target:{closest:()=>({dataset:{brokerAction:action,brokerProvider:'upbit'},...extra})}});
-  const address={value:'https://viv.example.test/#settings?view=accounts&executionMode=live&brokerSetup=upbit',hidden:true,focus(){this.focused=true;},select(){this.selected=true;}};
+  const address={value:'https://viv.example.test/#settings?view=accounts&executionMode=live&brokerSetup=upbit&'+new URLSearchParams({returnTo:paperResult}),hidden:true,focus(){this.focused=true;},select(){this.selected=true;}};
   assert.ok(modal.includes('readonly hidden>'+address.value.replaceAll('&','&amp;')+'</textarea>'));
   assert.ok(modal.indexOf('새 키는 PC 웹에서 발급')<modal.indexOf('name="secretKey"'));
   Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>copied.push(text)}});
@@ -193,8 +195,10 @@ test('broker PC handoff opens the selected setup once and copies only its addres
   assert.equal(address.hidden,false);
   assert.equal(address.selected,true);
   params.set('brokerSetup','toss');
+  params.set('returnTo','https://outside.invalid/');
   await connections.load();
   assert.equal(opens,2);
   assert.match(modal,/name="clientSecret"/);
+  assert.ok(modal.includes('readonly hidden>https://viv.example.test/#settings?view=accounts&amp;executionMode=live&amp;brokerSetup=toss</textarea>'));
   assert.deepEqual(calls,Array.from({length:3},()=>({path:'/api/workspace/brokers',body:undefined})));
 });
