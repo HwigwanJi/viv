@@ -57,7 +57,8 @@ function agenda(day,selected){
       const detail=[row.label,scheduleTime.format(new Date(row.at)),testPeriod(row.period)].filter(Boolean).join(' · ');
       const result=Number.isFinite(row.totalReturn)?'<span class="viv-cal-status"><small>'+esc(row.returnLabel??'수익률')+'</small><span class="viv-cal-pnl" data-tone="'+tone(row.totalReturn)+'">'+esc(new Intl.NumberFormat('ko-KR',{style:'percent',signDisplay:'exceptZero',maximumFractionDigits:2}).format(row.totalReturn))+'</span></span>':
         row.amount!==undefined?pnl([row]):'<span aria-hidden="true">↗</span>';
-      return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(detail)+'</small></span>'+result,row.kind==='experiment'?'data-cal-entry="day"':'')+'</li>';
+      const decision=row.kind==='activity'&&row.href.startsWith('#minds?')&&new URLSearchParams(row.href.slice(7)).get('kind')==='decisions';
+      return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(detail)+'</small></span>'+result,row.kind==='experiment'||decision?'data-cal-entry="day"':'')+'</li>';
     }).join('')+'</ul>':'<p class="muted">이 날짜에 확인된 일정이나 기록이 없습니다.</p>')+'</section>';
 }
 

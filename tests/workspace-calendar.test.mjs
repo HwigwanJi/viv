@@ -89,6 +89,8 @@ test('calendar presents active checks before the month and selected date',async(
     request:async()=>({month,today,days:[{date:today,pnl:[{currency:'KRW',amount:'800'}],entries:[
       {kind:'experiment',name:'완료된 비교',label:'과거 시세 검증 완료',at:today+'T10:00:00Z',href:'#minds',
         period:{startAt:'2026-09-17T15:00:00Z',endAt:'2026-09-24T15:00:00Z'},totalReturn:.15,returnLabel:'B 수익률'},
+      {kind:'activity',name:'모의 판단',label:'판단 표시 문구',at:today+'T10:00:00Z',href:'#minds?kind=decisions&search=mind-run-a'},
+      {kind:'fill',name:'모의 체결',label:'모의 매수 체결',at:today+'T10:00:00Z',href:'#minds?kind=decisions&search=mind-run-a'},
     ]}],active:[{name:'모의 검증',kind:'forward',state:'일시중지',href:'#minds'}]}),
     render:()=>{},
   });
@@ -98,6 +100,8 @@ test('calendar presents active checks before the month and selected date',async(
   assert.ok(order[0]>=0&&order[0]<order[1]&&order[1]<order[2]);
   assert.match(markup,/aria-label="모의 실현 손익"[^]*\+800.00 KRW/);
   assert.match(markup,/완료된 비교[^]*테스트 기간[^]*B 수익률[^]*\+15%/);
+  assert.equal((markup.match(/href="#minds\?kind=decisions&amp;search=mind-run-a" data-cal-entry="day"/g)||[]).length,1);
+  assert.match(markup,/data-cal-entry="day"><span><strong>모의 판단<\/strong>/);
   assert.match(markup,/href="https:\/\/github\.com\/HwigwanJi\/viv\/blob\/main\/docs\/agents\/operations\/viv-mcp-playbook\.md#캘린더에서-백테스트-이어가기" target="_blank" rel="noopener noreferrer">캘린더 사용법 \(새 탭\)/);
   const calendarLinks=[...markup.matchAll(/href="(#calendar\?[^"\n]+)"/g)];
   assert.ok(calendarLinks.length>3);

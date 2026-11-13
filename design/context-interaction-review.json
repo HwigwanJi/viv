@@ -3432,10 +3432,10 @@
         ]
       ],
       "signature": "8187cf5bc17bb4f722605938729bf3916a473e07f999346e231d0fd4a95a7131",
-      "sourceHash": "faabe3d715d37c09a9dd514836c5394d970c71f6d1d485213459e894166ff5bb",
+      "sourceHash": "0a786c5b96600a4452c0812f3efd0eef17f78860be8a50a0d5a2dc140221b275",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T13:01:21.679Z",
-      "reason": "화면 찾기와 현황 제목이 같은 이름을 사용하며, 진행·시작 대기·날짜별 모의 실현 손익과 날짜 복귀를 확인했다.",
+      "reviewedAt": "2026-11-13T17:59:51.584Z",
+      "reason": "모의 판단 상세에서 날짜 목록으로 돌아올 때 원래 판단 또는 선택 날짜에 초점을 복원한다.",
       "customContainers": []
     },
     {
