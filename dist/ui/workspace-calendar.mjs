@@ -42,17 +42,23 @@ function monthGrid(data,selected,calendarHref){
     if(number<1||number>count)return '<span class="viv-cal-cell" aria-hidden="true"></span>';
     const key=month+'-'+String(number).padStart(2,'0'),day=values.get(key),entries=day?.entries??[],scheduled=entries.filter(row=>row.kind==='schedule').length;
     const amounts=day?.pnl??[],mark=scheduled?'<span class="viv-cal-marker" aria-hidden="true"></span>':'';
-    const label=[key,key===today?'오늘':'',entries.length?'일정·기록 '+entries.length+'건':'',...amounts.map(row=>money(row.amount,row.currency)),day?.unknown?'일부 원장 미확인':''].filter(Boolean).join(', ');
-    return routeLink(calendarHref(month,key),'<span class="viv-cal-number">'+number+mark+'</span>'+pnl(amounts,true)+(entries.length&&!amounts.length?'<small>'+entries.length+'건</small>':''),'class="viv-cal-cell" data-cal-date="'+key+'" aria-label="'+esc(label)+'"'+(key===selected?' aria-current="date"':'')+(key===today?' data-today':''));
+    const pnlStatus=day?.unknown?(amounts.length?'손익 일부 미확인':'손익 미확인'):'';
+    const label=[key,key===today?'오늘':'',pnlStatus,...amounts.map(row=>money(row.amount,row.currency)),entries.length?'일정·기록 '+entries.length+'건':''].filter(Boolean).join(', ');
+    return routeLink(calendarHref(month,key),'<span class="viv-cal-number">'+number+mark+'</span>'+
+      (pnlStatus?'<small>미확인</small>':'')+pnl(amounts,true)+
+      (entries.length&&!amounts.length&&!pnlStatus?'<small>'+entries.length+'건</small>':''),'class="viv-cal-cell" data-cal-date="'+key+'" aria-label="'+esc(label)+'"'+(key===selected?' aria-current="date"':'')+(key===today?' data-today':''));
   });
   return '<div class="viv-cal-grid" aria-label="월간 일정">'+['월','화','수','목','금','토','일'].map(day=>'<span class="viv-cal-week">'+day+'</span>').join('')+cells.join('')+'</div>';
 }
 
-function agenda(day,selected){
+function agenda(day,selected,eventLedgerUnavailable){
   const records=day?.entries??[];
+  const amounts=day?.pnl??[];
+  const summary=amounts.length?(day?.unknown||eventLedgerUnavailable?'모의 실현 손익 · 확인된 금액':'모의 실현 손익'):
+    day?.unknown?'실현 손익 미확인':eventLedgerUnavailable?'확인된 실현 손익 기록 없음':'실현 손익 기록 없음';
   return '<section class="viv-cal-panel viv-cal-day" aria-labelledby="viv-cal-day-title"><h2 id="viv-cal-day-title">'+esc(dateTitle.format(new Date(selected+'T00:00:00Z')))+'</h2>'+
-    '<div class="viv-cal-totals" role="group" aria-label="모의 실현 손익">'+(day?.pnl.length?'<span class="muted">모의 실현 손익</span>'+pnl(day.pnl):'<span class="muted">실현 손익 기록 없음</span>')+'</div>'+
-    (day?.unknown?'<p class="muted">일부 체결의 손익을 확인할 수 없습니다.</p>':'')+
+    '<div class="viv-cal-totals" role="group" aria-label="모의 실현 손익"><span class="muted">'+summary+'</span>'+pnl(amounts)+'</div>'+
+    (day?.unknown?'<p class="muted">손익이 확인되지 않은 매도 체결이 있습니다.</p>':'')+
     (records.length?'<ul class="viv-cal-list">'+records.map(row=>{
       const detail=[row.label,scheduleTime.format(new Date(row.at)),testPeriod(row.period)].filter(Boolean).join(' · ');
       const result=Number.isFinite(row.totalReturn)?'<span class="viv-cal-status"><small>'+esc(row.returnLabel??'수익률')+'</small><span class="viv-cal-pnl" data-tone="'+tone(row.totalReturn)+'">'+esc(new Intl.NumberFormat('ko-KR',{style:'percent',signDisplay:'exceptZero',maximumFractionDigits:2}).format(row.totalReturn))+'</span></span>':
@@ -114,7 +120,7 @@ export function createWorkspaceCalendar({getRoute,request,render}){
       monthGrid(current??{month,today:now,days:[]},selected,calendarHref)+
       '<p class="viv-cal-note muted">매도에서 확정된 손익을 통화별로 표시합니다. 과거 시세 검증은 완료 또는 결과 갱신 날짜에 표시합니다.</p>'+
       (current?.eventLedgerUnavailable?'<p class="viv-cal-note" role="status">일부 분봉 모의 원장을 확인하지 못했습니다.</p>':'')+
-      '</section>'+(current?agenda(current.days.find(day=>day.date===selected),selected):'')+'</div></section>';
+      '</section>'+(current?agenda(current.days.find(day=>day.date===selected),selected,current.eventLedgerUnavailable):'')+'</div></section>';
   }
   return {load,render:markup,toggleActive(){activeExpanded=!activeExpanded;render();},destroy(){controller?.abort();}};
 }

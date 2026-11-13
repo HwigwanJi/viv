@@ -3380,8 +3380,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T21:58:48.826Z",
-      "reason": "휴대폰 설치 탭에서 앱과 서버 상태 요청 시간 초과를 구분하고 검색·재시도를 확인했다.",
+      "reviewedAt": "2026-11-13T23:00:47.066Z",
+      "reason": "미확인 손익 검색 후 캘린더 진입을 터치와 키보드에서 확인했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3401,7 +3401,7 @@
           2
         ]
       ],
-      "sourceHash": "59de14725954fd2ec27fdfe118f925d8449fb41d14e76832b83412c3746025aa",
+      "sourceHash": "dbd3f6c34f4cb294e6cb0c2367b01e8d9ed1d89d3d980ffab86559ce5a5c0e5f",
       "customContainers": []
     },
     {
@@ -3433,10 +3433,10 @@
         ]
       ],
       "signature": "8187cf5bc17bb4f722605938729bf3916a473e07f999346e231d0fd4a95a7131",
-      "sourceHash": "0a786c5b96600a4452c0812f3efd0eef17f78860be8a50a0d5a2dc140221b275",
+      "sourceHash": "b13698b6edc0890a9f849ea21ed20e3172d173346e626720769ecbe798ee1338",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T17:59:51.584Z",
-      "reason": "모의 판단 상세에서 날짜 목록으로 돌아올 때 원래 판단 또는 선택 날짜에 초점을 복원한다.",
+      "reviewedAt": "2026-11-13T23:00:46.982Z",
+      "reason": "모바일·키보드에서 미확인 날짜, 확인된 0, 일부 확인 금액과 월 변경 복구를 구분했다.",
       "customContainers": []
     },
     {

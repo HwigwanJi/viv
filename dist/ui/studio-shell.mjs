@@ -5,7 +5,7 @@ const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&
 
 const COLLECTION_TASKS = [['overview','마인드 목록'],['records','전체 기록'],['simulations','전체 시뮬레이션']];
 const MIND_TASKS = [['operations','운용'],['principles','전략'],['records','기록'],['knowledge','자료'],['simulations','실험실']];
-const JUMP_TASK_KEYWORDS = {calendar:CALENDAR_STATUS_TITLE+' 달력 모의검증 일정 날짜 손익 스케줄 진행 중인 검증 검증 예정 시작 대기 날짜별 손익 오늘 벌었는지',records:'체결 거래 주문 원장',principles:'규칙 정책 노드',simulations:'백테스트 실험 결과 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서',connections:'AI 연결 MCP Codex Claude Code'};
+const JUMP_TASK_KEYWORDS = {calendar:CALENDAR_STATUS_TITLE+' 달력 모의검증 일정 날짜 손익 스케줄 진행 중인 검증 검증 예정 시작 대기 날짜별 손익 오늘 벌었는지 실현 손익 미확인 실현 손익 기록 없음',records:'체결 거래 주문 원장',principles:'규칙 정책 노드',simulations:'백테스트 실험 결과 시뮬레이션',capabilities:'VIV 도움말 사용법 사용 안내 가이드 문서',connections:'AI 연결 MCP Codex Claude Code'};
 const BROKER_JUMP_KEYWORDS = '계좌 연결 잔고 자금 거래소 업비트 토스증권 API키';
 
 const TASK_GROUPS = Object.freeze({

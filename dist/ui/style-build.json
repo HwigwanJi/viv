@@ -392,7 +392,7 @@
     },
     {
       "path": "dist/ui/studio-shell.mjs",
-      "sha256": "59de14725954fd2ec27fdfe118f925d8449fb41d14e76832b83412c3746025aa"
+      "sha256": "dbd3f6c34f4cb294e6cb0c2367b01e8d9ed1d89d3d980ffab86559ce5a5c0e5f"
     },
     {
       "path": "dist/ui/terminal-universe.mjs",
@@ -448,7 +448,7 @@
     },
     {
       "path": "dist/ui/workspace-calendar.mjs",
-      "sha256": "0a786c5b96600a4452c0812f3efd0eef17f78860be8a50a0d5a2dc140221b275"
+      "sha256": "d1df841dac465e1da52228d7d236f73b304fde06bf7ba2bb4283e98d5970aea7"
     },
     {
       "path": "package-lock.json",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "e110fa126a18e173f4d66cc2e81f58ae3b6f8b7698f3430b1fef00218332e68c",
+  "inputHash": "9a4f63b14eb50f8e3a391f1579dafbd587fd6cdb7f7cbf30e56e837aef5e83a3",
   "pages": [
     {
       "path": "dist/index.html",

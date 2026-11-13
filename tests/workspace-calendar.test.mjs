@@ -130,6 +130,34 @@ test('calendar discloses extra checks and retains expansion across visits',async
   assert.doesNotMatch(calendar.render(),/calendar-toggle-active/);
 });
 
+test('calendar separates missing realized PnL, confirmed zero, and partial totals',async()=>{
+  const month='2026-11', today=month+'-12';
+  let date=today, eventLedgerUnavailable=false;
+  const calendar=createWorkspaceCalendar({
+    getRoute:()=>({page:'calendar',params:new URLSearchParams({month,date})}),
+    request:async()=>({month,today,eventLedgerUnavailable,active:[],days:[
+      {date:today,unknown:true,pnl:[],entries:[]},
+      {date:month+'-13',pnl:[{currency:'KRW',amount:'0'}],entries:[]},
+      {date:month+'-14',unknown:true,pnl:[{currency:'USDT',amount:'-1.25'}],entries:[]},
+    ]}),
+    render:()=>{},
+  });
+  await calendar.load();
+  const totals=()=>calendar.render().match(/<div class="viv-cal-totals"[^>]*>(.*?)<\/div>/)[1];
+  assert.match(totals(),/실현 손익 미확인/);
+  assert.doesNotMatch(totals(),/기록 없음|0 KRW/);
+  assert.match(calendar.render(),/aria-label="2026-11-14, 손익 일부 미확인, -1.25 USDT"><span[^]*?<small>미확인<\/small>/);
+  date=month+'-13';
+  assert.match(totals(),/모의 실현 손익[^]*0 KRW/);
+  date=month+'-14';
+  assert.match(totals(),/확인된 금액[^]*-1.25 USDT/);
+  date=month+'-15';
+  assert.match(totals(),/실현 손익 기록 없음/);
+  eventLedgerUnavailable=true;
+  await calendar.load({force:true});
+  assert.match(totals(),/확인된 실현 손익 기록 없음/);
+});
+
 test('character editing saves appearance and display name without a policy revision',()=>{
   const before=createWorkspace({now:'2026-11-10T00:00:00.000Z'}),profile=before.investmentProfiles[0];
   const config=mindAvatarIdentity(profile.id).config;
