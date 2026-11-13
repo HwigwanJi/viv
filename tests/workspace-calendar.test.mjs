@@ -48,7 +48,7 @@ test('calendar only accepts owner-scoped month reads',async()=>{
 test('calendar presents active checks before the month and selected date',async()=>{
   const month='2026-11',today='2026-11-12';
   const calendar=createWorkspaceCalendar({
-    getRoute:()=>({page:'calendar',params:new URLSearchParams({month,date:today})}),
+    getRoute:()=>({page:'calendar',params:new URLSearchParams({month,date:today,executionMode:'live'})}),
     request:async()=>({month,today,days:[],active:[{name:'모의 검증',kind:'forward',state:'일시중지',href:'#minds'}]}),
     render:()=>{},
   });
@@ -56,6 +56,9 @@ test('calendar presents active checks before the month and selected date',async(
   const markup=calendar.render();
   const order=['id="viv-cal-active-title"','aria-label="월간 캘린더"','id="viv-cal-day-title"'].map(label=>markup.indexOf(label));
   assert.ok(order[0]>=0&&order[0]<order[1]&&order[1]<order[2]);
+  const calendarLinks=[...markup.matchAll(/href="(#calendar\?[^"\n]+)"/g)];
+  assert.ok(calendarLinks.length>3);
+  assert.ok(calendarLinks.every(([,href])=>new URLSearchParams(href.replaceAll('&amp;','&').split('?')[1]).get('executionMode')==='live'));
 });
 
 test('character editing saves appearance and display name without a policy revision',()=>{

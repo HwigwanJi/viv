@@ -4,7 +4,6 @@ import {currencyAmount} from './currency-format.mjs';
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dateTitle=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short',timeZone:'UTC'});
 const scheduleTime=new Intl.DateTimeFormat('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul',hour12:false});
-const calendarHref=(month,date)=>'#calendar?'+new URLSearchParams(date?{month,date}:{month});
 const routeLink=(href,label,extra='')=>'<a data-studio-route href="'+esc(href)+'" '+extra+'>'+label+'</a>';
 const today=()=>calendarDay(Date.now());
 const monthFor=route=>calendarMonth(route.params.get('month'))??today().slice(0,7);
@@ -26,7 +25,7 @@ const dateFor=(route,month,now)=>{
   return now.startsWith(month+'-')?now:month+'-01';
 };
 
-function monthGrid(data,selected){
+function monthGrid(data,selected,calendarHref){
   const {month,today,days}=data,first=new Date(month+'-01T00:00:00Z'),offset=(first.getUTCDay()+6)%7;
   const count=new Date(moveCalendarMonth(month,1)+'-01T00:00:00Z').getTime()/86400000-first.getTime()/86400000;
   const values=new Map(days.map(day=>[day.date,day]));
@@ -77,6 +76,8 @@ export function createWorkspaceCalendar({getRoute,request,render}){
   }
   function markup(){
     const route=getRoute(),month=monthFor(route),current=data?.month===month?data:null,now=current?.today??today(),selected=dateFor(route,month,now);
+    const mode=route.params.get('executionMode');
+    const calendarHref=(month,date)=>'#calendar?'+new URLSearchParams({month,...(date?{date}:{}),...(mode?{executionMode:mode}:{})});
     const [year,mon]=month.split('-').map(Number),loading=pending===month,failed=error?.month===month;
     const monthLink=(offset,label,icon,control)=>{
       const next=calendarMonth(moveCalendarMonth(month,offset));
@@ -91,7 +92,7 @@ export function createWorkspaceCalendar({getRoute,request,render}){
       (loading&&(!current||failed)?'<p role="status">일정을 불러오는 중…</p>':'')+
       (failed&&!loading?'<p role="alert">'+esc(error.message)+'</p>':'')+
       (failed?'<button type="button" class="button" data-cal-control="retry" data-studio-action="calendar-refresh"'+(loading?' aria-disabled="true"':'')+'>다시 조회</button>':'')+
-      monthGrid(current??{month,today:now,days:[]},selected)+
+      monthGrid(current??{month,today:now,days:[]},selected,calendarHref)+
       '<p class="viv-cal-note muted">매도에서 확정된 손익을 통화별로 표시합니다. 과거 시세 검증은 완료 또는 결과 갱신 날짜에 표시합니다.</p>'+
       (current?.eventLedgerUnavailable?'<p class="viv-cal-note" role="status">일부 분봉 모의 원장을 확인하지 못했습니다.</p>':'')+
       '</section>'+(current?agenda(current.days.find(day=>day.date===selected),selected):'')+'</div></section>';
