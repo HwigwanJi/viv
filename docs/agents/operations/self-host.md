@@ -138,12 +138,18 @@ PC에서 기존 **VIV PC** 주소에 접속할 수 없으면 [서버 다시 시�
    git ls-files --deleted -- dist
    ```
 
-   오류 화면과 누락 목록에 **같은 경로**가 있을 때 해당 파일 하나를 복원하세요.
+   오류 화면에 파일 경로가 표시되면 누락 목록에서 같은 경로를 찾아 해당 파일을 복원하세요. 휴대폰 설치 화면에 기본 안내만 표시된다면 누락 목록에서 `dist/ui/install-page.mjs`와 `dist/ui/viv-startup.js`를 확인하세요. 두 파일 중 목록에 나온 파일을 하나씩 복원하세요.
 
    **설치 화면에서 `dist/ui/install-page.mjs`가 빠진 경우**
 
    ```sh
    git --literal-pathspecs restore --worktree -- "dist/ui/install-page.mjs"
+   ```
+
+   **설치 화면의 시작 스크립트 `dist/ui/viv-startup.js`가 빠진 경우**
+
+   ```sh
+   git --literal-pathspecs restore --worktree -- "dist/ui/viv-startup.js"
    ```
 
    **앱 시작 화면에서 `dist/app.mjs`가 빠진 경우**
