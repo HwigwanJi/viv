@@ -1195,8 +1195,10 @@ export function createStudioController(hooks={},options={}){
       const executionStatus=r.execution?.status;
       const paperOutcome=executionStatus==='NO_ORDER_REQUIRED'&&v.action==='hold'?'HOLD_SELECTED':executionStatus||v.outcome;
       const executionStatusRow=row('실행 상태',esc(executionLabel(paperRecord?paperOutcome:v.outcome)));
-      const executionReason=r.execution?.reason?row('실행 사유',esc(r.execution.reason)):'';
-      const paperExecution=paperRecord?executionStatusRow+row('모의 체결',Array.isArray(d.fills)?num(d.fills.length,0)+'건':'기록 확인 필요')+executionReason:'';
+      const reason=r.execution?.reason;
+      const executionReason=reason?row('실행 사유',esc(reason)):'';
+      const paperReason=reason?`<div class="spaced"><strong>실행 사유</strong><p class="muted wrap-anywhere">${esc(reason)}</p></div>`:'';
+      const paperExecution=paperRecord?executionStatusRow+row('모의 체결',Array.isArray(d.fills)?num(d.fills.length,0)+'건':'기록 확인 필요')+paperReason:'';
       const philosophy=state.philosophy?.philosophy||state.profile?.philosophy||state.investmentProfile?.philosophy||profileVersion(r.investmentProfileVersionId)?.settings.philosophy;
       const principles=list(state.principles||state.rules).filter(rule=>rule?.title||rule?.id);
       const principleDetails=principles.length?'<details class="spaced"><summary>'+principles.length+'개 '+(providerUsed?'전송 원칙·규칙':'원칙·규칙')+'</summary><ul>'+principles.map(rule=>'<li class="spaced"><strong>'+esc(rule.title||rule.id)+'</strong>'+(rule.text?'<p>'+esc(rule.text)+'</p>':'')+'</li>').join('')+'</ul></details>':'';
