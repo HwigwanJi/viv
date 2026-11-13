@@ -336,7 +336,7 @@
     },
     {
       "path": "dist/ui/simulation-playground.mjs",
-      "sha256": "6dba958c6383fd8def106ad071658e593904c35a6afc5568d77c485a73e5eec1"
+      "sha256": "cb2face19d8839bd5a1a0a18d095b7a910e1bd25644d705eb579498f831f90d1"
     },
     {
       "path": "dist/ui/simulation-pre-provider-recovery.mjs",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "c7e3d0e23f4311c4507754e77206e80b4ab1ac014c16b8ea84620832d970ee26",
+  "inputHash": "6d554c30ca271c24f10bd4783159ea270f850417400ae5a3b1aff034fca09cc1",
   "pages": [
     {
       "path": "dist/index.html",
