@@ -144,12 +144,13 @@
     showFailedFiles(fileStatus, failedScripts(true));
     recovery.hidden = false;
   }
-  retry.addEventListener('click', function () {
+  retry.addEventListener('click', async function () {
     var entryUrl = document.getElementById(entryId).src;
     var fallbackUrl = !installRecovery && moduleLoadFailed ? new URL('./ui/studio-controller.mjs', entryUrl).href : null;
-    return confirmAndOpen(retry, status, location.pathname + location.search, entryUrl, function () {
+    var result = await confirmAndOpen(retry, status, location.pathname + location.search, entryUrl, function () {
       if (!installRecovery?.dataset.ready) location.reload();
     }, fileStatus, fallbackUrl, Boolean(installRecovery));
+    if (result === false && installRecovery && installHelp && !installRecovery.dataset.ready) installHelp.hidden = false;
   });
   window.addEventListener('error', function (event) {
     if (event.target?.id === entryId) moduleLoadFailed = true;
