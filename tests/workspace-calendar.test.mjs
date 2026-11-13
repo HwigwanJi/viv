@@ -17,14 +17,18 @@ test('calendar buckets settled paper PnL by Korean date and preserves currencies
     mindSubscriptions:[{profileId,status:'ENABLED',startsAt:'2026-11-15T03:00:00.000Z',endsAt:'2026-11-16T02:00:00.000Z',nextCloseAt:'2026-11-15T04:00:00.000Z'}],
     mindRuns:[{id:'mind-run-paper',profileId,experimentType:'FORWARD_PAPER',decisionAt:'2026-11-12T07:00:00.000Z'},{id:'live',profileId,executionMode:'live',experimentType:'FORWARD_PAPER',decisionAt:'2026-11-12T07:00:00.000Z'}]};
   const experiments=[{name:'진행 중 비교',status:'RUNNING',route:{profileId,simulationId:'backtest-a'}},
-    {name:'완료된 비교',status:'COMPLETED',updatedAt:'2026-11-14T07:00:00.000Z',completedAt:'2026-11-13T07:00:00.000Z',metrics:{totalReturn:.15},route:{profileId,simulationId:'backtest-b'}}];
+    {name:'완료된 비교',status:'COMPLETED',updatedAt:'2026-11-14T07:00:00.000Z',completedAt:'2026-11-13T07:00:00.000Z',
+      period:{startAt:'2026-09-17T15:00:00Z',endAt:'2026-09-24T15:00:00Z'},metrics:{totalReturn:.15},metricsLabel:'B 수익률',route:{profileId,simulationId:'backtest-b'}}];
   const data=buildWorkspaceCalendar(workspace,[],experiments,{month,now});
   const byDate=Object.fromEntries(data.days.map(day=>[day.date,day]));
   assert.deepEqual(byDate['2026-11-11'].pnl,[{currency:'KRW',amount:'-30'}]);
   assert.deepEqual(byDate['2026-11-12'].pnl,[{currency:'KRW',amount:'800'},{currency:'USDT',amount:'-1.25'}]);
   assert.equal(byDate['2026-11-12'].entries.filter(x=>x.kind==='activity').length,1);
   assert.deepEqual(byDate['2026-11-13'].pnl,[{currency:'USDT',amount:'0'}]);
-  assert.equal(byDate['2026-11-13'].entries.find(x=>x.kind==='experiment').totalReturn,.15);
+  const completed=byDate['2026-11-13'].entries.find(x=>x.kind==='experiment');
+  assert.equal(completed.totalReturn,.15);
+  assert.equal(completed.returnLabel,'B 수익률');
+  assert.deepEqual(completed.period,experiments[1].period);
   assert.equal(byDate['2026-11-14'].unknown,true);
   assert.equal(byDate['2026-11-15'].entries.find(x=>x.label==='다음 판단 예정').at,'2026-11-15T04:05:00.000Z');
   assert.equal(data.active[0].state,'시작 대기');
@@ -82,13 +86,18 @@ test('calendar presents active checks before the month and selected date',async(
   const month='2026-11',today='2026-11-12';
   const calendar=createWorkspaceCalendar({
     getRoute:()=>({page:'calendar',params:new URLSearchParams({month,date:today,executionMode:'live'})}),
-    request:async()=>({month,today,days:[],active:[{name:'모의 검증',kind:'forward',state:'일시중지',href:'#minds'}]}),
+    request:async()=>({month,today,days:[{date:today,pnl:[{currency:'KRW',amount:'800'}],entries:[
+      {kind:'experiment',name:'완료된 비교',label:'과거 시세 검증 완료',at:today+'T10:00:00Z',href:'#minds',
+        period:{startAt:'2026-09-17T15:00:00Z',endAt:'2026-09-24T15:00:00Z'},totalReturn:.15,returnLabel:'B 수익률'},
+    ]}],active:[{name:'모의 검증',kind:'forward',state:'일시중지',href:'#minds'}]}),
     render:()=>{},
   });
   await calendar.load();
   const markup=calendar.render();
   const order=['id="viv-cal-active-title"','aria-label="월간 캘린더"','id="viv-cal-day-title"'].map(label=>markup.indexOf(label));
   assert.ok(order[0]>=0&&order[0]<order[1]&&order[1]<order[2]);
+  assert.match(markup,/aria-label="모의 실현 손익"[^]*\+800.00 KRW/);
+  assert.match(markup,/완료된 비교[^]*테스트 기간[^]*B 수익률[^]*\+15%/);
   const calendarLinks=[...markup.matchAll(/href="(#calendar\?[^"\n]+)"/g)];
   assert.ok(calendarLinks.length>3);
   assert.ok(calendarLinks.every(([,href])=>new URLSearchParams(href.replaceAll('&amp;','&').split('?')[1]).get('executionMode')==='live'));

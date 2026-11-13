@@ -5,6 +5,10 @@ const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;
 const dateTitle=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short',timeZone:'UTC'});
 const scheduleTime=new Intl.DateTimeFormat('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Seoul',hour12:false});
 const periodTime=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'numeric',day:'numeric',timeZone:'Asia/Seoul'});
+const testPeriod=period=>{
+  const start=Date.parse(period?.startAt),end=Date.parse(period?.endAt);
+  return Number.isFinite(start)&&Number.isFinite(end)&&start<=end?'테스트 기간 '+periodTime.formatRange(start,end):'';
+};
 const routeLink=(href,label,extra='')=>'<a data-studio-route href="'+esc(href)+'" '+extra+'>'+label+'</a>';
 const today=()=>calendarDay(Date.now());
 const monthFor=route=>calendarMonth(route.params.get('month'))??today().slice(0,7);
@@ -44,9 +48,14 @@ function monthGrid(data,selected,calendarHref){
 function agenda(day,selected){
   const records=day?.entries??[];
   return '<section class="viv-cal-panel viv-cal-day" aria-labelledby="viv-cal-day-title"><h2 id="viv-cal-day-title">'+esc(dateTitle.format(new Date(selected+'T00:00:00Z')))+'</h2>'+
-    '<div class="viv-cal-totals">'+(day?.pnl.length?pnl(day.pnl):'<span class="muted">실현 손익 기록 없음</span>')+'</div>'+
+    '<div class="viv-cal-totals" role="group" aria-label="모의 실현 손익">'+(day?.pnl.length?'<span class="muted">모의 실현 손익</span>'+pnl(day.pnl):'<span class="muted">실현 손익 기록 없음</span>')+'</div>'+
     (day?.unknown?'<p class="muted">일부 체결의 손익을 확인할 수 없습니다.</p>':'')+
-    (records.length?'<ul class="viv-cal-list">'+records.map(row=>'<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(row.label)+' · '+esc(scheduleTime.format(new Date(row.at)))+'</small></span>'+(Number.isFinite(row.totalReturn)?'<span class="viv-cal-pnl" data-tone="'+tone(row.totalReturn)+'">'+esc(new Intl.NumberFormat('ko-KR',{style:'percent',signDisplay:'exceptZero',maximumFractionDigits:2}).format(row.totalReturn))+'</span>':row.amount!==undefined?pnl([row]):'<span aria-hidden="true">↗</span>'),row.kind==='experiment'?'data-cal-entry="day"':'')+'</li>').join('')+'</ul>':'<p class="muted">이 날짜에 확인된 일정이나 기록이 없습니다.</p>')+'</section>';
+    (records.length?'<ul class="viv-cal-list">'+records.map(row=>{
+      const detail=[row.label,scheduleTime.format(new Date(row.at)),testPeriod(row.period)].filter(Boolean).join(' · ');
+      const result=Number.isFinite(row.totalReturn)?'<span class="viv-cal-status"><small>'+esc(row.returnLabel??'수익률')+'</small><span class="viv-cal-pnl" data-tone="'+tone(row.totalReturn)+'">'+esc(new Intl.NumberFormat('ko-KR',{style:'percent',signDisplay:'exceptZero',maximumFractionDigits:2}).format(row.totalReturn))+'</span></span>':
+        row.amount!==undefined?pnl([row]):'<span aria-hidden="true">↗</span>';
+      return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(detail)+'</small></span>'+result,row.kind==='experiment'?'data-cal-entry="day"':'')+'</li>';
+    }).join('')+'</ul>':'<p class="muted">이 날짜에 확인된 일정이나 기록이 없습니다.</p>')+'</section>';
 }
 
 function ongoing(rows,expanded){
@@ -54,10 +63,8 @@ function ongoing(rows,expanded){
   return '<section class="viv-cal-panel viv-cal-active" aria-labelledby="viv-cal-active-title"><h2 id="viv-cal-active-title" tabindex="-1">모의검증 현황 <span class="muted">'+rows.length+'건</span></h2>'+
     (hasMore?'<button type="button" class="button small viv-cal-expand" data-cal-control="active-toggle" data-studio-action="calendar-toggle-active" aria-controls="viv-cal-active-list" aria-expanded="'+expanded+'">'+(expanded?'목록 접기':'전체 '+rows.length+'건 보기')+'</button>':'')+
     (rows.length?'<ul id="viv-cal-active-list" class="viv-cal-list">'+(expanded?rows:rows.slice(0,previewCount)).map(row=>{
-      const start=Date.parse(row.period?.startAt),end=Date.parse(row.period?.endAt);
       const detail=row.at?row.atLabel+' '+scheduleTime.format(new Date(row.at)):
-        Number.isFinite(start)&&Number.isFinite(end)&&start<=end?'테스트 기간 '+periodTime.formatRange(start,end):
-        row.progress?.total>0?row.progress.completed+' / '+row.progress.total+' 처리':'';
+        testPeriod(row.period)||(row.progress?.total>0?row.progress.completed+' / '+row.progress.total+' 처리':'');
       return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc([row.kind==='experiment'?'과거 시세 검증':'모의 운용',detail].filter(Boolean).join(' · '))+'</small></span><span class="viv-cal-status">'+esc(row.state)+'</span>','data-cal-entry="active"')+'</li>';
     }).join('')+'</ul>':
       '<p class="muted">진행하거나 확인할 모의검증이 없습니다.</p>'+routeLink('#minds?profileId=all&view=simulations&executionMode=paper','실험실 열기','class="button small"'))+'</section>';

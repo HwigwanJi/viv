@@ -3444,10 +3444,10 @@
         ]
       ],
       "signature": "fe8006d39afe8f9c5fbe2dd3a7fa4f0f48a8a8692fadac85da189c6bec58b0b0",
-      "sourceHash": "719edaf1c8472f02586cb5e2b19d633d0e4e8f60006116b4c6a2a413b6709ad5",
+      "sourceHash": "4c4d2942d0ad92580b38a7b68a1aea9ec6281a4d535c02e9d923415dc1e26b87",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T08:07:40.486Z",
-      "reason": "두 항목 뒤에는 전체 건수를 표시한 기본 버튼으로 목록을 펼친다. 열린 항목의 링크를 초점 복구에 사용한다.",
+      "reviewedAt": "2026-11-13T10:02:02.323Z",
+      "reason": "좁은 모바일 화면에서 동명 완료 항목을 테스트 기간과 수익률로 구분하고 조회 실패 뒤 같은 보고서를 열었다.",
       "customContainers": []
     },
     {
