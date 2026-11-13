@@ -284,12 +284,14 @@ test('install entry keeps its own page on failure and retains normal modified li
   const nodes = {'[data-install-open]': link, '[data-viv-open-status]': status, '[data-viv-open-help]': help};
   const document = {querySelector: selector => nodes[selector] ?? null};
   const window = {setTimeout: () => 1, clearTimeout() {}};
+  const vivPage = () => new Response('<script type="module" src="./app.mjs" id="viv-app-entry"></script>', {headers: {'content-type': 'text/html'}});
   const replies = [
     asset('text/html', 502),
     asset('text/html', 403),
-    asset('text/html'), asset('text/html'),
-    asset('text/html'), Response.json({storage: 'other'}),
-    asset('text/html'), Response.json({storage: 'server'}),
+    new Response('<h1>Sign in</h1>', {headers: {'content-type': 'text/html'}}),
+    vivPage(), asset('text/html'),
+    vivPage(), Response.json({storage: 'other'}),
+    vivPage(), Response.json({storage: 'server'}),
   ];
   const fetch = async (url, options) => {
     urls.push([url, options.method]);
@@ -305,7 +307,7 @@ test('install entry keeps its own page on failure and retains normal modified li
   assert.equal(prevented, 0);
   assert.equal(help.hidden, true);
   assert.deepEqual(urls, []);
-  for (const expected of [/연결 경로가 VIV 서버에 닿지 않습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/]) {
+  for (const expected of [/연결 경로가 VIV 서버에 닿지 않습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/]) {
     await link.click(click);
     assert.match(status.textContent, expected);
     assert.equal(help.hidden, false);
@@ -313,10 +315,10 @@ test('install entry keeps its own page on failure and retains normal modified li
   }
   await link.click(click);
   assert.deepEqual(urls, [
-    ['/', 'HEAD'], ['/', 'HEAD'],
-    ['/', 'HEAD'], ['/api/status', 'GET'],
-    ['/', 'HEAD'], ['/api/status', 'GET'],
-    ['/', 'HEAD'], ['/api/status', 'GET'],
+    ['/', 'GET'], ['/', 'GET'], ['/', 'GET'],
+    ['/', 'GET'], ['/api/status', 'GET'],
+    ['/', 'GET'], ['/api/status', 'GET'],
+    ['/', 'GET'], ['/api/status', 'GET'],
   ]);
   assert.deepEqual(opened, [link.href]);
 });

@@ -69,7 +69,7 @@
     var options = {method: 'HEAD', cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: controller.signal};
     var problem = 'VIV 서버에 연결할 수 없습니다. 설치한 컴퓨터에서 서버를 켠 뒤 다시 시도하세요.';
     try {
-      var page = await fetch(pageUrl, options);
+      var page = await fetch(pageUrl, entryUrl ? options : {...options, method: 'GET'});
       problem = connectionIssue(page.status) || problem;
       if (page.ok && /^text\/html\b/i.test(page.headers.get('content-type'))) {
         var ready = true;
@@ -87,10 +87,13 @@
           }));
         } else {
           problem = '이 주소에서 VIV 서버 응답을 확인할 수 없습니다. 설치할 때 받은 VIV 주소인지 확인하세요.';
-          var health = await fetch('/api/status', {...options, method: 'GET'});
-          problem = connectionIssue(health.status) || problem;
-          ready = health.ok && /^application\/json\b/i.test(health.headers.get('content-type')) &&
-            (await health.json())?.storage === 'server';
+          ready = /<script\b[^>]*\bid=["']viv-app-entry["']/i.test(await page.text());
+          if (ready) {
+            var health = await fetch('/api/status', {...options, method: 'GET'});
+            problem = connectionIssue(health.status) || problem;
+            ready = health.ok && /^application\/json\b/i.test(health.headers.get('content-type')) &&
+              (await health.json())?.storage === 'server';
+          }
         }
         if (ready) {
           if (control.isConnected) open();
