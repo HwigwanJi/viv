@@ -175,6 +175,13 @@
   overflow: auto;
   padding: 0px;
 }
+.viv-cal-active .viv-cal-list {
+  max-height: none;
+  overflow: visible;
+}
+.viv-cal-expand {
+  margin-top: var(--ds-space-3);
+}
 .viv-cal-list a {
   display: flex;
   min-height: var(--ds-control-height-touch);
@@ -217,9 +224,6 @@
   .viv-cal-panel {
     width: 100%;
     padding: var(--ds-space-3);
-  }
-  .viv-cal-active .viv-cal-list {
-    max-height: calc(var(--spacing, 0.25rem) * 40);
   }
   .viv-cal-cell {
     min-height: var(--ds-control-height-touch);

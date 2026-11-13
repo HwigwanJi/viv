@@ -4,15 +4,15 @@
   "inputs": [
     {
       "path": "dist/app.mjs",
-      "sha256": "77af015146d76eabc979adbf9bdbc7e54e8c3036199c24d9dadf9408a97e862f"
+      "sha256": "dd6223f3a2b517b537f57710270b56b46f894f888599622e794efa45c112813d"
     },
     {
       "path": "dist/index.html",
-      "sha256": "e4d0391185844c165d186228cdc381a690460ca8375c477bf9c0fa8cb4961499"
+      "sha256": "857aa91d3e45f1c922fc398e4f10b6216da5069666cc5e693eda2b6320a600e6"
     },
     {
       "path": "dist/install.html",
-      "sha256": "4c00d4dd5da921abcb31b4f8f0a4a725494fa9b48e386aa6f6cf7d12bbbcab0b"
+      "sha256": "9553a3cd2cc498c58c5a4cf8523aa29b9d650b29a6f4179f0bfb00df6e5bcb10"
     },
     {
       "path": "dist/knowledge.mjs",
@@ -24,15 +24,11 @@
     },
     {
       "path": "dist/mind-art-study.html",
-      "sha256": "bf36c87695d10d613defa62dbb9c97c589a6e6f434c29c88b8761ce0a4aa8a6b"
+      "sha256": "5a89cd08d47124f7c6144d872a63266a1ac75e451da05cc59cb8a16d15248322"
     },
     {
       "path": "dist/mind-motion-gallery.html",
       "sha256": "f44b095a68b74f9256f6045f0f68de7d56414bf014aaa0c398c43f4b97b7a5f3"
-    },
-    {
-      "path": "dist/research/overseas-rebuild-20261023/index.html",
-      "sha256": "dbdd444f084b060137ce2fcfabab69c27e603fad7a5e55ac4eb7ed894c568ee8"
     },
     {
       "path": "dist/research/regime-minute-forward-20261023/index.html",
@@ -48,7 +44,7 @@
     },
     {
       "path": "dist/strategy-ui-library.html",
-      "sha256": "270516407e1eed49bc658fd7f557d66ee9b7cac49f0dba6d2350405d592e5045"
+      "sha256": "dfb67830bfe33ccf475d36a71938b99ae3c9c5cda89901646aeaa075c6d9a2e0"
     },
     {
       "path": "dist/strategy-view.mjs",
@@ -60,11 +56,11 @@
     },
     {
       "path": "dist/ui/app-install.mjs",
-      "sha256": "0f64205c43488f3379daf600646414d7cba91ab8dbe67ce76e275bc42dc54596"
+      "sha256": "b24c29aad1203b66107fa895b70a2f519d09d900dc39a1fce55a69bc2a13b30b"
     },
     {
       "path": "dist/ui/app-notifications.mjs",
-      "sha256": "235fc385c459107e504481735dd7c3ab0bf55473423efd29e79da53830cedfdb"
+      "sha256": "693c36235e81df9433b39fb4240368cb0f9e8f28dc7a34d19b6eafc421868189"
     },
     {
       "path": "dist/ui/automated-trading.mjs",
@@ -76,19 +72,19 @@
     },
     {
       "path": "dist/ui/brand.mjs",
-      "sha256": "2305dd4b2940c27baccd90a5cec677dc5830d57fe04a73a6359cea5d21dde3bc"
+      "sha256": "648582809e3ce146ac505b7915c038ba05ca6949ce667fb3055729c19bd51b64"
     },
     {
       "path": "dist/ui/broker-connections.mjs",
-      "sha256": "a7baabbde19c5fee5d65d964f6b6519ad81a2d24d20f1b104e045709e4a540b0"
+      "sha256": "e18a1412a85e13da666f57ad11dbc375061736cd2e5732312c16568cabb443a8"
     },
     {
       "path": "dist/ui/brokerage-report.mjs",
-      "sha256": "975036ebe1e3f94fd79c2dd14fa00c273a945b5db527dc484b1c7733667e55ad"
+      "sha256": "2455a366b338229bc6aa4162601e7bb1584fbc02af2b9fd814a55775b0b80414"
     },
     {
       "path": "dist/ui/capability-catalog.mjs",
-      "sha256": "bd6472db37da9df56e231cc6f39252142c7c90bb75d6c76ea578a93117919bac"
+      "sha256": "e25198fc56d84d667d6ad067317d88e48ca3cd64a38fe66321ee4d6595daa959"
     },
     {
       "path": "dist/ui/context-interactions.mjs",
@@ -116,15 +112,15 @@
     },
     {
       "path": "dist/ui/dialog-focus.mjs",
-      "sha256": "52383a4261af4a8cd8f8f43d1cd677931e0df4035bee0e3d154893263c51b1d7"
+      "sha256": "3554d117cd75a28097a69a7cc5f067d53fa7293d369779d8703bf29f23f02474"
     },
     {
       "path": "dist/ui/dialog-layout.mjs",
-      "sha256": "15c9a5bc5f8678bbc8abf1fcc257fa277df69d238d7feae8003cf383048e1e55"
+      "sha256": "98fec2a12d971d7b800d9004316446f6bf40917fa11ef7294196da0ed15baa81"
     },
     {
       "path": "dist/ui/entity-menu.mjs",
-      "sha256": "db2348511077e51f4ad146dfe27359d1528807c0b05a0fcd565cebfb5c982823"
+      "sha256": "5488aae5f212209f0f724a9157bb1e44c5bab74e1244b5f90f20286e26cccf61"
     },
     {
       "path": "dist/ui/event-paper-resource.mjs",
@@ -132,15 +128,15 @@
     },
     {
       "path": "dist/ui/event-paper-trading.mjs",
-      "sha256": "cf655f5782f6beb09caee9439fddb9bfc165c05e02615160cc8bb75b9c0e2f98"
+      "sha256": "255c61db65fb0a39282f4ed0501086446dbd3d63c7413ba79ebef0fca4f9293a"
     },
     {
       "path": "dist/ui/experiment-collection.mjs",
-      "sha256": "0646653c5195c49737c5df0097ee1272dd1d0db5c1b3c88846539f5472980c2d"
+      "sha256": "fad988548e963e68f4702abe05efa3c2e536aa85e26e67d4f4bac3da77ba188e"
     },
     {
       "path": "dist/ui/form-draft.mjs",
-      "sha256": "fb92841f5fa1217da2082e1c62364ebea1bcf2e6af5fab35ed6091132d9c872e"
+      "sha256": "def09242b809d46cd4261c0c990798480fde8837c83869c6d22ccbbeff039293"
     },
     {
       "path": "dist/ui/help-tooltip.mjs",
@@ -148,27 +144,27 @@
     },
     {
       "path": "dist/ui/home-showcase.mjs",
-      "sha256": "c33f738a72b2d7c324141b8dd784694f84f7da501e0d07a8eb449334d1c55f4f"
+      "sha256": "64359cfb889fd9e21a6e2091736210f1eebbfb49f42eebc0826a33b5fbcef3fc"
     },
     {
       "path": "dist/ui/hourly-model-component-editor.jsx",
-      "sha256": "8e596e48933323c8807ddc3e337534a62ff16a0f8b630f745891ffdb595a98f9"
+      "sha256": "4503dd3e883d15c881e29a8a273dea1867fe8256a34e3aa9b077181ca36cea62"
     },
     {
       "path": "dist/ui/hourly-model-learning.mjs",
-      "sha256": "48ed0175d2e91ec7ceffccb8d4bed732bc1dfe58b7fc5bfadb3a64a544d7d4c8"
+      "sha256": "f757e907dbc6ee3c8a1a2875a0e6b53506c6e3154226b117787aa13f43c9e9f4"
     },
     {
       "path": "dist/ui/hourly-model-view.mjs",
-      "sha256": "6c8c61d15854b33877110dd7ac98995837f6207fa6f473fd24a715f1c7eaf5c9"
+      "sha256": "23dca718daa416feb9ade042fbba0d502af25e5c2f2a86d645cbe941569b8e72"
     },
     {
       "path": "dist/ui/hourly-path-controls.jsx",
-      "sha256": "9aadc076611ecd287261a65d175f1718bcd376e8629b8cf2580d04a4deb39f9e"
+      "sha256": "6e65550f0d3b4d6e83d3bcc36d62af8a183db458c16cf22ee85f43a2487315a4"
     },
     {
       "path": "dist/ui/install-page.mjs",
-      "sha256": "a05327b5b00cd6b48fe24836611298289b6db0388d2c930938837e5ec06ba6d9"
+      "sha256": "594d43033be5c603c50e9c3e2dbd38cf3bff8e3f80eec4b8818e335f33eed24f"
     },
     {
       "path": "dist/ui/interface-motion.mjs",
@@ -200,11 +196,11 @@
     },
     {
       "path": "dist/ui/managed-portfolio.mjs",
-      "sha256": "76ce570e5bcaf82cb0f01072b289a1cfe13130c007fcc6506c5534b38cf62114"
+      "sha256": "661c8ba2610778e345afe2873d261dcf3697f381a50078e5b6e04253fce3f53e"
     },
     {
       "path": "dist/ui/market-library.mjs",
-      "sha256": "9b3fffcdb03799ea064f89403ac95cb7275588dcea63a72712f14767a96ed45f"
+      "sha256": "2d3eee36049102af5410e845fd0c52b8df518b28518b81323158840477c77533"
     },
     {
       "path": "dist/ui/mind-activity-resource.mjs",
@@ -236,15 +232,15 @@
     },
     {
       "path": "dist/ui/mind-game.mjs",
-      "sha256": "9a1ad3df16d630946a80e054ea8f1bdf4f21f4d62791b659694af75fc1041d26"
+      "sha256": "f420ddcad62425c6f273e88b53f1a1d31b73a304bb57483848cfbdb3266e6d54"
     },
     {
       "path": "dist/ui/mind-hud.mjs",
-      "sha256": "5c38dec9d63d564d19ca4181dc5a9a3e8394d9d0c567bbb40faf5288a936eedb"
+      "sha256": "1fa98e96d14dec82cae4173d37c51144f300041e18b4dd51dd7be0250232ec33"
     },
     {
       "path": "dist/ui/mind-life-anchors.mjs",
-      "sha256": "79731433b7ec881d7023a5f839a86d78c552a19325f3dadaf8c47b8ed1944d6b"
+      "sha256": "0c5be5b665a76f326b5ec03394f14eb3ee63a47c8c732ab5b75f663ff8a64f61"
     },
     {
       "path": "dist/ui/mind-life-appearance.mjs",
@@ -260,7 +256,7 @@
     },
     {
       "path": "dist/ui/mind-life.mjs",
-      "sha256": "61c855e1d7b31d3da3e1699f711d6c3e8488218e0fb443030a477b074f1f00b6"
+      "sha256": "b874376debbe7a061d15c1af038762e7c5e65c7784192dea0d99c6b91f5e9f12"
     },
     {
       "path": "dist/ui/mind-motion-gallery.mjs",
@@ -276,7 +272,7 @@
     },
     {
       "path": "dist/ui/news-comparison.mjs",
-      "sha256": "6da747c42ddc21bd4f51f1e47e427eca813ad3a88841173fc70e595e95143329"
+      "sha256": "ac837affb63bad6e4e8de54dd022b7d54634ae363cc0efb6a2d54c40d1aab51f"
     },
     {
       "path": "dist/ui/operation-controls.mjs",
@@ -296,7 +292,7 @@
     },
     {
       "path": "dist/ui/paper-funding-request.mjs",
-      "sha256": "b8193bbfbe47ae86b6853454f456641847366e79147b5d4e6be3536c08fbbcf7"
+      "sha256": "79dee51f39280bfde63facefe47127b55a8dc227e90825283dd6297d44291616"
     },
     {
       "path": "dist/ui/portfolio-route.mjs",
@@ -308,11 +304,15 @@
     },
     {
       "path": "dist/ui/quant-strategy-library.mjs",
-      "sha256": "52b0915478a97e0085a04027b2940dddf294a9ae3d1762b1a4980007a20c8fc4"
+      "sha256": "bba09d4abc0b58b57cb89ef0ae75882baf712698f9f4c3d09786a46cc211c922"
     },
     {
       "path": "dist/ui/regime-node-controls.jsx",
-      "sha256": "00188941ce8c86b703ac4825cf95494e22a3d0cc8f174c5ab2356fec98a02cac"
+      "sha256": "ecf0daf6bba6db55a03299adb41af3790257d3c8907b7609169c9fc4346220be"
+    },
+    {
+      "path": "dist/ui/session-storage.mjs",
+      "sha256": "4639951dead76c832a32a9715e932463c5557165647b4c504e195ae1c326856a"
     },
     {
       "path": "dist/ui/shell.mjs",
@@ -328,7 +328,7 @@
     },
     {
       "path": "dist/ui/simulation-editor-state.mjs",
-      "sha256": "2342b17fad91a85380b9796c76199b5f167ccc9db7a1e18e38a17a9e6ad0159e"
+      "sha256": "f03ffed7106cb9c2ff81b5c040c6a1d19de729dee26a426c98738be691d714ac"
     },
     {
       "path": "dist/ui/simulation-lab.mjs",
@@ -336,7 +336,7 @@
     },
     {
       "path": "dist/ui/simulation-playground.mjs",
-      "sha256": "9a466379a06e13020d3c31c652937a671a9843af1f4f9b5f73f93a37fcabf55f"
+      "sha256": "06221a466a22edd8a43159b33516e401780cccddc8463a43af57d13037d4cab8"
     },
     {
       "path": "dist/ui/simulation-pre-provider-recovery.mjs",
@@ -352,15 +352,15 @@
     },
     {
       "path": "dist/ui/strategy-explorer.jsx",
-      "sha256": "d9c63db5aef55a6880a48d940a8ef9427fbb6e0650ee637a9ad72267cf0905c0"
+      "sha256": "9410853b785ea2a5758d919be1da50419207d55acff77996d306d755c13da0c2"
     },
     {
       "path": "dist/ui/strategy-graph-editor.jsx",
-      "sha256": "cbd59fac9bbb35c0927af7a1d7cd06f6111b7ab7f1168c91a8bb607c864e2f75"
+      "sha256": "3d5aee681335434f7a25ab40f80c90d7b698b756ab6b9e05e1b83c9cb2b3dd19"
     },
     {
       "path": "dist/ui/strategy-icons.mjs",
-      "sha256": "7168dda97d02e540080ee6066ffeff2ac98f2fc2a9d869a5879099a9de865e41"
+      "sha256": "cee0105017cfa122ca3139e8c20b1fd6594fdde4a17d5c291531f2d090c10fe8"
     },
     {
       "path": "dist/ui/strategy-learning.mjs",
@@ -368,43 +368,43 @@
     },
     {
       "path": "dist/ui/strategy-model-library.mjs",
-      "sha256": "60ad5aead311c400ff73e05841aeb033fddbe5185e71baa51c0474c2d6dc701d"
+      "sha256": "b70765d43b9496fa56cb3ac24f966a8200149ff0cbd9120fedd068413b0a7619"
     },
     {
       "path": "dist/ui/strategy-parameter-controls.jsx",
-      "sha256": "636aa0872e5182b9c34bb3dc0c80ed2abc9174d7a9c522e5632a6a1f161f2ae0"
+      "sha256": "d840cc72a85e906ddfaa2d1d4d37b2875975607ff1f231827ac22a64762fcbc1"
     },
     {
       "path": "dist/ui/strategy-part-card.jsx",
-      "sha256": "0cdf97cdb4970975d08da5a04eb046f8674dc9184c839cd0fa1d5018e114ef19"
+      "sha256": "a8b8eb47f514dff94f8086b14d9a830109c43b8aeafcb9ece70f38587f34d920"
     },
     {
       "path": "dist/ui/strategy-ui-library.jsx",
-      "sha256": "4b64d1f349b8bde8a14fde00f72d62ec125396c49e2917c298c9d12c7578e27b"
+      "sha256": "0dba305aa49571c1215daea594a2a1ff82260ac5a9de9e3685b08c0130d2069f"
     },
     {
       "path": "dist/ui/strategy-ui-samples.mjs",
-      "sha256": "286d67ea085415315bb7f72efc01377f732a1d0d49f16df9833526601a202980"
+      "sha256": "0e09c3da45d7b72d6302a9ac158e1ab70d22e38c195f9caf118ba92ecb296418"
     },
     {
       "path": "dist/ui/studio-controller.mjs",
-      "sha256": "e02bd4de3f135112c8c1281161e52f0dfd9c8fda72cf294c58b7308adf6e91d0"
+      "sha256": "0a864ddd3ed24419c969dd3798336f439a8b0d81bc5cfe87e362e98086d47c20"
     },
     {
       "path": "dist/ui/studio-shell.mjs",
-      "sha256": "822df56e2134af7621c74ca250a450b22ec2e3cb869a1becf14343808edd9660"
+      "sha256": "5515be3bffab9bebd6a3bccad7395563e7f50f6e65f2c571acb423ef5b3659fa"
     },
     {
       "path": "dist/ui/terminal-universe.mjs",
-      "sha256": "b56da3a057441c82d4c0425c4bf0cdf3a3b744346c585b44e3397bdbb1a80dff"
+      "sha256": "74e6edb33afcc25dbb4c63029ec70fc8874a31bedbb11b4354acafa5044c8905"
     },
     {
       "path": "dist/ui/terminal-workspace-controls.mjs",
-      "sha256": "04384a950e17f8afdf823f0eb4d47209fe1f1603a35acc1a3b8d3b899821df69"
+      "sha256": "b77e581fa89c794e7185df7572442af72792cd940e526001bbcef6a73c0c9e5f"
     },
     {
       "path": "dist/ui/tokens/foundation.css",
-      "sha256": "450b70604c4cb17d00adef92384171e7448bcb1ed4994de38467ae97bc200456"
+      "sha256": "c58cbad09d3bd74ac81b780feaeb171725c86354f2e055f06ac228d7e86f2448"
     },
     {
       "path": "dist/ui/tokens/index.css",
@@ -412,7 +412,7 @@
     },
     {
       "path": "dist/ui/tokens/palette.css",
-      "sha256": "41fb59e6e769e7e62394197beb52025295cfa95ee4832fee977522317115bd93"
+      "sha256": "359b66599f42874cf98c59966a6d6f9f7f96682ab991bc176287cae50bd02aa3"
     },
     {
       "path": "dist/ui/tokens/semantic.css",
@@ -428,7 +428,7 @@
     },
     {
       "path": "dist/ui/trading-terminal.mjs",
-      "sha256": "0ddd249f80a7c962c7ba5ded93666c006ff1b3ed6c9945127eb6cfeb55fd5c88"
+      "sha256": "9d1391c0ded70ae45860239e1bd1904e2744ca6a1076a016de7931649697c2ae"
     },
     {
       "path": "dist/ui/universe-catalog-picker.mjs",
@@ -447,20 +447,24 @@
       "sha256": "8747bac9e31f920ef1c3467b902e975dbfe6a84b4094607ae650819725317034"
     },
     {
+      "path": "dist/ui/workspace-calendar.mjs",
+      "sha256": "1f1c8cb5242978bef80c2db4ea8d3c389ac17eb2136f642cb34b77dcc201b92e"
+    },
+    {
       "path": "package-lock.json",
       "sha256": "aa68b2d67addbf7eaaa85b44cdd8970777c5b9b5477011429f4274e9746b1698"
     },
     {
       "path": "package.json",
-      "sha256": "6ae455bf8e93274ee7fd1964a680b39a70fdd336202901317b3f7204ebe24db0"
+      "sha256": "16b85af2f2fcca15c3cf8a1af1e43701b89cbf9e6000ca0aad53923869533b03"
     },
     {
       "path": "scripts/build-styles.mjs",
-      "sha256": "c4da862a35d8ccbe3d2e7d877f6d9ad459c21caa839cfa9a4032772ad0821c23"
+      "sha256": "d96985166cf699c5ee6455968b8214e231fe702d15e94b47df1c7614fa336b98"
     },
     {
       "path": "scripts/style-contract.mjs",
-      "sha256": "a225075071a1819c31777784836fc3764a83b6933a2f228808cf698f25ae5986"
+      "sha256": "c3c6dfc5dc548dbfa7c9ede102e0d20889430ecd51581157172685cad3d3c5c0"
     },
     {
       "path": "styles/components/action-menu.css",
@@ -468,7 +472,7 @@
     },
     {
       "path": "styles/components/base.css",
-      "sha256": "6ace79c6bfe33c6cb9ba1932ac940ccc4cc30a00421a8d6486a3cec64d1d80cf"
+      "sha256": "1d2073941d82dcdba8b53ba71f24b558af124aa1d7f5e0e14667bd983743312e"
     },
     {
       "path": "styles/components/benchmark.css",
@@ -476,11 +480,11 @@
     },
     {
       "path": "styles/components/console.css",
-      "sha256": "4b7766c666627be344a58eef1b0f6fa681a3f142e2f8824278e70d693e9398ab"
+      "sha256": "e3d8a3d91bcfa8f9cab4a5dcd0de49791826a4a777cab51c22a89325b7cff15d"
     },
     {
       "path": "styles/components/data-table.css",
-      "sha256": "92681f235192f1f18e587dc46c6e194c541d971d0f14ad98a09c7d59101e9d92"
+      "sha256": "d504cca1f1f143cc54a832694c9bf62e0f2c4d53897dabdbbccaccd2cb5763ea"
     },
     {
       "path": "styles/components/experience-flow.css",
@@ -488,7 +492,7 @@
     },
     {
       "path": "styles/components/experiment-collection.css",
-      "sha256": "8c7006421c942791ca544456214441f4ac342fbbc62534c899ef3d39bd1a7013"
+      "sha256": "82a0424ee0f88b434e27c7e7650c250edd6353daef00379810828bcf295e6cfb"
     },
     {
       "path": "styles/components/help-tooltip.css",
@@ -496,19 +500,19 @@
     },
     {
       "path": "styles/components/home-showcase.css",
-      "sha256": "a0aa2a595daf591fbbbef8e8e9672fb1cbcc54a698da169ad5e97220506a1eb6"
+      "sha256": "a9bf86472fd4996d9ea130cce16ed716b33d771dc16954b182313469a276a112"
     },
     {
       "path": "styles/components/hourly-model-workspace.css",
-      "sha256": "16497bdfd1332475ad20a34eefaca206c3fc564e28b692f98b6dabb289c799ce"
+      "sha256": "cd49ce7e7fbbcff49d0032dcb0c1814532d57a1478018dcc8342d32b274e8272"
     },
     {
       "path": "styles/components/interface-motion.css",
-      "sha256": "c9df7b446b96e1a8f6d6e5f75758b97c1de1f93f89fcc48d8a503c297f08df5b"
+      "sha256": "a564909edaa7b39e95b67ce046a0ba65329b906e99e1bfe3bb989af0fa9127ad"
     },
     {
       "path": "styles/components/lab-workspace.css",
-      "sha256": "e96c0bb7a051fa6eaa40c2d80149142f1b7d85f58bc9d9f89a315140de942e71"
+      "sha256": "108716ca313a887b669b9edb4a2d1ecaeb22465dc7ee415beba74e98b72c4adf"
     },
     {
       "path": "styles/components/live-change-review.css",
@@ -516,11 +520,11 @@
     },
     {
       "path": "styles/components/mind-activity.css",
-      "sha256": "661bf965a681351281bfc06eccdc87f03431b73aa39f1d18d62d756fa11cd8ac"
+      "sha256": "35c3ee37c676e216ca634149b160a219d912ab31ed4a27057b58bbcf47ee67da"
     },
     {
       "path": "styles/components/mind-art-study.css",
-      "sha256": "f5b57abb1e474218b6a2c5f0f5296fda0d7d8c63725895559a06f91214cf1025"
+      "sha256": "7a2a2e7cac60f3d3aca5e3f3acd7d33f6b0ee7e39898eb6d44ed37a96f916c28"
     },
     {
       "path": "styles/components/mind-art.css",
@@ -536,23 +540,23 @@
     },
     {
       "path": "styles/components/mind-game.css",
-      "sha256": "a1ec7f9de1242c65effe58c5815975aaddf3b962f26ddcbfe70f45f91b43e2f5"
+      "sha256": "acb01f28ae518d8d42d7118da640b3d4e05f5a0fdcf93f8dff3cf580dd9cbaf5"
     },
     {
       "path": "styles/components/mind-hud.css",
-      "sha256": "19c8fb233f6158b8420d5ff5d3cc5795c561fe346a849f2ce0fb9820ad3d434a"
+      "sha256": "e4b827f822940664434ec853a652e5ad3863bb6df347bb0de31bcd6a13a29757"
     },
     {
       "path": "styles/components/mind-life.css",
-      "sha256": "2b0148bbae59d24ade0a04512014be59d0ce1ed19968b0c4d5e8ddc0ce4ace97"
+      "sha256": "5d043717de615fa3966d22d61b0086d97810ed425b3e0ac8e008ea2b431e1221"
     },
     {
       "path": "styles/components/quant-strategy-library.css",
-      "sha256": "8cc4a291cc3d630f7da642ba8755395cd27971faef678f66c254ce0a78abf6d5"
+      "sha256": "3f39bdb54bc20b48bed2198a6c394a0ccaefd3d22c1cec28ae21d12ed689246a"
     },
     {
       "path": "styles/components/research-report.css",
-      "sha256": "2af49fe55f3e9872a4ae5e91d37f90c3c69307896db1979c2a58fc92bfd6b884"
+      "sha256": "f76b032c8c351be48d817f3d06621b56ec0ebb0a422a1418966e344065eba2c7"
     },
     {
       "path": "styles/components/server-update.css",
@@ -564,7 +568,7 @@
     },
     {
       "path": "styles/components/strategy-graph-editor.css",
-      "sha256": "60796e1781e528686a5843dc4e6779c4db9b21e2c76a53fa0de461f38f5077cb"
+      "sha256": "73866d06f5895369406b7e89af0633c5d4d57b0b0c1ef42e6b44ebcda3be9305"
     },
     {
       "path": "styles/components/strategy-learning.css",
@@ -572,39 +576,47 @@
     },
     {
       "path": "styles/components/strategy-parts.css",
-      "sha256": "428ddd9f417b18f23bc4c7f930bdb00f036197e1fbc508da16d817b8e5ddd9ed"
+      "sha256": "094c03b01ea9f6bddb806b20afbdc68c8f821d45ce7734371836bf53d36aefa5"
     },
     {
       "path": "styles/components/strategy-ui-library.css",
-      "sha256": "3cbdb9a6e5a9d7546b6a3d49363e3dc2492fbb69b209e86a49638ed33e84e958"
+      "sha256": "b51e9439d21aae5283ba0ccaeb14cc88abb4bf29d67399ff4b6d3b57b953442d"
     },
     {
       "path": "styles/components/strategy-workspace.css",
-      "sha256": "7ae3cbc583633357867991c61b65a6e447307adbf987321fe60c47b60fbaccac"
+      "sha256": "e1569faedbfac0608cff126a3b7b3d5eb2a254589b2113b85d4d475b3f19ee74"
     },
     {
       "path": "styles/components/studio-shell.css",
-      "sha256": "36987075c4528055b686ae4df70daf5055615714aae15fc10a847732ace1bf72"
+      "sha256": "0c56dc488b88d188ea020802b4d14d65cdca4ed41e30b3c9bc6edc08fe2e6ddc"
     },
     {
       "path": "styles/components/surfaces.css",
-      "sha256": "569e605b74293ccf313deb52c8e909e629d32cb6bebede776322d5c867740ce3"
+      "sha256": "baf4cb7b8cd5441191f4c4b5b23a374394f568f1203f9f6a22d16c1faf19c7ee"
     },
     {
       "path": "styles/components/trading-terminal.css",
-      "sha256": "ce07033be04fcf8e8a5d61dc7336f6dafde958139dc1ee011d24eefe7ede7f3f"
+      "sha256": "7a72658608a8acb48d0ed28197b51669b8cbdfdd24b84ed9e90f248a6b238e7c"
     },
     {
       "path": "styles/components/vibe-workspace.css",
-      "sha256": "a8edd47fa754ef2b75e3f4f11b37bfc6ad50c54e005dace602b04bc4f0728e13"
+      "sha256": "5b1bc1323dcaf7b8078bc4fac2a438083814e42b57a16deebea83547b0aaee5f"
+    },
+    {
+      "path": "styles/components/viv-intro.css",
+      "sha256": "19d726f11433614c3a640820df5ec06eafc336de1a4cecc2d804ee383b98e4ec"
     },
     {
       "path": "styles/components/workflow.css",
-      "sha256": "c5badacefd4160c162336f3c4c6a1357fdc232adb5f8e20ee1e6e57c12a9d220"
+      "sha256": "81a17674aaaeef692d8f0f5b691b9bc88564376423d2bac5619a8c8c6a6052f7"
+    },
+    {
+      "path": "styles/components/workspace-calendar.css",
+      "sha256": "1255933a9fc2fea45ae7d7207792fd1cd230a6f2d7b396f17dd7e06f405b9f47"
     },
     {
       "path": "styles/theme.css",
-      "sha256": "2af9b06610659f2b63d541af834f18feb5a60326e7b3de521e695f3df8e4023e"
+      "sha256": "1fbdba55587d6eeaab2514b6780266eaaceee9871eaecd46a6e7a5882289146e"
     },
     {
       "path": "styles/tokens/action-menu.css",
@@ -620,11 +632,11 @@
     },
     {
       "path": "styles/tokens/console.css",
-      "sha256": "433f71eaa330d11625a6a6344d3f743e8bba1c5e264c75462ec90f0182116269"
+      "sha256": "bb27ae496fc30ad223cfa7a25fa8e6a504c1f7d307936605eb7d00ac8263a03d"
     },
     {
       "path": "styles/tokens/graph.css",
-      "sha256": "67e824ee73a373ace97193c27c6f0a2f7336792762da08c9f3faea555021624c"
+      "sha256": "7089840c3b6366a89b7fd725795184f3cb393fcc4fc2dd56779106a804b39c76"
     },
     {
       "path": "styles/tokens/help-tooltip.css",
@@ -632,7 +644,7 @@
     },
     {
       "path": "styles/tokens/home.css",
-      "sha256": "580a7f48bacbeb8c822cc3325d8aaa03ec386cb3194be59da0cd43f1f68ca96f"
+      "sha256": "e3609bbb31b8894acb391cc73de27feaf6cf081c7560dfcfc2897b0d7e284db2"
     },
     {
       "path": "styles/tokens/interface-motion.css",
@@ -644,7 +656,7 @@
     },
     {
       "path": "styles/tokens/layout.css",
-      "sha256": "1ca661f48653bd22820481647f4e2b5a536fc7c6266dfe5a791545483b339ed1"
+      "sha256": "e7dd6db5a527278d2d3b28215fc3b2d7dbdd07a978551867c596c2fc382e4bea"
     },
     {
       "path": "styles/tokens/mind-activity.css",
@@ -660,7 +672,7 @@
     },
     {
       "path": "styles/tokens/mind-hud.css",
-      "sha256": "43befabe423fe1b5bc8bac13ce8caccad99e039032ea5a49925244a45bf6375f"
+      "sha256": "108c85b60c76c54ace3dec20e89983adfc015bb9e9b116b82e38fe96503a6cda"
     },
     {
       "path": "styles/tokens/mind-life.css",
@@ -668,7 +680,7 @@
     },
     {
       "path": "styles/tokens/research.css",
-      "sha256": "d63e59dd7f0f5b0f1a83e64b594e5006d35ce43b055b3d18046dd3878e11231a"
+      "sha256": "6621911b3a3812fcca1ba044f39916816116a37c3e9d8c966948ab18c20cbb5e"
     },
     {
       "path": "styles/tokens/strategy-explorer.css",
@@ -681,15 +693,21 @@
     {
       "path": "styles/tokens/vibe.css",
       "sha256": "60816329df64187b7a65cb624d7706aa32544f90ce0d2f835fac95a4f6a0cf18"
+    },
+    {
+      "path": "styles/tokens/viv-intro.css",
+      "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "8cc67935ad9a6cbf99558c0dc28069eda3fccd8413eba2d5876ad00306ed45e2",
+  "inputHash": "a899d454d7f6cc7400dea7ed9d60073613465959a5ec82310a7beb68865918ff",
   "pages": [
     {
       "path": "dist/index.html",
       "stylesheets": [
+        "dist/ui/viv-intro.css",
         "dist/ui/tailwind.css",
         "dist/style.css",
+        "dist/ui/workspace-calendar.css",
         "dist/ui/console.css",
         "dist/ui/trading-terminal.css",
         "dist/ui/mind-avatar.css",
@@ -735,14 +753,6 @@
       "system": "TAILWIND"
     },
     {
-      "path": "dist/research/overseas-rebuild-20261023/index.html",
-      "stylesheets": [
-        "dist/ui/tailwind.css",
-        "dist/ui/research-report.css"
-      ],
-      "system": "TAILWIND"
-    },
-    {
       "path": "dist/research/regime-minute-forward-20261023/index.html",
       "stylesheets": [
         "dist/ui/tailwind.css",
@@ -772,11 +782,11 @@
   "outputs": [
     {
       "path": "dist/ui/tailwind.css",
-      "sha256": "10877da7a5116fa46f8b958c3a0907b68b963123f73f3ecc39516dfb3037235f"
+      "sha256": "a5ac86bf6efaa258cf8275c796c788db2a57bfdc2a2572ce9b360baff73f673e"
     },
     {
       "path": "dist/style.css",
-      "sha256": "5727b018852d4f4ae5be59d3d8752748394804fcbe996c03ffd6eb799812f355"
+      "sha256": "acfb76b4fcb9f5e5b1c33288ade1f9e3865fc4c8b1443d9c07e521e92bb3eaef"
     },
     {
       "path": "dist/ui/console.css",
@@ -784,7 +794,7 @@
     },
     {
       "path": "dist/ui/trading-terminal.css",
-      "sha256": "ab4db4c4f995e0e74fd497d2f37f2e0ec8b25a3f6e7b3871ce7b4a1611477551"
+      "sha256": "ab4f7d7eacd50add42be08eefeeb6e29e88ed614f809e2151dc3577eae7f30fd"
     },
     {
       "path": "dist/ui/mind-avatar.css",
@@ -803,8 +813,12 @@
       "sha256": "3af88765d3a5b2f0510bbe9fb0c53ab8f5a9f7ff4555dbdffbc913f253703663"
     },
     {
+      "path": "dist/ui/workspace-calendar.css",
+      "sha256": "f067e624f787042b64007d9bd9c1d2d939f064de9b16f057ce9a180ccefafbb5"
+    },
+    {
       "path": "dist/benchmark.css",
-      "sha256": "3014612cd92c7fa5b0cc953e037f4b2337b392b6cf85860ea2efc3beca46d001"
+      "sha256": "6ede2155bd03ccab7c77aebc38504b834f16ff90b5f64d5627dcc5e94cdc30b7"
     },
     {
       "path": "dist/ui/research-report.css",
@@ -813,6 +827,10 @@
     {
       "path": "dist/ui/mind-art-study.css",
       "sha256": "181d1f86493ed11e89d4ebf4cf0e1e5978292253c2d3ba7d7b62827f85d1db5c"
+    },
+    {
+      "path": "dist/ui/viv-intro.css",
+      "sha256": "d66cd475a2e69fd4297e4d1bf8cd9aa649ede062544a25bca5761b6c0580455e"
     }
   ]
 }

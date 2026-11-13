@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T06:41:38.403Z",
-      "reason": "금융기관 연결 주소의 자동 열기는 공유 주소에 적용하고, 일반 설정 메뉴로 돌아올 때 닫은 창을 다시 열지 않는다.",
+      "reviewedAt": "2026-11-13T08:07:40.485Z",
+      "reason": "같은 캘린더 날짜에서 항목을 열고 돌아오면 해당 링크의 초점과 가시성을 복원한다. 링크의 기본 탐색을 유지한다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,8 +41,9 @@
           1
         ]
       ],
-      "sourceHash": "8df65088a05a5307bb51a6999e64397a1c04ecae828f41fb929f3159850979a8",
-      "matrix": "design/context-action-matrix.json"
+      "sourceHash": "b1808f28fafa48f5440db15b862a96e738b6e087a1f92d665fcb33290f69826e",
+      "matrix": "design/context-action-matrix.json",
+      "customContainers": []
     },
     {
       "file": "dist/index.html",
@@ -3258,8 +3259,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T06:33:49.176Z",
-      "reason": "주소에서 연 계좌 연결 창을 닫으면 해당 금융기관 카드의 연결 버튼에 키보드 초점을 돌려준다.",
+      "reviewedAt": "2026-11-13T08:07:40.486Z",
+      "reason": "현황 펼치기와 접기는 캘린더 UI 상태만 바꾼다.",
       "signature": "68092fa1701d51035021391a885c65278ed616834acf7518f465b3b048f44570",
       "controls": [
         [
@@ -3269,6 +3270,10 @@
         [
           "data-broker-action",
           2
+        ],
+        [
+          "data-broker-action=\"connect\"",
+          1
         ],
         [
           "data-event-paper-action",
@@ -3328,7 +3333,7 @@
         ],
         [
           "element:a",
-          36
+          37
         ],
         [
           "element:button",
@@ -3363,7 +3368,7 @@
           1
         ]
       ],
-      "sourceHash": "39174b7671223f2f5848d2e3f84aead1c70a7a6a039cdda2a558c91d1d6a7222",
+      "sourceHash": "487656524d1655b8bfff59f3824bb3c287821fb2e942df70ebdf63f2cc7db494",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3414,23 +3419,28 @@
           1
         ],
         [
+          "data-studio-action=\"calendar-toggle-active\"",
+          1
+        ],
+        [
           "element:a",
           1
         ],
         [
           "element:button",
-          1
+          2
         ],
         [
           "helper:routeLink(",
           6
         ]
       ],
-      "signature": "5f5b30d62fb3033f505273df47c939758132d44ce946f9ea7843d0cc8f573c89",
-      "sourceHash": "b791652cf7c15d5511bd853be345dc72ff44b0ce9946a47a982ce4e1bc3c6a46",
+      "signature": "fe8006d39afe8f9c5fbe2dd3a7fa4f0f48a8a8692fadac85da189c6bec58b0b0",
+      "sourceHash": "719edaf1c8472f02586cb5e2b19d633d0e4e8f60006116b4c6a2a413b6709ad5",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T00:38:41.902Z",
-      "reason": "월 이동 버튼과 다시 조회에 포커스 키를 붙이고 진행 중 재시도와 조회 성공 뒤 선택 날짜의 복구를 검증했다."
+      "reviewedAt": "2026-11-13T08:07:40.486Z",
+      "reason": "두 항목 뒤에는 전체 건수를 표시한 기본 버튼으로 목록을 펼친다. 열린 항목의 링크를 초점 복구에 사용한다.",
+      "customContainers": []
     },
     {
       "file": "dist/ui/terminal-universe.mjs",

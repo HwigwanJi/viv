@@ -24,6 +24,9 @@ const NAV=WORKSPACE_NAV;
 const PATHS={calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18M8 15h2m4 0h2"/>',home:'<path d="m3 10 9-7 9 7v10H3ZM9 20v-7h6v7"/>',chart:'<path d="M4 3v17h17M7 12v5m0-10v2m5-4v9m0-4v7m5-14v6m0-3v7"/>',layers:'<path d="m12 3 9 5-9 5-9-5 9-5ZM3 12l9 5 9-5M3 16l9 5 9-5"/>',book:'<path d="M4 4h7l1 2 1-2h7v16h-7l-1 1-1-1H4ZM12 6v15"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',settings:'<path d="m9 3 1 3h4l1-3 3 2-1 3 2 3 3 1v3l-3 1-2 3 1 3-3 1-1-3h-4l-1 3-3-2 1-3-2-3-3-1v-3l3-1 2-3-1-3Z"/><circle cx="12" cy="13" r="3"/>',menu:'<path d="M4 6h16M4 12h16M4 18h16"/>',close:'<path d="m6 6 12 12M6 18 18 6"/>',panel:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/>'};
 const icon=name=>`<svg class="app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PATHS[name]||PATHS.layers}</svg>`;
 let toastTimer,renderGeneration=0,dialogLifecycleToken=0,strategyEditorCleanup=null;
+let calendarReturn=null;
+const calendarEntrySelector=link=>'[data-cal-entry="'+link.dataset.calEntry+'"][href="'+CSS.escape(link.getAttribute('href'))+'"]';
+const calendarEntryFallback=section=>section==='active'?($('[data-cal-control="active-toggle"]')||$('#viv-cal-active-title')):$('.viv-cal-day')&&$('.viv-cal-grid [aria-current="date"]');
 const getDialogToken=()=>dialogLifecycleToken+':'+location.hash;
 const primaryLocations=new Map();
 const routeMotion=createRouteMotion();
@@ -65,7 +68,7 @@ function render(){
   const active=document.activeElement;
   const retainedFocus=sameRoute&&['#simulation-result-heading','.studio-content h1[tabindex="-1"]','[data-capability-guide]','#first-paper-decision'].find(selector=>active?.matches(selector));
   const calendarDate=active?.dataset?.calDate,calendarControl=active?.dataset?.calControl;
-  const retainedCalendar=sameRoute&&(calendarDate?'[data-cal-date="'+CSS.escape(calendarDate)+'"]':calendarControl?'[data-cal-control="'+CSS.escape(calendarControl)+'"]':null);
+  const retainedCalendar=sameRoute&&(calendarDate?'[data-cal-date="'+CSS.escape(calendarDate)+'"]':calendarControl?'[data-cal-control="'+CSS.escape(calendarControl)+'"]':active?.dataset?.calEntry?calendarEntrySelector(active):null);
   const activeHud=active?.closest?.('[data-mind-hud]'),hudFocus=sameRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:active.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>active.dataset[key]!==undefined)}:null;
   if(hudFocus&&hudFocus.selector!=='[data-hud-viewport]'){const key=hudFocus.selector;hudFocus.selector=key?'[data-'+key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+'="'+CSS.escape(document.activeElement.dataset[key])+'"]':null;}
   const token=++renderGeneration,route=parseStudioRoute(location.hash),navigation=studio.navigation(route),railOnly=['home','minds'].includes(route.page);
@@ -89,12 +92,23 @@ function render(){
   queueMicrotask(()=>{
     if(token!==renderGeneration)return;
     studio.mount($('#app'));entityMenu.mount($('#app'));
+    if(calendarReturn?.hash===location.hash&&$('.viv-calendar[data-cal-ready]')){
+      const {selector,section}=calendarReturn;
+      const target=$(selector)||calendarEntryFallback(section);
+      calendarReturn=null;
+      if(target&&(document.activeElement===document.body||document.activeElement.dataset.calControl==='retry')){
+        target.focus({preventScroll:true});
+        target.scrollIntoView({block:'nearest'});
+      }
+    }
     if(hudFocus?.selector)document.querySelector('[data-hud-key="'+CSS.escape(hudFocus.key)+'"] '+hudFocus.selector)?.focus({preventScroll:true});
     const selector=retainedCalendar||retainedFocus;
     if(selector&&document.activeElement===document.body){
       const retained=document.querySelector(selector);
       if(retained)retained.focus({preventScroll:true});
       else if(calendarControl==='retry')$('.viv-calendar [aria-current="date"]')?.focus();
+      else if(calendarControl==='active-toggle')$('#viv-cal-active-title')?.focus();
+      else if(active?.dataset?.calEntry)calendarEntryFallback(active.dataset.calEntry)?.focus();
     }
     routeFocus.flush();dialogFocus.afterRender();appNotifications.mount();routeMotion.enter($('.studio-content'),interfaceMotionKey(route));
   });
@@ -164,6 +178,9 @@ document.addEventListener('click',event=>{
   const settingsLink=event.target.closest('.studio-page-settings .studio-task-nav a[data-studio-route]');
   const routeLink=event.target.closest('a[data-studio-route]');
   const routeHref=routeLink?.getAttribute('href');
+  if(routeLink?.dataset.calEntry&&isPlainNavigationClick(event)){
+    calendarReturn={hash:location.hash,selector:calendarEntrySelector(routeLink),section:routeLink.dataset.calEntry};
+  }
   if((routeLink?.dataset.calDate||routeLink?.dataset.calControl)&&isPlainNavigationClick(event)){
     event.preventDefault();
     const {calDate,calControl}=routeLink.dataset;

@@ -94,6 +94,28 @@ test('calendar presents active checks before the month and selected date',async(
   assert.ok(calendarLinks.every(([,href])=>new URLSearchParams(href.replaceAll('&amp;','&').split('?')[1]).get('executionMode')==='live'));
 });
 
+test('calendar discloses extra checks and retains expansion across visits',async()=>{
+  let route={page:'calendar',params:new URLSearchParams({month:'2026-11'})};
+  const active=['one','two','three'].map(name=>({name,kind:'experiment',state:'실행 대기',href:'#minds?simulationId='+name}));
+  const calendar=createWorkspaceCalendar({
+    getRoute:()=>route,
+    request:async()=>({month:'2026-11',today:'2026-11-13',days:[],active}),
+    render:()=>{},
+  });
+  await calendar.load();
+  assert.match(calendar.render(),/aria-expanded="false">전체 3건 보기/);
+  assert.doesNotMatch(calendar.render(),/simulationId=three/);
+  calendar.toggleActive();
+  assert.match(calendar.render(),/aria-expanded="true">목록 접기/);
+  route={...route,page:'minds'};await calendar.load();
+  route={...route,page:'calendar'};await calendar.load();
+  assert.match(calendar.render(),/simulationId=three" data-cal-entry="active"/);
+  calendar.toggleActive();
+  active.pop();
+  await calendar.load({force:true});
+  assert.doesNotMatch(calendar.render(),/calendar-toggle-active/);
+});
+
 test('character editing saves appearance and display name without a policy revision',()=>{
   const before=createWorkspace({now:'2026-11-10T00:00:00.000Z'}),profile=before.investmentProfiles[0];
   const config=mindAvatarIdentity(profile.id).config;

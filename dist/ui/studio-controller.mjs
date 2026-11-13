@@ -1689,6 +1689,7 @@ export function createStudioController(hooks={},options={}){
       if(action==='mind-library-next'){if(mindLibraryLoading||mindLibraryKey!==mindLibraryQuery().toString()||mindLibraryError||!mindLibraryData?.page?.hasMore||!id||id!==mindLibraryData.page.nextCursor)return;mindLibraryCursors.remember(mindLibraryQuery(),id);return navigateMindLibrary(id);}
       if(action==='mind-library-prev'){if(mindLibraryLoading||!mindLibraryQuery().has('cursor'))return;return navigateMindLibrary(mindLibraryCursors.previous(mindLibraryQuery()));}
       if(action==='calendar-refresh')return calendar.load({force:true});
+      if(action==='calendar-toggle-active')return calendar.toggleActive();
       if(action==='profile-edit'||action==='profile-new')return profileForm(id);
       if(action==='mind-customize')return mindAppearanceForm(id);
       if(action.startsWith('news-'))return await newsComparisons.click(action,id,node);

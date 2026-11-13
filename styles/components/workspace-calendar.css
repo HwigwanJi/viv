@@ -33,6 +33,8 @@
 .viv-cal-totals{@apply flex flex-wrap gap-ui-2 my-ui-3}
 .viv-cal-totals .viv-cal-pnl{@apply bg-surface p-ui-2 rounded-ui-lg}
 .viv-cal-list{@apply list-none grid gap-ui-1 mt-ui-3 mb-0 p-0 max-h-80 overflow-auto}
+.viv-cal-active .viv-cal-list{@apply max-h-none overflow-visible}
+.viv-cal-expand{@apply mt-ui-3}
 .viv-cal-list a{@apply flex gap-ui-3 items-center justify-between min-h-control-touch p-ui-2 rounded-ui-lg bg-canvas text-inherit no-underline}
 .viv-cal-list a:hover{@apply bg-hover}
 .viv-cal-list a span:first-child{@apply min-w-0}
@@ -43,7 +45,6 @@
 @variant max-md{
   .viv-cal-layout{@apply flex flex-col gap-ui-3}
   .viv-cal-panel{@apply w-full p-ui-3}
-  .viv-cal-active .viv-cal-list{@apply max-h-40}
   .viv-cal-cell{@apply min-h-control-touch p-ui-1 text-ui-xs}
   .viv-cal-cell .viv-cal-pnl{@apply text-ui-xs tracking-tight}
   .viv-cal-cell .viv-cal-amount-full{@apply sr-only}

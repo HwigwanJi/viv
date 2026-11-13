@@ -46,23 +46,25 @@ function agenda(day,selected){
   return '<section class="viv-cal-panel viv-cal-day" aria-labelledby="viv-cal-day-title"><h2 id="viv-cal-day-title">'+esc(dateTitle.format(new Date(selected+'T00:00:00Z')))+'</h2>'+
     '<div class="viv-cal-totals">'+(day?.pnl.length?pnl(day.pnl):'<span class="muted">실현 손익 기록 없음</span>')+'</div>'+
     (day?.unknown?'<p class="muted">일부 체결의 손익을 확인할 수 없습니다.</p>':'')+
-    (records.length?'<ul class="viv-cal-list">'+records.map(row=>'<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(row.label)+' · '+esc(scheduleTime.format(new Date(row.at)))+'</small></span>'+(Number.isFinite(row.totalReturn)?'<span class="viv-cal-pnl" data-tone="'+tone(row.totalReturn)+'">'+esc(new Intl.NumberFormat('ko-KR',{style:'percent',signDisplay:'exceptZero',maximumFractionDigits:2}).format(row.totalReturn))+'</span>':row.amount!==undefined?pnl([row]):'<span aria-hidden="true">↗</span>'))+'</li>').join('')+'</ul>':'<p class="muted">이 날짜에 확인된 일정이나 기록이 없습니다.</p>')+'</section>';
+    (records.length?'<ul class="viv-cal-list">'+records.map(row=>'<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(row.label)+' · '+esc(scheduleTime.format(new Date(row.at)))+'</small></span>'+(Number.isFinite(row.totalReturn)?'<span class="viv-cal-pnl" data-tone="'+tone(row.totalReturn)+'">'+esc(new Intl.NumberFormat('ko-KR',{style:'percent',signDisplay:'exceptZero',maximumFractionDigits:2}).format(row.totalReturn))+'</span>':row.amount!==undefined?pnl([row]):'<span aria-hidden="true">↗</span>'),row.kind==='experiment'?'data-cal-entry="day"':'')+'</li>').join('')+'</ul>':'<p class="muted">이 날짜에 확인된 일정이나 기록이 없습니다.</p>')+'</section>';
 }
 
-function ongoing(rows){
-  return '<section class="viv-cal-panel viv-cal-active" aria-labelledby="viv-cal-active-title"><h2 id="viv-cal-active-title">모의검증 현황 <span class="muted">'+rows.length+'건</span></h2>'+
-    (rows.length?'<ul class="viv-cal-list">'+rows.map(row=>{
+function ongoing(rows,expanded){
+  const previewCount=2,hasMore=rows.length>previewCount;
+  return '<section class="viv-cal-panel viv-cal-active" aria-labelledby="viv-cal-active-title"><h2 id="viv-cal-active-title" tabindex="-1">모의검증 현황 <span class="muted">'+rows.length+'건</span></h2>'+
+    (hasMore?'<button type="button" class="button small viv-cal-expand" data-cal-control="active-toggle" data-studio-action="calendar-toggle-active" aria-controls="viv-cal-active-list" aria-expanded="'+expanded+'">'+(expanded?'목록 접기':'전체 '+rows.length+'건 보기')+'</button>':'')+
+    (rows.length?'<ul id="viv-cal-active-list" class="viv-cal-list">'+(expanded?rows:rows.slice(0,previewCount)).map(row=>{
       const start=Date.parse(row.period?.startAt),end=Date.parse(row.period?.endAt);
       const detail=row.at?row.atLabel+' '+scheduleTime.format(new Date(row.at)):
         Number.isFinite(start)&&Number.isFinite(end)&&start<=end?'테스트 기간 '+periodTime.formatRange(start,end):
         row.progress?.total>0?row.progress.completed+' / '+row.progress.total+' 처리':'';
-      return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc([row.kind==='experiment'?'과거 시세 검증':'모의 운용',detail].filter(Boolean).join(' · '))+'</small></span><span class="viv-cal-status">'+esc(row.state)+'</span>')+'</li>';
+      return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc([row.kind==='experiment'?'과거 시세 검증':'모의 운용',detail].filter(Boolean).join(' · '))+'</small></span><span class="viv-cal-status">'+esc(row.state)+'</span>','data-cal-entry="active"')+'</li>';
     }).join('')+'</ul>':
       '<p class="muted">진행하거나 확인할 모의검증이 없습니다.</p>'+routeLink('#minds?profileId=all&view=simulations&executionMode=paper','실험실 열기','class="button small"'))+'</section>';
 }
 
 export function createWorkspaceCalendar({getRoute,request,render}){
-  let data=null,error=null,pending=null,controller=null,inCalendar=false;
+  let data=null,error=null,pending=null,controller=null,inCalendar=false,activeExpanded=false;
   async function load({force=false}={}){
     const route=getRoute();
     const month=route.page==='calendar'?monthFor(route):null;
@@ -90,9 +92,9 @@ export function createWorkspaceCalendar({getRoute,request,render}){
       return next?routeLink(calendarHref(next),icon,'class="button" aria-label="'+label+'" data-cal-control="'+control+'"'):'';
     };
     const monthHeadingControl=!calendarMonth(moveCalendarMonth(month,-1))?'previous':!calendarMonth(moveCalendarMonth(month,1))?'next':null;
-    return '<section class="viv-calendar"><header class="viv-cal-head"><div><h1 tabindex="-1">캘린더</h1><p class="muted">모의검증 일정과 날짜별 모의 실현 손익 · 한국 시간</p></div>'+
+    return '<section class="viv-calendar"'+(current&&!loading&&!failed?' data-cal-ready':'')+'><header class="viv-cal-head"><div><h1 tabindex="-1">캘린더</h1><p class="muted">모의검증 일정과 날짜별 모의 실현 손익 · 한국 시간</p></div>'+
       routeLink(calendarHref(now.slice(0,7),now),'오늘','class="button" data-cal-control="today"')+'</header>'+
-      '<div class="viv-cal-layout">'+(current?ongoing(current.active):'')+
+      '<div class="viv-cal-layout">'+(current?ongoing(current.active,activeExpanded):'')+
       '<section class="viv-cal-panel viv-cal-month" aria-label="월간 캘린더"><div class="viv-cal-toolbar">'+monthLink(-1,'이전 달','‹','previous')+
       '<h2'+(monthHeadingControl?' tabindex="-1" data-cal-control="'+monthHeadingControl+'"':'')+'>'+year+'년 '+mon+'월</h2>'+monthLink(1,'다음 달','›','next')+'</div>'+
       (loading&&(!current||failed)?'<p role="status">일정을 불러오는 중…</p>':'')+
@@ -103,5 +105,5 @@ export function createWorkspaceCalendar({getRoute,request,render}){
       (current?.eventLedgerUnavailable?'<p class="viv-cal-note" role="status">일부 분봉 모의 원장을 확인하지 못했습니다.</p>':'')+
       '</section>'+(current?agenda(current.days.find(day=>day.date===selected),selected):'')+'</div></section>';
   }
-  return {load,render:markup,destroy(){controller?.abort();}};
+  return {load,render:markup,toggleActive(){activeExpanded=!activeExpanded;render();},destroy(){controller?.abort();}};
 }
