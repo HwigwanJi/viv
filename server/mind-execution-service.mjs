@@ -37,7 +37,7 @@ export async function currentPaperQuote(instrument,{fetchImpl=fetch,now,notBefor
     let received;try{received=await fetchImpl(url.href,{signal:AbortSignal.timeout(Math.max(1,Math.min(2500,remaining))),redirect:'manual',cache:'no-store',headers:{'Cache-Control':'no-cache'}});}catch{
       attempts.push({attempt,receivedAt:readTime(),reason:'QUOTE_NETWORK_UNAVAILABLE'});
       if(attempt<3&&Date.now()+attempt*250<deadline){await new Promise(resolve=>setTimeout(resolve,attempt*250));continue;}
-      fail('EXECUTION_QUOTE_UNAVAILABLE','실행 가격을 불러오지 못했습니다. 같은 결정의 모의 체결을 다시 실행하세요.',503);
+      fail('EXECUTION_QUOTE_UNAVAILABLE',action==='hold'?'시세를 불러오지 못했습니다. 후속 관측 기준을 다시 저장해 보세요.':'실행 가격을 불러오지 못했습니다. 같은 결정의 모의 체결을 다시 실행하세요.',503);
     }
     if(!received.ok&&[408,500,502,503,504].includes(received.status)){
       attempts.push({attempt,receivedAt:readTime(),reason:'QUOTE_HTTP_UNAVAILABLE',httpStatus:received.status});

@@ -3259,9 +3259,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T16:03:17.057Z",
-      "reason": "동일한 저장 판단 링크에서 종목·마인드·시각을 확인하고 터치와 키보드로 근거와 체결을 열어 같은 모의 실습으로 돌아왔다.",
-      "signature": "0e930ee30dc9e244989e2abe8f5e108533c5fb153cfd5fc54230ea5c97efce5f",
+      "reviewedAt": "2026-11-13T16:37:14.337Z",
+      "reason": "저장된 유지 판단의 후속 관측 기준 검토, 복귀, 명시적 저장과 원래 결과 재조회를 격리 브라우저에서 확인했다.",
+      "signature": "d551d14d316483e28a69d6bbfde5f0eeedeb4ea6024b2077938eef53cf44b18d",
       "controls": [
         [
           "data-auto-action",
@@ -3357,7 +3357,7 @@
         ],
         [
           "helper:button(",
-          180
+          181
         ],
         [
           "helper:renderActionMenu(",
@@ -3368,7 +3368,7 @@
           1
         ]
       ],
-      "sourceHash": "c83aa78032c482b60639e671918fb71bcb442bdb970ca5990f2f20c17b43eb0d",
+      "sourceHash": "004fc892e6deba10eea8af871aba380cc72a9467832cf75110a5a29444a9c29c",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3494,8 +3494,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T06:07:25.817Z",
-      "reason": "보고서에서 이어온 실습은 안내 영역의 현재 시세 대안을 사용하고 기존 트레이딩은 과거 시세 대안을 유지한다.",
+      "reviewedAt": "2026-11-13T16:37:14.339Z",
+      "reason": "유지 판단의 시세 재시도는 후속 관측 기준 검토로 연결한다. 320px WebKit 유지 재시도와 데스크톱 키보드 매수 재시도의 진행 및 오류를 확인했다.",
       "signature": "a1dd9ae1335bff6ea81099fe978c300d14f7573d12d0c63f81aba04f9a60d8e1",
       "controls": [
         [
@@ -3583,7 +3583,7 @@
           39
         ]
       ],
-      "sourceHash": "9d1391c0ded70ae45860239e1bd1904e2744ca6a1076a016de7931649697c2ae",
+      "sourceHash": "7f45f78568c1df4b39400baf76d59ba14ad51535f6f1d5e0fc16246210076556",
       "customContainers": []
     },
     {

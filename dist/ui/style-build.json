@@ -388,7 +388,7 @@
     },
     {
       "path": "dist/ui/studio-controller.mjs",
-      "sha256": "c83aa78032c482b60639e671918fb71bcb442bdb970ca5990f2f20c17b43eb0d"
+      "sha256": "004fc892e6deba10eea8af871aba380cc72a9467832cf75110a5a29444a9c29c"
     },
     {
       "path": "dist/ui/studio-shell.mjs",
@@ -428,7 +428,7 @@
     },
     {
       "path": "dist/ui/trading-terminal.mjs",
-      "sha256": "9d1391c0ded70ae45860239e1bd1904e2744ca6a1076a016de7931649697c2ae"
+      "sha256": "7f45f78568c1df4b39400baf76d59ba14ad51535f6f1d5e0fc16246210076556"
     },
     {
       "path": "dist/ui/universe-catalog-picker.mjs",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "3e24b5a13e99032662afdfe0639131751efb5d868c55f07f581be83780918415",
+  "inputHash": "9a9e991c5f3a1bf7ff5dab9bfc33bd1c1f2c457b2922eaac2611f67401fecb79",
   "pages": [
     {
       "path": "dist/index.html",
