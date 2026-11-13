@@ -59,7 +59,7 @@
     return '';
   }
 
-  async function confirmAndOpen(control, status, pageUrl, entryUrl, open, fileStatus, fallbackUrl) {
+  async function confirmAndOpen(control, status, pageUrl, entryUrl, open, fileStatus, fallbackUrl, installEntry) {
     if (control.getAttribute('aria-disabled') === 'true') return;
     control.setAttribute('aria-disabled', 'true');
     status.textContent = 'VIV 서버에 연결할 수 있는지 확인 중…';
@@ -69,11 +69,14 @@
     var options = {method: 'HEAD', cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: controller.signal};
     var problem = 'VIV 서버에 연결할 수 없습니다. 설치한 컴퓨터에서 서버를 켠 뒤 다시 시도하세요.';
     try {
-      var page = await fetch(pageUrl, entryUrl ? options : {...options, method: 'GET'});
+      var page = await fetch(pageUrl, entryUrl && !installEntry ? options : {...options, method: 'GET'});
       problem = connectionIssue(page.status) || problem;
       if (page.ok && /^text\/html\b/i.test(page.headers.get('content-type'))) {
         var ready = true;
-        if (entryUrl) {
+        if (installEntry && !/<script\b[^>]*\bid=["']viv-install-entry["']/i.test(await page.text())) {
+          problem = '이 주소에서 VIV 설치 화면을 확인할 수 없습니다. 설치할 때 받은 주소를 확인하세요.';
+          ready = false;
+        } else if (entryUrl) {
           problem = '앱 파일을 불러올 수 없습니다. 설치한 컴퓨터에서 VIV 주소가 열리는지 확인한 뒤 다시 시도하세요.';
           status.textContent = 'VIV 앱 파일을 확인하는 중…';
           var targets = failedScripts().map(function (failure) { return failure.url; });
@@ -146,7 +149,7 @@
     var fallbackUrl = !installRecovery && moduleLoadFailed ? new URL('./ui/studio-controller.mjs', entryUrl).href : null;
     return confirmAndOpen(retry, status, location.pathname + location.search, entryUrl, function () {
       if (!installRecovery?.dataset.ready) location.reload();
-    }, fileStatus, fallbackUrl);
+    }, fileStatus, fallbackUrl, Boolean(installRecovery));
   });
   window.addEventListener('error', function (event) {
     if (event.target?.id === entryId) moduleLoadFailed = true;

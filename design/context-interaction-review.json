@@ -87,7 +87,7 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T11:59:03.759Z",
+      "reviewedAt": "2026-11-13T12:02:53.459Z",
       "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
       "signature": "d10955ef1df9069019c22b24bef9271b3846278779d3f17e8b44e6f57a30ee5a",
       "controls": [
@@ -1392,7 +1392,7 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T11:59:03.761Z",
+      "reviewedAt": "2026-11-13T12:02:53.461Z",
       "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
       "signature": "fce26f2bf864f860afb3c9b885b293829b34168fd6b8e04f8428837d3f08a828",
       "controls": [
@@ -3885,7 +3885,7 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T11:59:03.761Z",
+      "reviewedAt": "2026-11-13T12:02:53.462Z",
       "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
       "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
       "controls": [
@@ -3902,7 +3902,7 @@
           1
         ]
       ],
-      "sourceHash": "a834170bf0af50784eb9829497da36073ed58f414a37f6a47ffd3e59c9258694",
+      "sourceHash": "b552f7d77e8830562cac5b28ad06a6e74044bcfaba7ea3962f9256881de1d5f1",
       "customContainers": []
     }
   ],

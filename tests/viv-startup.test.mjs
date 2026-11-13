@@ -111,10 +111,10 @@ test('VIV offers recovery when the entry module fails or startup stalls', () => 
 
 test('install module failure keeps recovery on the same URL until its script responds', async () => {
   const requests = [];
-  let unavailable = true;
+  let unavailable = true, correctPage = true;
   const app = setup(async (url, {method}) => {
     requests.push([url, method]);
-    if (method === 'HEAD') return asset('text/html');
+    if (url.startsWith('/install.html')) return new Response(correctPage ? '<script id="viv-install-entry" src="./ui/install-page.mjs"></script>' : '<h1>Sign in</h1>', {headers:{'content-type':'text/html'}});
     return unavailable ? asset('text/html', 404) : asset('text/javascript');
   }, [], {install: true});
   app.events.error({target: {id: 'unrelated-image'}});
@@ -125,11 +125,17 @@ test('install module failure keeps recovery on the same URL until its script res
   assert.match(app.fileStatus.textContent, /dist\/ui\/install-page.mjs \(HTTP 404/);
   assert.equal(app.reloads(), 0);
   unavailable = false;
+  correctPage = false;
+  await app.button.click();
+  assert.equal(app.reloads(), 0);
+  assert.match(app.message.textContent, /VIV 설치 화면을 확인할 수 없습니다/);
+  correctPage = true;
   await app.button.click();
   assert.equal(app.reloads(), 1);
   assert.deepEqual(requests, [
-    ['/install.html?entry=install', 'HEAD'], ['http://localhost/ui/install-page.mjs', 'GET'],
-    ['/install.html?entry=install', 'HEAD'], ['http://localhost/ui/install-page.mjs', 'GET'],
+    ['/install.html?entry=install', 'GET'], ['http://localhost/ui/install-page.mjs', 'GET'],
+    ['/install.html?entry=install', 'GET'],
+    ['/install.html?entry=install', 'GET'], ['http://localhost/ui/install-page.mjs', 'GET'],
   ]);
   const ready = setup(undefined, [], {install: true});
   ready.recovery.dataset.ready = 'true';
