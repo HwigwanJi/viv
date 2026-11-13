@@ -637,15 +637,20 @@ export function createStudioController(hooks={},options={}){
         (!budget&&paperBudgetFor(workspace,'KRW')?' 기존 원화 모의 예산은 그대로 보관됩니다.':'');
       const published=list(mindData?.minds).filter(mind=>byId(workspace.investmentProfiles,mind.id)?.status!=='ARCHIVED'&&
         mind.manifest?.data.strategyPlan?.status==='APPROVED'&&firstDecisionPlan(mind.manifest.data.strategyPlan));
-      const pending=list(mindData?.documents).find(item=>{
+      const pending=list(mindData?.documents).filter(item=>{
         const doc=item.document,profile=byId(workspace.investmentProfiles,doc?.scope?.profileId);
         return profile&&profile.status!=='ARCHIVED'&&item.status==='DRAFT'&&doc.kind==='mind-policy'&&
           doc.data.version>(savedMind(profile.id)?.manifest?.data.version??0)&&firstDecisionPlan(doc.data.strategyPlan);
       });
-      actions=!mindData?button('마인드 목록 다시 조회','refresh','','','primary'):
-        published.length?published.map(mind=>'<a class="button primary" href="'+esc(studioRouteHash(current,'trade',{profileId:mind.id,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME}))+'" data-studio-route>'+esc(profileName(mind.id))+'로 시작</a>').join(''):
-        pending?button('저장한 전략 초안 검토','document-detail',pending.id,'data-first-decision-review','primary'):
-        button('국면 추세 마인드 만들기','profile-new','','','primary');
+      if(!mindData)actions=button('마인드 목록 다시 조회','refresh','','','primary');
+      else if(!published.length&&!pending.length)actions=button('국면 추세 마인드 만들기','profile-new','','','primary');
+      else{
+        actions=published.map(mind=>'<a class="button primary" href="'+esc(studioRouteHash(current,'trade',{profileId:mind.id,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME}))+'" data-studio-route>'+esc(profileName(mind.id))+' · 발행 전략으로 시작</a>').join('');
+        actions+=pending.map(({id,document:doc})=>{
+          const label=!published.length&&pending.length===1?'저장한 전략 초안 검토':profileName(doc.scope.profileId)+' · v'+doc.data.version+' 초안 검토';
+          return button(label,'document-detail',id,'data-first-decision-review',published.length?'':'primary');
+        }).join('');
+      }
       actions+=firstDecisionPracticeLink(current);
     }else{
       const readiness=view.terminalReadiness?.executionReadiness,requirement=terminalRunRequirement(view),step=requirement?.action?.action??readiness?.primaryAction?.action;
