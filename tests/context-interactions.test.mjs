@@ -244,6 +244,7 @@ test('explicit broker setup in screen search carries the current paper lesson',(
  const first=parseStudioRoute(find(parseStudioRoute(hash)).href);
  assert.equal(first.params.get('executionMode'),'live');
  assert.equal(first.params.get('returnTo'),hash);
+ assert.equal(studioReturnLink(first,parseStudioRoute,studioRouteHash),null);
  assert.equal(parseStudioRoute(find(first).href).params.get('returnTo'),hash);
  assert.equal(parseStudioRoute(find(parseStudioRoute('#home?executionMode=paper')).href).params.has('returnTo'),false);
  const list=parseStudioRoute('#minds?view=records&kind=decisions&executionMode=paper&search=BTC-USDT');

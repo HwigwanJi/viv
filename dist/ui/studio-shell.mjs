@@ -165,6 +165,8 @@ export function studioBreadcrumbs(route, navigation, routeHash) {
 
 export function studioReturnLink(route, parseRoute, routeHash) {
   const saved = route.params.get('returnTo');
+  if(route.page==='settings'&&route.params.get('view')==='accounts'&&route.params.get('executionMode')==='live'&&
+     paperBrokerReturnHash(saved)!==PAPER_HOME_ENTRY)return null;
   if (!saved || !/^#(?:home|trade|minds|library|settings)(?:\?|$)/.test(saved)) return null;
   const target = parseRoute(saved);
   if (target.page === route.page) return null;

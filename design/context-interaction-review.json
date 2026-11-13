@@ -597,7 +597,7 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T11:35:07.537Z",
+      "reviewedAt": "2026-11-13T11:42:48.891Z",
       "reason": "모의 판단에서 금융기관 연결을 열고 모바일과 PC에서 같은 마인드와 기록 탭으로 돌아오는 조작을 확인했다.",
       "signature": "c13b708d6cf87c9d3c11f3c0fc4ce99626cdefea7a510b5e8c843ae446845b9c",
       "controls": [
@@ -3391,7 +3391,7 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T11:35:07.539Z",
+      "reviewedAt": "2026-11-13T11:42:48.893Z",
       "reason": "모의 판단에서 금융기관 연결을 열고 모바일과 PC에서 같은 마인드와 기록 탭으로 돌아오는 조작을 확인했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
@@ -3412,7 +3412,7 @@
           2
         ]
       ],
-      "sourceHash": "1897da4a3564473b59715da11bfcf3f190781b4fe748c302f05daed357b768e9",
+      "sourceHash": "3a58b75373d9b9413b9807c6d31e26856bc2d03586d56c8b0e441fa571ab3b67",
       "customContainers": []
     },
     {
