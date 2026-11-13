@@ -87,9 +87,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T23:57:48.379Z",
-      "reason": "휴대폰 연결 오류에서 공개 가이드의 모바일 복구 절로 바로 이동한다.",
-      "signature": "5fe6affb0976b5c09e8466e0a569889c2ab6d7dc7607474806e39a3bfbc08dc5",
+      "reviewedAt": "2026-11-13T09:37:02.749Z",
+      "reason": "모바일에서 PC 주소 재조회와 복사 복구, PC에서 동일 설치 확인과 다른 설치 차단을 브라우저로 검증했다.",
+      "signature": "f81ea39abdd2dd868214cd42dc7eda4d8fa4ac094e1367b1fb682253d306b18c",
       "controls": [
         [
           "data-install-copy-command",
@@ -121,7 +121,7 @@
         ],
         [
           "element:button",
-          8
+          9
         ],
         [
           "element:dialog",
@@ -129,14 +129,14 @@
         ],
         [
           "element:input",
-          2
+          3
         ],
         [
           "element:summary",
           2
         ]
       ],
-      "sourceHash": "9553a3cd2cc498c58c5a4cf8523aa29b9d650b29a6f4179f0bfb00df6e5bcb10"
+      "sourceHash": "19c90489a34cca1d96c65a4330abaace48ed361b49c2cd592c9e32401c27c258"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -386,8 +386,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T08:09:10.551Z",
-      "reason": "iOS WebKit 설치 주소 복사와 권한 실패 복구, 기존 Android와 PC 설치 검토",
+      "reviewedAt": "2026-11-13T09:37:02.750Z",
+      "reason": "모바일에서 PC 주소 재조회와 복사 복구, PC에서 동일 설치 확인과 다른 설치 차단을 브라우저로 검증했다.",
       "signature": "b94777f199b7c43220f9104b3d043a43ddada3b2299626128cc4a05c1d42c74c",
       "controls": [
         [
@@ -403,7 +403,7 @@
           1
         ]
       ],
-      "sourceHash": "b24c29aad1203b66107fa895b70a2f519d09d900dc39a1fce55a69bc2a13b30b"
+      "sourceHash": "f995ebc94ecfeff635918ac78146d145cfd8c48922466d1c11024b3a92a02333"
     },
     {
       "file": "dist/ui/app-notifications.mjs",
@@ -1392,8 +1392,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T07:07:52.866Z",
-      "reason": "모바일에서 첫 점검 실패 또는 열기 직전 실패 뒤 같은 화면의 복구 버튼으로 안내하고 성공하면 오류 상태를 지운다.",
+      "reviewedAt": "2026-11-13T09:37:02.750Z",
+      "reason": "모바일에서 PC 주소 재조회와 복사 복구, PC에서 동일 설치 확인과 다른 설치 차단을 브라우저로 검증했다.",
       "signature": "fce26f2bf864f860afb3c9b885b293829b34168fd6b8e04f8428837d3f08a828",
       "controls": [
         [
@@ -1406,10 +1406,18 @@
         ],
         [
           "data-install-open",
-          1
+          2
         ],
         [
           "data-install-retry-command",
+          1
+        ],
+        [
+          "data-viv-open-help",
+          1
+        ],
+        [
+          "data-viv-open-status",
           1
         ],
         [
@@ -1421,7 +1429,7 @@
           1
         ]
       ],
-      "sourceHash": "594d43033be5c603c50e9c3e2dbd38cf3bff8e3f80eec4b8818e335f33eed24f"
+      "sourceHash": "d99eaadaac95c9bcd336f49d6e2302d7ff7f551d12368451595edcaeb51cd5a0"
     },
     {
       "file": "dist/ui/interface-motion.mjs",

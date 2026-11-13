@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {validateMobileOrigin,privateMobileRouteStatus,verifyMobileInstallAddress,previewRequestOrigin} from '../scripts/preview-origin.mjs';
 import {handleAPI} from '../server/api.mjs';
-import {createAppInstall,chromeInstallLink,installPlatform,localMcpAddress,manualInstallGuide} from '../dist/ui/app-install.mjs';
+import {createAppInstall,chromeInstallLink,desktopMcpSetupLink,installPlatform,localMcpAddress,manualInstallGuide} from '../dist/ui/app-install.mjs';
 
 test('MCP setup preserves the installation port and stays on the server computer',()=>{
   assert.equal(localMcpAddress(new URL('http://localhost:4430/#settings')), 'http://127.0.0.1:4430/mcp');
@@ -13,6 +13,14 @@ test('MCP setup preserves the installation port and stays on the server computer
   assert.equal(localMcpAddress(new URL('http://localhost:4430/'),'bad-id'),null);
   for(const origin of ['https://localhost:4430','http://localhost','http://localhost:4905','http://localhost.example:4430','https://pc.example.ts.net']){
     assert.equal(localMcpAddress(new URL(origin)),null);
+  }
+  assert.equal(desktopMcpSetupLink('4430',setupId,'live'),'http://127.0.0.1:4430/install.html?connect=ai&executionMode=live&installation='+setupId);
+  assert.equal(desktopMcpSetupLink('4430',setupId,'external'),'http://127.0.0.1:4430/install.html?connect=ai&executionMode=paper&installation='+setupId);
+  for(const port of [null,'4430.evil.test','4430@evil.test','4905','65536','443','04330']){
+    assert.equal(desktopMcpSetupLink(port,setupId,'paper'),null);
+  }
+  for(const id of [null,undefined,'bad-id',setupId+'&other=value']){
+    assert.equal(desktopMcpSetupLink('4430',id,'paper'),null);
   }
 });
 import {versionAssetBundle} from '../scripts/asset-versioning.mjs';

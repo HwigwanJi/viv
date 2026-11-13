@@ -24,6 +24,16 @@ export function localMcpAddress(location,setupId){
   return /^[a-f0-9]{32}$/.test(setupId)?address+'?installation='+setupId:null;
 }
 
+export function desktopMcpSetupLink(port,setupId,mode){
+  const origin=new URL('http://127.0.0.1');
+  if(!/^[1-9][0-9]{3,4}$/.test(port)||Number(port)>65535)return null;
+  origin.port=port;
+  if(!localMcpAddress(origin,setupId)||typeof setupId!=='string')return null;
+  origin.pathname='/install.html';
+  origin.search=new URLSearchParams({connect:'ai',executionMode:mode==='live'?'live':'paper',installation:setupId});
+  return origin.href;
+}
+
 export function manualInstallGuide(navigator){
   const platform=installPlatform(navigator);
   if(platform==='apple')return 'Safari에서 <strong>공유 → 홈 화면에 추가</strong>를 누르세요. 메뉴에 없으면 공유 목록 아래 <strong>동작 편집</strong>에서 추가하세요. <strong>웹 앱으로 열기</strong>가 보이면 켠 뒤 <strong>추가</strong>를 누르세요.';

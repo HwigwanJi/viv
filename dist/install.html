@@ -45,6 +45,11 @@
         </div>
         <section data-install-ai hidden>
           <p data-install-mcp-pc>VIV 서버가 실행 중인 컴퓨터에서 설치 때 받은 <strong>VIV PC</strong> 주소를 열고, <strong>설정 → 서비스 연결 → AI 연결·복구 (MCP)</strong>로 이동하세요.</p>
+          <div data-install-mcp-handoff hidden>
+            <p>아래 주소를 VIV가 설치된 컴퓨터에 보내고, 그 컴퓨터의 브라우저에 붙여 넣으세요.</p>
+            <label class="field">VIV PC에서 이어갈 주소<input type="url" readonly></label>
+            <p class="spaced"><button type="button" class="button" data-install-copy-mcp="desktop">PC에서 이어갈 주소 복사</button></p>
+          </div>
           <p data-install-mcp-check role="status" aria-live="polite" hidden></p>
           <p><button type="button" class="button" data-install-mcp-recheck hidden>이 설치의 MCP 주소 다시 확인</button></p>
           <div data-install-mcp-address hidden>

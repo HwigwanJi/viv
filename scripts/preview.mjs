@@ -85,6 +85,9 @@ const server = http.createServer(async (req,res)=>{
     }catch{res.writeHead(403);res.end('Unrecognized app host');return;}
     if(selfHostId)res.setHeader('X-VIV-Setup',selfHostId);
     const requestUrl=new URL(req.url,requestOrigin),pathname=requestUrl.pathname;
+    if(selfHostId&&requestOrigin.startsWith('https:')&&pathname==='/install.html'&&req.method==='HEAD'){
+      res.setHeader('X-VIV-Desktop-Port',String(previewPort));
+    }
     if(pathname==='/mcp'&&requestUrl.searchParams.has('installation')&&(!selfHostId||requestUrl.searchParams.get('installation')!==selfHostId)){
       res.writeHead(409,{'Content-Type':'application/json','Cache-Control':'no-store'});
       res.end(JSON.stringify({error:{code:'VIV_INSTALLATION_MISMATCH',message:'MCP 주소가 이 VIV 설치와 일치하지 않습니다. 새 폴더에 기록을 복원했다면 새 VIV 앱의 설정 → 서비스 연결 → AI 연결·복구 (MCP)에서 주소를 복사해 등록하세요. 기존 설치를 열려면 원래 폴더에서 서버를 다시 시작하세요.'}}));

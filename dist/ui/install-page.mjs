@@ -1,4 +1,4 @@
-import {createAppInstall,chromeInstallLink,installPlatform,localMcpAddress,manualInstallGuide} from './app-install.mjs';
+import {createAppInstall,chromeInstallLink,desktopMcpSetupLink,installPlatform,localMcpAddress,manualInstallGuide} from './app-install.mjs';
 const dialog=document.querySelector('#detail-dialog'),status=document.querySelector('[data-install-status]');
 const guide=document.querySelector('[data-install-guide]'),copy=document.querySelector('[data-install-copy]'),address=document.querySelector('[data-install-address]');
 document.querySelector('[data-install-steps]').innerHTML=manualInstallGuide(navigator);
@@ -124,10 +124,20 @@ if(aiView){
   const mode=params.get('executionMode')==='live'?'live':'paper';
   back.href='/#settings?view=connections&executionMode='+mode;
   back.textContent='서비스 연결로 돌아가기';
+  const pcGuide=ai.querySelector('[data-install-mcp-pc]');
+  const check=ai.querySelector('[data-install-mcp-check]'),again=ai.querySelector('[data-install-mcp-recheck]');
+  const fetchIdentity=path=>fetch(path,{method:'HEAD',cache:'no-store',redirect:'error',signal:AbortSignal.timeout(4000)});
+  function copyAddress(button,field,label){
+    button.addEventListener('click',async()=>{
+      if(!field.value)return;
+      try{await navigator.clipboard.writeText(field.value);status.textContent=label+'를 복사했습니다.';}
+      catch{field.focus();field.select();status.textContent='선택한 주소를 복사하세요.';}
+    });
+  }
   if(desktop&&localMcpAddress(location)){
-    ai.querySelector('[data-install-mcp-pc]').hidden=true;
+    pcGuide.hidden=true;
     const address=ai.querySelector('[data-install-mcp-address]'),field=address.querySelector('input');
-    const check=ai.querySelector('[data-install-mcp-check]'),again=ai.querySelector('[data-install-mcp-recheck]');
+    const expectedInstallation=params.get('installation');
     const port=location.port,system=navigator.platform;
     const command=system.startsWith('Win')
       ? client=>'powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\install-viv-mcp.ps1 -Port '+port+' -Client '+client
@@ -142,13 +152,20 @@ if(aiView){
     }
     async function checkMcpAddress(){
       const restoreFocus=document.activeElement===again;
+      back.hidden=expectedInstallation!==null;
       address.hidden=true;field.value='';again.disabled=true;check.hidden=false;
       check.textContent='이 VIV 설치의 MCP 주소를 확인하는 중입니다.';
       try{
-        const response=await fetch('/',{method:'HEAD',cache:'no-store',redirect:'error',signal:AbortSignal.timeout(4000)});
-        const verified=response.ok&&localMcpAddress(location,response.headers.get('X-VIV-Setup'));
+        const response=await fetchIdentity('/');
+        const installation=response.headers.get('X-VIV-Setup');
+        const verified=response.ok&&localMcpAddress(location,installation);
         if(!verified)throw Error('VIV_INSTALLATION_ID');
-        field.value=verified;address.hidden=false;again.hidden=true;
+        if(expectedInstallation!==null&&expectedInstallation!==installation){
+          check.textContent='휴대폰에서 열었던 VIV와 다른 설치입니다. 원래 VIV 폴더에서 서버를 다시 시작한 뒤 복사한 주소를 다시 확인하세요.';
+          again.hidden=false;
+          return;
+        }
+        field.value=verified;address.hidden=false;again.hidden=true;back.hidden=false;
         check.textContent='이 설치에 연결되는 MCP 주소입니다.';
       }catch{
         check.textContent='이 설치를 확인할 수 없습니다. 원래 VIV 폴더에서 서버를 다시 시작한 뒤 주소를 다시 확인하세요.';
@@ -159,12 +176,32 @@ if(aiView){
       }
     }
     again.addEventListener('click',checkMcpAddress);
-    ai.querySelector('[data-install-copy-mcp="address"]').addEventListener('click',async()=>{
-      if(!field.value)return;
-      try{await navigator.clipboard.writeText(field.value);status.textContent='MCP 주소를 복사했습니다.';}
-      catch{field.focus();field.select();status.textContent='선택한 MCP 주소를 복사하세요.';}
-    });
+    copyAddress(ai.querySelector('[data-install-copy-mcp="address"]'),field,'MCP 주소');
     checkMcpAddress();
+  }else if(privateOrigin&&location.protocol==='https:'&&!location.port){
+    const panel=ai.querySelector('[data-install-mcp-handoff]'),field=panel.querySelector('input');
+    again.textContent='PC 주소 다시 확인';
+    async function checkDesktopAddress(){
+      const restoreFocus=document.activeElement===again;
+      panel.hidden=true;field.value='';again.disabled=true;check.hidden=false;
+      check.textContent='이 VIV 설치의 PC 주소를 확인하는 중입니다.';
+      try{
+        const response=await fetchIdentity('/install.html');
+        const link=response.ok&&desktopMcpSetupLink(response.headers.get('X-VIV-Desktop-Port'),response.headers.get('X-VIV-Setup'),mode);
+        if(!link)throw Error('VIV_DESKTOP_ADDRESS');
+        field.value=link;panel.hidden=false;pcGuide.hidden=true;check.hidden=true;again.hidden=true;
+      }catch{
+        pcGuide.hidden=false;
+        check.textContent='PC 주소를 가져오지 못했습니다.';
+        again.hidden=false;
+      }finally{
+        again.disabled=false;
+        if(restoreFocus&&[again,document.body].includes(document.activeElement))(field.value?field:again).focus();
+      }
+    }
+    again.addEventListener('click',checkDesktopAddress);
+    copyAddress(ai.querySelector('[data-install-copy-mcp="desktop"]'),field,'PC에서 이어갈 주소');
+    checkDesktopAddress();
   }
 }else{
   if(alreadyInstalled)document.querySelector('[data-install-steps]').hidden=true;
