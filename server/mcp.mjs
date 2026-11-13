@@ -13,7 +13,7 @@ import {CLUTCH_DEFAULTS,CLUTCH_PARAMETER_SCHEMA,validateClutchParameters} from '
 import {compileStrategyGraph} from '../dist/domain/strategy-graph.mjs';
 import {assertStrategyLearningResearchInput,strategyLearningResearchProtocol} from './strategy-learning-research.mjs';
 import {getInstrument,MARKET_TIMEFRAME_MS} from '../dist/domain/instruments.mjs';
-import {isFirstPaperDecisionPlan,paperTrendResultBasis} from '../dist/domain/paper-mind-presets.mjs';
+import {isFirstPaperDecisionPlan,paperDecisionFillCount,paperTrendResultBasis} from '../dist/domain/paper-mind-presets.mjs';
 import {VIV_INSTRUCTIONS,VIV_PLAYBOOK,VIV_TUTORIAL_ACTIONS,vivOnboarding} from './viv-onboarding.mjs';
 const identifierSchema={type:'string',minLength:1,maxLength:200,pattern:'^[a-zA-Z0-9][a-zA-Z0-9_.:@-]{0,199}$'};
 const revisionSchema={type:'integer',minimum:0,maximum:Number.MAX_SAFE_INTEGER};
@@ -273,7 +273,7 @@ async function callMindTool(request,env,options,name,args){
       const basis=isFirstPaperDecisionPlan(manifest?.data?.strategyPlan)?paperTrendResultBasis(record,fills):null;
       return toolResult({ok:true,result:{decisionId:record.id,profileId:scope.profileId,instrumentId:scope.instrumentId,timeframe,
         executionMode:'paper',asOf:record.asOf??record.inputPackage?.asOf??null,quoteCurrency,action:record.decision?.action??null,
-        executionStatus:record.execution?.status??null,fillCount:Array.isArray(fills)?fills.length:null,basis,
+        executionStatus:record.execution?.status??null,fillCount:paperDecisionFillCount(record,fills),basis,
         openUrl:new URL(paperDecisionRecordHash(record.id),new URL(request.url).origin).href}});
     }
     const query=new URLSearchParams({...(args.mindId?{profileId:args.mindId}:{}),instrumentId:args.instrumentId,...(args.timeframe?{timeframe:args.timeframe}:{}),...(args.mode?{mode:args.mode}:{})});

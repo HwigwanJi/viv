@@ -79,13 +79,20 @@ const firstPaperDecisionGraphHash=strategyGraphHash(createPaperMindPresetGraph(F
 export const isFirstPaperDecisionPlan=plan=>plan?.approval?.enabled&&plan.scope?.instrumentId===BTC&&
  plan.scope.timeframe==='4h'&&plan.graph?.schemaVersion===2&&strategyGraphHash(plan.graph)===firstPaperDecisionGraphHash;
 
+export function paperDecisionFillCount(record,fills){
+ if(!Array.isArray(fills))return null;
+ const status=record.execution?.status;
+ if((status==='FILLED'&&fills.length===0)||(status==='NO_ORDER_REQUIRED'&&fills.length>0))return null;
+ return fills.length;
+}
+
 export function paperTrendResultBasis(record,fills){
  const evaluation=record.strategyEvaluation,trend=Array.isArray(evaluation?.modules)?evaluation.modules.find(module=>module.moduleId==='SMA_TREND'):null;
  const {close,slowMA,lookbackBars}=trend?.indicators??{};
  if(![close,slowMA,lookbackBars].every(Number.isFinite))return null;
  const graph=evaluation.graphEvaluation,output=graph?.output;
  const signal=Array.isArray(graph?.trace)?graph.trace.find(step=>step.nodeId==='trend-decision')?.output?.decision:null;
- const noPosition=trend.ready===true&&record.decision?.action==='hold'&&record.execution?.status==='NO_ORDER_REQUIRED'&&fills?.length===0&&
+ const noPosition=trend.ready===true&&record.decision?.action==='hold'&&record.execution?.status==='NO_ORDER_REQUIRED'&&paperDecisionFillCount(record,fills)===0&&
   signal?.action==='sell'&&signal.targetWeight===0&&output?.currentWeight===0&&output.deltaWeight===0&&close<=slowMA;
  return {close,slowMA,lookbackBars,...(noPosition?{currentWeight:0,targetWeight:0,orderReason:'TARGET_ALREADY_REACHED',
   explanation:'확정 종가가 이동평균'+(close===slowMA?'과 같아':'보다 낮아')+' 목표 보유 비중은 0%였습니다. 당시 이 종목의 보유 비중도 0%여서 매도할 수량이 없었고 모의 주문 없이 유지했습니다.'}:{})};

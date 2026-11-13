@@ -41,6 +41,12 @@ test('stored paper result reads one owner-scoped record and separates an unknown
   const unknown=(await call()).structuredContent.result;
   assert.equal(unknown.fillCount,null);
   assert.equal(unknown.basis.explanation,undefined);
+  fills=[{runId:record.id}];
+  assert.equal((await call()).structuredContent.result.fillCount,null);
+  record.execution.status='FILLED';
+  assert.equal((await call()).structuredContent.result.fillCount,1);
+  fills=[];
+  assert.equal((await call()).structuredContent.result.fillCount,null);
   assert.equal((await call({instrumentId:'crypto:okx:ETH-USDT'})).structuredContent.code,'DECISION_INSTRUMENT_SCOPE');
   assert.equal((await call({mindId:'mind-b'})).structuredContent.code,'DECISION_MIND_SCOPE');
   assert.equal((await call({timeframe:'1h'})).structuredContent.code,'DECISION_TIMEFRAME_SCOPE');

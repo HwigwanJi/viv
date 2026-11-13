@@ -3256,9 +3256,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T21:02:44.987Z",
-      "reason": "저장된 첫 모의 판단의 목록과 근거 상세에서 이전 실습 탭으로 돌아가는 경로를 대조했다.",
-      "signature": "9157dec12e6b8a51e87ed395ef942e2cc1c222ac31717cc7c65b7b039565bda5",
+      "reviewedAt": "2026-11-13T21:30:41.860Z",
+      "reason": "저장 판단의 체결 누락과 원장 불일치를 미확인으로 표시하고 같은 판단을 읽기 전용으로 재조회하는 경로를 대조했다.",
+      "signature": "7f809cd94a351650ef090faa92d2756f396fff5d587f3a2c15cf7c3944b8d538",
       "controls": [
         [
           "data-auto-action",
@@ -3354,7 +3354,7 @@
         ],
         [
           "helper:button(",
-          182
+          183
         ],
         [
           "helper:renderActionMenu(",
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "e8649815fe8c9decdafc8b97afb5e17b581c529436154ab529bf88db59c2163c",
+      "sourceHash": "4533c503fb9004162c57bab2a42bdf79b77720cdc296327721c3ab22023e9dbf",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
