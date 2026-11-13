@@ -162,6 +162,14 @@
 .studio-jump-results a > span:first-child { @apply min-w-0 break-words; }
 .studio-jump-task { @apply shrink-0 text-secondary text-ui-xs; }
 .studio-jump-arrow { @apply shrink-0 text-secondary; }
+@variant max-sm {
+  .studio-jump-results a:has(> .studio-jump-task) {
+    @apply grid gap-x-ui-5 gap-y-ui-2;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .studio-jump-task { grid-column: 1; overflow-wrap: anywhere; }
+  .studio-jump-results a:has(> .studio-jump-task) > .studio-jump-arrow { grid-column: 2; grid-row: 1 / span 2; }
+}
 .studio-jump-results [hidden],.studio-jump-empty[hidden] { @apply hidden; }
 .studio-jump-problem { @apply flex flex-wrap items-center gap-ui-4 text-ui-sm; }
 .studio-jump-problem p { @apply min-w-0; overflow-wrap:anywhere; }

@@ -2,6 +2,7 @@ import {calendarDay,calendarMonth,moveCalendarMonth} from '../system/calendar-da
 import {currencyAmount} from './currency-format.mjs';
 
 export const CALENDAR_GUIDE_URL='https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/viv-mcp-playbook.md#캘린더에서-백테스트-이어가기';
+export const CALENDAR_STATUS_TITLE='모의검증 현황';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dateTitle=new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short',timeZone:'UTC'});
@@ -62,7 +63,7 @@ function agenda(day,selected){
 
 function ongoing(rows,expanded){
   const previewCount=2,hasMore=rows.length>previewCount;
-  return '<section class="viv-cal-panel viv-cal-active" aria-labelledby="viv-cal-active-title"><h2 id="viv-cal-active-title" tabindex="-1">모의검증 현황 <span class="muted">'+rows.length+'건</span></h2>'+
+  return '<section class="viv-cal-panel viv-cal-active" aria-labelledby="viv-cal-active-title"><h2 id="viv-cal-active-title" tabindex="-1">'+CALENDAR_STATUS_TITLE+' <span class="muted">'+rows.length+'건</span></h2>'+
     (hasMore?'<button type="button" class="button small viv-cal-expand" data-cal-control="active-toggle" data-studio-action="calendar-toggle-active" aria-controls="viv-cal-active-list" aria-expanded="'+expanded+'">'+(expanded?'목록 접기':'전체 '+rows.length+'건 보기')+'</button>':'')+
     (rows.length?'<ul id="viv-cal-active-list" class="viv-cal-list">'+(expanded?rows:rows.slice(0,previewCount)).map(row=>{
       const detail=row.at?row.atLabel+' '+scheduleTime.format(new Date(row.at)):

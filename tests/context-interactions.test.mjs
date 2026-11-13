@@ -189,7 +189,7 @@ test('calendar task searches identify paper results from either account view',()
  for(const mode of ['paper','live']){
   const route=parseStudioRoute('#home?executionMode='+mode);
   const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
-  for(const query of ['진행 중인 검증','날짜별 손익','오늘 벌었는지','모의 검증','달력']){
+  for(const query of ['모의검증 현황','모의검증현황','검증 예정','시작 대기','진행 중인 검증','날짜별 손익','오늘 벌었는지','모의 검증','달력']){
    const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
    assert.equal(matches.length,1,query);
    const [item]=matches;

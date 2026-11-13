@@ -392,7 +392,7 @@
     },
     {
       "path": "dist/ui/studio-shell.mjs",
-      "sha256": "3a58b75373d9b9413b9807c6d31e26856bc2d03586d56c8b0e441fa571ab3b67"
+      "sha256": "94933c904df340ae5ccea110da9e61df1c631d29169bc439083de32e0db1b3c6"
     },
     {
       "path": "dist/ui/terminal-universe.mjs",
@@ -448,7 +448,7 @@
     },
     {
       "path": "dist/ui/workspace-calendar.mjs",
-      "sha256": "b9ca09cb04d68f41fc90fd4318387839a6e9dce148d4b9dd7c407be13b905ae2"
+      "sha256": "7a1b350e34f677e9d33971314a8f51ce87cafb0a180e5e7b03eaced20c1bbb73"
     },
     {
       "path": "package-lock.json",
@@ -588,7 +588,7 @@
     },
     {
       "path": "styles/components/studio-shell.css",
-      "sha256": "0c56dc488b88d188ea020802b4d14d65cdca4ed41e30b3c9bc6edc08fe2e6ddc"
+      "sha256": "41ed70281fb67c63217e681f8ed2e0a666bea6b7d7a62cb102a0b98d00281622"
     },
     {
       "path": "styles/components/surfaces.css",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "b32b95db9cf8d4a0b59494ea7c34d02595636590954e8384abf0eec3dce4af93",
+  "inputHash": "9c7de9b2601f43a714c09c0237ef11990a4b6a3d18113d43dac7fc4d0031cf22",
   "pages": [
     {
       "path": "dist/index.html",
@@ -794,7 +794,7 @@
     },
     {
       "path": "dist/ui/trading-terminal.css",
-      "sha256": "ab4f7d7eacd50add42be08eefeeb6e29e88ed614f809e2151dc3577eae7f30fd"
+      "sha256": "07ace70468f8eb02cd2c82a2d1618f25094cd9d10a47c7bfa064d47d89ebb5b6"
     },
     {
       "path": "dist/ui/mind-avatar.css",

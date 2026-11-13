@@ -3391,8 +3391,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T11:42:48.893Z",
-      "reason": "모의 판단에서 금융기관 연결을 열고 모바일과 PC에서 같은 마인드와 기록 탭으로 돌아오는 조작을 확인했다.",
+      "reviewedAt": "2026-11-13T13:01:21.676Z",
+      "reason": "모바일 터치와 PC 키보드로 모의검증 현황과 예정 검증을 검색해 같은 캘린더로 이동하고 모의·실전 화면 맥락을 확인했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3412,7 +3412,7 @@
           2
         ]
       ],
-      "sourceHash": "3a58b75373d9b9413b9807c6d31e26856bc2d03586d56c8b0e441fa571ab3b67",
+      "sourceHash": "94933c904df340ae5ccea110da9e61df1c631d29169bc439083de32e0db1b3c6",
       "customContainers": []
     },
     {
@@ -3444,10 +3444,10 @@
         ]
       ],
       "signature": "8187cf5bc17bb4f722605938729bf3916a473e07f999346e231d0fd4a95a7131",
-      "sourceHash": "b9ca09cb04d68f41fc90fd4318387839a6e9dce148d4b9dd7c407be13b905ae2",
+      "sourceHash": "faabe3d715d37c09a9dd514836c5394d970c71f6d1d485213459e894166ff5bb",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T10:36:11.548Z",
-      "reason": "캘린더 안내를 직접 또는 화면 찾기로 새 탭에 열고 기존 월·날짜·보고서와 키보드 사용을 대조했다.",
+      "reviewedAt": "2026-11-13T13:01:21.679Z",
+      "reason": "화면 찾기와 현황 제목이 같은 이름을 사용하며, 진행·시작 대기·날짜별 모의 실현 손익과 날짜 복귀를 확인했다.",
       "customContainers": []
     },
     {
