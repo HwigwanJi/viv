@@ -174,7 +174,8 @@ document.addEventListener('click',event=>{
   const recordRoute=routeHref?.startsWith('#minds?')?parseStudioRoute(routeHref):null;
   const savedDecision=recordRoute?.params.get('view')==='records'&&recordRoute.params.get('kind')==='decisions'&&executionModeOf(recordRoute)==='paper'&&recordRoute.params.get('search');
   const paperPractice=routeLink?.hasAttribute('data-first-decision-practice');
-  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice||savedDecision?routeLink:null);
+  const paperReportReturn=routeLink?.hasAttribute('data-paper-report-return');
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice||paperReportReturn||savedDecision?routeLink:null);
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
     dialogLifecycleToken++;
@@ -186,7 +187,7 @@ document.addEventListener('click',event=>{
       navigateToHeading(href,'[data-library-result-heading]');
       if(sameRoute)void studio.openResearch(parseStudioRoute(href).params.get('knowledgeId'),{showLoading:true}).catch(()=>{});
     }else if(paperPractice)navigateToHeading(href,'[data-simulation-form="create"] select[name="mindId"]');
-    else navigateToHeading(href,paperGuide?'#first-paper-decision':undefined);
+    else navigateToHeading(href,paperGuide?'#first-paper-decision':paperReportReturn?'#simulation-result-heading':undefined);
     return;
   }
   const nav=event.target.closest('[data-nav]');

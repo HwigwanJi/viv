@@ -1,3 +1,6 @@
+import {isMindStrategyPlanActive} from '../domain/mind-strategy-plan.mjs';
+import {graphRequiresJev} from '../domain/strategy-graph.mjs';
+import {PAPER_DECISION_INSTRUMENT,PAPER_DECISION_TIMEFRAME} from '../system/paper-decision-links.mjs';
 import {JEV_EXECUTION_CALL_LIMIT} from '../domain/jev-question.mjs';
 import {preProviderRecoveryCandidate,canPreparePreProviderRecovery,renderPreProviderRecovery} from './simulation-pre-provider-recovery.mjs';
 import {simulationMarketScope,simulationAssetParameters,simulationObservedCosts,simulationEventReturnBasis,eventGraph} from './simulation-asset-scope.mjs';
@@ -332,9 +335,18 @@ export function createSimulationPlayground(hooks={},options={}){
     const savedCallLimit=s.jevBudget?.maximum??s.config.maxJevCalls;
     const runCost=isOpen(s)&&!running&&savedCallLimit>0?'<span class="tiny">AI 호출 상한 '+number(savedCallLimit,0)+'회 · 제공사 요금 적용 가능</span>':'';
     const controls=(fromLearning?button('전략 튜닝으로 돌아가기','learning-back'):comparison?button('비교로 돌아가기','comparison-back'):button('실험 목록','back'))+(s.lineage?.sourceSimulationId?button('원본 실험','open',s.lineage.sourceSimulationId):'')+(reviewing?'':runCost+primary)+renderActionMenu({id:'simulation-report-actions',label:'실험 작업',content:secondary});
-    const practiceHref=active==='overview'&&s.status==='COMPLETED'&&s.config.mode==='MECHANICAL'&&current().params.get('executionMode')!=='live'&&minds().some(m=>m.id===s.config.mindId)
-      ?hooks.href?.('trade',{profileId:s.config.mindId,instrumentId:'crypto:okx:BTC-USDT',timeframe:'4h',mode:'live',executionMode:'paper',comparisonId:null}):null;
-    const nextPractice=practiceHref?'<div class="actions spaced"><a class="button small" href="'+esc(practiceHref)+'" data-studio-route>현재 시세로 모의 판단 시작</a><span class="tiny muted">발행 정책을 현재 확정 봉에 적용합니다. 모의 자금이 필요하며 정책에 따라 AI 키가 필요합니다.</span></div>':'';
+    const practiceMind=active==='overview'&&s.status==='COMPLETED'&&s.config.mode==='MECHANICAL'&&current().params.get('executionMode')!=='live'
+      ?minds().find(mind=>mind.id===s.config.mindId):null;
+    const currentPolicy=practiceMind?.manifest;
+    const practiceHref=practiceMind?hooks.href?.('trade',{profileId:practiceMind.id,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME,mode:'live',executionMode:'paper',comparisonId:null,firstDecision:'1',returnTo:hooks.href?.('minds',{returnTo:null})}):null;
+    let nextPractice='';
+    if(practiceHref){
+      const plan=currentPolicy?.data.strategyPlan;
+      const needsJev=currentPolicy&&(plan?.graph?.schemaVersion!==2||!isMindStrategyPlanActive(plan,new Date().toISOString())||graphRequiresJev(plan.graph));
+      const policy=currentPolicy?'현재 발행 정책 v'+currentPolicy.data.version+' 기준으로 준비 상태를 확인합니다. ':'발행 정책을 먼저 준비해야 합니다. ';
+      const ai=currentPolicy?(needsJev?'JEV 연결이 필요하며 제공사 요금이 적용될 수 있습니다. ':'JEV 키 없이 계산합니다. '):'AI 조건은 발행 정책에서 확인합니다. ';
+      nextPractice='<div class="actions spaced"><a class="button small" href="'+esc(practiceHref)+'" data-studio-route>현재 시세 모의 판단 준비</a><span class="tiny muted">'+esc(policy+ai+'BTC-USDT 확정 시세와 USDT 모의 자금이 필요합니다. 준비가 끝나면 결정 실행을 눌러 판단합니다.')+'</span></div>';
+    }
     return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls,s.status==='COMPLETED')+(s.status==='COMPLETED'?'<span id="simulation-result-status" class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+'</span><span>'+esc(simulationExecutionBasis(s))+'</span>'+(s.config.mode==='MECHANICAL'?'<span>AI 호출 0회</span>':'')+'<span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(id==='overview'&&prepared?'저장한 조건':label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
   }
   function runStatus(s){

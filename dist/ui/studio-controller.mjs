@@ -595,6 +595,10 @@ export function createStudioController(hooks={},options={}){
     const current=currentRoute();
     if(!firstPaperDecision(current))return '';
     const selected=view.selectedMindId,close=studioRouteHash(current,'trade',{firstDecision:null});
+    const source=parseStudioRoute(current.params.get('returnTo')||'');
+    const report=source.page==='minds'&&source.params.get('view')==='simulations'&&source.params.has('simulationId')
+      ?studioReturnLink(current,parseStudioRoute,studioRouteHash):null;
+    const heading=report?'현재 시세 모의 판단 준비':'첫 모의 판단';
     let message,actions='';
     if(selected==='all'){
       const budget=paperBudgetFor(workspace,'USDT');
@@ -622,9 +626,16 @@ export function createStudioController(hooks={},options={}){
         step==='records'?'저장된 결정 보기에서 현재 봉의 판단과 근거를 다시 확인할 수 있습니다.'+
           (list(readiness?.blockers).some(blocker=>blocker.code==='CANDLE_ALREADY_EVALUATED')?' 다음 모의 판단에는 새로 확정된 시세가 필요합니다.':''):
         '아래 트레이딩 화면에서 현재 준비 상태와 다음 행동을 확인하세요.';
-      actions=(step==='data'?firstDecisionPracticeLink(current):'')+'<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>';
+      if(report){
+        const requirement=terminalRunRequirement(view);
+        message=(readiness?.policy?'현재 발행 정책 v'+readiness.policy.version+' · ':'')+
+          (readiness?.requiresJev===true?'JEV 연결 필요. ':readiness?.requiresJev===false?'JEV 키 없이 계산. ':'')+
+          (readiness?.canRun?'준비됐습니다. 결정 실행을 누르면 판단이 시작됩니다.':requirement?.message||'아래에서 준비 상태를 확인하세요.');
+      }
+      actions=(report?'<a class="button" href="'+esc(report.href)+'" data-studio-route data-paper-report-return>백테스트 보고서로 돌아가기</a>':
+        (step==='data'?firstDecisionPracticeLink(current):'')+'<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>');
     }
-    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">첫 모의 판단</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+actions+'</div></div></section>';
+    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">'+heading+'</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+actions+'</div></div></section>';
   }
   function mindContext(){const id=currentRoute().params.get('profileId')||'all',profile=byId(workspace.investmentProfiles,id),manifest=savedMind(id)?.manifest,version=profileVersion(profile?.currentVersionId);return {id,profile,manifest,policy:manifest?.data,settings:manifest?.data.profileSettings||version?.settings,version,memory:byId(workspace.memoryVersions,profile?.currentMemoryVersionId)};}
   function mindHeading(label,actions='',secondary=''){

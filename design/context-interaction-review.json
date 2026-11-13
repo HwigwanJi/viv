@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T00:38:41.901Z",
-      "reason": "캘린더 월 이동과 오류 복구에서 조작 포커스를 복원한다. 다른 화면의 저장 기록 제목과 모달 복귀 경로는 기존 포커스 규칙을 따른다.",
+      "reviewedAt": "2026-11-13T01:35:18.682Z",
+      "reason": "보고서에서 현재 모의 판단의 발행 정책·JEV·USDT 조건을 확인하고 같은 보고서 및 포커스로 돌아온다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "150f49db87cb86442d1a8e01e2692ece944e73983949879a36758b2c4e493db3",
+      "sourceHash": "a9625141f46d23727fefc4f86c11c9176d56f98caa6ef07b9a26a7959b2c2a6e",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -2731,8 +2731,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T20:02:40.988Z",
-      "reason": "키보드 실행 완료 후 결과 제목에 포커스를 옮기고, 실행 중 탐색·다른 요소 포커스·터치 실행과 저장 보고서 재열기의 경계를 브라우저에서 확인했다.",
+      "reviewedAt": "2026-11-13T01:35:18.687Z",
+      "reason": "보고서에서 현재 모의 판단의 발행 정책·JEV·USDT 조건을 확인하고 같은 보고서 및 포커스로 돌아온다.",
       "signature": "dc0d94ae7cf480ce2915278886d8fb2042fa4068faf2828a3702acb34c7bb40a",
       "controls": [
         [
@@ -2804,7 +2804,7 @@
           2
         ]
       ],
-      "sourceHash": "fa5979e194c8ed965f188dadeec78b905c0b4f2f507813e126e70ff514ed1ee1",
+      "sourceHash": "06221a466a22edd8a43159b33516e401780cccddc8463a43af57d13037d4cab8",
       "customContainers": []
     },
     {
@@ -3258,9 +3258,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T01:06:16.367Z",
-      "reason": "첫 모의 판단의 USDT 준비 조건과 과거 시세 실습의 설정 및 결과에서 같은 현재 시세 안내로 돌아오는 링크를 검증했다.",
-      "signature": "1745e71be5ed9d17ccaba26f637407a1e508c7b613aeec1d73251c150dd1ca99",
+      "reviewedAt": "2026-11-13T01:35:18.692Z",
+      "reason": "보고서에서 현재 모의 판단의 발행 정책·JEV·USDT 조건을 확인하고 같은 보고서 및 포커스로 돌아온다.",
+      "signature": "fa445de2602d901a10292dd0d851596ea18457c87a4fc0d36bcc8a97304510a3",
       "controls": [
         [
           "data-auto-action",
@@ -3328,7 +3328,7 @@
         ],
         [
           "element:a",
-          35
+          36
         ],
         [
           "element:button",
@@ -3363,7 +3363,7 @@
           1
         ]
       ],
-      "sourceHash": "2df874ea4a94ac96df2d61287f4714149701b6fd82ab0006760dd6a7bb83f8c5",
+      "sourceHash": "ebd2d83adb249541e4c43be8981ff7b57c1c6e2ba24a5810bffdcd1cda444cba",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
