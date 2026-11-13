@@ -3444,9 +3444,9 @@
         ]
       ],
       "signature": "8187cf5bc17bb4f722605938729bf3916a473e07f999346e231d0fd4a95a7131",
-      "sourceHash": "cf2c78b4dddce1e84a07e65c2271fd3e485794aefba2494f376ab8a98082381c",
+      "sourceHash": "b9ca09cb04d68f41fc90fd4318387839a6e9dce148d4b9dd7c407be13b905ae2",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T10:32:24.950Z",
+      "reviewedAt": "2026-11-13T10:36:11.548Z",
       "reason": "캘린더 안내를 직접 또는 화면 찾기로 새 탭에 열고 기존 월·날짜·보고서와 키보드 사용을 대조했다.",
       "customContainers": []
     },

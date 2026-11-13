@@ -101,7 +101,7 @@ export function createWorkspaceCalendar({getRoute,request,render}){
       return next?routeLink(calendarHref(next),icon,'class="button" aria-label="'+label+'" data-cal-control="'+control+'"'):'';
     };
     const monthHeadingControl=!calendarMonth(moveCalendarMonth(month,-1))?'previous':!calendarMonth(moveCalendarMonth(month,1))?'next':null;
-    return '<section class="viv-calendar"'+(current&&!loading&&!failed?' data-cal-ready':'')+'><header class="viv-cal-head"><div><h1 tabindex="-1">캘린더</h1><p class="muted">모의검증 일정과 날짜별 모의 실현 손익 · 한국 시간</p><p><a href="'+CALENDAR_GUIDE_URL+'" target="_blank" rel="noopener noreferrer">캘린더 사용법 (새 탭)</a></p></div>'+
+    return '<section class="viv-calendar"'+(current&&!loading&&!failed?' data-cal-ready':'')+'><header class="viv-cal-head"><div><h1 tabindex="-1">캘린더</h1><p class="muted">모의검증 일정과 날짜별 모의 실현 손익 · 한국 시간</p><p><a data-cal-control="guide" href="'+CALENDAR_GUIDE_URL+'" target="_blank" rel="noopener noreferrer">캘린더 사용법 (새 탭)</a></p></div>'+
       routeLink(calendarHref(now.slice(0,7),now),'오늘','class="button" data-cal-control="today"')+'</header>'+
       '<div class="viv-cal-layout">'+(current?ongoing(current.active,activeExpanded):'')+
       '<section class="viv-cal-panel viv-cal-month" aria-label="월간 캘린더"><div class="viv-cal-toolbar">'+monthLink(-1,'이전 달','‹','previous')+
