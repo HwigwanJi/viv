@@ -3256,9 +3256,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T21:37:47.816Z",
-      "reason": "저장 판단의 체결 누락과 원장 불일치를 미확인으로 표시하고 같은 판단을 읽기 전용으로 재조회하는 경로를 대조했다.",
-      "signature": "7f809cd94a351650ef090faa92d2756f396fff5d587f3a2c15cf7c3944b8d538",
+      "reviewedAt": "2026-11-13T23:33:03.379Z",
+      "reason": "시세 수집 완료에서 같은 마인드의 실습과 저장 판단으로 이어지는 링크와 초점 복구를 확인했다.",
+      "signature": "e9d2bcb6323b556eeb4360e3c3d73e9120eed17b95768da475dc5edc97272c2e",
       "controls": [
         [
           "data-auto-action",
@@ -3330,7 +3330,7 @@
         ],
         [
           "element:a",
-          39
+          40
         ],
         [
           "element:button",
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "57ed7820bd09860d23e7ddabc8cd5939f96e6349b4fa627de5b0df7fad70c5cf",
+      "sourceHash": "2e9767d2bbaacd1eaf0c82d0e98b596c5afc5079cc0041e17467518e43cc89ce",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
