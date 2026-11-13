@@ -126,23 +126,60 @@ test('checking broker readiness recovers from a VIV server restart without sendi
   assert.deepEqual(calls,Array.from({length:3},()=>({path:'/api/workspace/brokers',body:undefined})));
 });
 
-test('broker PC handoff opens the selected card and copies only its setup address',async t=>{
+test('broker handoff waits for a successful read and respects navigation and another open dialog',async()=>{
+  const accounts=brokerSetup=>({page:'settings',params:new URLSearchParams({view:'accounts',executionMode:'live',brokerSetup})});
+  let current=accounts('upbit'),finish,dialogOpen=false;
+  const opened=[];
+  const connections=createBrokerConnections({
+    request:()=>new Promise(resolve=>{finish=resolve;}),redraw:()=>{},route:()=>current,
+    hasOpenDialog:()=>dialogOpen,open:title=>opened.push(title)
+  });
+  const ready={connections:[],canConnect:true};
+  let read=connections.load();
+  current={page:'home',params:new URLSearchParams()};
+  await connections.load();
+  finish(ready);
+  await read;
+  assert.deepEqual(opened,[]);
+
+  current=accounts('upbit');
+  dialogOpen=true;
+  read=connections.load();
+  finish(ready);
+  await read;
+  assert.deepEqual(opened,[]);
+  dialogOpen=false;
+  read=connections.load();
+  finish(ready);
+  await read;
+  assert.deepEqual(opened,[]);
+
+  current=accounts('toss');
+  read=connections.load();
+  finish(ready);
+  await read;
+  assert.deepEqual(opened,['토스증권 연결']);
+});
+
+test('broker PC handoff opens the selected setup once and copies only its address',async t=>{
   const params=new URLSearchParams({view:'accounts',executionMode:'live',brokerSetup:'upbit'});
   const calls=[],copied=[],toasts=[];
-  let modal;
+  let modal,opens=0;
   const connections=createBrokerConnections({
     request:async(path,body)=>{calls.push({path,body});return {connections:[],canConnect:true};},
-    route:()=>({page:'settings',params}),redraw:()=>{},open:(_,body)=>modal=body,
+    route:()=>({page:'settings',params}),redraw:()=>{},open:(_,body)=>{modal=body;opens++;},
     toast:message=>toasts.push(message),
   });
   globalThis.location={origin:'https://viv.example.test'};
   t.after(()=>{delete globalThis.location;delete navigator.clipboard;});
   await connections.load();
+  assert.equal(opens,1);
+  await connections.load();
+  assert.equal(opens,1);
   const first=connections.render();
   assert.ok(first.indexOf('data-broker-section="upbit"')<first.indexOf('data-broker-section="toss"'));
   assert.match(first,/새 API 키는 PC 웹에서 발급/);
   const click=(action,extra={})=>connections.click({preventDefault(){},target:{closest:()=>({dataset:{brokerAction:action,brokerProvider:'upbit'},...extra})}});
-  await click('connect');
   const address={value:'https://viv.example.test/#settings?view=accounts&executionMode=live&brokerSetup=upbit',hidden:true,focus(){this.focused=true;},select(){this.selected=true;}};
   assert.ok(modal.includes('readonly hidden>'+address.value.replaceAll('&','&amp;')+'</textarea>'));
   assert.ok(modal.indexOf('새 키는 PC 웹에서 발급')<modal.indexOf('name="secretKey"'));
@@ -155,5 +192,9 @@ test('broker PC handoff opens the selected card and copies only its setup addres
   await click('copy-pc-link',findInput);
   assert.equal(address.hidden,false);
   assert.equal(address.selected,true);
-  assert.deepEqual(calls,[{path:'/api/workspace/brokers',body:undefined}]);
+  params.set('brokerSetup','toss');
+  await connections.load();
+  assert.equal(opens,2);
+  assert.match(modal,/name="clientSecret"/);
+  assert.deepEqual(calls,Array.from({length:3},()=>({path:'/api/workspace/brokers',body:undefined})));
 });

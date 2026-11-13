@@ -12,7 +12,7 @@ const table=(headers,rows)=>renderDataTable(headers.map((header,i)=>({...(typeof
 const pcSetup=provider=>'#settings?view=accounts&executionMode=live&brokerSetup='+provider;
 function pcHandoff(provider){
  const address=globalThis.location?.origin&&new URL(pcSetup(provider),globalThis.location.origin).href;
- return `<section class="spaced" data-broker-handoff><h3>새 키는 PC 웹에서 발급</h3><p>PC에서 VIV 연결 화면을 먼저 열고, 발급한 키를 같은 PC의 VIV 입력창에 붙여 넣으세요.</p>${address?`<div class="actions">${button('PC 연결 주소 복사','copy-pc-link',provider)}</div><textarea class="input" rows="2" aria-label="PC 연결 주소" readonly hidden>${esc(address)}</textarea><p class="tiny muted">다른 기기에는 연결 주소만 보내세요. 주소가 열리지 않으면 설치할 때 표시된 VIV PC 주소에서 계좌·자금을 여세요.</p>`:''}</section>`;
+ return `<section class="spaced" data-broker-handoff><h3>새 키는 PC 웹에서 발급</h3><p>PC에서 VIV 연결 화면을 먼저 열고, 발급한 키를 같은 PC의 VIV 입력창에 붙여 넣으세요.</p>${address?`<div class="actions">${button('PC 연결 주소 복사','copy-pc-link',provider)}</div><textarea class="input" rows="2" aria-label="PC 연결 주소" readonly hidden>${esc(address)}</textarea><p class="tiny muted">복사한 주소를 PC에서 열면 ${names[provider]}의 현재 연결 단계로 바로 이어집니다. 주소가 열리지 않으면 설치할 때 표시된 VIV PC 주소에서 계좌·자금을 여세요.</p>`:''}</section>`;
 }
 
 export function brokerPaperReturnLink(route){
@@ -38,10 +38,28 @@ function quoteAssetMarkup(account,provider){
  if(provider!=='upbit'||!account.quoteAssetBalances?.length)return '';
  return `<section class="spaced" data-broker-quote-assets><h4>${helpLabel('BTC·USDT 거래 자금','BTC 마켓은 BTC, USDT 마켓은 USDT를 거래 기준 자산으로 사용합니다. 보유 종목에 포함된 같은 잔고를 거래 기준으로 보여줍니다. 총자산은 원화 평가액에서 한 번 집계합니다. 사용 가능 수량은 미체결 주문에 묶인 수량을 제외한 잔고입니다.')}</h4>${table(['거래 기준 자산','사용 가능 수량','주문 중 수량'],account.quoteAssetBalances.map(a=>[esc(a.currency),quantity(a.available,a.currency,'사용 가능 수량'),quantity(a.locked,a.currency,'주문 중 수량')]))}</section>`;
 }
-export function createBrokerConnections({request,redraw,open,close,toast,route,getDialogToken,now=()=>Date.now()}){
- let data=null,error='',loading=false,pending=false,pendingProvider='',pendingAction='',retryProvider='',readGeneration=0;
+export function createBrokerConnections({request,redraw,open,close,toast,route,getDialogToken,hasOpenDialog,focusSetup,now=()=>Date.now()}){
+ let data=null,error='',loading=false,pending=false,pendingProvider='',pendingAction='',retryProvider='',readGeneration=0,openedSetup=null;
  function acceptSnapshot(provider,snapshot){if(snapshot?.provider!==provider||!Array.isArray(snapshot.accounts))return false;readGeneration++;loading=false;error='';retryProvider='';const previous=data?.connections?.find(c=>c.provider===provider);data={...data,connections:[...(data?.connections??[]).filter(c=>c.provider!==provider),{...previous,provider,snapshot,updatedAt:snapshot.asOf??previous?.updatedAt}]};return true;}
- async function load(){const current=route();if(current.page!=='settings'||current.params.get('view')!=='accounts'||current.params.get('executionMode')!=='live'||loading)return false;const generation=++readGeneration;loading=true;error='';retryProvider='';let loaded=false;try{const value=await request('/api/workspace/brokers');if(generation===readGeneration){data=value;loaded=true;}}catch(e){if(generation===readGeneration)error=e.serverResponse?e.message:'VIV 서버의 응답을 확인하지 못했습니다. 재시작 중이라면 VIV PC 주소가 열린 뒤 다시 확인하세요.';}finally{if(generation===readGeneration)loading=false;redraw();}return loaded;}
+ const isAccountRoute=current=>current.page==='settings'&&current.params.get('view')==='accounts'&&current.params.get('executionMode')==='live';
+ async function load(){
+  const current=route();
+  if(!isAccountRoute(current)||!current.params.has('brokerSetup'))openedSetup=null;
+  if(!isAccountRoute(current)||loading)return false;
+  const generation=++readGeneration;loading=true;error='';retryProvider='';let loaded=false;
+  try{const value=await request('/api/workspace/brokers');if(generation===readGeneration){data=value;loaded=true;}}
+  catch(e){if(generation===readGeneration)error=e.serverResponse?e.message:'VIV 서버의 응답을 확인하지 못했습니다. 재시작 중이라면 VIV PC 주소가 열린 뒤 다시 확인하세요.';}
+  finally{if(generation===readGeneration)loading=false;redraw();}
+  const latest=route(),provider=latest.params.get('brokerSetup');
+  if(loaded&&isAccountRoute(latest)&&Object.hasOwn(names,provider)&&provider!==openedSetup){
+   openedSetup=provider;
+   if(!pending&&!hasOpenDialog?.()){
+    focusSetup?.(provider);
+    connect(provider);
+   }
+  }
+  return loaded;
+ }
 
  function render(){
   const preferred=route().params.get('brokerSetup');
@@ -56,7 +74,7 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
   function connect(provider,{rechecked=false}={}){
   const upbit=provider==='upbit',ready=data?.canConnect===true;
   const networkBlocked=data?.network!=='READY',vaultBlocked=data?.vault==='CONFIGURATION_REQUIRED';
-  const issue=networkBlocked?'서버 허용 IP 준비 필요':vaultBlocked?'서버 키 보관 설정 필요':'서버 연결 설정 필요';
+  const issue=[networkBlocked?'서버 허용 IP 준비 필요':'',vaultBlocked?'서버 키 보관 설정 필요':''].filter(Boolean).join(' · ')||'서버 연결 설정 필요';
   const ip=data?.egressIp?`VIV에 설정된 공인 발신 IPv4는 <strong>${esc(data.egressIp)}</strong>입니다. 현재 서버의 발신 IP와 일치하는지 확인한 뒤 금융기관 허용 IP에 등록하세요. ${button('서버 IP 복사','copy-ip',provider)}`:'금융기관 허용 IP에 VIV 서버의 공인 발신 IPv4를 등록하세요. 직접 설치했다면 VIV가 실행 중인 PC의 인터넷 연결에서 확인하세요. 별도 서버라면 관리자에게 공인 발신 IPv4를 확인하세요.';
   const guideUrl=upbit?'https://docs.upbit.com/kr/docs/api-key':'https://developers.tossinvest.com/';
   const providerLinks=`<div class="actions"><a href="${urls[provider]}" target="_blank" rel="noopener noreferrer">${names[provider]} API 관리 열기 ↗</a><a href="${guideUrl}" target="_blank" rel="noopener noreferrer">공식 발급 안내 ↗</a><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#계좌-연결과-잔고-확인" target="_blank" rel="noopener noreferrer">VIV 연결 문제 해결 ↗</a></div>`;
@@ -66,8 +84,8 @@ export function createBrokerConnections({request,redraw,open,close,toast,route,g
   const paperLink=brokerPaperReturnLink(route());
   const cancel='<button class="button" type="button" data-studio-action="close-dialog">취소</button>';
   if(!ready){
-   const serverGuide=`<section class="spaced"><h3>2. VIV 서버 준비</h3>${networkBlocked?'<p>금융기관에서 허용 IP를 등록한 뒤 VIV 설치 폴더의 <code>.env</code>에 <code>BROKER_NETWORK_READY=true</code>를 설정하고 서버를 다시 시작하세요.</p>':''}${vaultBlocked?'<p>VIV 설치 때 생성한 <code>BROKER_VAULT_KEY</code> 설정을 서버에서 확인하세요.</p>':''}<p><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#서버-다시-시작" target="_blank" rel="noopener noreferrer">서버 다시 시작 방법 ↗</a></p></section>`;
-   open(names[provider]+' 연결',`<p role="status"><strong>${rechecked?'아직 서버 준비가 필요합니다 · ':''}${issue}</strong></p><p data-broker-error role="alert"></p>${pcHandoff(provider)}<section class="spaced"><h3>1. 키 발급과 허용 IP 등록</h3>${issuing}</section>${serverGuide}<section class="spaced"><h3>3. VIV 설정 확인</h3><p><strong>준비 상태 다시 확인</strong>은 VIV 서버의 설정을 읽습니다. 금융기관의 허용 IP와 키 권한은 키를 입력하고 잔고를 조회할 때 확인합니다.</p></section>`,paperLink+button('준비 상태 다시 확인','recheck',provider));
+   const serverGuide=`<section class="spaced"><h3>2. VIV 서버 준비</h3>${networkBlocked?'<p>금융기관에 허용 IP를 등록한 뒤 VIV 설치 폴더의 <code>.env</code>에 <code>BROKER_NETWORK_READY=true</code>를 설정하세요.</p>':''}${vaultBlocked?'<p>VIV 설치 때 생성한 <code>BROKER_VAULT_KEY</code> 설정을 서버에서 확인하세요.</p>':''}<p>필요한 서버 설정을 마친 뒤 VIV를 다시 시작하세요. <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#서버-다시-시작" target="_blank" rel="noopener noreferrer">서버 다시 시작 방법 ↗</a></p></section>`;
+   open(names[provider]+' 연결',`<p role="status"><strong>${rechecked?'아직 서버 준비가 필요합니다 · ':''}${issue}</strong></p><p data-broker-error role="alert"></p>${pcHandoff(provider)}<section class="spaced"><h3>1. 키 발급과 허용 IP 등록</h3>${issuing}</section>${serverGuide}<section class="spaced"><h3>3. VIV 설정 확인</h3><p>서버 재시작 후 복사한 <strong>PC 연결 주소</strong>를 다시 열거나 <strong>준비 상태 다시 확인</strong>을 누르세요. VIV 서버 설정이 확인되면 여기에 키 입력창이 열립니다. 금융기관의 허용 IP와 키 권한은 잔고 조회 때 확인합니다.</p></section>`,paperLink+button('준비 상태 다시 확인','recheck',provider));
    return;
   }
   const fields=upbit?[['accessKey','Access Key'],['secretKey','Secret Key']]:[['clientId','Client ID'],['clientSecret','Client Secret']];

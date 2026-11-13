@@ -596,8 +596,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T07:41:28.548Z",
-      "reason": "계좌·자금 카드와 연결 창의 PC 기기 전환, 선택한 금융기관 복원 및 주소 복사",
+      "reviewedAt": "2026-11-13T06:33:49.169Z",
+      "reason": "휴대폰에서 복사한 금융기관별 주소가 PC에서 준비 상태 또는 키 입력을 연다. 키보드 닫기, 서버 응답 복구 및 기본 카드 동선을 검증했다.",
       "signature": "c13b708d6cf87c9d3c11f3c0fc4ce99626cdefea7a510b5e8c843ae446845b9c",
       "controls": [
         [
@@ -641,7 +641,7 @@
           1
         ]
       ],
-      "sourceHash": "db9e8676b6c59c8adef84295d24f87b4ec9356e869b85b1092093705b8afea8f",
+      "sourceHash": "e18a1412a85e13da666f57ad11dbc375061736cd2e5732312c16568cabb443a8",
       "customContainers": []
     },
     {
@@ -3258,9 +3258,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T06:11:26.989Z",
-      "reason": "완료 백테스트에서 키 없는 현재 시세 실습을 열고, JEV 설정과 시세 복구 및 판단 기록에서 같은 보고서로 돌아간다.",
-      "signature": "b7af0d86119198917a6d5820ce9a0f06158f673acfc0dccb8e510aa7e152af7d",
+      "reviewedAt": "2026-11-13T06:33:49.176Z",
+      "reason": "주소에서 연 계좌 연결 창을 닫으면 해당 금융기관 카드의 연결 버튼에 키보드 초점을 돌려준다.",
+      "signature": "68092fa1701d51035021391a885c65278ed616834acf7518f465b3b048f44570",
       "controls": [
         [
           "data-auto-action",
@@ -3363,7 +3363,7 @@
           1
         ]
       ],
-      "sourceHash": "641c782c00bc5ee42576fbf8fa2b84bf8a7c0086156867d991c10f9188d858ba",
+      "sourceHash": "39174b7671223f2f5848d2e3f84aead1c70a7a6a039cdda2a558c91d1d6a7222",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

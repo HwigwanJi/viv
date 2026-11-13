@@ -396,7 +396,12 @@ export function createStudioController(hooks={},options={}){
   const loadPaperActivity=async()=>{if(currentRoute().page!=='minds'||executionModeOf(currentRoute())!=='paper')return;const selected=currentRoute().params.get('profileId')||'all';if(selected!=='all')return paperActivity.load();const ids=[...new Set(list(workspace?.mindRuns).filter(run=>run.experimentType==='FORWARD_PAPER').map(run=>run.profileId))];for(const profileId of ids){if(disposed||currentRoute().page!=='minds'||executionModeOf(currentRoute())!=='paper')break;await paperActivity.load({profileId});}};
   const automatedTrading=createAutomatedTrading({getAppearance:id=>readMindAppearance(workspace,id).config,request,redraw:()=>redraw(),open:(...args)=>hooks.open?.(...args),close:()=>hooks.close?.(),getDialogToken:hooks.getDialogToken,toast:message=>hooks.toast?.(message),route:()=>currentRoute(),getManifest:id=>savedMind(id)?.manifest,navigate:(...args)=>hooks.navigate?.(...args),getActivity:id=>liveActivity.get(id),getActivities:()=>liveActivity.items(),getActivityState:()=>liveActivity.state(),loadActivity:options=>liveActivity.load(options)});
   const eventPaper=createEventPaperTrading({getAppearance:id=>readMindAppearance(workspace,id).config,request,onData:(value,profileId)=>eventPaperBatch.acceptProfile(value,profileId),redraw:()=>redraw(),open:(...args)=>hooks.open?.(...args),close:()=>hooks.close?.(),getDialogToken:hooks.getDialogToken,toast:message=>hooks.toast?.(message),route:()=>currentRoute(),getManifest:id=>savedMind(id)?.manifest,navigate:(...args)=>hooks.navigate?.(...args)});
-  const brokers=createBrokerConnections({request,redraw:()=>redraw(),open:(...a)=>hooks.open?.(...a),close:()=>hooks.close?.(),toast:m=>hooks.toast?.(m),route:()=>currentRoute(),getDialogToken:hooks.getDialogToken});
+  const brokers=createBrokerConnections({
+    request,redraw:()=>redraw(),open:(...a)=>hooks.open?.(...a),close:()=>hooks.close?.(),toast:m=>hooks.toast?.(m),
+    route:()=>currentRoute(),getDialogToken:hooks.getDialogToken,
+    hasOpenDialog:()=>typeof document!=='undefined'&&!!document.querySelector('#detail-dialog[open]'),
+    focusSetup:provider=>typeof document!=='undefined'&&document.querySelector('#app [data-broker-action="connect"][data-broker-provider="'+provider+'"]')?.focus({preventScroll:true})
+  });
   let memoryData=null,memoryKey='',memoryLoading=false,memoryError='',memoryGeneration=0,memoryAbort=null,memoryReadAt=0;
   const recordCursors=createCursorHistory(),mindLibraryCursors=createCursorHistory();
   let mindLibraryData=null,mindLibraryKey='',mindLibraryLoading=false,mindLibraryError='',mindLibraryGeneration=0,mindLibraryAbort=null;
