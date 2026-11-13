@@ -87,9 +87,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T09:37:02.749Z",
-      "reason": "모바일에서 PC 주소 재조회와 복사 복구, PC에서 동일 설치 확인과 다른 설치 차단을 브라우저로 검증했다.",
-      "signature": "f81ea39abdd2dd868214cd42dc7eda4d8fa4ac094e1367b1fb682253d306b18c",
+      "reviewedAt": "2026-11-13T11:59:03.759Z",
+      "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
+      "signature": "d10955ef1df9069019c22b24bef9271b3846278779d3f17e8b44e6f57a30ee5a",
       "controls": [
         [
           "data-install-copy-command",
@@ -121,7 +121,7 @@
         ],
         [
           "element:button",
-          9
+          10
         ],
         [
           "element:dialog",
@@ -136,7 +136,7 @@
           2
         ]
       ],
-      "sourceHash": "19c90489a34cca1d96c65a4330abaace48ed361b49c2cd592c9e32401c27c258"
+      "sourceHash": "d392ead3a4da06f54c4c5d0e6a5feffc92e8c57917ec78458bd742b4b3e40fc2"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -1392,8 +1392,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T09:37:02.750Z",
-      "reason": "모바일에서 PC 주소 재조회와 복사 복구, PC에서 동일 설치 확인과 다른 설치 차단을 브라우저로 검증했다.",
+      "reviewedAt": "2026-11-13T11:59:03.761Z",
+      "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
       "signature": "fce26f2bf864f860afb3c9b885b293829b34168fd6b8e04f8428837d3f08a828",
       "controls": [
         [
@@ -1429,7 +1429,7 @@
           1
         ]
       ],
-      "sourceHash": "d99eaadaac95c9bcd336f49d6e2302d7ff7f551d12368451595edcaeb51cd5a0"
+      "sourceHash": "0d3da52b9e15ac3992d7533d34e6b056094e5067f37d4812c372ad184334f087"
     },
     {
       "file": "dist/ui/interface-motion.mjs",
@@ -3885,8 +3885,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T07:07:52.868Z",
-      "reason": "설치 화면의 앱 열기 실패를 알리되 기존 서버·앱 파일 확인과 같은 주소 열기 검증을 적용한다.",
+      "reviewedAt": "2026-11-13T11:59:03.761Z",
+      "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
       "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
       "controls": [
         [
@@ -3902,7 +3902,7 @@
           1
         ]
       ],
-      "sourceHash": "141e0f8396cdf4d4ac08f75cddd4a17703b5f7e1e6f55513341e2c98a13970d0",
+      "sourceHash": "a834170bf0af50784eb9829497da36073ed58f414a37f6a47ffd3e59c9258694",
       "customContainers": []
     }
   ],

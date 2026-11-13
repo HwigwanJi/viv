@@ -74,6 +74,12 @@
           </div>
           <p><a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#mcp만-복구하기">MCP 연결·복구 도움말</a></p>
         </section>
+        <section class="spaced" data-viv-install-failure hidden aria-label="설치 화면 복구">
+          <p role="alert">설치 화면의 연결 확인을 불러오지 못했습니다.</p>
+          <p data-viv-retry-status role="status"></p>
+          <p class="wrap-anywhere" data-viv-failed-files aria-live="polite" hidden></p>
+          <button class="button" type="button">설치 화면 다시 확인</button>
+        </section>
         <p data-install-status role="status" aria-live="polite"></p>
         <p><a class="button" data-install-open href="/#home?executionMode=paper">VIV 열기</a></p>
         <div data-viv-open-status role="status"></div>
@@ -83,6 +89,6 @@
   </main>
   <dialog id="detail-dialog" aria-labelledby="dialog-title"></dialog>
   <script src="./ui/viv-startup.js"></script>
-  <script type="module" src="./ui/install-page.mjs"></script>
+  <script type="module" src="./ui/install-page.mjs" id="viv-install-entry"></script>
 </body>
 </html>

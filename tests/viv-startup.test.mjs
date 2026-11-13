@@ -61,7 +61,7 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
   assert.ok(listeners.push && listeners.notificationclick);
 });
 
-function setup(fetch, resources = []) {
+function setup(fetch, resources = [], {install = false} = {}) {
   const events = {}, attributes = new Map(), status = {hidden: true}, message = {}, fileStatus = {hidden: true};
   const button = {
     isConnected: true,
@@ -70,7 +70,7 @@ function setup(fetch, resources = []) {
     setAttribute: (name, value) => attributes.set(name, value),
     removeAttribute: name => attributes.delete(name),
   };
-  const recovery = {hidden: true, querySelector: selector => selector === 'button' ? button : selector === '[data-viv-failed-files]' ? fileStatus : message};
+  const recovery = {hidden: true, dataset: {}, querySelector: selector => selector === 'button' ? button : selector === '[data-viv-failed-files]' ? fileStatus : message};
   const intro = {
     isConnected: true,
     querySelector: selector => selector === '.viv-intro-status' ? status : recovery,
@@ -82,8 +82,11 @@ function setup(fetch, resources = []) {
     setTimeout: (callback, delay) => { events[delay] = callback; return delay; },
     clearTimeout: delay => { delete events[delay]; },
   };
-  const document = {querySelector: selector => selector === '.viv-intro' ? intro : null, getElementById: () => ({src: 'http://localhost/app.mjs'})};
-  const location = {origin: 'http://localhost', pathname: '/', search: '?entry=install', reload: () => { reloads++; }};
+  const document = {
+    querySelector: selector => install ? (selector === '[data-viv-install-failure]' ? recovery : null) : (selector === '.viv-intro' ? intro : null),
+    getElementById: () => ({src: 'http://localhost'+(install ? '/ui/install-page.mjs' : '/app.mjs')}),
+  };
+  const location = {origin: 'http://localhost', pathname: install ? '/install.html' : '/', search: '?entry=install', reload: () => { reloads++; }};
   runInNewContext(script, {document, window, location, AbortController, fetch, URL});
   return {events, attributes, status, message, fileStatus, button, recovery, intro, reloads: () => reloads};
 }
@@ -104,6 +107,34 @@ test('VIV offers recovery when the entry module fails or startup stalls', () => 
       assert.equal(status.hidden, true);
     }
   }
+});
+
+test('install module failure keeps recovery on the same URL until its script responds', async () => {
+  const requests = [];
+  let unavailable = true;
+  const app = setup(async (url, {method}) => {
+    requests.push([url, method]);
+    if (method === 'HEAD') return asset('text/html');
+    return unavailable ? asset('text/html', 404) : asset('text/javascript');
+  }, [], {install: true});
+  app.events.error({target: {id: 'unrelated-image'}});
+  assert.equal(app.recovery.hidden, true);
+  app.events.error({target: {id: 'viv-install-entry'}});
+  assert.equal(app.recovery.hidden, false);
+  await app.button.click();
+  assert.match(app.fileStatus.textContent, /dist\/ui\/install-page.mjs \(HTTP 404/);
+  assert.equal(app.reloads(), 0);
+  unavailable = false;
+  await app.button.click();
+  assert.equal(app.reloads(), 1);
+  assert.deepEqual(requests, [
+    ['/install.html?entry=install', 'HEAD'], ['http://localhost/ui/install-page.mjs', 'GET'],
+    ['/install.html?entry=install', 'HEAD'], ['http://localhost/ui/install-page.mjs', 'GET'],
+  ]);
+  const ready = setup(undefined, [], {install: true});
+  ready.recovery.dataset.ready = 'true';
+  ready.events[12000]();
+  assert.equal(ready.recovery.hidden, true);
 });
 
 test('VIV startup help is a visible HTML link before the script runs', () => {

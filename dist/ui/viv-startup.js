@@ -59,7 +59,7 @@
     return '';
   }
 
-  async function confirmAndOpen(control, status, pageUrl, entryUrl, open, fileStatus) {
+  async function confirmAndOpen(control, status, pageUrl, entryUrl, open, fileStatus, fallbackUrl) {
     if (control.getAttribute('aria-disabled') === 'true') return;
     control.setAttribute('aria-disabled', 'true');
     status.textContent = 'VIV 서버에 연결할 수 있는지 확인 중…';
@@ -78,7 +78,7 @@
           status.textContent = 'VIV 앱 파일을 확인하는 중…';
           var targets = failedScripts().map(function (failure) { return failure.url; });
           // shortcut: check the workspace module when the browser omits failed URLs, extend if other boot dependencies need this fallback.
-          if (moduleLoadFailed && targets.length === 0) targets.push(new URL('./ui/studio-controller.mjs', entryUrl).href);
+          if (fallbackUrl && targets.length === 0) targets.push(fallbackUrl);
           var urls = [...new Set([entryUrl, ...targets])];
           var scripts = await Promise.all(urls.map(function (url) { return scriptAvailable(url, options); }));
           ready = scripts.every(function (result) { return result === true; });
@@ -127,28 +127,32 @@
   }
 
   var intro = document.querySelector('.viv-intro');
-  if (!intro) return;
-  var loading = intro.querySelector('.viv-intro-status');
-  var recovery = intro.querySelector('[data-viv-boot-failure]');
+  var installRecovery = document.querySelector('[data-viv-install-failure]');
+  if (!intro && !installRecovery) return;
+  var loading = intro?.querySelector('.viv-intro-status');
+  var recovery = installRecovery || intro.querySelector('[data-viv-boot-failure]');
+  var entryId = installRecovery ? 'viv-install-entry' : 'viv-app-entry';
   var retry = recovery.querySelector('button');
   var status = recovery.querySelector('[data-viv-retry-status]');
   var fileStatus = recovery.querySelector('[data-viv-failed-files]');
   function showRecovery() {
-    if (!intro.isConnected || !recovery.hidden) return;
-    loading.hidden = true;
+    if ((intro && !intro.isConnected) || (installRecovery && installRecovery.dataset.ready) || !recovery.hidden) return;
+    if (loading) loading.hidden = true;
     showFailedFiles(fileStatus, failedScripts(true));
     recovery.hidden = false;
   }
   retry.addEventListener('click', function () {
-    return confirmAndOpen(retry, status, location.pathname + location.search, document.getElementById('viv-app-entry').src, function () {
-      location.reload();
-    }, fileStatus);
+    var entryUrl = document.getElementById(entryId).src;
+    var fallbackUrl = !installRecovery && moduleLoadFailed ? new URL('./ui/studio-controller.mjs', entryUrl).href : null;
+    return confirmAndOpen(retry, status, location.pathname + location.search, entryUrl, function () {
+      if (!installRecovery?.dataset.ready) location.reload();
+    }, fileStatus, fallbackUrl);
   });
   window.addEventListener('error', function (event) {
-    if (event.target?.id === 'viv-app-entry') moduleLoadFailed = true;
+    if (event.target?.id === entryId) moduleLoadFailed = true;
     if (event.target === window || moduleLoadFailed) showRecovery();
   }, true);
   window.addEventListener('unhandledrejection', showRecovery);
   window.setTimeout(showRecovery, 12000);
-  loading.hidden = false;
+  if (loading) loading.hidden = false;
 }());

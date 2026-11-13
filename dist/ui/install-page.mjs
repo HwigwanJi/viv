@@ -217,3 +217,12 @@ if(chrome&&apk){
     if(response.ok&&['application/vnd.android.package-archive','application/octet-stream'].includes(type))apk.hidden=false;
   }).catch(()=>{});
 }
+
+const recovery=document.querySelector('[data-viv-install-failure]');
+if(recovery){
+  recovery.dataset.ready='true';
+  if(!recovery.hidden){
+    if(recovery.contains(document.activeElement))openLink.focus();
+    recovery.hidden=true;
+  }
+}
