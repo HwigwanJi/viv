@@ -1387,10 +1387,10 @@
         "navigation",
         "readonly"
       ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T14:31:49.129Z",
-      "reason": "기본 HTML에서 연결·시작 도움말을 여는 경로를 휴대폰 터치와 PC 키보드로 조작하고 설치 주소 복귀 및 재시도를 확인했다.",
-      "signature": "c6cf235cf5891523721afc745c9b2eb17771059796c1d65053fc1f56c54e01a8",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-13T17:00:27.215Z",
+      "reason": "앱 열기 실패 뒤 기존 링크를 유지해 같은 탭에서 다시 시도한다.",
+      "signature": "fc56ea2c278425f79e92f9c3be96b9f92a1ef938058d959803af087a80f32803",
       "controls": [
         [
           "data-install-copy-command",
@@ -1409,10 +1409,6 @@
           1
         ],
         [
-          "data-viv-open-status",
-          1
-        ],
-        [
           "element:button",
           1
         ],
@@ -1421,7 +1417,7 @@
           1
         ]
       ],
-      "sourceHash": "2fbd07ef731d5f555199e057c8209521cf6209b8a44406f1c35231172b447b9e"
+      "sourceHash": "c4ebc28d8167b7a5d902b7f63d4d61adea81d3c5be7cfc97df278a256d73f990"
     },
     {
       "file": "dist/ui/interface-motion.mjs",
@@ -3876,9 +3872,9 @@
       "owners": [
         "primitive"
       ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T14:31:49.130Z",
-      "reason": "기본 HTML에서 연결·시작 도움말을 여는 경로를 휴대폰 터치와 PC 키보드로 조작하고 설치 주소 복귀 및 재시도를 확인했다.",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-13T17:00:27.216Z",
+      "reason": "앱 열기 실패 뒤 기존 링크를 유지해 같은 탭에서 다시 시도한다.",
       "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
       "controls": [
         [
@@ -3890,7 +3886,7 @@
           1
         ]
       ],
-      "sourceHash": "047d12b2153f2ecd5f51d3c04340acb641187b0f819ef06c52c5a71a7af5620a",
+      "sourceHash": "ca5122f3e44e48d6379a4ae44ef5c0eb2791d3053a5953001d623552787ba044",
       "customContainers": []
     }
   ],

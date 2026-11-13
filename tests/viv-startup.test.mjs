@@ -355,9 +355,10 @@ test('install entry keeps its own page on failure and retains normal modified li
   await link.click({...click, ctrlKey: true});
   assert.equal(prevented, 0);
   assert.deepEqual(urls, []);
-  for (const expected of [/연결 경로가 VIV 서버에 닿지 않습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/]) {
+  for (const expected of [/VIV 앱 화면을 불러오지 못했습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/]) {
     await link.click(click);
     assert.match(status.textContent, expected);
+    assert.equal(attrs.has('aria-disabled'), false);
     assert.deepEqual(opened, []);
   }
   await link.click(click);
@@ -368,6 +369,8 @@ test('install entry keeps its own page on failure and retains normal modified li
     ['/', 'GET'], ['/api/status', 'GET'],
   ]);
   assert.deepEqual(opened, [link.href]);
+  assert.equal(attrs.has('aria-disabled'), false);
+  assert.equal(status.textContent, '');
   assert.deepEqual(failures, Array(5).fill('viv:open-failed'));
 });
 

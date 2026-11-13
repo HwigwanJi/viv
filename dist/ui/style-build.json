@@ -164,7 +164,7 @@
     },
     {
       "path": "dist/ui/install-page.mjs",
-      "sha256": "2fbd07ef731d5f555199e057c8209521cf6209b8a44406f1c35231172b447b9e"
+      "sha256": "c4ebc28d8167b7a5d902b7f63d4d61adea81d3c5be7cfc97df278a256d73f990"
     },
     {
       "path": "dist/ui/interface-motion.mjs",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "9a9e991c5f3a1bf7ff5dab9bfc33bd1c1f2c457b2922eaac2611f67401fecb79",
+  "inputHash": "d454ed4f1942a2555e840534c36fdf4c393c5ee604f971ad0146d822dfb4ecd8",
   "pages": [
     {
       "path": "dist/index.html",

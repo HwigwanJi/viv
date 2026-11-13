@@ -62,7 +62,7 @@
   async function confirmAndOpen(control, status, pageUrl, entryUrl, open, fileStatus, fallbackUrl, installEntry) {
     if (control.getAttribute('aria-disabled') === 'true') return;
     control.setAttribute('aria-disabled', 'true');
-    status.textContent = 'VIV 서버에 연결할 수 있는지 확인 중…';
+    status.textContent = entryUrl ? 'VIV 서버에 연결할 수 있는지 확인 중…' : 'VIV 앱 화면을 여는 중…';
     showFailedFiles(fileStatus, []);
     var controller = new AbortController();
     var timeout = window.setTimeout(function () { controller.abort(); }, 4000);
@@ -71,6 +71,9 @@
     try {
       var page = await fetch(pageUrl, entryUrl && !installEntry ? options : {...options, method: 'GET'});
       problem = connectionIssue(page.status) || problem;
+      if (!entryUrl && [502, 503, 504].includes(page.status)) {
+        problem = 'VIV 앱 화면을 불러오지 못했습니다. 잠시 뒤 다시 열어 보세요.';
+      }
       if (page.ok && /^text\/html\b/i.test(page.headers.get('content-type'))) {
         var ready = true;
         if (installEntry && !/<script\b[^>]*\bid=["']viv-install-entry["']/i.test(await page.text())) {
@@ -99,6 +102,8 @@
           }
         }
         if (ready) {
+          control.removeAttribute('aria-disabled');
+          status.textContent = '';
           if (control.isConnected) open();
           return;
         }
