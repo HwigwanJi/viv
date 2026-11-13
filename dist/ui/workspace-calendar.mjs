@@ -58,14 +58,16 @@ function ongoing(rows){
 }
 
 export function createWorkspaceCalendar({getRoute,request,render}){
-  let data=null,error=null,pending=null,controller=null;
+  let data=null,error=null,pending=null,controller=null,inCalendar=false;
   async function load({force=false}={}){
     const route=getRoute();
     const month=route.page==='calendar'?monthFor(route):null;
+    const reentering=Boolean(month)&&!inCalendar;
+    inCalendar=Boolean(month);
     if(month&&pending===month)return;
     controller?.abort();
     controller=null;pending=null;
-    if(!month||!force&&data?.month===month)return;
+    if(!month||!force&&!reentering&&data?.month===month)return;
     const task=new AbortController();
     controller=task;pending=month;render();
     try{

@@ -10,6 +10,10 @@ import {buildSimulationCollection,readSimulationCollectionHeads} from './simulat
 const mindLink=profileId=>'#minds?'+new URLSearchParams({profileId,view:'operations',executionMode:'paper'});
 const labLink=route=>'#minds?'+new URLSearchParams(Object.entries({view:'simulations',executionMode:'paper',...route}).filter(([,value])=>value!=null));
 const validTime=value=>typeof value==='string'&&Number.isFinite(Date.parse(value))?new Date(value).toISOString():null;
+const experimentStates=new Map([
+  ['CREATED','실행 대기'],['READY','실행 대기'],['RUNNING','실행 중'],
+  ['PAUSED','일시중지'],['ACTION_REQUIRED','확인 필요'],['FAILED','확인 필요']
+]);
 
 export function buildWorkspaceCalendar(workspace,events,experiments,{month,now,runnersDisabled=false}){
   const names=new Map((workspace.investmentProfiles??[]).map(p=>[p.id,p.displayName??p.name]));
@@ -73,7 +77,8 @@ export function buildWorkspaceCalendar(workspace,events,experiments,{month,now,r
   for(const row of experiments){
     if(row.archivedAt||row.status==='DRAFT')continue;
     const href=labLink(row.route);
-    if(['RUNNING','PAUSED','ACTION_REQUIRED','FAILED'].includes(row.status))active.push({name:row.name,kind:'experiment',state:row.status==='RUNNING'?'실행 중':row.status==='PAUSED'?'일시중지':'확인 필요',progress:row.progress,href});
+    const state=experimentStates.get(row.status);
+    if(state)active.push({name:row.name,kind:'experiment',state,progress:row.progress,href});
     if(row.status==='COMPLETED')add(row.completedAt??row.updatedAt,{kind:'experiment',label:row.completedAt?'과거 시세 검증 완료':'과거 시세 결과 갱신',name:row.name,href,totalReturn:row.metrics?.totalReturn});
   }
   return {month,today:calendarDay(now),asOf:now,active,eventLedgerUnavailable,

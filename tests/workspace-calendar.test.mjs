@@ -45,6 +45,35 @@ test('calendar only accepts owner-scoped month reads',async()=>{
   assert.equal((await handleWorkspaceCalendar(new Request(url+'&month=2026-12',{headers}),{},Date.now)).status,400);
 });
 
+test('saved but unstarted experiments appear in the overview without a scheduled date',()=>{
+  const states=['CREATED','READY','RUNNING','PAUSED','ACTION_REQUIRED','FAILED','DRAFT','COMPLETED','READY'];
+  const experiments=states.map((status,i)=>({name:'experiment '+i,status,route:{simulationId:'sim-'+i},createdAt:'2026-11-13T04:00:00Z',
+    ...(i===7?{completedAt:'2026-11-13T04:30:00Z'}:i===8?{archivedAt:'2026-11-13T04:40:00Z'}:{})}));
+  const data=buildWorkspaceCalendar({},[],experiments,{month:'2026-11',now:'2026-11-13T05:00:00Z',runnersDisabled:true});
+  assert.deepEqual(data.active.map(item=>item.state),['실행 대기','실행 대기','실행 중','일시중지','확인 필요','확인 필요']);
+  assert.match(data.active[0].href,/executionMode=paper.*simulationId=sim-0/);
+  assert.equal(data.active[0].at,undefined);
+  assert.deepEqual(data.days.flatMap(day=>day.entries.map(item=>item.name)),['experiment 7']);
+});
+
+test('calendar refreshes the same month when returning from another screen',async()=>{
+  const month='2026-11',today='2026-11-13';
+  let page='calendar',reads=0;
+  const calendar=createWorkspaceCalendar({
+    getRoute:()=>({page,params:new URLSearchParams({month,date:today})}),
+    request:async()=>({month,today,days:[],active:++reads===1?[{name:'저장한 실험',kind:'experiment',state:'실행 대기',href:'#minds'}]:[]}),
+    render:()=>{},
+  });
+  await calendar.load();
+  assert.match(calendar.render(),/저장한 실험/);
+  await calendar.load();
+  assert.equal(reads,1);
+  page='minds';await calendar.load();
+  page='calendar';await calendar.load();
+  assert.equal(reads,2);
+  assert.doesNotMatch(calendar.render(),/저장한 실험/);
+});
+
 test('calendar presents active checks before the month and selected date',async()=>{
   const month='2026-11',today='2026-11-12';
   const calendar=createWorkspaceCalendar({
