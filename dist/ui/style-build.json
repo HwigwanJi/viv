@@ -12,7 +12,7 @@
     },
     {
       "path": "dist/install.html",
-      "sha256": "2f9477b272efe8826781f9721e8bccafcaf48eb0ad0148486718d432ad5014f4"
+      "sha256": "13486584012add86c0d360c0e5f5662b0aa97eb08e509bf72549c6e4ab21b415"
     },
     {
       "path": "dist/knowledge.mjs",
@@ -164,7 +164,7 @@
     },
     {
       "path": "dist/ui/install-page.mjs",
-      "sha256": "d03790f98cfe2442669807b87210b93ef69609d7185a303271c1de347f63de91"
+      "sha256": "2fbd07ef731d5f555199e057c8209521cf6209b8a44406f1c35231172b447b9e"
     },
     {
       "path": "dist/ui/interface-motion.mjs",
@@ -464,7 +464,7 @@
     },
     {
       "path": "scripts/style-contract.mjs",
-      "sha256": "a225075071a1819c31777784836fc3764a83b6933a2f228808cf698f25ae5986"
+      "sha256": "c3c6dfc5dc548dbfa7c9ede102e0d20889430ecd51581157172685cad3d3c5c0"
     },
     {
       "path": "styles/components/action-menu.css",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "258b8347fecd8b35fafb096c8d42bea52c2c167ed1c746dc03d7e09a86660758",
+  "inputHash": "6936cca5059685cfbc878b49db86386afea80cf15617ce90cb18bc0c64ccf39b",
   "pages": [
     {
       "path": "dist/index.html",

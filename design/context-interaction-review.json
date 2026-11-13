@@ -87,9 +87,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T12:13:59.066Z",
-      "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
-      "signature": "d10955ef1df9069019c22b24bef9271b3846278779d3f17e8b44e6f57a30ee5a",
+      "reviewedAt": "2026-11-13T14:31:49.127Z",
+      "reason": "기본 HTML에서 연결·시작 도움말을 여는 경로를 휴대폰 터치와 PC 키보드로 조작하고 설치 주소 복귀 및 재시도를 확인했다.",
+      "signature": "e80cd6da05f1b6e64db414c70ad1b3c89772bb8a290d5dea912f851ebc600284",
       "controls": [
         [
           "data-install-copy-command",
@@ -105,10 +105,6 @@
         ],
         [
           "data-install-retry-command",
-          1
-        ],
-        [
-          "data-viv-open-help",
           1
         ],
         [
@@ -136,7 +132,7 @@
           2
         ]
       ],
-      "sourceHash": "2f9477b272efe8826781f9721e8bccafcaf48eb0ad0148486718d432ad5014f4"
+      "sourceHash": "13486584012add86c0d360c0e5f5662b0aa97eb08e509bf72549c6e4ab21b415"
     },
     {
       "file": "dist/knowledge.mjs",
@@ -1392,9 +1388,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T12:13:59.069Z",
-      "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
-      "signature": "fce26f2bf864f860afb3c9b885b293829b34168fd6b8e04f8428837d3f08a828",
+      "reviewedAt": "2026-11-13T14:31:49.129Z",
+      "reason": "기본 HTML에서 연결·시작 도움말을 여는 경로를 휴대폰 터치와 PC 키보드로 조작하고 설치 주소 복귀 및 재시도를 확인했다.",
+      "signature": "c6cf235cf5891523721afc745c9b2eb17771059796c1d65053fc1f56c54e01a8",
       "controls": [
         [
           "data-install-copy-command",
@@ -1413,10 +1409,6 @@
           1
         ],
         [
-          "data-viv-open-help",
-          1
-        ],
-        [
           "data-viv-open-status",
           1
         ],
@@ -1429,7 +1421,7 @@
           1
         ]
       ],
-      "sourceHash": "d03790f98cfe2442669807b87210b93ef69609d7185a303271c1de347f63de91"
+      "sourceHash": "2fbd07ef731d5f555199e057c8209521cf6209b8a44406f1c35231172b447b9e"
     },
     {
       "file": "dist/ui/interface-motion.mjs",
@@ -3885,16 +3877,12 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T12:13:59.069Z",
-      "reason": "설치 모듈 HTTP 404를 Android와 iPhone 브라우저에서 재현하고 오류 경로와 동일 주소 재시도 및 AI 연결 화면 복귀를 확인했다.",
-      "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
+      "reviewedAt": "2026-11-13T14:31:49.130Z",
+      "reason": "기본 HTML에서 연결·시작 도움말을 여는 경로를 휴대폰 터치와 PC 키보드로 조작하고 설치 주소 복귀 및 재시도를 확인했다.",
+      "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
       "controls": [
         [
           "data-install-open",
-          1
-        ],
-        [
-          "data-viv-open-help",
           1
         ],
         [
@@ -3902,7 +3890,7 @@
           1
         ]
       ],
-      "sourceHash": "d8338941d461f248067ebb5ff2699bf84b6a5054985d7eee8b12030f3f197394",
+      "sourceHash": "047d12b2153f2ecd5f51d3c04340acb641187b0f819ef06c52c5a71a7af5620a",
       "customContainers": []
     }
   ],

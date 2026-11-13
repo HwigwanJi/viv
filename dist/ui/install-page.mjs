@@ -8,7 +8,7 @@ const privateOrigin=/^[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/.test(location.hostname);
 const handoff=document.querySelector('[data-install-handoff]'),connection=document.querySelector('[data-install-connection]');
 const recheck=document.querySelector('[data-install-recheck]'),setup=document.querySelector('[data-install-setup]'),help=document.querySelector('[data-install-handoff-help]');
 const openLink=document.querySelector('[data-install-open]'),openApp=openLink.parentElement;
-const openStatus=document.querySelector('[data-viv-open-status]'),openHelp=document.querySelector('[data-viv-open-help]');
+const openStatus=document.querySelector('[data-viv-open-status]');
 const retryCommand=document.querySelector('[data-install-retry-command]'),retryCode=retryCommand.querySelector('code');
 const addressField=address.querySelector('input'),addressCheck=address.querySelector('#viv-install-address-check');
 let installUrl=null,lastVerified=null;
@@ -37,7 +37,7 @@ async function checkConnection(){
   const restoreFocus=document.activeElement===recheck;
   recheck.disabled=true;setup.hidden=true;help.hidden=true;retryCommand.hidden=true;
   if(!localDesktop)openApp.hidden=true;
-  openStatus.textContent='';openHelp.hidden=true;
+  openStatus.textContent='';
   status.textContent='';
   showPreviousAddress();
   connection.textContent='연결을 확인하는 중입니다.';

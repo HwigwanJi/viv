@@ -149,6 +149,8 @@ test('VIV startup help is a visible HTML link before the script runs', () => {
   assert.match(html, /data-viv-boot-failure hidden[^]*?<\/div>\s*<noscript>[^<]+<\/noscript>\s*<a data-viv-recovery-link href="https:\/\//);
   assert.equal((html.match(/data-viv-recovery-link/g) || []).length, 1);
   const install = readFileSync(new URL('../dist/install.html', import.meta.url), 'utf8');
+  assert.match(install, /<p class="spaced"><a data-viv-recovery-link[^>]+>VIV 연결·시작 문제 해결<\/a><\/p>/);
+  assert.equal((install.match(/data-viv-recovery-link/g) || []).length, 1);
   for (const page of [html, install]) {
     assert.match(page, /data-viv-recovery-link href="https:\/\/github\.com\/HwigwanJi\/viv\/blob\/main\/docs\/agents\/operations\/self-host\.md#시작-오류가-반복될-때" referrerpolicy="no-referrer"/);
   }
@@ -317,7 +319,7 @@ test('VIV distinguishes HTML served for an app file from HTTP failures and trans
 });
 
 test('install entry keeps its own page on failure and retains normal modified link actions', async () => {
-  const attrs = new Map(), status = {}, help = {hidden: true};
+  const attrs = new Map(), status = {};
   const link = {
     isConnected: true, href: 'http://localhost/#home?executionMode=paper', pathname: '/', search: '',
     addEventListener(_, fn) { this.click = fn; },
@@ -328,7 +330,7 @@ test('install entry keeps its own page on failure and retains normal modified li
   const urls = [], opened = [];
   const failures = [];
   link.dispatchEvent = event => failures.push(event.type);
-  const nodes = {'[data-install-open]': link, '[data-viv-open-status]': status, '[data-viv-open-help]': help};
+  const nodes = {'[data-install-open]': link, '[data-viv-open-status]': status};
   const document = {querySelector: selector => nodes[selector] ?? null};
   const window = {setTimeout: () => 1, clearTimeout() {}};
   const vivPage = () => new Response('<script type="module" src="./app.mjs" id="viv-app-entry"></script>', {headers: {'content-type': 'text/html'}});
@@ -352,12 +354,10 @@ test('install entry keeps its own page on failure and retains normal modified li
   const click = {button: 0, preventDefault: () => { prevented++; }};
   await link.click({...click, ctrlKey: true});
   assert.equal(prevented, 0);
-  assert.equal(help.hidden, true);
   assert.deepEqual(urls, []);
   for (const expected of [/연결 경로가 VIV 서버에 닿지 않습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /VIV 서버 응답을 확인할 수 없습니다/]) {
     await link.click(click);
     assert.match(status.textContent, expected);
-    assert.equal(help.hidden, false);
     assert.deepEqual(opened, []);
   }
   await link.click(click);

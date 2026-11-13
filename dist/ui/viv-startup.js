@@ -115,17 +115,13 @@
 
   var installLink = document.querySelector('[data-install-open]');
   if (installLink) {
-    var installHelp = document.querySelector('[data-viv-open-help]');
     installLink.addEventListener('click', async function (event) {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       var result = await confirmAndOpen(installLink, document.querySelector('[data-viv-open-status]'), installLink.pathname + installLink.search, null, function () {
         location.assign(installLink.href);
       });
-      if (result === false) {
-        if (installHelp) installHelp.hidden = false;
-        installLink.dispatchEvent(new Event('viv:open-failed'));
-      }
+      if (result === false) installLink.dispatchEvent(new Event('viv:open-failed'));
     });
   }
 
@@ -147,10 +143,9 @@
   retry.addEventListener('click', async function () {
     var entryUrl = document.getElementById(entryId).src;
     var fallbackUrl = !installRecovery && moduleLoadFailed ? new URL('./ui/studio-controller.mjs', entryUrl).href : null;
-    var result = await confirmAndOpen(retry, status, location.pathname + location.search, entryUrl, function () {
+    await confirmAndOpen(retry, status, location.pathname + location.search, entryUrl, function () {
       if (!installRecovery?.dataset.ready) location.reload();
     }, fileStatus, fallbackUrl, Boolean(installRecovery));
-    if (result === false && installRecovery && installHelp && !installRecovery.dataset.ready) installHelp.hidden = false;
   });
   window.addEventListener('error', function (event) {
     if (event.target?.id === entryId) moduleLoadFailed = true;
