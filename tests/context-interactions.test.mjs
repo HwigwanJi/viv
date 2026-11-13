@@ -114,7 +114,7 @@ test('first decision searches open the same paper practice from either account v
  for(const mode of ['paper','live']){
   const route=parseStudioRoute('#home?executionMode='+mode);
   const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
-  for(const query of ['첫 모의 판단','첫모의판단','모의 실습','현재 시세']){
+  for(const query of ['첫 모의 판단','첫모의판단','현재 시세']){
    const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
    assert.equal(matches.length,1);
    const [entry]=matches,destination=parseStudioRoute(entry.href);
@@ -123,6 +123,22 @@ test('first decision searches open the same paper practice from either account v
    assert.equal(destination.params.get('firstDecision'),'1');
    assert.equal(entry.taskSuffix,mode==='live'?'모의 화면으로 이동':'');
   }
+ }
+});
+
+test('the documented first backtest stays searchable from either account view',()=>{
+ for(const mode of ['paper','live']){
+  const route=parseStudioRoute('#home?executionMode='+mode);
+  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+  const matches=entries.filter(item=>studioJumpMatches(item.label,'첫 백테스트 실습'));
+  assert.equal(matches.length,1);
+  const [entry]=matches,destination=parseStudioRoute(entry.href);
+  assert.equal(entry.searchOnly,true);
+  assert.equal(destination.page,'minds');
+  assert.equal(destination.params.get('executionMode'),'paper');
+  assert.equal(destination.params.get('practice'),'quant');
+  assert.equal(destination.params.get('setup'),'new');
+  assert.equal(entry.taskSuffix,mode==='live'?'모의 화면으로 이동':'');
  }
 });
 
