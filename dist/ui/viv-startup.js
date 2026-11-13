@@ -20,7 +20,7 @@
     return resources.flatMap(function (entry) {
       if (entry.initiatorType !== 'script') return [];
       var url = new URL(entry.name);
-      if (url.origin !== location.origin || !/\.m?js$/i.test(url.pathname)) return [];
+      if (url.origin !== location.origin || !appScriptPath.test(url.pathname)) return [];
       var issue = scriptIssue(entry.responseStatus, entry.contentType);
       var unconfirmed = entry.responseStatus === 0 ||
         (entry.responseStatus === undefined && entry.decodedBodySize === 0);
@@ -49,7 +49,7 @@
       await response.arrayBuffer();
       return true;
     } catch {
-      return null;
+      return options.signal.aborted ? '응답 시간 초과' : '파일 전송을 완료하지 못함';
     }
   }
 
@@ -67,7 +67,7 @@
       if (page.ok && /^text\/html\b/i.test(page.headers.get('content-type'))) {
         var ready = true;
         if (entryUrl) {
-          problem = '앱 파일을 불러올 수 없습니다. VIV 서버의 파일을 확인한 뒤 다시 시도하세요.';
+          problem = '앱 파일을 불러올 수 없습니다. 설치한 컴퓨터에서 VIV 주소가 열리는지 확인한 뒤 다시 시도하세요.';
           status.textContent = 'VIV 앱 파일을 확인하는 중…';
           var targets = failedScripts().map(function (failure) { return failure.url; });
           // shortcut: check the workspace module when the browser omits failed URLs, extend if other boot dependencies need this fallback.

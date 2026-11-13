@@ -3867,8 +3867,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T22:02:49.442Z",
-      "reason": "실제 404와 HTML 응답을 파일별로 구분하고, 전송 실패나 비공개 URL은 상세에 표시하지 않는다.",
+      "reviewedAt": "2026-11-13T02:01:07.644Z",
+      "reason": "앱 파일 재요청의 전송 실패와 시간 초과를 표시하고 같은 저장 링크 복구를 확인한다.",
       "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
       "controls": [
         [
@@ -3884,7 +3884,7 @@
           1
         ]
       ],
-      "sourceHash": "56a0308f9094d09abb174bd167019885762c118c6e45b8e421b3e0e8d68397c6",
+      "sourceHash": "933e4376c81affbb26f4d89e1b254fc2f9bbaab1e6a108e0166b24d68bee76ca",
       "customContainers": []
     }
   ],
