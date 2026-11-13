@@ -392,7 +392,7 @@
     },
     {
       "path": "dist/ui/studio-shell.mjs",
-      "sha256": "94933c904df340ae5ccea110da9e61df1c631d29169bc439083de32e0db1b3c6"
+      "sha256": "9f661e75f75e79d858fadec8c77baca0a5c2bd3744be800286784b1f74712c3b"
     },
     {
       "path": "dist/ui/terminal-universe.mjs",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "75068d2a12eb8c16c23b15eeff0a44177c95f41d5277b3220d0369d6b680cd8d",
+  "inputHash": "36051dedf99ac9c4ecbe478fc9ef554571fd5c20c4cf72a811cb691eeb1bac98",
   "pages": [
     {
       "path": "dist/index.html",
