@@ -101,6 +101,10 @@ test('VIV startup help is a visible HTML link before the script runs', () => {
   assert.match(html, /class="viv-intro-status" role="status" hidden/);
   assert.match(html, /data-viv-boot-failure hidden[^]*?<\/div>\s*<noscript>[^<]+<\/noscript>\s*<a data-viv-recovery-link href="https:\/\//);
   assert.equal((html.match(/data-viv-recovery-link/g) || []).length, 1);
+  const install = readFileSync(new URL('../dist/install.html', import.meta.url), 'utf8');
+  for (const page of [html, install]) {
+    assert.match(page, /data-viv-recovery-link href="https:\/\/github\.com\/HwigwanJi\/viv\/blob\/main\/docs\/agents\/operations\/self-host\.md#시작-오류가-반복될-때" referrerpolicy="no-referrer"/);
+  }
 });
 
 test('VIV keeps the recovery screen until the same page and JavaScript respond', async () => {

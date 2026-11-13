@@ -86,7 +86,7 @@ test('startup recovery searches open the public guide in a separate tab',()=>{
   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
   assert.equal(matches.length,1);
   assert.equal(matches[0].label,'앱이 열리지 않을 때');
-  assert.ok(matches[0].href.endsWith('/self-host.md#앱-열기와-조회-복구'));
+  assert.ok(matches[0].href.endsWith('/self-host.md#시작-오류가-반복될-때'));
   const markup=renderStudioJump(matches);
   assert.match(markup,/data-studio-jump-item target="_blank" rel="noopener noreferrer" data-studio-jump-search-only hidden/);
   assert.doesNotMatch(markup,/data-studio-route/);
