@@ -148,7 +148,9 @@ test('startup recovery searches open the public guide in a separate tab',async()
  for(const query of ['앱이 열리지 않을 때','복구','시작 오류','앱 안 열림','무한 로딩','무한부팅','앱 무한부팅',
   'HTML 응답','html응답','확인할 앱 파일','설치 화면 다시 확인','설치 화면의 연결 확인을 불러오지 못했습니다.',
   'VIV를 시작하지 못했습니다.','HTML 응답 · 원래 PC 주소와 비교','응답 형식 오류 · JavaScript 필요','파일 응답 비교',
-  '이 주소에서 다른 웹페이지가 응답했습니다.','VIV 서버 상태 응답을 확인할 수 없습니다.','서버 상태 응답 비교']){
+  '이 주소에서 다른 웹페이지가 응답했습니다.','VIV 서버 상태 응답을 확인할 수 없습니다.','서버 상태 응답 비교',
+  'VIV 앱 화면 응답 시간이 초과됐습니다. 잠시 뒤 VIV 다시 열기를 누르세요.',
+  'VIV 서버 상태 확인 시간이 초과됐습니다. 잠시 뒤 VIV 다시 열기를 누르세요.']){
   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
   assert.equal(matches.length,1);
   assert.equal(matches[0].label,'앱이 열리지 않을 때');

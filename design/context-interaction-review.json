@@ -3380,8 +3380,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T20:38:02.492Z",
-      "reason": "휴대폰 설치 화면의 상태 오류 두 문구와 문서 제목으로 복구 안내를 새 탭에서 열고 원래 캘린더 날짜와 모의 손익을 확인했다.",
+      "reviewedAt": "2026-11-13T21:58:48.826Z",
+      "reason": "휴대폰 설치 탭에서 앱과 서버 상태 요청 시간 초과를 구분하고 검색·재시도를 확인했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3401,7 +3401,7 @@
           2
         ]
       ],
-      "sourceHash": "fae899519f8af8f748ff9b7723c6fe905e495df3e39b4fecf8b27c78d0991321",
+      "sourceHash": "59de14725954fd2ec27fdfe118f925d8449fb41d14e76832b83412c3746025aa",
       "customContainers": []
     },
     {
@@ -3874,9 +3874,9 @@
       "owners": [
         "primitive"
       ],
-      "review": "SOURCE_REVIEWED",
-      "reviewedAt": "2026-11-13T19:29:58.213Z",
-      "reason": "설치 상태 확인과 앱 열기 직전 응답을 구분하고 같은 탭에서 다시 확인한다.",
+      "review": "BROWSER_VERIFIED",
+      "reviewedAt": "2026-11-13T21:58:48.739Z",
+      "reason": "휴대폰 설치 탭에서 앱과 서버 상태 요청 시간 초과를 구분하고 검색·재시도를 확인했다.",
       "signature": "ef91223da29941f5a6f8293c51c6dfd3105db85df2a01fc7f6254e3705276b8d",
       "controls": [
         [
@@ -3888,7 +3888,7 @@
           1
         ]
       ],
-      "sourceHash": "3e4de83f7ef457aff8fe71a1efef216309dd49566acd5ef378f9d631abdd9125",
+      "sourceHash": "c6fcdea904141f11626ceb10c2271ea1837b77a7fc295e737770ea2c455ac893",
       "customContainers": []
     }
   ],

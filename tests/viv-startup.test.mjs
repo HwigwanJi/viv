@@ -332,9 +332,12 @@ test('install entry keeps its own page on failure and retains normal modified li
   link.dispatchEvent = event => failures.push(event.type);
   const nodes = {'[data-install-open]': link, '[data-viv-open-status]': status};
   const document = {querySelector: selector => nodes[selector] ?? null};
-  const window = {setTimeout: () => 1, clearTimeout() {}};
+  let expire;
+  const window = {setTimeout: callback => { expire = callback; return 1; }, clearTimeout() {}};
   const vivPage = () => new Response('<script type="module" src="./app.mjs" id="viv-app-entry"></script>', {headers: {'content-type': 'text/html'}});
   const replies = [
+    null,
+    vivPage(), null,
     asset('text/html', 502),
     asset('text/html', 403),
     new Response('<h1>Sign in</h1>', {headers: {'content-type': 'text/html'}}),
@@ -347,7 +350,12 @@ test('install entry keeps its own page on failure and retains normal modified li
     assert.equal(options.mode, 'same-origin');
     assert.equal(options.redirect, url === '/api/status' ? 'manual' : 'error');
     assert.equal(options.cache, 'no-store');
-    return replies.shift();
+    const reply = replies.shift();
+    if (reply === null) {
+      expire();
+      throw options.signal.reason;
+    }
+    return reply;
   };
   runInNewContext(script, {document, window, location: {assign: url => opened.push(url)}, AbortController, Event, fetch});
   let prevented = 0;
@@ -355,7 +363,7 @@ test('install entry keeps its own page on failure and retains normal modified li
   await link.click({...click, ctrlKey: true});
   assert.equal(prevented, 0);
   assert.deepEqual(urls, []);
-  for (const expected of [/VIV 앱 화면을 불러오지 못했습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /다른 웹페이지가 응답했습니다/, /VIV 서버 상태 응답을 확인할 수 없습니다/]) {
+  for (const expected of [/VIV 앱 화면 응답 시간이 초과됐습니다/, /VIV 서버 상태 확인 시간이 초과됐습니다/, /VIV 앱 화면을 불러오지 못했습니다/, /접근이 거부되었습니다/, /VIV 서버 응답을 확인할 수 없습니다/, /다른 웹페이지가 응답했습니다/, /VIV 서버 상태 응답을 확인할 수 없습니다/]) {
     await link.click(click);
     assert.match(status.textContent, expected);
     assert.equal(attrs.has('aria-disabled'), false);
@@ -363,6 +371,7 @@ test('install entry keeps its own page on failure and retains normal modified li
   }
   await link.click(click);
   assert.deepEqual(urls, [
+    ['/', 'GET'], ['/', 'GET'], ['/api/status', 'GET'],
     ['/', 'GET'], ['/', 'GET'], ['/', 'GET'],
     ['/', 'GET'], ['/api/status', 'GET'],
     ['/', 'GET'], ['/api/status', 'GET'],
@@ -371,7 +380,7 @@ test('install entry keeps its own page on failure and retains normal modified li
   assert.deepEqual(opened, [link.href]);
   assert.equal(attrs.has('aria-disabled'), false);
   assert.equal(status.textContent, '');
-  assert.deepEqual(failures, Array(5).fill('viv:open-failed'));
+  assert.deepEqual(failures, Array(7).fill('viv:open-failed'));
 });
 
 test('optional session storage keeps the available store and handles a rejected getter', () => {

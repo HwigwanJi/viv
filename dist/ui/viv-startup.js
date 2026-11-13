@@ -68,6 +68,7 @@
     var timeout = window.setTimeout(function () { controller.abort(); }, 4000);
     var options = {method: 'HEAD', cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: controller.signal};
     var problem = 'VIV 서버에 연결할 수 없습니다. 설치한 컴퓨터에서 서버를 켠 뒤 다시 시도하세요.';
+    var checkingAppStatus = false;
     try {
       var page = await fetch(pageUrl, entryUrl && !installEntry ? options : {...options, method: 'GET'});
       problem = connectionIssue(page.status) || problem;
@@ -95,6 +96,7 @@
           problem = '이 주소에서 VIV 서버 응답을 확인할 수 없습니다. 설치할 때 받은 VIV 주소인지 확인하세요.';
           ready = /<script\b[^>]*\bid=["']viv-app-entry["']/i.test(await page.text());
           if (ready) {
+            checkingAppStatus = true;
             problem = 'VIV 서버에 연결할 수 없습니다. 설치한 컴퓨터에서 서버를 켠 뒤 다시 시도하세요.';
             var health = await fetch('/api/status', {...options, method: 'GET', redirect: 'manual'});
             problem = connectionIssue(health.status) || problem;
@@ -116,7 +118,11 @@
         }
       }
     } catch {
-      // A timeout or network failure leaves the current screen open.
+      if (!entryUrl && controller.signal.aborted) {
+        problem = checkingAppStatus
+          ? 'VIV 서버 상태 확인 시간이 초과됐습니다. 잠시 뒤 VIV 다시 열기를 누르세요.'
+          : 'VIV 앱 화면 응답 시간이 초과됐습니다. 잠시 뒤 VIV 다시 열기를 누르세요.';
+      }
     } finally {
       window.clearTimeout(timeout);
     }
