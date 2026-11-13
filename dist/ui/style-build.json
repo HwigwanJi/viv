@@ -448,7 +448,7 @@
     },
     {
       "path": "dist/ui/workspace-calendar.mjs",
-      "sha256": "7a1b350e34f677e9d33971314a8f51ce87cafb0a180e5e7b03eaced20c1bbb73"
+      "sha256": "faabe3d715d37c09a9dd514836c5394d970c71f6d1d485213459e894166ff5bb"
     },
     {
       "path": "package-lock.json",
@@ -588,7 +588,7 @@
     },
     {
       "path": "styles/components/studio-shell.css",
-      "sha256": "41ed70281fb67c63217e681f8ed2e0a666bea6b7d7a62cb102a0b98d00281622"
+      "sha256": "cb8a507bc89b3e8d421b3355798281a2f5f09a9ae0067565806e87743415ecd8"
     },
     {
       "path": "styles/components/surfaces.css",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "9c7de9b2601f43a714c09c0237ef11990a4b6a3d18113d43dac7fc4d0031cf22",
+  "inputHash": "13bf14f8aead8b75d2afc3519147a99a559ec96c188621d9db36a0bf8966afa5",
   "pages": [
     {
       "path": "dist/index.html",
