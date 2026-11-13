@@ -222,7 +222,7 @@ const recovery=document.querySelector('[data-viv-install-failure]');
 if(recovery){
   recovery.dataset.ready='true';
   if(!recovery.hidden){
-    if(recovery.contains(document.activeElement))openLink.focus();
+    if(recovery.contains(document.activeElement))document.querySelector('[data-install-title]').focus();
     recovery.hidden=true;
   }
 }
