@@ -76,6 +76,7 @@ function paperReportOrigin(route){
 const firstDecisionReport=route=>firstPaperDecision(route)?paperReportOrigin(route):null;
 const firstDecisionReturn=route=>studioRouteHash(route,'trade',{returnTo:firstDecisionReport(route)});
 const paperReportReturnLink=href=>href?'<a class="button" href="'+esc(href)+'" data-studio-route data-paper-report-return>백테스트 보고서로 돌아가기</a>':'';
+const keylessCurrentDecisionLink=route=>'<a class="button primary" href="'+esc(studioRouteHash(route,'trade',{profileId:'all',instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME,mode:'live',comparisonId:null,tab:null}))+'" data-studio-route>키 없이 현재 시세 연습</a>';
 function firstDecisionOrigin(route){
   const origin=parseStudioRoute(route.params.get('returnTo')||'');
   return executionModeOf(route)==='paper'&&firstPaperDecision(origin)?origin:null;
@@ -640,7 +641,7 @@ export function createStudioController(hooks={},options={}){
             (readiness?.requiresJev===true?'JEV 사용 전략 · 제공사 요금 적용 가능. ':readiness?.requiresJev===false?'JEV 키 없이 계산. ':'')+
             (readiness?.canRun?'준비됐습니다. 결정 실행을 누르면 판단이 시작됩니다.':requirement?.message||'아래에서 준비 상태를 확인하세요.'));
       }
-      actions=(report?(jevMissing?'<a class="button primary" href="'+esc(studioRouteHash(current,'trade',{profileId:'all',instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME,mode:'live',comparisonId:null,tab:null}))+'" data-studio-route>키 없이 현재 시세 연습</a>':''):
+      actions=(report?(jevMissing?keylessCurrentDecisionLink(current):''):
         (step==='data'?firstDecisionPracticeLink(current):'')+'<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>');
     }
     return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">'+heading+'</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+actions+paperReportReturnLink(report)+'</div></div></section>';
@@ -1113,7 +1114,8 @@ export function createStudioController(hooks={},options={}){
     const back=studioReturnLink(route,parseStudioRoute,studioRouteHash),reviewKey=route.params.get('jevReview')==='1';
     const current=row('현재 보기',live?'실전':'모의')+row('자동 운용',live&&liveActivity.state().error?'운용 상태 조회 실패':enabled===undefined?'상태 조회 중':num(enabled,0)+'개 운용 중')+row('JEV 키',jevConfigured===true?'서버 설정 확인 · 키 유효성 미확인':jevConfigured===false?'설정 안 됨':'설정 상태 조회 필요');
     const jevSetup='<details class="spaced"'+(back||reviewKey?' open':'')+'><summary>AI 판단용 JEV 키 설정</summary><p class="spaced">JEV를 호출하는 판단·분류·추천에 사용합니다. 설정은 VIV 서버가 실행되는 컴퓨터에서 진행하세요.</p><ol class="spaced"><li><a href="https://console.typesafe.ai/keys" target="_blank" rel="noopener noreferrer">TypeSafe 콘솔에서 키 발급·관리 ↗</a></li><li>VIV 설치 폴더의 <code>.env</code>에 <code>TYPESAFE_API_KEY</code>를 설정하세요.</li><li>VIV 서버를 다시 시작하고 이 화면의 <strong>상태 새로고침</strong>을 누르세요. 키 유효성은 다음 JEV 요청의 결과로 확인합니다.</li></ol></details>';
-    const next=live?'':'<p class="spaced"><a class="button small" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>키 없이 과거 데이터로 실습</a></p>';
+    const origin=firstDecisionOrigin(route);
+    const next=live?'':'<p class="spaced">'+(origin&&firstDecisionReport(origin)?keylessCurrentDecisionLink(origin):'<a class="button small" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>키 없이 과거 데이터로 실습</a>')+'</p>';
     const links='<div class="actions spaced"><a class="button small" href="'+esc(studioRouteHash(currentRoute(),'settings',{view:'accounts'}))+'" data-studio-route>'+ (live?'API 키 등록·계좌 관리':'모의 계좌 관리')+'</a>'+(!live?'<a class="button small" href="'+esc(studioRouteHash(currentRoute(),'settings',{view:'accounts',executionMode:'live'}))+'" data-studio-route>실계좌 API 키 등록</a>':'')+'<a class="button small" href="'+esc(studioRouteHash(currentRoute(),'settings',{view:'automation'}))+'" data-studio-route>자동 운용 보기</a><a class="button small" href="/install.html">휴대폰 연결·설치</a></div>';
     const mcp='<p class="spaced"><a class="button small" href="/install.html?connect=ai&amp;executionMode='+executionModeOf(currentRoute())+'">AI 연결·복구 (MCP)</a></p>';
     const sources=row('코인 시세',connections.crypto?.mode==='PUBLIC_CONFIRMED_CANDLES'?'OKX · 공개 시세':'상태 조회 필요')+row('한국 주식',korean?.provider==='TOSS'?'토스증권 · 일봉':korean?.provider==='KIS'?'한국투자증권 · 일봉':korean?.provider==='NAVER_REFERENCE'?'네이버 금융 · 참조 일봉':'상태 조회 필요')+row('미국 주식',us?.provider==='TOSS'&&us.status==='CONFIGURED'?'토스증권 · 일봉':us?.status==='CONFIGURED'?'한국투자증권 · 시세':us?.status==='CONNECT_REQUIRED'?'한국투자증권 연결 필요':'상태 조회 필요')+row('매크로·뉴스',connections.macro?.status==='APPROVED_DOCUMENTS'&&connections.news?.status==='APPROVED_DOCUMENTS'?'검토한 투자 자료':'자료 검토 필요');

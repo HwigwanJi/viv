@@ -3258,8 +3258,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T06:07:25.812Z",
-      "reason": "완료 백테스트에서 JEV 조건·키 없는 현재 시세 실습을 안내하고 시세 복구와 판단 기록을 거쳐 같은 보고서로 복귀한다.",
+      "reviewedAt": "2026-11-13T06:11:26.989Z",
+      "reason": "완료 백테스트에서 키 없는 현재 시세 실습을 열고, JEV 설정과 시세 복구 및 판단 기록에서 같은 보고서로 돌아간다.",
       "signature": "b7af0d86119198917a6d5820ce9a0f06158f673acfc0dccb8e510aa7e152af7d",
       "controls": [
         [
@@ -3363,7 +3363,7 @@
           1
         ]
       ],
-      "sourceHash": "8373a3a0d21ce11356e069507073c763cf8b79706e12316b0fc410b0ac9b568f",
+      "sourceHash": "641c782c00bc5ee42576fbf8fa2b84bf8a7c0086156867d991c10f9188d858ba",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
