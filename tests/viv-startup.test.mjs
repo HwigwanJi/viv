@@ -16,6 +16,12 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
     self: {location: {origin}, addEventListener: (name, listener) => { listeners[name] = listener; }},
     fetch: async (_, {signal}) => {
       if (reply === 'hang') return new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason), {once:true}));
+      if (reply === 'body-hang') return new Response(new ReadableStream({
+        start(controller) {
+          controller.enqueue(new TextEncoder().encode('<title>VIV</title>'));
+          signal.addEventListener('abort', () => controller.error(signal.reason), {once:true});
+        }
+      }), {headers:{'Content-Type':'text/html'}});
       if (!reply) throw new TypeError('connection refused');
       return reply;
     },
@@ -35,6 +41,11 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
   const pending = navigate('/');
   expire();
   assert.match(await (await pending).text(), /설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요/);
+  reply = 'body-hang';
+  const partial = navigate('/install.html');
+  await Promise.resolve();
+  expire();
+  assert.match(await (await partial).text(), /다시 연결/);
   for (const status of [401, 403, 404]) {
     reply = new Response('server response', {status});
     assert.equal(await navigate('/'), reply);

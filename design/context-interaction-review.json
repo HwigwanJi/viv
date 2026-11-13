@@ -222,13 +222,13 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T07:03:38.515Z",
-      "reason": "기존 앱에서 서버 게이트웨이 오류와 장시간 응답 대기, 오프라인 이후 같은 캘린더 주소로 복귀한다.",
+      "reviewedAt": "2026-11-13T22:13:45.815Z",
+      "reason": "설치된 웹앱의 HTML 본문이 멈추면 연결 복구가 나타나고 캘린더 날짜와 손익으로 돌아오는 흐름을 확인했다.",
       "signature": "f214c51500e047047aff964e5a50839ccdc7af081940eeeb11f06cab44c7c97a",
       "controls": [
         [
           "element:a",
-          1
+          2
         ],
         [
           "element:button",
@@ -239,7 +239,7 @@
           1
         ]
       ],
-      "sourceHash": "ce64ba88bd7ac731ed6d347cb4057420f13309ca2b2d254b7e2c2d1f4df9828e",
+      "sourceHash": "5f01639950ac59c6cc97c679ce056be8796f038c091c5be20a7961db03aac17b",
       "customContainers": []
     },
     {

@@ -11,7 +11,13 @@ self.addEventListener('fetch',event=>{
   const timeout=setTimeout(()=>controller.abort(),8000);
   try{
    const response=await fetch(request,{signal:controller.signal});
-   if(![502,503,504].includes(response.status))return response;
+   if(![502,503,504].includes(response.status)){
+    if(response.ok&&/^text\/html\b/i.test(response.headers.get('Content-Type')||'')){
+     // A successful header alone does not finish navigation if the HTML body stalls.
+     await response.clone().arrayBuffer();
+    }
+    return response;
+   }
    gatewayUnavailable=true;
   }catch{
    gatewayUnavailable=controller.signal.aborted;
