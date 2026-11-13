@@ -1391,9 +1391,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T07:03:38.513Z",
-      "reason": "모바일 설치의 서버 확인 실패에서 복구 안내를 열고 응답 확인 뒤 같은 주소의 VIV 열기를 복구한다.",
-      "signature": "fc56ea2c278425f79e92f9c3be96b9f92a1ef938058d959803af087a80f32803",
+      "reviewedAt": "2026-11-13T07:07:52.866Z",
+      "reason": "모바일에서 첫 점검 실패 또는 열기 직전 실패 뒤 같은 화면의 복구 버튼으로 안내하고 성공하면 오류 상태를 지운다.",
+      "signature": "fce26f2bf864f860afb3c9b885b293829b34168fd6b8e04f8428837d3f08a828",
       "controls": [
         [
           "data-install-copy-command",
@@ -1420,7 +1420,7 @@
           1
         ]
       ],
-      "sourceHash": "0786ca54533aef365a6272a9b90164cb3a8ab82b18ed392914b80ebe2c38a1a3"
+      "sourceHash": "594d43033be5c603c50e9c3e2dbd38cf3bff8e3f80eec4b8818e335f33eed24f"
     },
     {
       "file": "dist/ui/interface-motion.mjs",
@@ -3867,8 +3867,8 @@
         "primitive"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T02:01:07.644Z",
-      "reason": "앱 파일 재요청의 전송 실패와 시간 초과를 표시하고 같은 저장 링크 복구를 확인한다.",
+      "reviewedAt": "2026-11-13T07:07:52.868Z",
+      "reason": "설치 화면의 앱 열기 실패를 알리되 기존 서버·앱 파일 확인과 같은 주소 열기 검증을 적용한다.",
       "signature": "8a5f495c359fc2ff3d157969d1c3f923f4e1e820095696c5ef463b9308594015",
       "controls": [
         [
@@ -3884,7 +3884,7 @@
           1
         ]
       ],
-      "sourceHash": "afb7ca34b4684de56c6d5ff26bbfd896737d81b5cf546d59a4ef3abdd48c431c",
+      "sourceHash": "141e0f8396cdf4d4ac08f75cddd4a17703b5f7e1e6f55513341e2c98a13970d0",
       "customContainers": []
     }
   ],

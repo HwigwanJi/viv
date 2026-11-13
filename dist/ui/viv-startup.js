@@ -119,7 +119,10 @@
       var result = await confirmAndOpen(installLink, document.querySelector('[data-viv-open-status]'), installLink.pathname + installLink.search, null, function () {
         location.assign(installLink.href);
       });
-      if (result === false && installHelp) installHelp.hidden = false;
+      if (result === false) {
+        if (installHelp) installHelp.hidden = false;
+        installLink.dispatchEvent(new Event('viv:open-failed'));
+      }
     });
   }
 

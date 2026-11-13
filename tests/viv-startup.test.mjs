@@ -289,6 +289,8 @@ test('install entry keeps its own page on failure and retains normal modified li
     removeAttribute: name => attrs.delete(name),
   };
   const urls = [], opened = [];
+  const failures = [];
+  link.dispatchEvent = event => failures.push(event.type);
   const nodes = {'[data-install-open]': link, '[data-viv-open-status]': status, '[data-viv-open-help]': help};
   const document = {querySelector: selector => nodes[selector] ?? null};
   const window = {setTimeout: () => 1, clearTimeout() {}};
@@ -308,7 +310,7 @@ test('install entry keeps its own page on failure and retains normal modified li
     assert.equal(options.cache, 'no-store');
     return replies.shift();
   };
-  runInNewContext(script, {document, window, location: {assign: url => opened.push(url)}, AbortController, fetch});
+  runInNewContext(script, {document, window, location: {assign: url => opened.push(url)}, AbortController, Event, fetch});
   let prevented = 0;
   const click = {button: 0, preventDefault: () => { prevented++; }};
   await link.click({...click, ctrlKey: true});
@@ -329,6 +331,7 @@ test('install entry keeps its own page on failure and retains normal modified li
     ['/', 'GET'], ['/api/status', 'GET'],
   ]);
   assert.deepEqual(opened, [link.href]);
+  assert.deepEqual(failures, Array(5).fill('viv:open-failed'));
 });
 
 test('optional session storage keeps the available store and handles a rejected getter', () => {

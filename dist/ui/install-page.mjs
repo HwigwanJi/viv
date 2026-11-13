@@ -7,7 +7,8 @@ const params=new URLSearchParams(location.search),aiView=params.get('connect')==
 const privateOrigin=/^[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/.test(location.hostname);
 const handoff=document.querySelector('[data-install-handoff]'),connection=document.querySelector('[data-install-connection]');
 const recheck=document.querySelector('[data-install-recheck]'),setup=document.querySelector('[data-install-setup]'),help=document.querySelector('[data-install-handoff-help]');
-const openApp=document.querySelector('[data-install-open]').parentElement;
+const openLink=document.querySelector('[data-install-open]'),openApp=openLink.parentElement;
+const openStatus=document.querySelector('[data-viv-open-status]'),openHelp=document.querySelector('[data-viv-open-help]');
 const retryCommand=document.querySelector('[data-install-retry-command]'),retryCode=retryCommand.querySelector('code');
 const addressField=address.querySelector('input'),addressCheck=address.querySelector('#viv-install-address-check');
 let installUrl=null,lastVerified=null;
@@ -36,6 +37,7 @@ async function checkConnection(){
   const restoreFocus=document.activeElement===recheck;
   recheck.disabled=true;setup.hidden=true;help.hidden=true;retryCommand.hidden=true;
   if(!localDesktop)openApp.hidden=true;
+  openStatus.textContent='';openHelp.hidden=true;
   status.textContent='';
   showPreviousAddress();
   connection.textContent='연결을 확인하는 중입니다.';
@@ -83,6 +85,12 @@ async function checkConnection(){
 handoff.hidden=false;recheck.hidden=false;
 if(!desktop||!localDesktop&&!privateOrigin)document.querySelector('[data-install-connection-title]').textContent='서버 연결';
 recheck.addEventListener('click',checkConnection);
+openLink.addEventListener('viv:open-failed',()=>{
+  if(!privateOrigin||aiView)return;
+  setup.hidden=false;
+  openApp.hidden=true;
+  if(document.activeElement===openLink||document.activeElement===document.body)recheck.focus();
+});
 copy.addEventListener('click',async()=>{
   const url=installUrl;
   if(!url)return;
