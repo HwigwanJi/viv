@@ -3259,9 +3259,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T08:07:40.486Z",
-      "reason": "현황 펼치기와 접기는 캘린더 UI 상태만 바꾼다.",
-      "signature": "68092fa1701d51035021391a885c65278ed616834acf7518f465b3b048f44570",
+      "reviewedAt": "2026-11-13T08:35:15.655Z",
+      "reason": "첫 모의 판단과 계좌·자금에서 저장한 모의 판단의 기록 검색 링크로 연결한다.",
+      "signature": "f1a81afd93ce9f1bdd179d38ff0e65eaf612315d968dbbf3470d8078b828dc40",
       "controls": [
         [
           "data-auto-action",
@@ -3333,7 +3333,7 @@
         ],
         [
           "element:a",
-          37
+          38
         ],
         [
           "element:button",
@@ -3368,7 +3368,7 @@
           1
         ]
       ],
-      "sourceHash": "487656524d1655b8bfff59f3824bb3c287821fb2e942df70ebdf63f2cc7db494",
+      "sourceHash": "fa0078224d41557bdca12bd29d9340ac2aebadbed2264888c270983a39cbdd0e",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

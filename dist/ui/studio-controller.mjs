@@ -34,7 +34,7 @@ import {universeEditorMarkup,readUniverseForm,universePolicySummary,updateUniver
 import {parseSectorSnapshotImport} from '../domain/market-sectors.mjs';
 import {createCursorHistory} from './cursor-navigation.mjs';
 import {createSimulationPlayground,isSimulationRoute,SIMULATION_TABS} from './simulation-playground.mjs';
-import {buildMindCompanions} from '../domain/mind-companion.mjs';
+import {buildMindCompanions,paperRuns} from '../domain/mind-companion.mjs';
 import {paperMindActivity} from '../domain/mind-activity-projection.mjs';
 import {createMindActivityResource} from './mind-activity-resource.mjs';
 import {createPaperActivityResource} from './paper-activity-resource.mjs';
@@ -76,6 +76,14 @@ function paperReportOrigin(route){
 const firstDecisionReport=route=>firstPaperDecision(route)?paperReportOrigin(route):null;
 const firstDecisionReturn=route=>studioRouteHash(route,'trade',{returnTo:firstDecisionReport(route)});
 const paperReportReturnLink=href=>href?'<a class="button" href="'+esc(href)+'" data-studio-route data-paper-report-return>백테스트 보고서로 돌아가기</a>':'';
+const recentPaperPracticeDecision=(workspace,profileId=null)=>paperRuns(workspace,profileId,new Date().toISOString()).find(run=>
+  run.instrumentId===PAPER_DECISION_INSTRUMENT&&run.status!=='FAILED'&&run.execution?.status!=='SCREENING_ONLY');
+function recentPaperPracticeLink(record,report){
+  if(!record)return '';
+  const hash=paperDecisionRecordHash(record.id);
+  const href=report?studioRouteHash(parseStudioRoute(hash),'minds',{returnTo:report}):hash;
+  return '<a class="button small" href="'+esc(href)+'" data-studio-route>최근 모의 판단 보기</a>';
+}
 const keylessCurrentDecisionLink=route=>'<a class="button primary" href="'+esc(studioRouteHash(route,'trade',{profileId:'all',instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME,mode:'live',comparisonId:null,tab:null}))+'" data-studio-route>키 없이 현재 시세 연습</a>';
 function firstDecisionOrigin(route){
   const origin=parseStudioRoute(route.params.get('returnTo')||'');
@@ -612,6 +620,7 @@ export function createStudioController(hooks={},options={}){
     const selected=view.selectedMindId,close=studioRouteHash(current,'trade',{firstDecision:null});
     const report=firstDecisionReport(current);
     const heading=report?'현재 시세 모의 판단 준비':'첫 모의 판단';
+    const saved=view.selectedInstrumentId===PAPER_DECISION_INSTRUMENT?recentPaperPracticeDecision(workspace,selected==='all'?null:selected):null;
     let message,actions='';
     if(selected==='all'){
       const budget=paperBudgetFor(workspace,'USDT');
@@ -649,7 +658,7 @@ export function createStudioController(hooks={},options={}){
       actions=(report?(jevMissing?keylessCurrentDecisionLink(current):''):
         (step==='data'?firstDecisionPracticeLink(current):'')+'<a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>마인드 다시 고르기</a>');
     }
-    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">'+heading+'</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+actions+paperReportReturnLink(report)+'</div></div></section>';
+    return '<section class="studio-sheet spaced" aria-labelledby="first-paper-decision"><div class="studio-sheet-head"><h2 id="first-paper-decision" tabindex="-1">'+heading+'</h2><a href="'+esc(close)+'" data-studio-route>안내 닫기</a></div><div class="studio-sheet-body"><p>'+esc(message)+'</p><div class="actions spaced">'+recentPaperPracticeLink(saved,report)+actions+paperReportReturnLink(report)+'</div></div></section>';
   }
   function mindContext(){const id=currentRoute().params.get('profileId')||'all',profile=byId(workspace.investmentProfiles,id),manifest=savedMind(id)?.manifest,version=profileVersion(profile?.currentVersionId);return {id,profile,manifest,policy:manifest?.data,settings:manifest?.data.profileSettings||version?.settings,version,memory:byId(workspace.memoryVersions,profile?.currentMemoryVersionId)};}
   function mindHeading(label,actions='',secondary=''){
@@ -1020,7 +1029,10 @@ export function createStudioController(hooks={},options={}){
     const existingBudgets=summaries.filter(b=>b.configured||accounts.some(a=>a.quoteCurrency===b.quoteCurrency)||[b.totalBudget,b.exactAvailable??b.available,b.allocated,b.exactHoldingsValue??b.holdingsValue,b.exactEquity??b.equity].some(v=>v!==null&&v!==undefined&&Number(v)!==0)),setupBudgets=summaries.filter(b=>!existingBudgets.includes(b));
     const rows=existingBudgets.map(b=>[esc(b.quoteCurrency),accountMoney(b.totalBudget,b.quoteCurrency),accountMoney(b.exactAvailable??b.available,b.quoteCurrency),accountMoney(b.allocated,b.quoteCurrency),accountMoney(b.exactHoldingsValue??b.holdingsValue,b.quoteCurrency),accountMoney(b.exactEquity??b.equity,b.quoteCurrency),button(b.configured?'예산 수정':'예산 설정','budget-edit',b.quoteCurrency)]);
     const setup=setupBudgets.length?'<div class="studio-budget-setup" data-paper-budget-setup><h3>통화 예산 설정</h3><div class="actions">'+setupBudgets.map(b=>button(b.quoteCurrency+' 예산 설정','budget-edit',b.quoteCurrency)).join('')+'</div></div>':'';
-    const practice=existingBudgets.some(b=>b.configured)&&!list(workspace.mindRuns).length&&!list(workspace.decisionRecords).length
+    const savedPractice=recentPaperPracticeDecision(workspace);
+    const practice=savedPractice
+      ?'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>모의 판단 실습</h2>'+recentPaperPracticeLink(savedPractice)+'</div></section>'
+      :existingBudgets.some(b=>b.configured)&&!list(workspace.mindRuns).length&&!list(workspace.decisionRecords).length
       ?'<section class="studio-sheet spaced"><div class="studio-sheet-head"><h2>첫 모의 판단</h2></div><div class="studio-sheet-body"><p>보관한 BTC 시세로 실습하거나 현재 확정 시세로 BTC-USDT 국면 추세를 연습할 수 있습니다. 두 실습 모두 JEV 키 없이 진행합니다. 현재 시세 실습은 USDT 모의 자금을 별도로 준비합니다.</p><div class="actions spaced"><a class="button primary" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>키 없이 과거 데이터로 실습</a><a class="button" href="'+PAPER_DECISION_ENTRY+'" data-studio-route>현재 시세로 모의 판단</a></div></div></section>':'';
     return title('계좌·자금')+practice+head+readState+(rows.length?table(['통화','총 예산','배정 가능','마인드 배정','보유 평가액','총자산',''],rows):'')+setup+'</section><section class="studio-sheet spaced" data-paper-accounts aria-busy="'+batch.loading+'"><div class="studio-sheet-head"><h2>마인드별 자금</h2>'+button('마인드에 배정','mind-account')+'</div>'+table(['마인드','통화','현금','보유 평가액','평가자산',''],accounts.map(a=>[esc(profileName(a.profileId)),esc(a.quoteCurrency),accountMoney(a.cash,a.quoteCurrency),accountMoney(a.holdingsValue,a.quoteCurrency),accountMoney(a.equity,a.quoteCurrency),a.eventPaperId?button('모의 운용 열기','mind-view',a.profileId,'data-studio-view="operations"'):button('배정·회수','funding-edit',a.id)]),existingBudgets.length?'아직 마인드에 배정한 자금이 없습니다.':'통화 예산을 설정한 뒤 마인드에 자금을 배정하세요.')+'</section>';
   }
