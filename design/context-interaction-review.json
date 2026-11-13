@@ -3256,7 +3256,7 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T21:30:41.860Z",
+      "reviewedAt": "2026-11-13T21:37:47.816Z",
       "reason": "저장 판단의 체결 누락과 원장 불일치를 미확인으로 표시하고 같은 판단을 읽기 전용으로 재조회하는 경로를 대조했다.",
       "signature": "7f809cd94a351650ef090faa92d2756f396fff5d587f3a2c15cf7c3944b8d538",
       "controls": [
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "4533c503fb9004162c57bab2a42bdf79b77720cdc296327721c3ab22023e9dbf",
+      "sourceHash": "57ed7820bd09860d23e7ddabc8cd5939f96e6349b4fa627de5b0df7fad70c5cf",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

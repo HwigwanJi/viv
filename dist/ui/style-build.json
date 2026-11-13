@@ -388,7 +388,7 @@
     },
     {
       "path": "dist/ui/studio-controller.mjs",
-      "sha256": "4533c503fb9004162c57bab2a42bdf79b77720cdc296327721c3ab22023e9dbf"
+      "sha256": "57ed7820bd09860d23e7ddabc8cd5939f96e6349b4fa627de5b0df7fad70c5cf"
     },
     {
       "path": "dist/ui/studio-shell.mjs",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "3b2ce366de2e638b0b1abce3960d0539fb3b4d684da1b8640d65e8b65519866c",
+  "inputHash": "24b51cf277f12ca2c0e71a9443a9ba9ae18a319ce43e7d880f408adbf24d2711",
   "pages": [
     {
       "path": "dist/index.html",

@@ -81,6 +81,7 @@ export const isFirstPaperDecisionPlan=plan=>plan?.approval?.enabled&&plan.scope?
 
 export function paperDecisionFillCount(record,fills){
  if(!Array.isArray(fills))return null;
+ if(fills.some(fill=>!fill||fill.runId!==record.id))return null;
  const status=record.execution?.status;
  if((status==='FILLED'&&fills.length===0)||(status==='NO_ORDER_REQUIRED'&&fills.length>0))return null;
  return fills.length;
