@@ -588,7 +588,7 @@
     },
     {
       "path": "styles/components/studio-shell.css",
-      "sha256": "7579c539e782cdcf6c9a912309ef7a0362c2f5c350e6bf6c09e7cf85f32dfa80"
+      "sha256": "8957869a19f8a1532c59bc4f807896713c6d6f2755f4b5f0e67e0033347065a5"
     },
     {
       "path": "styles/components/surfaces.css",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "ef0569e68299bcc76eeefd969a3bcbc2ec3d036f8ff1d7dbb85c8c96c1204aeb",
+  "inputHash": "743adfcc5ab5f49430dec6c03107f5316d0bb300bee7a22a67a2b8a4c2ce4603",
   "pages": [
     {
       "path": "dist/index.html",
