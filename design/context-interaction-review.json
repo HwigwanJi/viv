@@ -3256,9 +3256,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T19:03:58.240Z",
-      "reason": "저장 백테스트의 AI 호출 이력과 현재 모의 판단을 실행할 때의 JEV 전송·이용료 안내를 구분한다.",
-      "signature": "9b6995caacca9a68a887195b6de270d32ab245e24a8ef0f8df09c4b16caa17e1",
+      "reviewedAt": "2026-11-13T21:02:44.987Z",
+      "reason": "저장된 첫 모의 판단의 목록과 근거 상세에서 이전 실습 탭으로 돌아가는 경로를 대조했다.",
+      "signature": "9157dec12e6b8a51e87ed395ef942e2cc1c222ac31717cc7c65b7b039565bda5",
       "controls": [
         [
           "data-auto-action",
@@ -3330,7 +3330,7 @@
         ],
         [
           "element:a",
-          38
+          39
         ],
         [
           "element:button",
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "23713d1c82502d00f9e682b6741922b5d1ea6f74fa6de1e2fee10304615218e3",
+      "sourceHash": "e8649815fe8c9decdafc8b97afb5e17b581c529436154ab529bf88db59c2163c",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
