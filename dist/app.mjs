@@ -69,7 +69,8 @@ function render(){
   const activeHud=active?.closest?.('[data-mind-hud]'),hudFocus=sameRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:active.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>active.dataset[key]!==undefined)}:null;
   if(hudFocus&&hudFocus.selector!=='[data-hud-viewport]'){const key=hudFocus.selector;hudFocus.selector=key?'[data-'+key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+'="'+CSS.escape(document.activeElement.dataset[key])+'"]':null;}
   const token=++renderGeneration,route=parseStudioRoute(location.hash),navigation=studio.navigation(route),railOnly=['home','minds'].includes(route.page);
-  primaryLocations.set(route.page,'#'+route.page+(route.params.size?'?'+route.params:''));
+  const savedLocation=route.params.has('brokerSetup')?studioRouteHash(route,route.page,{brokerSetup:null}):'#'+route.page+(route.params.size?'?'+route.params:'');
+  primaryLocations.set(route.page,savedLocation);
   dialogFocus.beforeRender({sameRoute:document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash});
   entityMenu.unmount({preserveMenu:true});studio.unmount();
   const mainNavigation=NAV.filter(([id])=>id!=='settings').map(([id,image,label])=>`<a href="${esc(primaryHref(route,id))}" data-nav="${id}"${route.page===id?' aria-current="page"':''}>${icon(image)}<span>${label}</span></a>`).join('');
