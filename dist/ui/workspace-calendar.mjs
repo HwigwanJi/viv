@@ -59,35 +59,38 @@ function ongoing(rows){
 }
 
 export function createWorkspaceCalendar({getRoute,request,render}){
-  let data=null,error='',pending=null,controller=null;
+  let data=null,error=null,pending=null,controller=null;
   async function load({force=false}={}){
     const route=getRoute();
-    if(route.page!=='calendar'){controller?.abort();return;}
-    const month=monthFor(route);
-    if(pending===month||!force&&data?.month===month)return;
+    const month=route.page==='calendar'?monthFor(route):null;
+    if(month&&pending===month)return;
     controller?.abort();
+    controller=null;pending=null;
+    if(!month||!force&&data?.month===month)return;
     const task=new AbortController();
-    controller=task;pending=month;error='';render();
+    controller=task;pending=month;render();
     try{
       const value=await request('/api/workspace/calendar?month='+encodeURIComponent(month),undefined,{signal:task.signal});
-      if(!task.signal.aborted)data=value;
-    }catch(problem){if(!task.signal.aborted)error=problem.message;}
+      if(!task.signal.aborted){data=value;error=null;}
+    }catch(problem){if(!task.signal.aborted)error={month,message:problem.message};}
     finally{if(controller===task){pending=null;if(getRoute().page==='calendar')render();}}
   }
   function markup(){
     const route=getRoute(),month=monthFor(route),current=data?.month===month?data:null,now=current?.today??today(),selected=dateFor(route,month,now);
-    const [year,mon]=month.split('-').map(Number);
-    const monthLink=(offset,label,icon)=>{
+    const [year,mon]=month.split('-').map(Number),loading=pending===month,failed=error?.month===month;
+    const monthLink=(offset,label,icon,control)=>{
       const next=calendarMonth(moveCalendarMonth(month,offset));
-      return next?routeLink(calendarHref(next),icon,'class="button" aria-label="'+label+'"'):'';
+      return next?routeLink(calendarHref(next),icon,'class="button" aria-label="'+label+'" data-cal-control="'+control+'"'):'';
     };
+    const monthHeadingControl=!calendarMonth(moveCalendarMonth(month,-1))?'previous':!calendarMonth(moveCalendarMonth(month,1))?'next':null;
     return '<section class="viv-calendar"><header class="viv-cal-head"><div><h1 tabindex="-1">캘린더</h1><p class="muted">모의검증 일정과 날짜별 실현 손익 · 한국 시간</p></div>'+
-      routeLink(calendarHref(now.slice(0,7),now),'오늘','class="button"')+'</header>'+
+      routeLink(calendarHref(now.slice(0,7),now),'오늘','class="button" data-cal-control="today"')+'</header>'+
       '<div class="viv-cal-layout">'+(current?ongoing(current.active):'')+
-      '<section class="viv-cal-panel viv-cal-month" aria-label="월간 캘린더"><div class="viv-cal-toolbar">'+monthLink(-1,'이전 달','‹')+
-      '<h2>'+year+'년 '+mon+'월</h2>'+monthLink(1,'다음 달','›')+'</div>'+
-      (pending&&!current?'<p role="status">일정을 불러오는 중…</p>':'')+
-      (error?'<p role="alert">'+esc(error)+'</p><button type="button" class="button" data-studio-action="calendar-refresh">다시 조회</button>':'')+
+      '<section class="viv-cal-panel viv-cal-month" aria-label="월간 캘린더"><div class="viv-cal-toolbar">'+monthLink(-1,'이전 달','‹','previous')+
+      '<h2'+(monthHeadingControl?' tabindex="-1" data-cal-control="'+monthHeadingControl+'"':'')+'>'+year+'년 '+mon+'월</h2>'+monthLink(1,'다음 달','›','next')+'</div>'+
+      (loading&&(!current||failed)?'<p role="status">일정을 불러오는 중…</p>':'')+
+      (failed&&!loading?'<p role="alert">'+esc(error.message)+'</p>':'')+
+      (failed?'<button type="button" class="button" data-cal-control="retry" data-studio-action="calendar-refresh"'+(loading?' aria-disabled="true"':'')+'>다시 조회</button>':'')+
       monthGrid(current??{month,today:now,days:[]},selected)+
       '<p class="viv-cal-note muted">매도에서 확정된 손익을 통화별로 표시합니다. 과거 시세 검증은 완료 또는 결과 갱신 날짜에 표시합니다.</p>'+
       (current?.eventLedgerUnavailable?'<p class="viv-cal-note" role="status">일부 분봉 모의 원장을 확인하지 못했습니다.</p>':'')+

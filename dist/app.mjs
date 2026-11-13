@@ -64,7 +64,8 @@ function render(){
   const sameRoute=document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash;
   const active=document.activeElement;
   const retainedFocus=sameRoute&&['#simulation-result-heading','.studio-content h1[tabindex="-1"]','[data-capability-guide]','#first-paper-decision'].find(selector=>active?.matches(selector));
-  const retainedCalendar=sameRoute&&active?.dataset?.calDate?'[data-cal-date="'+CSS.escape(active.dataset.calDate)+'"]':null;
+  const calendarDate=active?.dataset?.calDate,calendarControl=active?.dataset?.calControl;
+  const retainedCalendar=sameRoute&&(calendarDate?'[data-cal-date="'+CSS.escape(calendarDate)+'"]':calendarControl?'[data-cal-control="'+CSS.escape(calendarControl)+'"]':null);
   const activeHud=active?.closest?.('[data-mind-hud]'),hudFocus=sameRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:active.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>active.dataset[key]!==undefined)}:null;
   if(hudFocus&&hudFocus.selector!=='[data-hud-viewport]'){const key=hudFocus.selector;hudFocus.selector=key?'[data-'+key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+'="'+CSS.escape(document.activeElement.dataset[key])+'"]':null;}
   const token=++renderGeneration,route=parseStudioRoute(location.hash),navigation=studio.navigation(route),railOnly=['home','minds'].includes(route.page);
@@ -84,7 +85,18 @@ function render(){
   $('.vibe-shell').dataset.chromeKey=chromeKey;
   mountShell({compactDefault:route.page==='trade'});
   refreshStudioJump();
-  queueMicrotask(()=>{if(token===renderGeneration){studio.mount($('#app'));entityMenu.mount($('#app'));if(hudFocus?.selector)document.querySelector('[data-hud-key="'+CSS.escape(hudFocus.key)+'"] '+hudFocus.selector)?.focus({preventScroll:true});if((retainedCalendar||retainedFocus)&&document.activeElement===document.body)document.querySelector(retainedCalendar||retainedFocus)?.focus({preventScroll:true});routeFocus.flush();dialogFocus.afterRender();appNotifications.mount();routeMotion.enter($('.studio-content'),interfaceMotionKey(route));}});
+  queueMicrotask(()=>{
+    if(token!==renderGeneration)return;
+    studio.mount($('#app'));entityMenu.mount($('#app'));
+    if(hudFocus?.selector)document.querySelector('[data-hud-key="'+CSS.escape(hudFocus.key)+'"] '+hudFocus.selector)?.focus({preventScroll:true});
+    const selector=retainedCalendar||retainedFocus;
+    if(selector&&document.activeElement===document.body){
+      const retained=document.querySelector(selector);
+      if(retained)retained.focus({preventScroll:true});
+      else if(calendarControl==='retry')$('.viv-calendar [aria-current="date"]')?.focus();
+    }
+    routeFocus.flush();dialogFocus.afterRender();appNotifications.mount();routeMotion.enter($('.studio-content'),interfaceMotionKey(route));
+  });
 }
 
 let jumpEntriesKey='',jumpRetrying=false,jumpResearch=null;
@@ -151,9 +163,11 @@ document.addEventListener('click',event=>{
   const settingsLink=event.target.closest('.studio-page-settings .studio-task-nav a[data-studio-route]');
   const routeLink=event.target.closest('a[data-studio-route]');
   const routeHref=routeLink?.getAttribute('href');
-  if(routeLink?.dataset.calDate&&isPlainNavigationClick(event)){
+  if((routeLink?.dataset.calDate||routeLink?.dataset.calControl)&&isPlainNavigationClick(event)){
     event.preventDefault();
-    navigateToHeading(routeHref,'[data-cal-date="'+CSS.escape(routeLink.dataset.calDate)+'"]');
+    const {calDate,calControl}=routeLink.dataset;
+    const attribute=calDate?'data-cal-date':'data-cal-control';
+    navigateToHeading(routeHref,'['+attribute+'="'+CSS.escape(calDate||calControl)+'"]');
     return;
   }
   const paperGuide=routeHref?.startsWith('#trade?')&&parseStudioRoute(routeHref).params.has('firstDecision');

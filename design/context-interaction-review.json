@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T22:33:41.307Z",
-      "reason": "저장된 모의 판단 링크는 기록 제목에 포커스를 주고, 같은 화면 갱신은 제목 포커스를 보존한다. 모달의 Esc와 닫기 버튼은 같은 포커스 복귀 경로를 사용한다.",
+      "reviewedAt": "2026-11-13T00:38:41.901Z",
+      "reason": "캘린더 월 이동과 오류 복구에서 조작 포커스를 복원한다. 다른 화면의 저장 기록 제목과 모달 복귀 경로는 기존 포커스 규칙을 따른다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "1b2bc53f499450cf7ab5c94abde0aa1d75fb105981e4788e4115be60ad8b1e26",
+      "sourceHash": "150f49db87cb86442d1a8e01e2692ece944e73983949879a36758b2c4e493db3",
       "matrix": "design/context-action-matrix.json"
     },
     {
@@ -3427,10 +3427,10 @@
         ]
       ],
       "signature": "5f5b30d62fb3033f505273df47c939758132d44ce946f9ea7843d0cc8f573c89",
-      "sourceHash": "021e19cf309f546d032edf44d093c278846504b3a5234912e4aac49b4537540b",
+      "sourceHash": "7538d32b17aec9916bb6dc10130095b4f013553e35dfb01cb3a0ac7c08aebe6a",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T14:37:05.671Z",
-      "reason": "PC·모바일에서 현황 → 월간 달력 → 선택 날짜 순서를 확인하고 키보드로 모의 운용을 열어 월 이동 뒤 같은 주소를 대조"
+      "reviewedAt": "2026-11-13T00:38:41.902Z",
+      "reason": "월 이동 버튼과 다시 조회에 포커스 키를 붙이고 진행 중 재시도와 조회 성공 뒤 선택 날짜의 복구를 검증했다."
     },
     {
       "file": "dist/ui/terminal-universe.mjs",

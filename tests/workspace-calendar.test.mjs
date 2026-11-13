@@ -68,3 +68,26 @@ test('character editing saves appearance and display name without a policy revis
   assert.deepEqual(workspace.profileVersions,before.profileVersions);
   assert.throws(()=>dispatchWorkspaceAction(before,{...command,payload:{...command.payload,name:' '}},{now:'2026-11-11T00:00:00.000Z'}),{code:'INVALID_NAME'});
 });
+
+test('returning to the loaded calendar month cancels the discarded month request',async()=>{
+  const january='2026-01',february='2026-02',today='2026-01-02';
+  let month=january,finish,discardedSignal;
+  const calendar=createWorkspaceCalendar({
+    getRoute:()=>({page:'calendar',params:new URLSearchParams({month})}),
+    request:(url,_body,{signal})=>{
+      if(url.endsWith(january))return Promise.resolve({month:january,today,days:[],active:[]});
+      discardedSignal=signal;
+      return new Promise(resolve=>{finish=()=>resolve({month:february,today,days:[],active:[]});});
+    },
+    render:()=>{},
+  });
+  await calendar.load();
+  month=february;
+  const discarded=calendar.load();
+  month=january;
+  await calendar.load();
+  assert.equal(discardedSignal.aborted,true);
+  finish();
+  await discarded;
+  assert.match(calendar.render(),/id="viv-cal-day-title"/);
+});
