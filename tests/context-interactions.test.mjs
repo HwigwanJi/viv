@@ -113,7 +113,8 @@ test('startup recovery searches open the public guide in a separate tab',()=>{
  const route=parseStudioRoute('#home?executionMode=paper');
  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
  for(const query of ['앱이 열리지 않을 때','복구','시작 오류','앱 안 열림','무한 로딩','무한부팅','앱 무한부팅',
-  'HTML 응답','html응답','확인할 앱 파일','설치 화면 다시 확인','설치 화면의 연결 확인을 불러오지 못했습니다','파일 응답 비교']){
+  'HTML 응답','html응답','확인할 앱 파일','설치 화면 다시 확인','설치 화면의 연결 확인을 불러오지 못했습니다.',
+  'VIV를 시작하지 못했습니다.','HTML 응답 · 원래 PC 주소와 비교','응답 형식 오류 · JavaScript 필요','파일 응답 비교']){
   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
   assert.equal(matches.length,1);
   assert.equal(matches[0].label,'앱이 열리지 않을 때');

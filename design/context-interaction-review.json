@@ -3383,7 +3383,7 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T15:29:05.232Z",
+      "reviewedAt": "2026-11-13T15:36:45.055Z",
       "reason": "설치 화면에서 본 오류 문구로 기존 공개 복구 문서를 새 탭에서 열고 캘린더 선택과 모의 손익을 유지하는 동선을 터치와 키보드로 대조했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
@@ -3404,7 +3404,7 @@
           2
         ]
       ],
-      "sourceHash": "9f661e75f75e79d858fadec8c77baca0a5c2bd3744be800286784b1f74712c3b",
+      "sourceHash": "c5fe65aa5fcba004854766c25d79fe9dd91bd23e37ac8e40cb505aa46f89f89c",
       "customContainers": []
     },
     {
