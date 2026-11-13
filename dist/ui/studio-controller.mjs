@@ -17,7 +17,7 @@ import {currencyAmount} from './currency-format.mjs';
 import {PAPER_MIND_STARTERS,createPaperMindPresetGraph,FIRST_PAPER_DECISION_STARTER,isFirstPaperDecisionPlan as firstDecisionPlan,paperTrendResultBasis} from '../domain/paper-mind-presets.mjs';
 import {STRATEGY_TRACE_TYPES,strategyInputNodeLabel,strategyTraceNodeLabel,strategyTraceValue,strategyTraceSelection} from './decision-method.mjs';
 import {submitPaperFunding} from './paper-funding-request.mjs';
-import {paperBudgetSummary} from '../domain/paper-budget.mjs';
+import {paperBudgetFor,paperBudgetSummary} from '../domain/paper-budget.mjs';
 import {PAPER_DECISION_ENTRY,PAPER_DECISION_INSTRUMENT,PAPER_DECISION_TIMEFRAME,PAPER_PRACTICE_ENTRY,paperPracticeEntry,paperDecisionRecordHash} from '../system/paper-decision-links.mjs';
 import {subscriptionInstrumentIds} from '../domain/mind-subscriptions.mjs';
 import {createBrokerConnections,brokerPaperReturnLink} from './broker-connections.mjs';
@@ -597,7 +597,11 @@ export function createStudioController(hooks={},options={}){
     const selected=view.selectedMindId,close=studioRouteHash(current,'trade',{firstDecision:null});
     let message,actions='';
     if(selected==='all'){
-      message='BTC-USDT 4시간봉에서 국면 추세 프리셋으로 연습합니다. 이 프리셋은 JEV 키 없이 계산합니다.';
+      const budget=paperBudgetFor(workspace,'USDT');
+      message='BTC-USDT 4시간봉에서 국면 추세 프리셋으로 연습합니다. JEV 키 없이 계산합니다. '+
+        (budget?'마인드를 선택한 뒤 USDT 모의 자금 배정과 확정 시세를 확인합니다.':
+          '마인드를 준비한 뒤 USDT 모의 예산을 만들고 자금을 배정합니다.')+
+        (!budget&&paperBudgetFor(workspace,'KRW')?' 기존 원화 모의 예산은 그대로 보관됩니다.':'');
       const published=list(mindData?.minds).filter(mind=>byId(workspace.investmentProfiles,mind.id)?.status!=='ARCHIVED'&&
         mind.manifest?.data.strategyPlan?.status==='APPROVED'&&firstDecisionPlan(mind.manifest.data.strategyPlan));
       const pending=list(mindData?.documents).find(item=>{
@@ -609,7 +613,7 @@ export function createStudioController(hooks={},options={}){
         published.length?published.map(mind=>'<a class="button primary" href="'+esc(studioRouteHash(current,'trade',{profileId:mind.id,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME}))+'" data-studio-route>'+esc(profileName(mind.id))+'로 시작</a>').join(''):
         pending?button('저장한 전략 초안 검토','document-detail',pending.id,'data-first-decision-review','primary'):
         button('국면 추세 마인드 만들기','profile-new','','','primary');
-      actions+='<a class="button" href="'+PAPER_PRACTICE_ENTRY+'" data-studio-route>과거 시세로 연습</a>';
+      actions+=firstDecisionPracticeLink(current);
     }else{
       const readiness=view.terminalReadiness?.executionReadiness,step=terminalRunRequirement(view)?.action?.action??readiness?.primaryAction?.action;
       message=readiness?.canRun?'결정 실행을 누르면 판단 근거와 모의 체결 상태를 확인할 수 있습니다.':
@@ -640,7 +644,7 @@ export function createStudioController(hooks={},options={}){
       const back=(route.params.get('profileId')||'all')==='all'&&firstDecisionOrigin(route)
         ?studioReturnLink(route,parseStudioRoute,studioRouteHash):null;
       return '<section data-simulation-execution-mode="paper" aria-label="모의 실험실"><p class="tiny muted">모의 실험</p>'+
-        (back?'<a class="studio-return-link" href="'+esc(back.href)+'" data-studio-route>'+esc(back.label)+'</a>':'')+
+        (back?'<a class="studio-return-link" href="'+esc(back.href)+'" data-studio-route>첫 모의 판단으로 돌아가기</a>':'')+
         simulations.render()+'</section>';
     }
     if(view==='principles')return renderMindPrinciples();

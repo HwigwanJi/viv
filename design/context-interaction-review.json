@@ -3258,9 +3258,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T23:00:59.705Z",
-      "reason": "결정 상세의 조회 실패와 잘못된 판단 ID를 구분하고, 재조회가 가능한 상태에서 같은 판단의 읽기 버튼만 표시한다.",
-      "signature": "fa445de2602d901a10292dd0d851596ea18457c87a4fc0d36bcc8a97304510a3",
+      "reviewedAt": "2026-11-13T01:02:44.143Z",
+      "reason": "첫 모의 판단의 USDT 준비 조건과 과거 시세 실습에서 같은 현재 시세 안내로 돌아오는 링크를 확인했다.",
+      "signature": "1745e71be5ed9d17ccaba26f637407a1e508c7b613aeec1d73251c150dd1ca99",
       "controls": [
         [
           "data-auto-action",
@@ -3328,7 +3328,7 @@
         ],
         [
           "element:a",
-          36
+          35
         ],
         [
           "element:button",
@@ -3363,7 +3363,7 @@
           1
         ]
       ],
-      "sourceHash": "241c74aeb27cebdd63baaf604152b90c34b57cffed6730addc144a3c8bd15e6b",
+      "sourceHash": "6d39337d3657313090519434f76aca929e3af326db59691869249c12ba9cf5a1",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
