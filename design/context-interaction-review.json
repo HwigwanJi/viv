@@ -3399,7 +3399,7 @@
           2
         ]
       ],
-      "sourceHash": "f6be37ffa03a6aadfa08087a429c5663b168acaaaa8d584f36df01af7c6310a6",
+      "sourceHash": "2aab9ffe2d882126aafd4442adc779ea5ede3606fa6fb26345503e0f61f2563c",
       "customContainers": []
     },
     {
@@ -3427,7 +3427,7 @@
         ]
       ],
       "signature": "5f5b30d62fb3033f505273df47c939758132d44ce946f9ea7843d0cc8f573c89",
-      "sourceHash": "7538d32b17aec9916bb6dc10130095b4f013553e35dfb01cb3a0ac7c08aebe6a",
+      "sourceHash": "117034b3247391ee1b24337dd8aea3547002219084060e366c121726a73d6db3",
       "review": "BROWSER_VERIFIED",
       "reviewedAt": "2026-11-13T00:38:41.902Z",
       "reason": "월 이동 버튼과 다시 조회에 포커스 키를 붙이고 진행 중 재시도와 조회 성공 뒤 선택 날짜의 복구를 검증했다."

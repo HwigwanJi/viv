@@ -139,6 +139,20 @@ test('AI client searches take users to Service Connections in either account vie
  }
 });
 
+test('calendar task searches identify paper results from either account view',()=>{
+ for(const mode of ['paper','live']){
+  const route=parseStudioRoute('#home?executionMode='+mode);
+  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+  for(const query of ['진행 중인 검증','날짜별 손익','오늘 벌었는지','모의 검증','달력']){
+   const matches=entries.filter(item=>studioJumpMatches([item.label,item.group,item.keywords].filter(Boolean).join(' '),query));
+   assert.equal(matches.length,1,query);
+   const [item]=matches;
+   assert.equal(item.taskSuffix,'모의검증 일정과 모의 실현 손익');
+   assert.equal(item.href,'#calendar?executionMode='+mode);
+  }
+ }
+});
+
 test('mind name and task search finds matching strategies and distinguishes duplicate names',()=>{
  const route=parseStudioRoute('#home?executionMode=paper');
  const minds=[{id:'profile-long',name:'국면 추세 실습'},{id:'profile-aa11aa11',name:'국면 추세',createdLabel:'2026. 11. 12. 09:00 KST'},{id:'profile-bb22bb22',name:'국면 추세'}];
