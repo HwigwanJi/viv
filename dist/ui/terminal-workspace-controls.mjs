@@ -1,6 +1,7 @@
 const list=value=>Array.isArray(value)?value:[];
 const recoveryActions=new Set(['choose-mind','profile','archive','account','connections','records','wait','run','data','refresh','timeframe','knowledge','paper']);
 const readiness=model=>model.terminalReadiness?.schemaVersion===1?model.terminalReadiness:null;
+export const isJevKeyRequirement=reason=>reason?.code==='JEV_CONNECTION_REQUIRED'||reason?.category==='JEV_AUTH';
 const captureError=model=>/^(MARKET_CAPTURE_REQUIRED|CANONICAL_CAPTURE_(REQUIRED|STALE|BOUNDARY)|MIND_MARKET_BOUNDARY_CHANGED|MIND_CANONICAL_SOURCE)$/.test(model.errorCode||model.runRequirement?.code||'')||/기존 수집 정본|최신 확정 봉.*필요|확정 시세.*수집/.test(model.error||'');
 
 function savedPaperDecisionDuringCooldown(model){
@@ -9,8 +10,15 @@ function savedPaperDecisionDuringCooldown(model){
   return blockers.find(blocker=>blocker.code==='CANDLE_ALREADY_EVALUATED'&&blocker.action?.action==='records'&&blocker.action.params?.runId)??null;
 }
 
+function guidedConnectionRequirement(model){
+  const current=readiness(model),blockers=list(current?.executionReadiness?.blockers);
+  if(!model.guidedDecision||current?.purpose!=='FORWARD_PAPER')return null;
+  if(!['ACCOUNT','DATA_REQUIRED','COOLDOWN','CONNECTION'].includes(blockers[0]?.category))return null;
+  return blockers.find(isJevKeyRequirement)??null;
+}
+
 export function terminalRunRequirement(model={}){
-  return savedPaperDecisionDuringCooldown(model)??readiness(model)?.executionReadiness?.blockers?.[0]??model.runRequirement??null;
+  return savedPaperDecisionDuringCooldown(model)??guidedConnectionRequirement(model)??readiness(model)?.executionReadiness?.blockers?.[0]??model.runRequirement??null;
 }
 
 /** The selected mind is explicit; the aggregate view never chooses an executor. */
@@ -20,10 +28,10 @@ export function terminalPrimaryAction(model={}){
   if(!selected&&!replay)return {action:'choose-mind',label:'마인드 선택',disabled:!!model.busy};
   if(model.busy)return {action:'run',label:'실행 중…',disabled:true};
   if(model.status==='loading')return {action:'wait',label:'시세 조회 중…',disabled:true};
-  const execution=readiness(model)?.executionReadiness,primary=savedPaperDecisionDuringCooldown(model)?.action??execution?.primaryAction;
+  const execution=readiness(model)?.executionReadiness,connection=guidedConnectionRequirement(model),primary=savedPaperDecisionDuringCooldown(model)?.action??connection?.action??execution?.primaryAction;
   if(primary&&recoveryActions.has(primary.action)){
     if(primary.action==='run'&&!execution.canRun)return {action:'inspect-conditions',label:'실행 조건 확인',disabled:false};
-    return {...primary,canonical:true,disabled:primary.action==='wait'};
+    return {...primary,label:connection&&primary===connection.action&&connection.code==='JEV_CONNECTION_REQUIRED'?'JEV 키 설정':primary.label,canonical:true,disabled:primary.action==='wait'};
   }
   if(!model.canRun){const recovery=terminalRecoveryAction(model);return recovery?{...recovery,disabled:recovery.action==='wait'}:{action:'inspect-conditions',label:'실행 조건 확인',disabled:false};}
   return {action:'run',label:replay?'다음 봉 실행':'결정 실행',disabled:false};

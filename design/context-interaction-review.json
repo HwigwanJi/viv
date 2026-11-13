@@ -3258,9 +3258,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T01:35:18.692Z",
-      "reason": "보고서에서 현재 모의 판단의 발행 정책·JEV·USDT 조건을 확인하고 같은 보고서 및 포커스로 돌아온다.",
-      "signature": "fa445de2602d901a10292dd0d851596ea18457c87a4fc0d36bcc8a97304510a3",
+      "reviewedAt": "2026-11-13T06:07:25.812Z",
+      "reason": "완료 백테스트에서 JEV 조건·키 없는 현재 시세 실습을 안내하고 시세 복구와 판단 기록을 거쳐 같은 보고서로 복귀한다.",
+      "signature": "b7af0d86119198917a6d5820ce9a0f06158f673acfc0dccb8e510aa7e152af7d",
       "controls": [
         [
           "data-auto-action",
@@ -3363,7 +3363,7 @@
           1
         ]
       ],
-      "sourceHash": "de5a24c9e18c0885f59807232eba6dfaf187242d5fbc506f198b2b453d9234e6",
+      "sourceHash": "8373a3a0d21ce11356e069507073c763cf8b79706e12316b0fc410b0ac9b568f",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3455,11 +3455,11 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T08:38:15.931Z",
-      "reason": "모의 판단 실행 간격 중 저장된 같은 봉의 기록을 열 수 있는 공용 버튼",
+      "reviewedAt": "2026-11-13T06:07:25.818Z",
+      "reason": "보고서 기반 모의 실습에서 누락된 JEV 키 조건을 모의 자금·시세 설정보다 먼저 안내한다. 기존 범위·저장 결과 우선순위는 유지한다.",
       "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "controls": [],
-      "sourceHash": "1db9cb1baa201b0a6d58c7a2995abb5c2020c5fb34b1bd29b6164f23ad98f5f1"
+      "sourceHash": "b77e581fa89c794e7185df7572442af72792cd940e526001bbcef6a73c0c9e5f"
     },
     {
       "file": "dist/ui/theme-init.js",
@@ -3484,8 +3484,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T02:08:18.7168143+00:00",
-      "reason": "기존 모의 판단의 키 없는 대안에서 선택한 마인드를 백테스트 준비로 전달. 기존 시세·자금·키 복구 및 실행 컨트롤 유지.",
+      "reviewedAt": "2026-11-13T06:07:25.817Z",
+      "reason": "보고서에서 이어온 실습은 안내 영역의 현재 시세 대안을 사용하고 기존 트레이딩은 과거 시세 대안을 유지한다.",
       "signature": "a1dd9ae1335bff6ea81099fe978c300d14f7573d12d0c63f81aba04f9a60d8e1",
       "controls": [
         [
@@ -3573,7 +3573,7 @@
           39
         ]
       ],
-      "sourceHash": "a4b1655213289941219d44c3da409f6b650ea4623035d615fcd6e5bbeeb43bab",
+      "sourceHash": "9d1391c0ded70ae45860239e1bd1904e2744ca6a1076a016de7931649697c2ae",
       "customContainers": []
     },
     {

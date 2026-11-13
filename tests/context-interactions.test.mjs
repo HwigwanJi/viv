@@ -46,6 +46,24 @@ test('a saved paper decision can be read during the execution cooldown',()=>{
  assert.equal(terminalPrimaryAction(model).disabled,true);
 });
 
+test('a guided report makes a missing JEV key visible before paper funding',()=>{
+ const account={code:'PAPER_ACCOUNT_REQUIRED',category:'ACCOUNT',action:{action:'account',label:'모의 자금 설정'}};
+ const missing={code:'JEV_CONNECTION_REQUIRED',category:'CONNECTION',action:{action:'connections',label:'연결 설정'}};
+ const scope={code:'STRATEGY_PLAN_SCOPE',category:'SCOPE',action:{action:'timeframe',label:'주기 이동'}};
+ const executionReadiness={canRun:false,primaryAction:account.action,blockers:[account,missing]};
+ const model={guidedDecision:true,selectedMindId:'test',profiles:[{id:'test'}],terminalReadiness:{schemaVersion:1,purpose:'FORWARD_PAPER',executionReadiness}};
+ assert.equal(terminalRunRequirement(model),missing);
+ assert.deepEqual(terminalPrimaryAction(model),{action:'connections',label:'JEV 키 설정',canonical:true,disabled:false});
+ assert.equal(terminalRunRequirement({...model,guidedDecision:false}),account);
+ assert.equal(executionReadiness.primaryAction,account.action);
+ executionReadiness.blockers=[account];
+ assert.equal(terminalPrimaryAction(model).action,'account');
+ executionReadiness.blockers=[scope,missing];
+ executionReadiness.primaryAction=scope.action;
+ assert.equal(terminalRunRequirement(model),scope);
+ assert.equal(terminalPrimaryAction(model).action,'timeframe');
+});
+
 test('paper trend lesson explains no order only when the saved result supports it',()=>{
  const record={decision:{action:'hold'},execution:{status:'NO_ORDER_REQUIRED'},strategyEvaluation:{
   modules:[{moduleId:'SMA_TREND',ready:true,indicators:{close:80,slowMA:100,lookbackBars:480}}],

@@ -4,7 +4,7 @@ import {currencyAmount,currencyPrecision} from './currency-format.mjs';
 import {graphDecisionMethod} from './decision-method.mjs';
 import {helpTooltip} from './help-tooltip.mjs';
 import {cssToken, numberToken, pixelToken} from './design-tokens.mjs';
-import {terminalPrimaryAction,terminalRecoveryAction,terminalRunRequirement,terminalMarketMessage} from './terminal-workspace-controls.mjs';
+import {isJevKeyRequirement,terminalPrimaryAction,terminalRecoveryAction,terminalRunRequirement,terminalMarketMessage} from './terminal-workspace-controls.mjs';
 import {renderMindActivityFeed} from './mind-activity.mjs';
 import {renderFilterSummary} from './workflow-state.mjs';
 
@@ -267,7 +267,7 @@ export function createTradingTerminal(hooks={}){
     const instrument={...selected(),...model.instrumentPresentation},series=candles(),last=series.at(-1),markerCount=markerViews().length,executionView=scopedDecisions().find(v=>finite(v.record?.execution?.quote?.price)),executionQuote=executionView?.record?.execution?.quote,nextCloseAt=instrument?.assetClass==='crypto'&&model.source!=='replay'&&last&&timeframeMs(model.timeframe)?last.closeAt+timeframeMs(model.timeframe):null;
     const sources=list(model.sources).length?model.sources:[{id:model.source||instrument?.venue||'',name:model.sourceLabel||instrument?.venue||'공급처 대기'}],tab=model.recordView||recordView,primary=terminalPrimaryAction(model),requirement=terminalRunRequirement(model),requirements=['MIND_SELECTION_REQUIRED','MIND_REQUIRED'].includes(requirement?.code)?null:requirement;
     const readiness=model.terminalReadiness?.executionReadiness;
-    const alternate=model.executionMode!=='live'&&list(readiness?.blockers).some(reason=>reason.code==='JEV_CONNECTION_REQUIRED'||reason.category==='JEV_AUTH');
+    const alternate=model.executionMode!=='live'&&!(model.guidedDecision&&isJevKeyRequirement(requirements))&&list(readiness?.blockers).some(isJevKeyRequirement);
     const failedEventId=requirement?.category==='JEV_AUTH'?requirement.action?.params?.eventId:null;
     const disclosure=primary.action==='run'&&readiness?.requiresJev===true?'실행하면 선택한 시세·마인드 입력을 JEV에 보내며 공급자 이용료가 발생할 수 있습니다.':'';
     const equityDay=instrument?.assetClass==='equity'&&validTradeDate(last?.tradeDate)?last.tradeDate:null,tossEquity=instrument?.assetClass==='equity'&&model.sourceSnapshot?.provider==='toss';
