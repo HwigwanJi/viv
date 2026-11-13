@@ -7,6 +7,7 @@ const params=new URLSearchParams(location.search),aiView=params.get('connect')==
 const privateOrigin=/^[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/.test(location.hostname);
 const handoff=document.querySelector('[data-install-handoff]'),connection=document.querySelector('[data-install-connection]');
 const recheck=document.querySelector('[data-install-recheck]'),setup=document.querySelector('[data-install-setup]'),help=document.querySelector('[data-install-handoff-help]');
+const openApp=document.querySelector('[data-install-open]').parentElement;
 const retryCommand=document.querySelector('[data-install-retry-command]'),retryCode=retryCommand.querySelector('code');
 const addressField=address.querySelector('input'),addressCheck=address.querySelector('#viv-install-address-check');
 let installUrl=null,lastVerified=null;
@@ -24,16 +25,25 @@ function showAddress(url,{previous=false}={}){
 function showPreviousAddress(){
   showAddress(lastVerified?.url??null,{previous:true});
 }
+function connectionFailure(statusCode){
+  if(!privateOrigin)return '연결 상태를 확인할 수 없습니다. VIV 서버와 네트워크를 확인한 뒤 다시 시도하세요.';
+  if(statusCode===401||statusCode===403)return '이 주소에 대한 접근이 거부되었습니다. PC와 같은 Tailscale 네트워크에 로그인했는지 확인하세요.';
+  if([502,503,504].includes(statusCode))return 'VIV 서버 연결을 확인할 수 없습니다. 설치한 컴퓨터에서 VIV PC 주소를 열어 서버 상태를 확인하세요.';
+  return 'VIV 서버 연결을 확인할 수 없습니다. 인터넷과 Tailscale 연결을 확인한 뒤 다시 시도하세요.';
+}
 async function checkConnection(){
   if(recheck.disabled)return;
   const restoreFocus=document.activeElement===recheck;
   recheck.disabled=true;setup.hidden=true;help.hidden=true;retryCommand.hidden=true;
+  if(!localDesktop)openApp.hidden=true;
   status.textContent='';
   showPreviousAddress();
   connection.textContent='연결을 확인하는 중입니다.';
   let temporaryFailure=true;
+  let statusCode=0;
   try{
     const response=await fetch(localDesktop?'/api/install/mobile':'/api/status',{cache:'no-store',signal:AbortSignal.timeout(9000)});
+    statusCode=response.status;
     temporaryFailure=response.status>=500;
     if(!response.ok)throw Error('INSTALL_STATUS');
     const value=await response.json();
@@ -59,13 +69,12 @@ async function checkConnection(){
       if(location.protocol==='https:')showAddress(new URL('/install.html',location.origin).href);
       help.hidden=!desktop||!privateOrigin;
       connection.textContent='마지막 확인 '+new Intl.DateTimeFormat('ko-KR',{timeStyle:'medium'}).format(new Date())+' · VIV 서버 응답 확인';
+      openApp.hidden=false;
     }else throw Error('INSTALL_STATUS');
   }catch{
     if(!temporaryFailure){lastVerified=null;showAddress(null);}
-    setup.hidden=!localDesktop;
-    connection.textContent=!desktop&&privateOrigin
-      ?'VIV 서버 연결을 확인할 수 없습니다. 휴대폰에서 Tailscale을 켜고 PC와 같은 네트워크에 연결했는지 확인하세요.'
-      :'연결 상태를 확인할 수 없습니다. VIV 서버와 네트워크를 확인한 뒤 다시 시도하세요.';
+    setup.hidden=!(localDesktop||privateOrigin);
+    connection.textContent=connectionFailure(statusCode);
   }finally{
     recheck.disabled=false;
     if(restoreFocus&&document.activeElement===document.body)recheck.focus();

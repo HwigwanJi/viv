@@ -7,14 +7,17 @@ self.addEventListener('fetch',event=>{
  if(url.origin!==self.location.origin||!['/','/index.html','/install.html'].includes(url.pathname))return;
  event.respondWith((async()=>{
   let gatewayUnavailable=false;
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),8000);
   try{
-   const response=await fetch(request);
+   const response=await fetch(request,{signal:controller.signal});
    if(![502,503,504].includes(response.status))return response;
    gatewayUnavailable=true;
   }catch{
-   // A stopped server can fail before sending any response.
-  }
-  return new Response(connectionHelp(gatewayUnavailable),{status:503,headers:{
+   gatewayUnavailable=controller.signal.aborted;
+  }finally{clearTimeout(timeout);}
+  const privateOrigin=/^[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/.test(url.hostname);
+  return new Response(connectionHelp(gatewayUnavailable,privateOrigin),{status:503,headers:{
    'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store',
    'Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'",
    'Referrer-Policy':'no-referrer'
@@ -23,7 +26,7 @@ self.addEventListener('fetch',event=>{
 });
 
 // The worker carries just the public help page, with no runtime cache.
-const connectionHelp=gatewayUnavailable=>`<!doctype html>
+const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
@@ -49,6 +52,8 @@ const connectionHelp=gatewayUnavailable=>`<!doctype html>
     <h1>VIV 서버에 연결할 수 없어요</h1>
     <p>${gatewayUnavailable?'연결 경로가 VIV 서버에 닿지 않습니다. 설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요.':'인터넷 연결을 확인하세요. 휴대폰에서 열었다면 설치한 컴퓨터와 같은 Tailscale 네트워크에 연결되어 있는지도 확인하세요.'}</p>
     <button type="button">다시 연결</button>
+    ${privateOrigin?`<p>설치한 컴퓨터에서 VIV PC 주소가 열리면 휴대폰 연결을 복구하세요. PC에서도 열리지 않으면 아래에서 서버 다시 시작 방법을 확인하세요.</p>
+    <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#모바일만-복구하기">모바일 연결 복구 안내</a>`:''}
     <details>
       <summary>서버 다시 시작</summary>
       <p>원래 VIV 설치 폴더에서 운영체제에 맞는 명령을 실행하세요.</p>

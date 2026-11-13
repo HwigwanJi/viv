@@ -225,9 +225,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T18:46:14.641Z",
-      "reason": "격리 서버 종료·복귀, 320px에서 키보드 포커스의 2px 강조와 도움말 연결 확인.",
-      "signature": "e6861bd04471a8240c61ecd228a49b29c68992e57f4fa66bbc75edd31af582e3",
+      "reviewedAt": "2026-11-13T07:03:38.515Z",
+      "reason": "기존 앱에서 서버 게이트웨이 오류와 장시간 응답 대기, 오프라인 이후 같은 캘린더 주소로 복귀한다.",
+      "signature": "f214c51500e047047aff964e5a50839ccdc7af081940eeeb11f06cab44c7c97a",
       "controls": [
         [
           "element:a",
@@ -242,7 +242,7 @@
           1
         ]
       ],
-      "sourceHash": "f628cb2880836ac6b654ebf605042fb3e3b180ca38a9dc467edc204f5d000545",
+      "sourceHash": "ce64ba88bd7ac731ed6d347cb4057420f13309ca2b2d254b7e2c2d1f4df9828e",
       "customContainers": []
     },
     {
@@ -1391,9 +1391,9 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T23:30:12.153Z",
-      "reason": "휴대폰 설치 주소의 마지막 확인 시각과 재확인 상태를 표시하고 현재 확인된 주소에서만 복사한다.",
-      "signature": "7bca0d370340677205acc6ef7fc1bb7985de8dfd9184e69a151934d6855fcf7a",
+      "reviewedAt": "2026-11-13T07:03:38.513Z",
+      "reason": "모바일 설치의 서버 확인 실패에서 복구 안내를 열고 응답 확인 뒤 같은 주소의 VIV 열기를 복구한다.",
+      "signature": "fc56ea2c278425f79e92f9c3be96b9f92a1ef938058d959803af087a80f32803",
       "controls": [
         [
           "data-install-copy-command",
@@ -1420,7 +1420,7 @@
           1
         ]
       ],
-      "sourceHash": "d46eaf817600cb819cc76ef669a4a65ba567cb7d7f83f96238990f2f14e11db3"
+      "sourceHash": "0786ca54533aef365a6272a9b90164cb3a8ab82b18ed392914b80ebe2c38a1a3"
     },
     {
       "file": "dist/ui/interface-motion.mjs",

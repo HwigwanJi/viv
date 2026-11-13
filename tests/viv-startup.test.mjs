@@ -10,15 +10,16 @@ const notificationWorker = readFileSync(new URL('../dist/notification-worker.js'
 
 test('VIV worker recovers unavailable app navigation and leaves other requests to the network', async () => {
   const listeners = {};
-  const origin = 'http://localhost:4317';
-  let reply = new Response('current app');
+  const origin = 'https://viv-fixture.example.ts.net';
+  let reply = new Response('current app'), timeout, expire;
   runInNewContext(notificationWorker, {
     self: {location: {origin}, addEventListener: (name, listener) => { listeners[name] = listener; }},
-    fetch: async () => {
+    fetch: async (_, {signal}) => {
+      if (reply === 'hang') return new Promise((_, reject) => signal.addEventListener('abort', () => reject(signal.reason), {once:true}));
       if (!reply) throw new TypeError('connection refused');
       return reply;
     },
-    URL, Response
+    URL, Response, AbortController, setTimeout(callback, ms) { expire = callback; timeout = ms; return 1; }, clearTimeout() {}
   });
   const navigate = (path, mode = 'navigate', method = 'GET') => {
     let response;
@@ -29,6 +30,11 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
     return response;
   };
   assert.equal(await navigate('/'), reply);
+  assert.equal(timeout, 8000);
+  reply = 'hang';
+  const pending = navigate('/');
+  expire();
+  assert.match(await (await pending).text(), /설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요/);
   for (const status of [401, 403, 404]) {
     reply = new Response('server response', {status});
     assert.equal(await navigate('/'), reply);
@@ -42,6 +48,8 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
       const content = await fallback.text();
       assert.match(content, /VIV 서버에 연결할 수 없어요[^]*다시 연결/);
       assert.match(content, status ? /연결 경로가 VIV 서버에 닿지 않습니다/ : /인터넷 연결을 확인하세요/);
+      assert.match(content, /VIV PC 주소가 열리면 휴대폰 연결을 복구하세요/);
+      assert.match(content, /모바일 연결 복구 안내/);
     }
   }
   assert.equal(navigate('/api/workspace'), undefined);
