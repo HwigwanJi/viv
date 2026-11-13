@@ -3267,8 +3267,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T13:58:47.685Z",
-      "reason": "발행 전략과 별도 초안을 함께 표시하고 모바일 터치와 PC 키보드로 같은 마인드·초안을 조회한 뒤 초점을 복원했다.",
+      "reviewedAt": "2026-11-13T14:06:04.572Z",
+      "reason": "발행 전략과 별도 초안이 함께 있을 때 같은 버튼 색과 읽기 조작, 초안 버전별 검토 사유 및 초점 복원을 확인했다.",
       "signature": "e008be78931d8672e53149e3739ccb6fe579938795c5aed5b2be78089a49b1a9",
       "controls": [
         [
@@ -3376,7 +3376,7 @@
           1
         ]
       ],
-      "sourceHash": "2d791cc9c1560c0369c9ae3ecccfc4f9fe761af178fda6b53e339d3ddb0ce8aa",
+      "sourceHash": "8e4d1d9d72c8ca73368e15abad801429d3685532681caa17f413385b8d0d2229",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

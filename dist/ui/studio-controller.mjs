@@ -645,7 +645,7 @@ export function createStudioController(hooks={},options={}){
       if(!mindData)actions=button('마인드 목록 다시 조회','refresh','','','primary');
       else if(!published.length&&!pending.length)actions=button('국면 추세 마인드 만들기','profile-new','','','primary');
       else{
-        actions=published.map(mind=>'<a class="button primary" href="'+esc(studioRouteHash(current,'trade',{profileId:mind.id,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME}))+'" data-studio-route>'+esc(profileName(mind.id))+' · 발행 전략으로 시작</a>').join('');
+        actions=published.map(mind=>'<a class="button small'+(pending.length?'':' primary')+'" href="'+esc(studioRouteHash(current,'trade',{profileId:mind.id,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME}))+'" data-studio-route>'+esc(profileName(mind.id))+' · 발행 전략으로 시작</a>').join('');
         actions+=pending.map(({id,document:doc})=>{
           const label=!published.length&&pending.length===1?'저장한 전략 초안 검토':profileName(doc.scope.profileId)+' · v'+doc.data.version+' 초안 검토';
           return button(label,'document-detail',id,'data-first-decision-review',published.length?'':'primary');
