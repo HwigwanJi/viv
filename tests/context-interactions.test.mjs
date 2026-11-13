@@ -17,6 +17,7 @@ test('paper decision previews separate the outcome from model response measures'
  const preview=terminalTooltipContent([view]);
  assert.match(preview,/추가 주문 없음/);
  assert.doesNotMatch(preview,/100\.00%/);
+ assert.doesNotMatch(terminalTooltipContent([view],{showOutcome:false}),/추가 주문 없음/);
  const measures=terminalModelMeasures(view);
  assert.match(measures,/<summary>모델 응답 지표<\/summary>/);
  assert.match(measures,/행동 선택에 대한 모델 출력/);
