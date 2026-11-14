@@ -1662,7 +1662,7 @@ export function createStudioController(hooks={},options={}){
     return {
       label:'모의 판단 이어보기',
       identity:profileName(mindId)+' · '+getInstrument(instrumentId).symbol,
-      href:studioRouteHash(route.page==='trade'?source:route,'trade',{profileId:mindId,instrumentId,timeframe,mode,executionMode:'paper'})
+      href:studioRouteHash(route.page==='trade'?source:route,'trade',{profileId:mindId,instrumentId,timeframe,mode,comparisonId:null,executionMode:'paper'})
     };
   }
   function resumeTerminalLink(route){
