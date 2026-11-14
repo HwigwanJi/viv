@@ -25,7 +25,7 @@ self.addEventListener('fetch',event=>{
   const privateOrigin=/^[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/.test(url.hostname);
   return new Response(connectionHelp(gatewayUnavailable,privateOrigin),{status:503,headers:{
    'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store',
-   'Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'",
+   'Content-Security-Policy':"default-src 'none'; connect-src 'self'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'",
    'Referrer-Policy':'no-referrer'
   }});
  })());
@@ -58,6 +58,7 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
     <h1>VIV 서버에 연결할 수 없어요</h1>
     <p>${gatewayUnavailable?'연결 경로가 VIV 서버에 닿지 않습니다. 설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요.':'인터넷 연결을 확인하세요. 휴대폰에서 열었다면 설치한 컴퓨터와 같은 Tailscale 네트워크에 연결되어 있는지도 확인하세요.'}</p>
     <button type="button">다시 연결</button>
+    <p role="status" id="connection-status"></p>
     ${privateOrigin?`<p>설치한 컴퓨터에서 VIV PC 주소가 열리면 휴대폰 연결을 복구하세요. PC에서도 열리지 않으면 아래에서 서버 다시 시작 방법을 확인하세요.</p>
     <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#모바일만-복구하기">모바일 연결 복구 안내</a>`:''}
     <details>
@@ -70,7 +71,44 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
     </details>
     <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#서버-다시-시작">서버 다시 시작 안내</a>
   </main>
-  <script>document.querySelector('button').addEventListener('click',()=>location.reload());</script>
+  <script>
+  const retry = document.querySelector('button');
+  const status = document.querySelector('#connection-status');
+  retry.addEventListener('click', async () => {
+    if (retry.getAttribute('aria-disabled') === 'true') return;
+    retry.setAttribute('aria-disabled', 'true');
+    status.textContent = 'VIV 연결을 확인하고 있어요…';
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const page = await fetch(location.pathname + location.search, {
+        cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: controller.signal
+      });
+      if (page.status === 401 || page.status === 403) {
+        status.textContent = '접근이 거부됐어요. 휴대폰의 Tailscale 로그인과 접속 권한을 확인하세요.';
+        return;
+      }
+      if (page.ok) {
+        const entry = location.pathname === '/install.html' ? 'viv-install-entry' : 'viv-app-entry';
+        if (/^text\\/html\\b/i.test(page.headers.get('Content-Type') || '') &&
+            (await page.text()).includes('id="' + entry + '"')) {
+          location.reload();
+          return;
+        }
+        status.textContent = '이 주소에서 VIV 화면을 확인할 수 없어요. PC에서 확인한 VIV 설치 주소와 비교하세요.';
+        return;
+      }
+      status.textContent = '아직 VIV 서버에 연결할 수 없어요. 설치한 컴퓨터에서 VIV PC 주소를 확인하세요.';
+    } catch {
+      status.textContent = navigator.onLine === false
+        ? '휴대폰이 오프라인이에요. 네트워크에 연결한 뒤 다시 시도하세요.'
+        : '아직 VIV 서버에 연결할 수 없어요. 설치한 컴퓨터에서 VIV PC 주소를 확인하세요.';
+    } finally {
+      clearTimeout(timeout);
+      retry.removeAttribute('aria-disabled');
+    }
+  });
+  </script>
 </body>
 </html>`;
 
