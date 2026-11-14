@@ -2730,8 +2730,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T07:11:13.490Z",
-      "reason": "완료한 실습의 보고서에서 해당 한국 날짜의 캘린더로 이동하고 같은 보고서를 다시 열었다.",
+      "reviewedAt": "2026-11-14T07:40:30.312Z",
+      "reason": "모바일 브라우저에서 저장 보고서 조회, 재검증 검토·취소 후 원래 탭과 포커스 복원, JEV 요건과 비용 설명이 연결된 읽기 전용 실습 이동을 확인했다.",
       "signature": "fbe7c87a1c58e2c929c87215ff85e276c8197aedad2178d3c65cac9a676116f8",
       "controls": [
         [
@@ -2803,7 +2803,7 @@
           2
         ]
       ],
-      "sourceHash": "0a73e4d826cca55f66b0d380ebe47a123208009df018d74c3785a7a04c670db3",
+      "sourceHash": "c32b3130b8d319a7960249be18a08fecc6e1b847edd32341cec43e135f746dc9",
       "customContainers": []
     },
     {
@@ -3257,8 +3257,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T06:41:19.115Z",
-      "reason": "같은 모의 판단의 기록 목록, 바로가기 요약과 상세의 체결 상태를 대조했다.",
+      "reviewedAt": "2026-11-14T07:40:30.321Z",
+      "reason": "브라우저의 준비 응답을 격리해 JEV 사용 여부에 따라 결정 실행 전 데이터·비용 안내가 표시되거나 생략되는 것을 확인했다.",
       "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "4c2f067b2bfce0f38dde76f46db053dcbc07b3885fa7397d960acd996ae49e1d",
+      "sourceHash": "eb3bba2af3feaf95b4f8e39ba271bd4a1540a1122883ba4a3df75ebb9f112295",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

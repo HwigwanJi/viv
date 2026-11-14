@@ -172,6 +172,7 @@ test('repeat opens read-only review and cancellation restores the same report',a
   try{
     app.start();
     await app.load();
+    assert.match(app.render(),/<button type="button" class="button small" data-simulation-action="repeat"[^>]*>재검증 조건 검토<\/button>/);
     await click('repeat');
     assert.equal(params.get('setupStep'),'review');
     assert.match(app.render(),/data-setup-step="review"[^]*13,579[^]*예상 최대 AI 호출[^]*0회[^]*새 실험 저장/);

@@ -702,7 +702,7 @@ export function createStudioController(hooks={},options={}){
         '아래 트레이딩 화면에서 현재 준비 상태와 다음 행동을 확인하세요.';
       if(report){
         message=(readiness?.policy?'현재 발행 정책 v'+readiness.policy.version+' · ':'')+
-          (jevMissing||readiness?.requiresJev===true&&!readiness.canRun?JEV_DECISION_DISCLOSURE+' ':'')+
+          (jevMissing||readiness?.requiresJev===true?JEV_DECISION_DISCLOSURE+' ':'')+
           (jevMissing?'국면 추세로 바꾸면 JEV 키 없이 현재 시세를 연습할 수 있습니다. 이 마인드를 쓰려면 JEV 키를 '+(requirement.category==='JEV_AUTH'?'확인':'설정')+'하세요.':
             (readiness?.requiresJev===false?'JEV 키 없이 계산합니다. ':'')+
             (readiness?.canRun?'준비됐습니다. 결정 실행을 누르면 판단이 시작됩니다.':requirement?.message||'아래에서 준비 상태를 확인하세요.'));
