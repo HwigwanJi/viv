@@ -1303,7 +1303,7 @@ export function createStudioController(hooks={},options={}){
       const fillsUnconfirmed=paperRecord&&fillCount===null;
       const fillProblem=Array.isArray(d.fills)?'저장된 실행 상태와 체결 목록이 일치하지 않습니다.':'이 판단의 체결 목록을 받지 못했습니다.';
       const paperExecution=paperRecord
-        ?(fillsUnconfirmed?row('저장된 실행 상태',esc(executionLabel(paperOutcome))):executionStatusRow)
+        ?(fillsUnconfirmed?row('실행 상태',esc(executionLabel('PAPER_FILL_UNCONFIRMED'))):executionStatusRow)
           +row('모의 체결',fillsUnconfirmed?'미확인':num(fillCount,0)+'건')
           +(fillsUnconfirmed?'<p class="tiny muted spaced" role="status">'+fillProblem+' 같은 판단의 원장을 다시 조회해 체결 여부를 확인하세요.</p>'+button('체결 기록 다시 조회','decision',id,'','small'):'')
           +observationBasis+paperReason:'';
@@ -1830,9 +1830,9 @@ export function createStudioController(hooks={},options={}){
       const save=button(hold?'후속 관측 기준 저장':'모의 체결 실행',hold?'mind-observation-basis-save':'mind-order-execute',id,busy?'disabled':'','primary');
       hooks.open?.(hold?'후속 관측 기준 검토':'모의 체결 검토',
         row('종목',esc(run.instrumentId))+row('마인드',esc(profileName(run.profileId)))+row('행동',esc(({buy:'매수',sell:'매도',hold:'유지'})[run.decision?.action]||run.decision?.action))+row('목표 비중',pct(run.risk?.targetWeight))+row('선택 확신도',pct(run.decision?.confidence))+'<p class="tiny muted spaced">'+summary+'</p>'+raw(run.risk,'위험·비용 검사')+(run.execution?.reason?row('실행 사유',esc(run.execution.reason)):'')+raw(run.execution,hold?'저장된 모의 상태':'모의 주문 상태'),
-        (hold?back:'')+save);
+        back+save);
     }catch(problem){
-      if(!disposed&&dialogIsCurrent(dialogToken))hooks.open?.(title,'<p class="empty error-text" role="alert">'+esc(problem.message)+'</p>',(observationBasis?back:'')+button('다시 조회','mind-order-review',id,observationBasis?'data-observation-basis':''));
+      if(!disposed&&dialogIsCurrent(dialogToken))hooks.open?.(title,'<p class="empty error-text" role="alert">'+esc(problem.message)+'</p>',back+button('다시 조회','mind-order-review',id,observationBasis?'data-observation-basis':''));
     }
   }
   function observationCohortMarkup(observation){const cohorts=list(observation?.cohorts);if(!cohorts.length)return '';return '<section class="spaced"><h3>자동 운용 평가 기준</h3>'+row('평가 정책',esc([...new Set(cohorts.map(c=>cohortPolicyLabel(c.tag?.policyVersion)))].join(' · ')))+row('실제 관측 길이',esc(duration(Date.parse(observation.period?.end)-Date.parse(observation.period?.start))))+table(['원칙','기간 적격','독립성 검토'],cohorts.map(c=>{const p=list(mindData?.minds).flatMap(m=>list(m.manifest?.data.principles)).find(p=>p.id===c.tag?.principleId);return [esc(p?.title||'저장 원칙'),c.assessment?.cohortEligible===true?'적격':c.assessment?.cohortEligible===false?'제외':'검토 상태 확인',c.tag?.independence?.independentGroupApproved===true?'독립 기회 승인됨':'독립 기회 검토 필요'];}))+'</section>';}

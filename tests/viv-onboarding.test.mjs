@@ -33,6 +33,7 @@ test('stored paper result reads one owner-scoped record and separates an unknown
   assert.equal(first.isError,false);
   assert.deepEqual(reads,[{method:'GET',path:'/api/workspace/decisions/detail',id:record.id,owner:'owner-a'}]);
   assert.equal(saved.fillCount,0);
+  assert.equal(saved.fillSummary,'모의 체결 0건');
   assert.equal(saved.executionStatus,'NO_ORDER_REQUIRED');
   assert.equal(saved.basis.orderReason,'TARGET_ALREADY_REACHED');
   assert.match(saved.basis.explanation,/모의 주문 없이 유지/);
@@ -41,6 +42,7 @@ test('stored paper result reads one owner-scoped record and separates an unknown
   fills=undefined;
   const unknown=(await call()).structuredContent.result;
   assert.equal(unknown.fillCount,null);
+  assert.equal(unknown.fillSummary,'모의 체결 미확인');
   assert.equal(unknown.basis.explanation,undefined);
   fills=[{runId:record.id}];
   assert.equal((await call()).structuredContent.result.fillCount,null);
@@ -49,6 +51,11 @@ test('stored paper result reads one owner-scoped record and separates an unknown
   fills=[{runId:'mind-run-unrelated'}];
   assert.equal((await call()).structuredContent.result.fillCount,null);
   fills=[];
+  assert.equal((await call()).structuredContent.result.fillCount,null);
+  record.execution.status='PARTIALLY_FILLED';
+  assert.equal((await call()).structuredContent.result.fillSummary,'모의 체결 미확인');
+  record.execution.status='PAPER_REVIEW_READY';
+  fills=[{runId:record.id}];
   assert.equal((await call()).structuredContent.result.fillCount,null);
   assert.equal((await call({instrumentId:'crypto:okx:ETH-USDT'})).structuredContent.code,'DECISION_INSTRUMENT_SCOPE');
   assert.equal((await call({mindId:'mind-b'})).structuredContent.code,'DECISION_MIND_SCOPE');

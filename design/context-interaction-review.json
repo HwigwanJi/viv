@@ -3257,8 +3257,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T10:09:20.000Z",
-      "reason": "계좌·자금과 MCP 브리핑으로 같은 첫 모의 판단 화면을 열고 기존 USDT 예산과 마인드의 모의 현금 안내를 확인했다.",
+      "reviewedAt": "2026-11-14T10:38:45.000Z",
+      "reason": "모의 체결 검토에서 키보드로 같은 판단에 돌아와 주문 없이 재조회하고 체결 목록이 누락되면 미확인 상태를 표시하는 것을 확인했다.",
       "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "23c7dd4bc685a5ec782e391d4b25b99a83945f4da3fb3ca41055042fc601c25f",
+      "sourceHash": "182644e2c01d845416fc93032c232205cf61d12f277ee375fb63f133902dbd23",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

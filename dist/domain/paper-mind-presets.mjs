@@ -83,7 +83,8 @@ export function paperDecisionFillCount(record,fills){
  if(!Array.isArray(fills))return null;
  if(fills.some(fill=>!fill||fill.runId!==record.id))return null;
  const status=record.execution?.status;
- if((status==='FILLED'&&fills.length===0)||(status==='NO_ORDER_REQUIRED'&&fills.length>0))return null;
+ if((['FILLED','PARTIALLY_FILLED'].includes(status)&&fills.length===0)||
+  (['NO_ORDER_REQUIRED','PAPER_REVIEW_READY'].includes(status)&&fills.length>0))return null;
  return fills.length;
 }
 

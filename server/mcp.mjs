@@ -94,7 +94,7 @@ const descriptions={
   write_market_knowledge:'공개 원문을 조사한 market-knowledge JSON/YAML을 초안으로 보관합니다. 내용 수정은 새 ID와 다음 버전으로 작성하며 승인은 앱에서 수행합니다. 분석 LLM API를 추가 호출하지 않습니다.',
   classify_market_knowledge:'자료 전체와 관련 승인 자료 최대 8개의 제목·요약·핵심 내용을 TypeSafe JEV에 보내 분류합니다. JEV API 사용량은 과금될 수 있습니다. 응답이 끊기면 read_market_knowledge에서 같은 documentId의 classificationAttempt 또는 저장된 분류를 먼저 읽으세요. 같은 요청 키는 저장된 결과를 반환합니다.',
   export_market_knowledge:'시장 지식 원문과 버전·출처·해시를 JSON/YAML로 내보내 새 버전의 분석에 사용합니다.',
-  read_investment_status:'현재 사용자 마인드 계좌·최근 결정·관측·문서 검토·예약 상태를 원본 종류와 시점별로 조회합니다. 현재 시세 모의 판단을 시작할 때는 links.paperDecision, 과거 시세 실습은 links.paperPractice를 안내하세요. recentDecisions의 action은 판단, executionStatus는 저장된 실행 상태, fillCount는 모의 체결 건수입니다. null은 확인 불가입니다. status는 판단 상태이며 체결 확인은 executionStatus와 fillCount를 함께 사용하세요. 이유와 체결 원본은 같은 id, profileId, instrumentId로 read_trading_context의 result 보기를 사용하세요.',
+  read_investment_status:'현재 사용자 마인드 계좌·최근 결정·관측·문서 검토·예약 상태를 원본 종류와 시점별로 조회합니다. 현재 시세 모의 판단을 시작할 때는 links.paperDecision, 과거 시세 실습은 links.paperPractice를 안내하세요. recentDecisions의 action은 판단이고 executionStatus는 저장된 실행 상태입니다. fillCount가 null이면 모의 체결 미확인, 0이면 원장상 체결 0건, 양수이면 확인된 체결 건수로 안내하세요. 이유와 체결 원본은 같은 id, profileId, instrumentId로 read_trading_context의 result 보기를 사용하세요.',
   run_due_paper_jobs:'실행 시각이 된 사용자 동의 모의투자 작업을 처리하고 결과를 보관합니다.',
   read_mind_catalog:'투자 마인드, 원칙·학습 문서와 작성 양식을 조회합니다. 실제 자료를 먼저 읽고 분석 문서를 작성하세요.',
   read_trading_context:'선택한 종목과 마인드의 확정 캔들·원칙·기억을 조회합니다. 왜 판단했는지 또는 체결됐는지 묻는 경우 decisionId와 view:result로 저장된 현재 시세 모의 판단의 결과만 읽으세요. decisionId만 함께 전달하면 전체 판단 원문을 포함합니다.',
@@ -271,9 +271,11 @@ async function callMindTool(request,env,options,name,args){
       let quoteCurrency=record.quoteCurrency??null;
       if(!quoteCurrency)try{quoteCurrency=getInstrument(scope.instrumentId).quoteCurrency;}catch{}
       const basis=isFirstPaperDecisionPlan(manifest?.data?.strategyPlan)?paperTrendResultBasis(record,fills):null;
+      const fillCount=paperDecisionFillCount(record,fills);
       return toolResult({ok:true,result:{decisionId:record.id,profileId:scope.profileId,instrumentId:scope.instrumentId,timeframe,
         executionMode:'paper',asOf:record.asOf??record.inputPackage?.asOf??null,quoteCurrency,action:record.decision?.action??null,
-        executionStatus:record.execution?.status??null,fillCount:paperDecisionFillCount(record,fills),basis,
+        executionStatus:record.execution?.status??null,fillCount,basis,
+        fillSummary:fillCount===null?'모의 체결 미확인':'모의 체결 '+fillCount+'건',
         openUrl:paperResultUrl(new URL(request.url).origin,paperDecisionRecordHash(record.id),options.installation)}});
     }
     const query=new URLSearchParams({...(args.mindId?{profileId:args.mindId}:{}),instrumentId:args.instrumentId,...(args.timeframe?{timeframe:args.timeframe}:{}),...(args.mode?{mode:args.mode}:{})});
