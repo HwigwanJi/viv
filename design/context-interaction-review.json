@@ -3256,8 +3256,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T01:58:11.222Z",
-      "reason": "키보드와 모바일에서 정확한 모의 판단으로 이동하고 기존 비교 범위를 제거하는 경로를 검토했다.",
+      "reviewedAt": "2026-11-14T02:07:40.236Z",
+      "reason": "첫 판단에서 관측 기간·준비·기록 상세와 원래 실습 복귀를 기존 버튼으로 확인했다.",
       "signature": "c5a242c21eed84066040467abc167c1fc95f20f4a8db09a28a6bce25398f23d6",
       "controls": [
         [
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "7b07efe1611f5567242230342031a1fb00f080d69087c5758c1ba40d2589e810",
+      "sourceHash": "33b64643c066164ad9ebeb4176fea9b17c863432626500490dc36b2164eeff34",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
