@@ -117,6 +117,17 @@ test('paper trend lesson explains no order only when the saved result supports i
  assert.equal(paperTrendDecisionBasis(record,'USDT',[]),'');
 });
 
+test('paper trend lesson explains a saved buy independently of fill confirmation',()=>{
+ const record={decision:{action:'buy',targetWeight:1},strategyEvaluation:{
+  modules:[{moduleId:'SMA_TREND',ready:true,indicators:{close:110,slowMA:100,lookbackBars:480}}],
+  graphEvaluation:{trace:[{nodeId:'trend-decision',output:{decision:{action:'buy',targetWeight:1}}}],output:{deltaWeight:.8}},
+ }};
+ assert.match(paperTrendDecisionBasis(record,'USDT',undefined),/목표 보유 비중을 100%.*매수로 판단/);
+ assert.doesNotMatch(paperTrendDecisionBasis({...record,decision:{action:'hold'}},'USDT',[]),/매수로 판단/);
+ record.strategyEvaluation.graphEvaluation.output.deltaWeight=0;
+ assert.doesNotMatch(paperTrendDecisionBasis(record,'USDT',[]),/매수로 판단/);
+});
+
 test('help queries find the capability catalog in the current viewing mode',()=>{
  const route=parseStudioRoute('#settings?view=connections&executionMode=live');
  const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
