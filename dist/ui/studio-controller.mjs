@@ -1047,7 +1047,8 @@ export function createStudioController(hooks={},options={}){
 
     const query=recordsQuery(),page=recordsData?.page,items=list(page?.items),instrumentId=query.get('instrumentId')||'',profileId=query.get('profileId'),kind=query.get('kind');
     const exact=recordsLoading||recordsError||lastRecordsKey!==query.toString()?null:exactPaperDecisionRecord(query,page);
-    const savedResult=exact?'<section class="studio-sheet spaced" aria-labelledby="paper-record-result"><div class="studio-sheet-head"><h2 id="paper-record-result">저장된 모의 판단</h2>'+button('판단 근거와 체결 보기','decision',exact.decisionId,'','primary')+'</div><div class="studio-sheet-body">'+row('종목',esc(exact.instrumentId?.split(':').at(-1)||'—'))+row('마인드',esc(exact.profileName||profileName(exact.profileId)))+row('시각',recordTimeMarkup(exact))+row('상태',esc(executionLabel(exact.status)))+'</div></section>':'';
+    const resumeObservation=exact?.decisionId.startsWith('mind-run-')&&currentRoute().params.get('resumeObservation')==='1';
+    const savedResult=exact?'<section class="studio-sheet spaced" aria-labelledby="paper-record-result"><div class="studio-sheet-head"><h2 id="paper-record-result" tabindex="-1">저장된 모의 판단</h2>'+'<div class="actions">'+(resumeObservation?button('후속 관측 상태 보기','mind-observation',exact.decisionId,'','primary'):'')+button('판단 근거와 체결 보기','decision',exact.decisionId,'',resumeObservation?'':'primary')+'</div></div><div class="studio-sheet-body">'+row('종목',esc(exact.instrumentId?.split(':').at(-1)||'—'))+row('마인드',esc(exact.profileName||profileName(exact.profileId)))+row('시각',recordTimeMarkup(exact))+row('상태',esc(executionLabel(exact.status)))+'</div></section>':'';
     const eventState=eventPaperBatch.state(),eventMessage=eventState.loading?'분봉 모의 원장을 조회하는 중…':eventState.error,eventNotice=eventMessage?'<section class="studio-sheet spaced" data-paper-records-read tabindex="-1" aria-label="분봉 모의 기록 조회"><div class="studio-sheet-body"><p role="'+(eventState.loading?'status':'alert')+'">'+esc(eventMessage)+'</p>'+(eventState.data&&eventState.readAt?'<p class="tiny muted">저장된 분봉 기록은 마지막 정상 조회 '+esc(when(new Date(eventState.readAt).toISOString()))+' 기준입니다.</p>':'')+button(eventState.loading?'분봉 원장 조회 중…':'분봉 기록 다시 조회','paper-records-refresh','',eventState.loading?'disabled':'')+'</div></section>':'';
     const eventItems=list(eventPaperBatch.items()).filter(item=>profileId==='all'||item.profileId===profileId),decisions=kind==='decisions',eventRecords=eventItems.map(item=>'<section class="studio-sheet studio-record-group spaced" data-event-paper-records><div class="studio-sheet-head"><h2 id="'+esc('paper-records-'+encodeURIComponent(item.id??item.profileId))+'">'+esc(profileName(item.profileId))+' · 최근 분봉 모의 기록</h2>'+button('운용 원장 열기','mind-view',item.profileId,'data-studio-view="operations"')+'</div>'+renderMindActivityFeed(decisions?{...item,recentActivity:list(item.recentActivity).filter(record=>record.kind==='DECISION')}:item,{limit:30,showDecisions:decisions,includeLatestDecision:false,labelledBy:'paper-records-'+encodeURIComponent(item.id??item.profileId)})+'</section>').join('');
     if(profileId!=='all'&&eventItems.length){const tabs='<nav class="studio-local-tabs" aria-label="운용 기록 유형">'+[['fills','매매'],['decisions','판단']].map(([kind,label])=>'<a class="button small" href="'+esc(studioRouteHash(currentRoute(),'minds',{view:'records',kind,cursor:null}))+'" data-studio-route'+((decisions?'decisions':'fills')===kind?' aria-current="page"':'')+'>'+label+'</a>').join('')+'</nav>';return mindHeading('기록',button('새로고침','refresh'))+tabs+eventNotice+eventRecords;}
@@ -1159,9 +1160,22 @@ export function createStudioController(hooks={},options={}){
     }catch(error){problem=error;sectorCollectionError=error.message;const target=formNode?.querySelector?.('[data-studio-form-error]');if(target&&formNode.isConnected!==false)target.textContent=error.message;else hooks.toast?.(error.message);}
     finally{sectorCollecting=false;restore(problem);redraw();}
   }
+  function observationReturn(route){
+    if(executionModeOf(route)!=='paper'||route.params.get('resumeObservation')!=='1')return '';
+    const href=paperBrokerReturnHash(route.params.get('returnTo'));
+    if(!href.startsWith('#minds?'))return '';
+    const destination=parseStudioRoute(href);
+    if(!isRecordsRoute(destination)||!destination.params.get('search')?.startsWith('mind-run-'))return '';
+    const lesson=paperBrokerReturnHash(parseStudioRoute(route.params.get('returnTo')).params.get('returnTo'));
+    return studioRouteHash(destination,'minds',{resumeObservation:'1',returnTo:lesson.startsWith('#trade?')?lesson:null});
+  }
+
   function renderCaptureStatus(){
     const c=captureData,latest=c?.latest,lastError=c?.lastError,scope=(c?.provider||'okx').toUpperCase()+' · '+(c?.instrumentId?.split(':').at(-1)||'BTC-USDT')+' · '+({'4h':'4시간봉','1d':'일봉'}[c?.timeframe||'4h']||c.timeframe),status=({READY:'현재 확정 봉 보관됨',WAITING_SETTLEMENT:'확정 봉 수집 시각 대기',COOLDOWN:'공급처 재요청 대기',COLLECTION_REQUIRED:'확정 시세 수집 필요'})[c?.status]||'수집 상태 확인',disabled=busy||captureLoading||captureCollecting||!!captureStatusError||c?.canCollect!==true;
     const origin=firstDecisionOrigin(currentRoute());
+    const observation=observationReturn(currentRoute());
+    const observationReady=observation&&c?.status==='READY'&&!captureLoading&&!captureCollecting&&!captureStatusError;
+    const observationBack=observation?'<a class="button small'+(observationReady?' primary':'')+'" href="'+esc(observation)+'" data-studio-route data-capture-continue>원래 판단으로 돌아가기</a>':'';
     const collectionFailed=captureActionError||lastError;
     const waiting=['WAITING_SETTLEMENT','COOLDOWN'].includes(c?.status);
     const continueLesson=origin&&c?.status==='READY'&&!captureStatusError&&!captureLoading&&!captureCollecting
@@ -1177,7 +1191,7 @@ export function createStudioController(hooks={},options={}){
       (captureCollecting?'<p class="tiny spaced" role="status" aria-live="polite">OKX에서 확정 봉 원문을 수집하고 보관하는 중…</p>':captureLoading?'<p class="tiny spaced" role="status">수집 상태를 조회하는 중…</p>':captureMessage?'<p class="tiny spaced" role="status">'+esc(captureMessage)+'</p>':'')+
       (captureStatusError?'<p class="error-text spaced" role="alert">'+esc(captureStatusError)+' '+button('상태 다시 조회','capture-status','',captureLoading?'disabled':'')+'</p>':'')+(captureActionError&&!captureRecovered?'<p class="error-text spaced" role="alert">'+esc(captureActionError)+'</p>':'')+practiceRecovery+
       (c?row('현재 보관한 기준 봉',latest?esc(when(latest.latestClosedAsOf)):'보관된 시세 없음')+(!c.canCollect&&['WAITING_SETTLEMENT','COOLDOWN'].includes(c.status)?row('다음 수집 가능',esc(when(c.nextAllowedAt))):'')+'<details class="spaced"><summary>수집 상세</summary>'+row('공급처',esc((c.provider==='okx'?'OKX':c.provider)+' · '+(c.origin||'접속 주소 미기록')))+row('필요한 기준 봉',esc(when(c.requiredClosedAsOf)))+(latest?row('원문 수신',esc(when(latest.receivedAt)))+row('자료 사용 가능',esc(when(latest.availableAt)))+row('보관 봉 수','4시간봉 '+num(latest.candleCount,0)+'개 · 일봉 '+num(latest.dailyCandleCount,0)+'개'):'')+row('다음 수집 가능',esc(when(c.nextAllowedAt)))+
-      (lastError?'<section class="spaced"><h3>최근 수집 실패</h3>'+row('공급처 응답',lastError.httpStatus?'HTTP '+esc(lastError.httpStatus):'응답 상태 미기록')+row('실패 시각',esc(when(lastError.failedAt)))+row('재요청 가능',esc(when(lastError.nextAllowedAt)))+(lastError.retryAfter!==null&&lastError.retryAfter!==undefined?row('공급처 Retry-After',esc(lastError.retryAfter)):'')+'</section>':'')+raw(c,'수집 출처·원문 식별값')+'</details>':'<p class="tiny muted spaced">이 종목의 확정 시세 보관 상태를 조회합니다.</p>')+'</div><div class="studio-data-actions actions">'+(continueLesson||button(collectLabel,'capture-collect','',disabled?'disabled':''))+alternative+'</div></section>';
+      (lastError?'<section class="spaced"><h3>최근 수집 실패</h3>'+row('공급처 응답',lastError.httpStatus?'HTTP '+esc(lastError.httpStatus):'응답 상태 미기록')+row('실패 시각',esc(when(lastError.failedAt)))+row('재요청 가능',esc(when(lastError.nextAllowedAt)))+(lastError.retryAfter!==null&&lastError.retryAfter!==undefined?row('공급처 Retry-After',esc(lastError.retryAfter)):'')+'</section>':'')+raw(c,'수집 출처·원문 식별값')+'</details>':'<p class="tiny muted spaced">이 종목의 확정 시세 보관 상태를 조회합니다.</p>')+'</div><div class="studio-data-actions actions">'+(continueLesson||(!observationReady?button(collectLabel,'capture-collect','',disabled?'disabled':''):''))+observationBack+alternative+'</div></section>';
   }
   async function collectCapture(){if(captureCollecting||captureLoading||captureStatusError||busy||captureData?.canCollect!==true)return;if(isDataSettings())restoreMindActionFocus('capture-collect','');captureCollecting=true;captureActionError='';captureMessage='';redraw();try{const value=await mutate('',{provider:'okx',instrumentId:'crypto:okx:BTC-USDT'},'/api/workspace/market-captures/collect',{onCommitted:invalidateTerminal});captureData=value.collection;captureMessage=value.result?.reused?'이미 보관한 확정 시세를 확인했습니다.':'확정 시세 원문을 수집해 보관했습니다.';if(currentRoute().page==='trade')await loadTerminal();}catch(problem){captureActionError=problem.message;if(problem.collection)captureData=problem.collection;}finally{captureCollecting=false;await loadCaptureStatus();redraw();}}
   function connectionSummary(){
@@ -1815,7 +1829,38 @@ export function createStudioController(hooks={},options={}){
     }
   }
   function observationCohortMarkup(observation){const cohorts=list(observation?.cohorts);if(!cohorts.length)return '';return '<section class="spaced"><h3>자동 운용 평가 기준</h3>'+row('평가 정책',esc([...new Set(cohorts.map(c=>cohortPolicyLabel(c.tag?.policyVersion)))].join(' · ')))+row('실제 관측 길이',esc(duration(Date.parse(observation.period?.end)-Date.parse(observation.period?.start))))+table(['원칙','기간 적격','독립성 검토'],cohorts.map(c=>{const p=list(mindData?.minds).flatMap(m=>list(m.manifest?.data.principles)).find(p=>p.id===c.tag?.principleId);return [esc(p?.title||'저장 원칙'),c.assessment?.cohortEligible===true?'적격':c.assessment?.cohortEligible===false?'제외':'검토 상태 확인',c.tag?.independence?.independentGroupApproved===true?'독립 기회 승인됨':'독립 기회 검토 필요'];}))+'</section>';}
-  async function openMindObservation(id){const dialogToken=openRecordLoading('결정 후속 관측');try{const value=await request('/api/workspace/terminal/observation?'+new URLSearchParams({runId:id}));if(disposed||!dialogIsCurrent(dialogToken))return;const observation=value.observation;hooks.open?.('결정 후속 관측',row('진행 상태',esc(({WAITING_TIME:'관측 기간 대기',DATA_REQUIRED:'후속 자료 확인 필요',OBSERVED:'관측 완료'})[value.status]||'관측 기준 확인'))+row('관측 종료',esc(when(value.dueAt)))+list(value.reasons).map(r=>'<p class="tiny muted spaced">'+esc(r.message)+'</p>').join('')+(observation?row('순수익률',pct(observation.metrics?.netReturn))+row('동기간 보유 대조',pct(observation.metrics?.benchmarkReturn))+row('기준 대비',Number.isFinite(observation.metrics?.netReturn)&&Number.isFinite(observation.metrics?.benchmarkReturn)?percentagePoints(observation.metrics.netReturn-observation.metrics.benchmarkReturn):'—')+row('실제 관측 길이',esc(duration(Date.parse(observation.period?.end)-Date.parse(observation.period?.start))))+row('최대 낙폭',pct(observation.metrics?.maxDrawdown))+observationCohortMarkup(observation)+raw(observation,'관측 원본'):'<div class="spaced">'+helpLabel('후속 관측','결정 당시 계좌와 가격을 이후 확정 시세와 비교해 결과를 계산합니다.')+'</div>'),(value.status==='DATA_REQUIRED'?button('관측 자료 수집','mind-observe',id,busy?'disabled':''):button('관측 상태 다시 조회','mind-observation',id))+(observation?button('거래 분석 양식','review-from-run',id)+button('원칙 검증 근거','evidence-from-run',id):'')+button('판단 상세','decision',id));}catch(problem){if(!disposed&&dialogIsCurrent(dialogToken))hooks.open?.('결정 후속 관측','<p class="empty error-text" role="alert">'+esc(problem.message)+'</p>',button('다시 조회','mind-observation',id)+button('판단 상세','decision',id));}}
+  async function openMindObservation(id){
+    const token=openRecordLoading('결정 후속 관측');
+    try{
+      const value=await request('/api/workspace/terminal/observation?'+new URLSearchParams({runId:id}));
+      if(disposed||!dialogIsCurrent(token))return;
+      const route=currentRoute(),run=byId(workspace?.mindRuns,id),observation=value.observation;
+      const needsSource=value.status==='DATA_REQUIRED'&&list(value.reasons).some(reason=>reason.code==='OBSERVATION_SOURCE_REQUIRED');
+      const paperBtc=executionModeOf(route)==='paper'&&run?.experimentType==='FORWARD_PAPER'&&run.executionMode!=='live'&&run.instrumentId===PAPER_DECISION_INSTRUMENT;
+      const capture=needsSource&&paperBtc?await request('/api/workspace/market-captures/status').then(status=>status.collection,()=>null):null;
+      if(disposed||!dialogIsCurrent(token))return;
+      const captureNeeded=['COLLECTION_REQUIRED','WAITING_SETTLEMENT','COOLDOWN'].includes(capture?.status);
+      const captureLink=captureNeeded?'<a class="button small primary" href="'+esc(studioRouteHash(route,'settings',{view:'data',executionMode:'paper',resumeObservation:'1',returnTo:paperDecisionRecordHref(id,route)}))+'" data-studio-route data-observation-capture>확정 시세 보관 열기</a>':'';
+      const recovery=captureNeeded?'<p class="tiny muted spaced">OKX BTC-USDT 확정 시세를 보관한 뒤 이 판단의 관측을 이어가세요.</p>'+
+        (capture.canCollect===false?row('다음 수집 가능',esc(when(capture.nextAllowedAt))):''):
+        list(value.reasons).map(reason=>'<p class="tiny muted spaced">'+esc(reason.message)+'</p>').join('');
+      const action=captureLink||(value.status==='DATA_REQUIRED'?
+        button('관측 자료 수집','mind-observe',id,busy?'disabled':''):button('관측 상태 다시 조회','mind-observation',id));
+      const result=observation?row('순수익률',pct(observation.metrics?.netReturn))+
+        row('동기간 보유 대조',pct(observation.metrics?.benchmarkReturn))+
+        row('기준 대비',Number.isFinite(observation.metrics?.netReturn)&&Number.isFinite(observation.metrics?.benchmarkReturn)?
+          percentagePoints(observation.metrics.netReturn-observation.metrics.benchmarkReturn):'—')+
+        row('실제 관측 길이',esc(duration(Date.parse(observation.period?.end)-Date.parse(observation.period?.start))))+
+        row('최대 낙폭',pct(observation.metrics?.maxDrawdown))+observationCohortMarkup(observation)+raw(observation,'관측 원본'):
+        '<div class="spaced">'+helpLabel('후속 관측','결정 당시 계좌와 가격을 이후 확정 시세와 비교해 결과를 계산합니다.')+'</div>';
+      const status=({WAITING_TIME:'관측 기간 대기',DATA_REQUIRED:'후속 자료 확인 필요',OBSERVED:'관측 완료'})[value.status]||'관측 기준 확인';
+      hooks.open?.('결정 후속 관측',row('진행 상태',esc(status))+row('관측 종료',esc(when(value.dueAt)))+recovery+result,
+        action+(observation?button('거래 분석 양식','review-from-run',id)+button('원칙 검증 근거','evidence-from-run',id):'')+button('판단 상세','decision',id));
+    }catch(problem){
+      if(!disposed&&dialogIsCurrent(token))hooks.open?.('결정 후속 관측','<p class="empty error-text" role="alert">'+esc(problem.message)+'</p>',
+        button('다시 조회','mind-observation',id)+button('판단 상세','decision',id));
+    }
+  }
   async function click(event){
     if(formSaving){event.preventDefault();event.stopImmediatePropagation?.();return;}
     if(event.target.closest?.('[data-event-paper-action]')?.dataset?.eventPaperAction)return eventPaper.click(event);
@@ -1963,7 +2008,7 @@ export function createStudioController(hooks={},options={}){
         return;
       }
       if(action==='mind-observation')return await openMindObservation(id);
-      if(action==='mind-observe'){await mutate('',{runId:id},'/api/workspace/terminal/observe');return await openMindObservation(id);}
+      if(action==='mind-observe'){const token=hooks.getDialogToken?.();await mutate('',{runId:id},'/api/workspace/terminal/observe');if(dialogIsCurrent(token))return await openMindObservation(id);}
       if(action==='review-from-run'||action==='evidence-from-run'){const value=await mutate('',{runId:id,kind:action==='review-from-run'?'trade-review':'principle-evidence'},'/api/workspace/mind-documents/from-experience');return documentDetail(value.document.id);}
       if(action==='export')return await openExport(id);
       if(action==='document-export'){if(!reviewedDocumentExport||reviewedDocumentExport.id!==id||!dialogIsCurrent(reviewedDocumentExport.dialogToken))throw new Error('내보낼 자료를 다시 열어 주세요.');return openDocumentExport(reviewedDocumentExport.document);}

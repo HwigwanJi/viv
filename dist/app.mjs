@@ -66,7 +66,7 @@ function render(){
   hudRenderPending=false;
   const sameRoute=document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash;
   const active=document.activeElement;
-  const retainedFocus=sameRoute&&['#simulation-result-heading','.studio-content h1[tabindex="-1"]','[data-capability-guide]','#first-paper-decision'].find(selector=>active?.matches(selector));
+  const retainedFocus=sameRoute&&['#simulation-result-heading','.studio-content h1[tabindex="-1"]','[data-capability-guide]','#first-paper-decision','#data-capture-title','#paper-record-result'].find(selector=>active?.matches(selector));
   const calendarDate=active?.dataset?.calDate,calendarControl=active?.dataset?.calControl;
   const retainedCalendar=sameRoute&&(calendarDate?'[data-cal-date="'+CSS.escape(calendarDate)+'"]':calendarControl?'[data-cal-control="'+CSS.escape(calendarControl)+'"]':active?.dataset?.calEntry?calendarEntrySelector(active):null);
   const activeHud=active?.closest?.('[data-mind-hud]'),hudFocus=sameRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:active.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>active.dataset[key]!==undefined)}:null;
@@ -192,9 +192,10 @@ document.addEventListener('click',event=>{
   const paperGuide=routeHref?.startsWith('#trade?')&&parseStudioRoute(routeHref).params.has('firstDecision');
   const recordRoute=routeHref?.startsWith('#minds?')?parseStudioRoute(routeHref):null;
   const savedDecision=recordRoute?.params.get('view')==='records'&&recordRoute.params.get('kind')==='decisions'&&executionModeOf(recordRoute)==='paper'&&recordRoute.params.get('search');
+  const observationCapture=routeLink?.hasAttribute('data-observation-capture');
   const paperPractice=routeLink?.hasAttribute('data-first-decision-practice');
   const paperReportReturn=routeLink?.hasAttribute('data-paper-report-return');
-  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice||paperReportReturn||savedDecision?routeLink:null);
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice||paperReportReturn||savedDecision||observationCapture?routeLink:null);
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
     dialogLifecycleToken++;
@@ -206,7 +207,9 @@ document.addEventListener('click',event=>{
       navigateToHeading(href,'[data-library-result-heading]');
       if(sameRoute)void studio.openResearch(parseStudioRoute(href).params.get('knowledgeId'),{showLoading:true}).catch(()=>{});
     }else if(paperPractice)navigateToHeading(href,'[data-simulation-form="create"] select[name="mindId"]');
-    else navigateToHeading(href,paperGuide?'#first-paper-decision':paperReportReturn?'#simulation-result-heading':undefined);
+    else if(observationCapture)navigateToHeading(href,'#data-capture-title');
+    else navigateToHeading(href,paperGuide?'#first-paper-decision':paperReportReturn?'#simulation-result-heading':
+      savedDecision&&recordRoute.params.get('resumeObservation')==='1'?'#paper-record-result':undefined);
     return;
   }
   if(event.target.closest('[data-studio-jump-item][target="_blank"]')&&isPlainNavigationClick(event))closeDialog();

@@ -4,7 +4,7 @@
   "inputs": [
     {
       "path": "dist/app.mjs",
-      "sha256": "7008666b4ed25da7039d302dac4622550064a91e93822f5b8896b2f6c6159625"
+      "sha256": "04ec37ae46e7991a053c4ec0c6a125c4d4e8629fbb1a6728c8d82101cbdd75f8"
     },
     {
       "path": "dist/index.html",
@@ -388,7 +388,7 @@
     },
     {
       "path": "dist/ui/studio-controller.mjs",
-      "sha256": "eebaf5b4c57b3635b515d9cac64479d41581bdb109f5696512e8fafc9e2849d8"
+      "sha256": "a4aad5a556e34f02ce0bd5c6269d77930546c0fecb91402eccf04d3b823dc7de"
     },
     {
       "path": "dist/ui/studio-shell.mjs",
@@ -464,7 +464,7 @@
     },
     {
       "path": "scripts/style-contract.mjs",
-      "sha256": "a225075071a1819c31777784836fc3764a83b6933a2f228808cf698f25ae5986"
+      "sha256": "c3c6dfc5dc548dbfa7c9ede102e0d20889430ecd51581157172685cad3d3c5c0"
     },
     {
       "path": "styles/components/action-menu.css",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "08949b01d13910c8b66a23a2a7acb99f305e88da78eb5cb6760eb4a7f4919dd0",
+  "inputHash": "880d7e46fb3e3c5a907ea953bbaf51b4521666213183935668e96d95ddaf8250",
   "pages": [
     {
       "path": "dist/index.html",

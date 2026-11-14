@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T18:04:18.726Z",
-      "reason": "모의 판단 상세에서 날짜 목록으로 돌아올 때 원래 판단 또는 선택 날짜에 초점을 복원한다.",
+      "reviewedAt": "2026-11-14T02:44:08.022Z",
+      "reason": "Verified focus on capture and exact record destinations after asynchronous read and render.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "7008666b4ed25da7039d302dac4622550064a91e93822f5b8896b2f6c6159625",
+      "sourceHash": "04ec37ae46e7991a053c4ec0c6a125c4d4e8629fbb1a6728c8d82101cbdd75f8",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3256,9 +3256,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T02:14:28.919Z",
-      "reason": "Review first decision observation due time, same decision return on read error, and preserved review and record routes.",
-      "signature": "932dd4c09993b62954639db49fe872150132dbd55610dfd04484a0b1817429e7",
+      "reviewedAt": "2026-11-14T02:42:22.293Z",
+      "reason": "Verified exact paper observation recovery, focus steering and retained retry behavior.",
+      "signature": "45d7a809d89ef02b0bf1172cad740f90ae650f43704105969620ccf18abd6cbb",
       "controls": [
         [
           "data-auto-action",
@@ -3330,7 +3330,7 @@
         ],
         [
           "element:a",
-          41
+          43
         ],
         [
           "element:button",
@@ -3354,7 +3354,7 @@
         ],
         [
           "helper:button(",
-          189
+          190
         ],
         [
           "helper:renderActionMenu(",
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "eebaf5b4c57b3635b515d9cac64479d41581bdb109f5696512e8fafc9e2849d8",
+      "sourceHash": "a4aad5a556e34f02ce0bd5c6269d77930546c0fecb91402eccf04d3b823dc7de",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
