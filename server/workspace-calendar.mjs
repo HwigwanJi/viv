@@ -32,7 +32,7 @@ export function buildWorkspaceCalendar(workspace,events,experiments,{month,now,r
     if(!['buy','sell'].includes(side))return;
     const date=validTime(fill.at);
     if(!date||date>now)return;
-    const day=add(date,{kind:'fill',label:side==='sell'?'모의 매도 체결':'모의 매수 체결',name:name(profileId),href});
+    const day=add(date,{kind:'fill',id:fill.id,label:side==='sell'?'모의 매도 체결':'모의 매수 체결',name:name(profileId),href});
     if(!day||side!=='sell')return;
     try{
       const amount=fill.exactRealizedPnl??(Number.isFinite(fill.realizedPnl)?fill.realizedPnl.toFixed(8):null);

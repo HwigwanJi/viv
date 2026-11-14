@@ -27,7 +27,8 @@ const PATHS={calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d=
 const icon=name=>`<svg class="app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PATHS[name]||PATHS.layers}</svg>`;
 let toastTimer,renderGeneration=0,dialogLifecycleToken=0,strategyEditorCleanup=null;
 let calendarReturn=null;
-const calendarEntrySelector=link=>'[data-cal-entry="'+link.dataset.calEntry+'"][href="'+CSS.escape(link.getAttribute('href'))+'"]';
+const calendarEntrySelector=link=>'[data-cal-entry="'+link.dataset.calEntry+'"][href="'+CSS.escape(link.getAttribute('href'))+'"]'+
+  (link.dataset.calEntryKey?'[data-cal-entry-key="'+CSS.escape(link.dataset.calEntryKey)+'"]':':not([data-cal-entry-key])');
 const calendarEntryFallback=section=>section==='active'?($('[data-cal-control="active-toggle"]')||$('#viv-cal-active-title')):$('.viv-cal-day')&&$('.viv-cal-grid [aria-current="date"]');
 const getDialogToken=()=>dialogLifecycleToken+':'+location.hash;
 const primaryLocations=new Map();

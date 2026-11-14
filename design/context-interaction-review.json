@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T04:38:08.644Z",
-      "reason": "모의 첫 판단에서 캘린더 날짜로 이동하고 같은 기록으로 돌아가는 조작을 검증합니다.",
+      "reviewedAt": "2026-11-14T06:41:19.109Z",
+      "reason": "모의 체결 링크에서 뒤로 가면 같은 날짜와 체결 항목의 포커스가 복구된다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "d5b2280b6ec265b315653231679256f40af463dc33a9aaf7ad4b9d817c483c46",
+      "sourceHash": "947edd98eee3814afb389b1d921cd4b97b76ec4bd132bf367dba5c06bd6a8b3f",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3257,8 +3257,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T05:07:48.719Z",
-      "reason": "응답이 끊긴 모의 체결을 같은 판단 원장에서 재조회하고 확인 불가를 표시한다.",
+      "reviewedAt": "2026-11-14T06:41:19.115Z",
+      "reason": "같은 모의 판단의 기록 목록, 바로가기 요약과 상세의 체결 상태를 대조했다.",
       "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "18d0a5c38d478e8d68140c123388f7755a11468de975b74e0e2244018857c5a7",
+      "sourceHash": "4c2f067b2bfce0f38dde76f46db053dcbc07b3885fa7397d960acd996ae49e1d",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3434,10 +3434,10 @@
         ]
       ],
       "signature": "8187cf5bc17bb4f722605938729bf3916a473e07f999346e231d0fd4a95a7131",
-      "sourceHash": "b13698b6edc0890a9f849ea21ed20e3172d173346e626720769ecbe798ee1338",
+      "sourceHash": "0aa826c79e7916e94c43108992840c2715fb4603fd04b2c7a0fb051c8f43a304",
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T23:00:46.982Z",
-      "reason": "모바일·키보드에서 미확인 날짜, 확인된 0, 일부 확인 금액과 월 변경 복구를 구분했다.",
+      "reviewedAt": "2026-11-14T06:41:19.115Z",
+      "reason": "같은 판단을 가리키는 판단과 체결을 구분하여 실행한 행에 포커스를 돌려준다.",
       "customContainers": []
     },
     {

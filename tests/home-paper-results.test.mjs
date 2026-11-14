@@ -40,6 +40,20 @@ test('paper records search uses the dates displayed in Korea before paging',()=>
   assert.equal(page('국면 추세 2026-11-12').total,2);
 });
 
+test('paper record status filters follow the saved execution and flag missing fills',()=>{
+  const run={id:'mind-run-fill',profileId:'mind-a',experimentType:'FORWARD_PAPER',
+    decisionAt:'2026-11-11T14:59:30.000Z',status:'PAPER_REVIEW_READY',execution:{status:'FILLED'}};
+  const workspace={revision:1,investmentProfiles:[{id:run.profileId,name:'추세'}],
+    mindRuns:[run],mindPositions:[{kind:'PAPER_ACCOUNT',profileId:run.profileId,ledger:[{runId:run.id}]}]};
+  const rows=status=>buildTradingRecords(workspace,{kind:'decisions',status}).page.items;
+  assert.equal(rows('FILLED')[0].executionStatus,'FILLED');
+  assert.equal(rows('FILLED')[0].status,'PAPER_REVIEW_READY');
+  assert.equal(rows('PAPER_REVIEW_READY').length,0);
+  workspace.mindPositions[0].ledger=[];
+  assert.equal(rows('FILLED').length,0);
+  assert.equal(rows('PAPER_FILL_UNCONFIRMED')[0].executionStatus,'PAPER_FILL_UNCONFIRMED');
+});
+
 test('saved keyless practice shows its inputs before the only execute button',async()=>{
   let simulation={
     id:'practice-saved',status:'CREATED',config:{

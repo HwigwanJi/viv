@@ -1,4 +1,5 @@
 import { hashInputPackage } from '../dist/domain/workspace.mjs';
+import {paperDecisionFillCount} from '../dist/domain/paper-mind-presets.mjs';
 import {resolveInvestmentProfileIdentity} from './profile-read-model.mjs';
 
 export class TradingRecordsError extends Error {
@@ -31,6 +32,7 @@ function legacyInstrument(record, fill = null) {
 const mode = r => r?.mode === 'replay' || r?.inputPackage?.experimentType && r.inputPackage.experimentType !== 'FORWARD_PAPER' ? 'replay' : 'live';
 const decisionTimes = record => ({requestAt:iso(record.provider?.startedAt)?record.provider.startedAt:iso(record.decisionAt)?record.decisionAt:null,completedAt:iso(record.decisionCompletedAt)?record.decisionCompletedAt:iso(record.provider?.answeredAt)?record.provider.answeredAt:null});
 const decisionOrigin = record => ({authority:record.decision?.authority??null,strength:number(record.decision?.strength),jevCalled:typeof record.jevCalled==='boolean'?record.jevCalled:null,decisionProvider:record.decision?.provider??null});
+const displayedStatus = row => row.executionStatus ?? row.status;
 const recordDay = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'});
 function recordDateQuery(search) {
   const match=search?.match(/^(?:(\d{4})[-.]\s*)?(\d{1,2})[-.]\s*(\d{1,2})\.?$/);
@@ -75,7 +77,23 @@ export function buildTradingRecords(workspace, query = {}, {now=workspace?.updat
     const p = r.inputPackage ?? {}, confidence = r.decision?.choiceConfidence ?? r.decision?.confidence ?? r.jevResponse?.answers?.action?.confidence;
     add({ kind: 'decision', id: r.id, ...decisionTimes(r), ...decisionOrigin(r), asOf: p.asOf ?? r.createdAt, instrumentId: legacyInstrument(r), profileId: r.investmentProfileId, profileName: profileName(r.investmentProfileId,r), action: r.decision?.action ?? null, confidence: number(confidence), price: number(p.marketSnapshot?.features?.close ?? p.marketSnapshot?.price), quantity: null, fee: null, status: r.decisionStatus ?? r.outcomeType ?? 'RECORDED', decisionId: r.id, quoteCurrency: 'USDT', mode: mode(r), model: r.decision?.model ?? r.jevResponse?.model ?? null });
   }
-  for (const r of runs.values()) add({ kind: 'decision', id: r.id, ...decisionTimes(r), ...decisionOrigin(r), asOf: r.asOf ?? r.decisionAt ?? r.createdAt, instrumentId: r.instrumentId ?? null, profileId: r.profileId, profileName: profileName(r.profileId,r), action: r.decision?.action ?? null, confidence: number(r.decision?.confidence), price: number(r.rawRequest?.state?.market?.features?.lastClose ?? r.rawRequest?.state?.market?.closedBars?.at(-1)?.close), quantity: null, fee: null, status: r.status ?? r.execution?.status ?? 'RECORDED', decisionId: r.id, quoteCurrency: r.rawRequest?.state?.market?.instrument?.quoteCurrency ?? r.accountSnapshot?.quoteCurrency ?? null, mode: mode(r), model: r.provider?.model ?? r.decision?.model ?? null });
+  const fillsByRun = new Map();
+  for (const account of list(workspace.mindPositions)) for (const fill of list(account.ledger)) {
+    const run = runs.get(fill.runId);
+    if (!run || run.profileId !== account.profileId) continue;
+    if (!fillsByRun.has(run.id)) fillsByRun.set(run.id, []);
+    fillsByRun.get(run.id).push(fill);
+  }
+  for (const r of runs.values()) {
+    const paper = r.experimentType === 'FORWARD_PAPER' && r.executionMode !== 'live' && mode(r) !== 'replay' && r.status !== 'FAILED';
+    const execution = r.execution?.status;
+    const fillCount = paper ? paperDecisionFillCount(r, fillsByRun.get(r.id) ?? []) : null;
+    const executionStatus = paper && execution
+      ? fillCount === null ? 'PAPER_FILL_UNCONFIRMED'
+        : execution === 'NO_ORDER_REQUIRED' && r.decision?.action === 'hold' ? 'HOLD_SELECTED' : execution
+      : undefined;
+    add({ kind: 'decision', id: r.id, ...decisionTimes(r), ...decisionOrigin(r), asOf: r.asOf ?? r.decisionAt ?? r.createdAt, instrumentId: r.instrumentId ?? null, profileId: r.profileId, profileName: profileName(r.profileId,r), action: r.decision?.action ?? null, confidence: number(r.decision?.confidence), price: number(r.rawRequest?.state?.market?.features?.lastClose ?? r.rawRequest?.state?.market?.closedBars?.at(-1)?.close), quantity: null, fee: null, status: r.status ?? execution ?? 'RECORDED', ...(executionStatus ? {executionStatus} : {}), decisionId: r.id, quoteCurrency: r.rawRequest?.state?.market?.instrument?.quoteCurrency ?? r.accountSnapshot?.quoteCurrency ?? null, mode: mode(r), model: r.provider?.model ?? r.decision?.model ?? null });
+  }
   for (const account of list(workspace.accounts)) for (const fill of list(account.ledger)) {
     const record = decisions.get(fill.decisionId); if (!record) continue;
     const profileId = fill.investmentProfileId ?? record.investmentProfileId;
@@ -88,7 +106,7 @@ export function buildTradingRecords(workspace, query = {}, {now=workspace?.updat
   const dateToken=q.search?.match(/(?:^|\s)(\d{4}-\d{1,2}-\d{1,2})(?=\s|$)/);
   const date=recordDateQuery(dateToken?.[1]??q.search);
   const search=dateToken?q.search.replace(dateToken[0],' ').trim():date?null:q.search;
-  const filtered = rows.filter(r => (q.profileId === 'all' || r.profileId === q.profileId) && (!q.instrumentId || r.instrumentId === q.instrumentId) && (q.kind === 'all' || r.kind === (q.kind === 'fills' ? 'fill' : 'decision')) && (!q.status || q.status === 'ALL' || String(r.status).toUpperCase() === q.status || String(r.action).toUpperCase() === q.status) && (!search || [r.id, r.profileName, r.instrumentId, r.action, r.status, r.decisionId, r.quoteCurrency, r.model].join(' ').toLocaleLowerCase().includes(search)) && (!date || matchesRecordDate(r,date))).sort(sortRows);
+  const filtered = rows.filter(r => (q.profileId === 'all' || r.profileId === q.profileId) && (!q.instrumentId || r.instrumentId === q.instrumentId) && (q.kind === 'all' || r.kind === (q.kind === 'fills' ? 'fill' : 'decision')) && (!q.status || q.status === 'ALL' || String(displayedStatus(r)).toUpperCase() === q.status || String(r.action).toUpperCase() === q.status) && (!search || [r.id, r.profileName, r.instrumentId, r.action, r.status, displayedStatus(r), r.decisionId, r.quoteCurrency, r.model].join(' ').toLocaleLowerCase().includes(search)) && (!date || matchesRecordDate(r,date))).sort(sortRows);
   const scope = { profileId: q.profileId, instrumentId: q.instrumentId, kind: q.kind, status: q.status, search: q.search }, scopeHash = hashInputPackage({ scope, pageSize: q.pageSize }); let remaining = filtered;
   if (q.cursor) { const c = cursorDecode(q.cursor); check(c.scopeHash === scopeHash, 'TRADING_CURSOR_SCOPE', '조회 범위가 변경되었습니다. 첫 페이지를 조회하세요.'); check(c.revision === workspace.revision, 'TRADING_CURSOR_STALE', '거래 기록이 갱신되었습니다. 첫 페이지를 조회하세요.', 409); const index = filtered.findIndex(r => `${r.kind}:${r.id}` === c.last.id && r.asOf === c.last.asOf); check(index >= 0, 'TRADING_CURSOR_INVALID', '조회 위치의 기록을 찾을 수 없습니다.'); remaining = filtered.slice(index + 1); }
   const items = remaining.slice(0, q.pageSize), hasMore = remaining.length > items.length, last = items.at(-1);

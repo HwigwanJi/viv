@@ -59,12 +59,14 @@ function agenda(day,selected,eventLedgerUnavailable){
   return '<section class="viv-cal-panel viv-cal-day" aria-labelledby="viv-cal-day-title"><h2 id="viv-cal-day-title">'+esc(dateTitle.format(new Date(selected+'T00:00:00Z')))+'</h2>'+
     '<div class="viv-cal-totals" role="group" aria-label="모의 실현 손익"><span class="muted">'+summary+'</span>'+pnl(amounts)+'</div>'+
     (day?.unknown?'<p class="muted">손익이 확인되지 않은 매도 체결이 있습니다.</p>':'')+
-    (records.length?'<ul class="viv-cal-list">'+records.map(row=>{
+    (records.length?'<ul class="viv-cal-list">'+records.map((row,index)=>{
       const detail=[row.label,scheduleTime.format(new Date(row.at)),testPeriod(row.period)].filter(Boolean).join(' · ');
       const result=Number.isFinite(row.totalReturn)?'<span class="viv-cal-status"><small>'+esc(row.returnLabel??'수익률')+'</small><span class="viv-cal-pnl" data-tone="'+tone(row.totalReturn)+'">'+esc(new Intl.NumberFormat('ko-KR',{style:'percent',signDisplay:'exceptZero',maximumFractionDigits:2}).format(row.totalReturn))+'</span></span>':
         row.amount!==undefined?pnl([row]):'<span aria-hidden="true">↗</span>';
       const decision=row.kind==='activity'&&row.href.startsWith('#minds?')&&new URLSearchParams(row.href.slice(7)).get('kind')==='decisions';
-      return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(detail)+'</small></span>'+result,row.kind==='experiment'||decision?'data-cal-entry="day"':'')+'</li>';
+      const focus=row.kind==='fill'?'data-cal-entry="day" data-cal-entry-key="'+esc(row.id??row.at+':'+index)+'"':
+        row.kind==='experiment'||decision?'data-cal-entry="day"':'';
+      return '<li>'+routeLink(row.href,'<span><strong>'+esc(row.name)+'</strong><small>'+esc(detail)+'</small></span>'+result,focus)+'</li>';
     }).join('')+'</ul>':'<p class="muted">이 날짜에 확인된 일정이나 기록이 없습니다.</p>')+'</section>';
 }
 
