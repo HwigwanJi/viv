@@ -12,7 +12,7 @@ const TASK_GROUPS = Object.freeze({
   library: [['자료', ['documents', 'quant']], ['운용 지식', ['experiences', 'review', 'memory']], ['가져오기', ['forms']]]
 });
 
-export function studioJumpItems(route,navigation,{routeHash,primary,library,settings}) {
+export function studioJumpItems(route,navigation,{routeHash,primary,library,settings,calendarHref}) {
   const live=route.params.get('executionMode')==='live';
   const keywords=live?JUMP_TASK_KEYWORDS:{...JUMP_TASK_KEYWORDS,records:JUMP_TASK_KEYWORDS.records+' 모의 판단'};
   const minds=[...(navigation.minds??[])].sort((a,b)=>a.name.localeCompare(b.name,'ko'));
@@ -21,7 +21,7 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   const mindSource={...route,params:new URLSearchParams([...route.params].filter(([key])=>route.page==='minds'?key==='returnTo':key!=='returnTo'))};
   const mindHref=(profileId,view)=>routeHash(mindSource,'minds',{profileId,view,executionMode:view==='simulations'||!live?'paper':'live'});
   const entries=primary.map(([page,,label])=>({label,group:'주요 화면',keywords:keywords[page]||'',
-    taskSuffix:page==='calendar'?'모의검증 일정과 모의 실현 손익':'',href:routeHash(route,page,page==='minds'?{profileId:'all',view:'overview'}:{})}));
+    taskSuffix:page==='calendar'?'모의검증 일정과 모의 실현 손익':'',href:page==='calendar'&&calendarHref?calendarHref:routeHash(route,page,page==='minds'?{profileId:'all',view:'overview'}:{})}));
   if(!live&&navigation.paperDecisionResume){
     entries.push({...navigation.paperDecisionResume,group:'모의 실습',searchOnly:true});
   }

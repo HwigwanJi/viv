@@ -231,6 +231,13 @@ test('AI client searches take users to Service Connections in either account vie
  }
 });
 
+test('calendar search returns to the location offered by the primary menu',()=>{
+ const route=parseStudioRoute('#home?executionMode=live');
+ const calendarHref='#calendar?month=2026-11&date=2026-11-14&executionMode=live';
+ const entries=studioJumpItems(route,{}, {routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS,calendarHref});
+ assert.equal(entries.find(item=>item.label==='캘린더').href,calendarHref);
+});
+
 test('calendar task searches identify paper results from either account view',()=>{
  for(const mode of ['paper','live']){
   const route=parseStudioRoute('#home?executionMode='+mode);

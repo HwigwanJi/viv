@@ -10,6 +10,8 @@ import {createEntityMenu} from './ui/entity-menu.mjs';
 import {createDialogFocusController} from './ui/dialog-focus.mjs';
 import {layoutDialogForm} from './ui/dialog-layout.mjs';
 import {createFormDrafts} from './ui/form-draft.mjs';
+import {optionalSessionStorage} from './ui/session-storage.mjs';
+import {calendarDay,calendarMonth} from './system/calendar-date.mjs';
 import {pixelToken} from './ui/design-tokens.mjs';
 import {installHelpTooltips} from './ui/help-tooltip.mjs';
 import {installActionMenus} from './ui/action-menu.mjs';
@@ -29,6 +31,17 @@ const calendarEntrySelector=link=>'[data-cal-entry="'+link.dataset.calEntry+'"][
 const calendarEntryFallback=section=>section==='active'?($('[data-cal-control="active-toggle"]')||$('#viv-cal-active-title')):$('.viv-cal-day')&&$('.viv-cal-grid [aria-current="date"]');
 const getDialogToken=()=>dialogLifecycleToken+':'+location.hash;
 const primaryLocations=new Map();
+const calendarStorage=optionalSessionStorage(),calendarLocationKey='viv.calendar.location';
+const validCalendarDate=(date,month)=>date?.startsWith(month+'-')&&calendarDay(date+'T12:00:00Z')===date;
+try{
+  const saved=calendarStorage?.getItem(calendarLocationKey);
+  const month=calendarMonth(saved?.slice(0,7));
+  if(month){
+    const params=new URLSearchParams({month});
+    if(validCalendarDate(saved,month))params.set('date',saved);
+    primaryLocations.set('calendar','#calendar?'+params);
+  }
+}catch{/* The primary navigation also works with in-memory location state. */}
 const routeMotion=createRouteMotion();
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',()=>routeMotion.stop());
 const entityMenu=createEntityMenu({onError:toast,navigateHref:navigateToHeading});
@@ -73,6 +86,13 @@ function render(){
   if(hudFocus&&hudFocus.selector!=='[data-hud-viewport]'){const key=hudFocus.selector;hudFocus.selector=key?'[data-'+key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+'="'+CSS.escape(document.activeElement.dataset[key])+'"]':null;}
   const token=++renderGeneration,route=parseStudioRoute(location.hash),navigation=studio.navigation(route),railOnly=['home','minds'].includes(route.page);
   const savedLocation=route.params.has('brokerSetup')?studioRouteHash(route,route.page,{brokerSetup:null}):'#'+route.page+(route.params.size?'?'+route.params:'');
+  if(route.page==='calendar'&&primaryLocations.get('calendar')!==savedLocation){
+    const month=calendarMonth(route.params.get('month')),date=route.params.get('date');
+    try{
+      if(month)calendarStorage?.setItem(calendarLocationKey,validCalendarDate(date,month)?date:month);
+      else calendarStorage?.removeItem(calendarLocationKey);
+    }catch{/* The current tab can still keep its calendar location in memory. */}
+  }
   primaryLocations.set(route.page,savedLocation);
   dialogFocus.beforeRender({sameRoute:document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash});
   entityMenu.unmount({preserveMenu:true});studio.unmount();
@@ -148,7 +168,7 @@ function searchJumpResearch(query,{composing=false}={}){
   refreshStudioJump();
 }
 function studioJumpEntries(route){
-  const entries=studioJumpItems(route,studio.navigation(route),{routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS});
+  const entries=studioJumpItems(route,studio.navigation(route),{routeHash:studioRouteHash,primary:WORKSPACE_NAV,library:LIBRARY_VIEWS,settings:SETTINGS_VIEWS,calendarHref:primaryHref(route,'calendar')});
   return jumpResearch?[...studioJumpResearchItems(route,jumpResearch.term,jumpResearch,studioRouteHash),...entries]:entries;
 }
 function refreshStudioJump(){

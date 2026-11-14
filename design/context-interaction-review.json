@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T02:44:08.022Z",
-      "reason": "Verified focus on capture and exact record destinations after asynchronous read and render.",
+      "reviewedAt": "2026-11-14T04:08:58.616Z",
+      "reason": "캘린더 메뉴와 화면 찾기가 같은 마지막 위치로 이동한다. 브라우저에서 실행 모드, 재접속, 터치 및 키보드 조작을 확인한다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "04ec37ae46e7991a053c4ec0c6a125c4d4e8629fbb1a6728c8d82101cbdd75f8",
+      "sourceHash": "eb5865d40788bbaa8474713d7d7dddc8c099b975e64f29f4dd747c7d9ce599f7",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3381,8 +3381,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T01:54:41.556Z",
-      "reason": "키보드 검색에서 원래 모의 판단, 전체 기록과 안내 경로를 검토했다.",
+      "reviewedAt": "2026-11-14T04:08:58.710Z",
+      "reason": "캘린더 메뉴와 화면 찾기가 같은 마지막 위치로 이동한다. 브라우저에서 실행 모드, 재접속, 터치 및 키보드 조작을 확인한다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3402,7 +3402,7 @@
           2
         ]
       ],
-      "sourceHash": "f19b5e4c513c0e4cbb343670d5351f50da8346016d59a3c95ff94a249c01896f",
+      "sourceHash": "af4108d7f3b3f7141bb27bf0eca7587448787221d940d374316867820e37f7a6",
       "customContainers": []
     },
     {
