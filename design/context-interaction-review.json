@@ -3257,8 +3257,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T07:40:30.321Z",
-      "reason": "브라우저의 준비 응답을 격리해 JEV 사용 여부에 따라 결정 실행 전 데이터·비용 안내가 표시되거나 생략되는 것을 확인했다.",
+      "reviewedAt": "2026-11-14T10:09:20.000Z",
+      "reason": "계좌·자금과 MCP 브리핑으로 같은 첫 모의 판단 화면을 열고 기존 USDT 예산과 마인드의 모의 현금 안내를 확인했다.",
       "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "eb3bba2af3feaf95b4f8e39ba271bd4a1540a1122883ba4a3df75ebb9f112295",
+      "sourceHash": "23c7dd4bc685a5ec782e391d4b25b99a83945f4da3fb3ca41055042fc601c25f",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

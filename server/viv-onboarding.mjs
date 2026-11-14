@@ -12,7 +12,7 @@ const lessons=[
   {number:3,title:'이 링크의 투자법을 내 전략으로 만들어줘',tools:['read_strategy_ontology','read_quant_library','save_market_research']},
   {number:4,title:'모의로 판단을 연습하고 저장된 근거 확인하기',tools:['read_investment_status','read_trading_context','read_simulation_collection','read_mind_catalog'],choices:[
     {link:'paperPractice',label:'키 없이 BTC 과거 시세 실습',requirements:'보관한 BTC 시세와 기준 퀀트 전략을 사용합니다. 실습용 초기 자금은 따로 정하며 AI 호출은 0회입니다.'},
-    {link:'paperDecision',label:'현재 시세로 첫 모의 판단',requirements:'BTC-USDT의 국면 추세 프리셋으로 연습할 수 있습니다. 별도 USDT 모의 자금을 배정하고 최신 확정 시세를 준비합니다.'},
+    {link:'paperDecision',label:'현재 시세로 첫 모의 판단',requirements:'BTC-USDT의 국면 추세 프리셋으로 연습할 수 있습니다. 선택한 마인드의 USDT 모의 자금과 최신 확정 시세를 확인합니다.'},
   ]},
 ];
 
