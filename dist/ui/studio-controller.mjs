@@ -2003,7 +2003,7 @@ export function createStudioController(hooks={},options={}){
           return;
         }
         if(current()){
-          if(action==='mind-observation-basis-save')await openDecision(id);
+          if(action==='mind-observation-basis-save'||status==='FILLED'&&firstPaperDecision(currentRoute()))await openDecision(id);
           else hooks.close?.();
         }
         await loadTerminal({force:true});

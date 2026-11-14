@@ -3257,8 +3257,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T04:38:08.754Z",
-      "reason": "모의 첫 판단에서 캘린더 날짜로 이동하고 같은 기록으로 돌아가는 조작을 검증합니다.",
+      "reviewedAt": "2026-11-14T04:48:11.719Z",
+      "reason": "첫 모의 체결 후 같은 판단 상세와 캘린더 날짜로 이어지는 경로 확인.",
       "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "628c1c08f4745a10e25628bc9197dc5f5da2e074dc6bcf2bb524493e45f8d604",
+      "sourceHash": "16992f390ae11eb33c5c1898a6155dff7e0bbb0e227528acb279b952e0024b35",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
