@@ -222,8 +222,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T03:09:46.117Z",
-      "reason": "Browser verified same-page reconnect status and verified entry navigation.",
+      "reviewedAt": "2026-11-14T03:20:04.435Z",
+      "reason": "Browser verified in-place retry status, permissions and retained original URL.",
       "signature": "f214c51500e047047aff964e5a50839ccdc7af081940eeeb11f06cab44c7c97a",
       "controls": [
         [
@@ -239,7 +239,7 @@
           1
         ]
       ],
-      "sourceHash": "7ad8adc1f7b2379e29d583c2a7b93b57c3d60e044a3f5ccede5703dac14001f5",
+      "sourceHash": "b329344b35e4cbcbff6c01d1d61800890d389d31f9938b63b180b8beabaefd6f",
       "customContainers": []
     },
     {

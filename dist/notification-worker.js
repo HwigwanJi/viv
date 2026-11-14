@@ -56,9 +56,8 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
   <main>
     <p><strong>VIV</strong></p>
     <h1>VIV 서버에 연결할 수 없어요</h1>
-    <p>${gatewayUnavailable?'연결 경로가 VIV 서버에 닿지 않습니다. 설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요.':'인터넷 연결을 확인하세요. 휴대폰에서 열었다면 설치한 컴퓨터와 같은 Tailscale 네트워크에 연결되어 있는지도 확인하세요.'}</p>
+    <p role="status" id="connection-status">${gatewayUnavailable?'연결 경로가 VIV 서버에 닿지 않습니다. 설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요.':'인터넷 연결을 확인하세요. 휴대폰에서 열었다면 설치한 컴퓨터와 같은 Tailscale 네트워크에 연결되어 있는지도 확인하세요.'}</p>
     <button type="button">다시 연결</button>
-    <p role="status" id="connection-status"></p>
     ${privateOrigin?`<p>설치한 컴퓨터에서 VIV PC 주소가 열리면 휴대폰 연결을 복구하세요. PC에서도 열리지 않으면 아래에서 서버 다시 시작 방법을 확인하세요.</p>
     <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#모바일만-복구하기">모바일 연결 복구 안내</a>`:''}
     <details>
@@ -85,7 +84,7 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
         cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: controller.signal
       });
       if (page.status === 401 || page.status === 403) {
-        status.textContent = '접근이 거부됐어요. 휴대폰의 Tailscale 로그인과 접속 권한을 확인하세요.';
+        status.textContent = ${privateOrigin?"'접근이 거부됐어요. 휴대폰의 Tailscale 로그인과 접속 권한을 확인하세요.'":"'접근이 거부됐어요. 현재 주소의 접속 권한을 확인하세요.'"};
         return;
       }
       if (page.ok) {
