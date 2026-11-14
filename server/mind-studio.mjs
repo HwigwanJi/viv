@@ -279,6 +279,19 @@ export async function handleMindStudioAPI(request,env={},options={}){
   if(request.headers.get('Origin')&&request.headers.get('Origin')!==url.origin||request.headers.get('Sec-Fetch-Site')==='cross-site')return json({ok:false,code:'ORIGIN',message:'앱에서 다시 실행하세요.'},403);
   try{
     const now=nowISO(options),db=env.DB?.withSession?env.DB.withSession('first-primary'):env.DB,repo=new WorkspaceRepository(db);
+    if(request.method==='GET'&&path==='/api/workspace/terminal/evaluate'){
+      const requestKey=url.searchParams.get('requestKey');
+      check(safeId(requestKey),'INVALID_COMMAND','조회할 요청 키를 확인하세요.');
+      const pending=(await listInFlightClaims(db,{ownerId:owner,nowMs:Date.parse(now)})).some(claim=>!claim.expired&&claim.key===requestKey&&claim.resourceId.startsWith('mind-execution:'));
+      const workspace=await readOperationalWorkspace(repo,owner);
+      const events=workspace?.activityEvents??[];
+      const event=events.find(item=>item.eventType==='MIND_STUDIO_CHANGED'&&item.payload?.path===path&&item.payload.requestKey===requestKey);
+      const run=event&&workspace.mindRuns.find(item=>item.id===event.resourceId);
+      if(run)return json({ok:true,status:'saved',runId:run.id});
+      const failure=events.find(item=>item.eventType==='MIND_PROVIDER_FAILED'&&item.payload?.path===path&&item.payload.requestKey===requestKey);
+      if(failure)return json({ok:true,status:'failed',eventId:failure.id});
+      return json({ok:true,status:pending?'pending':'missing'});
+    }
     const w=await readOperationalWorkspace(repo,owner,()=>({...createWorkspace({now}),knowledge:importKnowledge(JSON.stringify(seed.knowledge))}));
     for(const key of MIND_COLLECTIONS)w[key]??=[];
     const marketLoader=options.marketLoader??createOwnerMarketResolver({repository:repo,owner,workspace:w});

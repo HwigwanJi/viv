@@ -3256,9 +3256,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T23:36:11.245Z",
-      "reason": "모의 실습의 확정 시세 카드에서 다음 단계로 연결하고 수집·재조회 후 키보드 초점을 복구한다.",
-      "signature": "e9d2bcb6323b556eeb4360e3c3d73e9120eed17b95768da475dc5edc97272c2e",
+      "reviewedAt": "2026-11-14T00:14:45.408Z",
+      "reason": "격리 브라우저에서 모의 판단의 응답이 끊긴 뒤 저장 확인, 같은 결과 열기, 저장 전 연결 실패를 검토했다.",
+      "signature": "a7a2533c143ec242265a41fc42d55c929f7e95d1a417e217c126f7dd9cad0071",
       "controls": [
         [
           "data-auto-action",
@@ -3354,7 +3354,7 @@
         ],
         [
           "helper:button(",
-          183
+          187
         ],
         [
           "helper:renderActionMenu(",
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "afdfa1a2596e0b3fe62754b21196f2e7a3bf95285c3bc6f75a55356e2401434b",
+      "sourceHash": "a4f50ae3a2b291f334ae3e26a2eade37c62e57a4ca9be543651f00ba9f002d76",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3492,8 +3492,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T19:03:58.244Z",
-      "reason": "저장 백테스트의 AI 호출 이력과 현재 모의 판단을 실행할 때의 JEV 전송·이용료 안내를 구분한다.",
+      "reviewedAt": "2026-11-14T00:14:45.503Z",
+      "reason": "격리 브라우저에서 모의 판단의 응답이 끊긴 뒤 저장 확인, 같은 결과 열기, 저장 전 연결 실패를 검토했다.",
       "signature": "a1dd9ae1335bff6ea81099fe978c300d14f7573d12d0c63f81aba04f9a60d8e1",
       "controls": [
         [
@@ -3581,7 +3581,7 @@
           39
         ]
       ],
-      "sourceHash": "b9c1e28fe91beb15d70a9744a17a884044b37ca6c8b833d4f994ab17c9df6921",
+      "sourceHash": "da25eeb431d5a7abe98b4ac2e684653c5a7c944f6bda22a815c64204256ab730",
       "customContainers": []
     },
     {
