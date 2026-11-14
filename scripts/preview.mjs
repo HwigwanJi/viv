@@ -74,6 +74,15 @@ const brokerageReports=createBrokerageReportRunner({env,enabled:()=>!runners.run
 env.BROKERAGE_REPORT_STATUS=()=>brokerageReports.status();
 const root = path.resolve('dist');
 const types = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.woff2':'font/woff2','.apk':'application/vnd.android.package-archive'};
+const installationMismatchPage=`<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>VIV 설치 주소 확인</title>
+<link rel="stylesheet" href="/ui/tailwind.css"><link rel="stylesheet" href="/style.css"></head>
+<body><main class="content"><section class="studio-sheet"><div class="studio-sheet-head">
+<h1>다른 VIV 설치에서 열린 링크</h1></div><div class="studio-sheet-body">
+<p>이 링크를 발급한 VIV가 현재 주소에서 응답하지 않습니다. 원래 설치 폴더에서 서버를 다시 시작한 뒤 이 링크를 다시 여세요.</p>
+<p>새 폴더로 기록을 복원했다면 새 VIV의 AI 연결에서 같은 기록을 조회해 새 링크를 받으세요.</p>
+<a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#기존-기록-복원" target="_blank" rel="noopener noreferrer">설치 복구 안내 (새 탭)</a>
+</div></section></main></body></html>`;
 const server = http.createServer(async (req,res)=>{
   try {
     let requestOrigin;
@@ -104,12 +113,20 @@ const server = http.createServer(async (req,res)=>{
       res.writeHead(200,{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'});
       res.end(JSON.stringify(connection));return;
     }
+    if((req.method==='GET'||req.method==='HEAD')&&['/','/index.html'].includes(pathname)&&
+       requestUrl.searchParams.has('installation')&&(!selfHostId||requestUrl.searchParams.get('installation')!==selfHostId)){
+      res.writeHead(409,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store',
+        'Content-Security-Policy':"default-src 'none'; style-src 'self'; base-uri 'none'; form-action 'none'",
+        'Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});
+      res.end(req.method==='HEAD'?undefined:installationMismatchPage);
+      return;
+    }
     if (pathname.startsWith('/api/')||pathname==='/mcp') {
       const chunks=[];let bytes=0;
       for await (const chunk of req) { bytes+=chunk.length;if(bytes>220000){res.writeHead(413);res.end('Input too large');return;}chunks.push(chunk); }
       const request=new Request(requestOrigin+req.url,{method:req.method,headers:{...req.headers,'oai-authenticated-user-id':'local-preview-owner'},...(!['GET','HEAD'].includes(req.method)?{body:Buffer.concat(chunks)}:{})});
       const requestStarted=performance.now();
-      const response=await (new URL(request.url).pathname==='/mcp'?handleMcp:handleAPI)(request,env);
+      const response=await (pathname==='/mcp'?handleMcp(request,env,{installation:selfHostId}):handleAPI(request,env));
       if(process.env.KEYNES_REQUEST_TIMING==='1')console.log(JSON.stringify({kind:'API_TIMING',method:req.method,path:new URL(request.url).pathname,status:response.status,elapsedMs:Math.round(performance.now()-requestStarted)}));
       res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));return;
     }

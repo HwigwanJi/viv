@@ -241,7 +241,7 @@ test('VIV reopens a saved paper decision without setting up a KRW budget',async(
   };
   const onboarding=async(args={},owner='owner-a')=>{
     const request=new Request('http://localhost:4317/mcp',{method:'POST',headers:{'oai-authenticated-user-id':owner},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'viv_onboarding',arguments:args}})});
-    return (await (await handleMcp(request,{DB:local.db},{studioHandler})).json()).result.structuredContent;
+    return (await (await handleMcp(request,{DB:local.db},{studioHandler,installation:'a'.repeat(32)})).json()).result.structuredContent;
   };
   try{
     const first=await onboarding();
@@ -252,6 +252,7 @@ test('VIV reopens a saved paper decision without setting up a KRW budget',async(
     assert.deepEqual({decisionId,mindId,instrumentId},{decisionId:decision.id,mindId:decision.profileId,instrumentId:decision.instrumentId});
     assert.equal(new URLSearchParams(new URL(openUrl).hash.split('?')[1]).get('search'),decision.id);
     assert.equal(first.links.paperResume,openUrl);
+    assert.equal(new URL(openUrl).searchParams.get('installation'),'a'.repeat(32));
     assert.equal((await onboarding({},'owner-b')).savedPaperDecision,undefined);
     assert.equal((await onboarding({action:'resume'})).next,'tutorial_lessons');
     assert.equal((await onboarding({action:'pause'})).next,'tutorial_paused');

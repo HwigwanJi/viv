@@ -1,4 +1,4 @@
-import {PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash} from '../dist/system/paper-decision-links.mjs';
+import {PAPER_DECISION_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash,paperResultUrl} from '../dist/system/paper-decision-links.mjs';
 import {ONTOLOGY_VALIDATION_SCHEMA,validOntologyValidationInput,validateOntologyFacts} from '../dist/domain/strategy-ontology-validation.mjs';
 import {capabilityManifest} from '../dist/system/registry.mjs';
 import {HOURLY_LEARNING_ACTIONS,validHourlyLearningInput,hourlyLearningRequest} from '../dist/system/hourly-learning-contracts.mjs';
@@ -274,7 +274,7 @@ async function callMindTool(request,env,options,name,args){
       return toolResult({ok:true,result:{decisionId:record.id,profileId:scope.profileId,instrumentId:scope.instrumentId,timeframe,
         executionMode:'paper',asOf:record.asOf??record.inputPackage?.asOf??null,quoteCurrency,action:record.decision?.action??null,
         executionStatus:record.execution?.status??null,fillCount:paperDecisionFillCount(record,fills),basis,
-        openUrl:new URL(paperDecisionRecordHash(record.id),new URL(request.url).origin).href}});
+        openUrl:paperResultUrl(new URL(request.url).origin,paperDecisionRecordHash(record.id),options.installation)}});
     }
     const query=new URLSearchParams({...(args.mindId?{profileId:args.mindId}:{}),instrumentId:args.instrumentId,...(args.timeframe?{timeframe:args.timeframe}:{}),...(args.mode?{mode:args.mode}:{})});
     const [context,minds,detail]=await Promise.all([studioCall(request,env,options,'/api/workspace/terminal?'+query),studioCall(request,env,options,'/api/workspace/minds'),args.decisionId?studioCall(request,env,options,'/api/workspace/decisions/detail?'+new URLSearchParams({id:args.decisionId})):Promise.resolve(null)]);
@@ -338,7 +338,7 @@ export async function handleMcp(request,env,options={}){
     if(name==='validate_strategy_ontology')return reply(toolResult({ok:true,report:validateOntologyFacts(args)}));
     if(name==='viv_onboarding'){
       try{
-        const result=await vivOnboarding(args,{origin:new URL(request.url).origin,db:env.DB,owner,call:(path,init)=>studioCall(request,env,options,path,init)});
+        const result=await vivOnboarding(args,{origin:new URL(request.url).origin,db:env.DB,owner,installation:options.installation,call:(path,init)=>studioCall(request,env,options,path,init)});
         return reply(toolResult({...result.value,playbook:VIV_PLAYBOOK},!result.ok));
       }catch{return reply(toolResult({ok:false,code:'VIV_ONBOARDING_FAILED',message:'VIV 시작 안내를 불러오지 못했습니다. 연결을 확인한 뒤 다시 시도하세요.'},true));}
     }
@@ -357,7 +357,7 @@ export async function handleMcp(request,env,options={}){
           paperPractice:new URL(PAPER_PRACTICE_ENTRY,origin).href,
         };
         output.recentDecisions=output.recentDecisions.map(row=>row.sourceKind==='mind-run'
-          ?{...row,openUrl:new URL(paperDecisionRecordHash(row.id),origin).href}
+          ?{...row,openUrl:paperResultUrl(origin,paperDecisionRecordHash(row.id),options.installation)}
           :row);
       }
       return reply(toolResult(output,!result.ok||output?.ok===false));

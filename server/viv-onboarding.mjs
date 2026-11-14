@@ -1,6 +1,6 @@
 import {paperBudgetFor} from '../dist/domain/paper-budget.mjs';
 import {paperRuns} from '../dist/domain/mind-companion.mjs';
-import {PAPER_DECISION_ENTRY,PAPER_HOME_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash,paperPracticeReportHash} from '../dist/system/paper-decision-links.mjs';
+import {PAPER_DECISION_ENTRY,PAPER_HOME_ENTRY,PAPER_PRACTICE_ENTRY,paperDecisionRecordHash,paperPracticeReportHash,paperResultUrl} from '../dist/system/paper-decision-links.mjs';
 
 export const VIV_TUTORIAL_ACTIONS=['pause','resume','complete','defer_connection'];
 
@@ -70,7 +70,7 @@ async function liveConnectionPreference(db,owner,{offer=false,defer=false}={}){
 
 const failure=(code,message)=>({ok:false,value:{ok:false,code,message}});
 
-export async function vivOnboarding(args,{origin,call,db,owner}){
+export async function vivOnboarding(args,{origin,call,db,owner,installation}){
   const current=await call('/api/workspace?view=studio');
   if(!current.ok)return current;
   const workspace=current.value.workspace;
@@ -113,7 +113,7 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
   }
   const progress=await tutorialProgress(session,owner,args);
   const latest=runs.find(run=>run.id&&run.profileId&&run.instrumentId);
-  const savedPaperDecision=latest?{decisionId:latest.id,mindId:latest.profileId,instrumentId:latest.instrumentId,openUrl:new URL(paperDecisionRecordHash(latest.id),origin).href}:undefined;
+  const savedPaperDecision=latest?{decisionId:latest.id,mindId:latest.profileId,instrumentId:latest.instrumentId,openUrl:paperResultUrl(origin,paperDecisionRecordHash(latest.id),installation)}:undefined;
   if(!paperBudget&&!savedPaperDecision&&progress.status==='new'&&!Object.keys(progress.completed).length){
     return {ok:true,value:{ok:true,next:'ask_interest_and_budget',interests:[{number:1,value:'stocks',title:'주식'},{number:2,value:'crypto',title:'코인'},{number:3,value:'both',title:'둘 다'}],lessons,links,liveConnection:await liveConnectionPreference(session,owner,{defer})}};
   }
@@ -124,8 +124,8 @@ export async function vivOnboarding(args,{origin,call,db,owner}){
   const completed=selectedLessons.filter(lesson=>Object.hasOwn(progress.completed,lesson.number)).map(({number,title})=>{
     const resultId=progress.completed[number];
     if(!resultId)return {number,title};
-    if(number===4&&resultId.simulationId)return {number,title,simulationId:resultId.simulationId,openUrl:new URL(paperPracticeReportHash(resultId.simulationId),origin).href};
-    if(number===4)return {number,title,decisionId:resultId,openUrl:new URL(paperDecisionRecordHash(resultId),origin).href};
+    if(number===4&&resultId.simulationId)return {number,title,simulationId:resultId.simulationId,openUrl:paperResultUrl(origin,paperPracticeReportHash(resultId.simulationId),installation)};
+    if(number===4)return {number,title,decisionId:resultId,openUrl:paperResultUrl(origin,paperDecisionRecordHash(resultId),installation)};
     return {number,title,documentId:resultId,openUrl:links.knowledge+'&'+new URLSearchParams({knowledgeId:resultId})};
   });
   const next=!remaining.length?'tutorial_complete':({new:'tutorial_offer',paused:'tutorial_paused',active:'tutorial_lessons'})[progress.status];

@@ -20,6 +20,12 @@ export function paperDecisionRecordHash(id) {
   return '#minds?' + new URLSearchParams({profileId:'all',view:'records',executionMode:'paper',kind:'decisions',search:id});
 }
 
+export function paperResultUrl(origin,hash,installation){
+  const url=new URL(hash,origin);
+  if(typeof installation==='string'&&/^[a-f0-9]{32}$/.test(installation))url.searchParams.set('installation',installation);
+  return url.href;
+}
+
 const isId=value=>/^[a-zA-Z0-9][a-zA-Z0-9_.:@-]{0,199}$/.test(value??'');
 
 export function paperBrokerReturnHash(hash) {
