@@ -3258,7 +3258,7 @@
       ],
       "review": "BROWSER_VERIFIED",
       "reviewedAt": "2026-11-14T10:38:45.000Z",
-      "reason": "모의 체결 검토에서 키보드로 같은 판단에 돌아와 주문 없이 재조회하고 체결 목록이 누락되면 미확인 상태를 표시하는 것을 확인했다.",
+      "reason": "모의 체결 검토를 닫거나 기록에서 체결을 실행한 후 동일 판단 상세를 다시 열고 원장 상태를 확인했다.",
       "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "182644e2c01d845416fc93032c232205cf61d12f277ee375fb63f133902dbd23",
+      "sourceHash": "260f4a45b6fa1e4c15787f5f3e48ab86f7937adb671c6381874697b82bc55a3b",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

@@ -2012,7 +2012,7 @@ export function createStudioController(hooks={},options={}){
           return;
         }
         if(current()){
-          if(action==='mind-observation-basis-save'||status==='FILLED'&&firstPaperDecision(currentRoute()))await openDecision(id);
+          if(action==='mind-observation-basis-save'||['FILLED','PARTIALLY_FILLED'].includes(status))await openDecision(id);
           else hooks.close?.();
         }
         await loadTerminal({force:true});
