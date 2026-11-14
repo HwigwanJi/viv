@@ -56,8 +56,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-12T21:03:16.715Z",
-      "reason": "앱과 시작 스크립트 누락 상황에 같은 화면에서 접근 가능한 공용 HTML 도움말 링크를 제공한다.",
+      "reviewedAt": "2026-11-14T03:38:41.427Z",
+      "reason": "Keep the startup recovery page open while reading help in another tab.",
       "signature": "5519f59d210b80086618d40862701351498da4299812d670d56bf39c830f247f",
       "controls": [
         [
@@ -73,7 +73,7 @@
           1
         ]
       ],
-      "sourceHash": "857aa91d3e45f1c922fc398e4f10b6216da5069666cc5e693eda2b6320a600e6",
+      "sourceHash": "202ccc6af1e2257838f9889a4905464afac3247327506a826eea69a6e055e80f",
       "customContainers": []
     },
     {
@@ -87,8 +87,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T14:31:49.127Z",
-      "reason": "기본 HTML에서 연결·시작 도움말을 여는 경로를 휴대폰 터치와 PC 키보드로 조작하고 설치 주소 복귀 및 재시도를 확인했다.",
+      "reviewedAt": "2026-11-14T03:38:41.329Z",
+      "reason": "Keep the startup recovery page open while reading help in another tab.",
       "signature": "e80cd6da05f1b6e64db414c70ad1b3c89772bb8a290d5dea912f851ebc600284",
       "controls": [
         [
@@ -132,7 +132,8 @@
           2
         ]
       ],
-      "sourceHash": "13486584012add86c0d360c0e5f5662b0aa97eb08e509bf72549c6e4ab21b415"
+      "sourceHash": "27f52acd14ee3e7c1eae4f27ae0d9c0ea5f32350d7be4af5992daeba2e598b72",
+      "customContainers": []
     },
     {
       "file": "dist/knowledge.mjs",
@@ -222,8 +223,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T03:20:04.435Z",
-      "reason": "Browser verified in-place retry status, permissions and retained original URL.",
+      "reviewedAt": "2026-11-14T03:36:35.468Z",
+      "reason": "Browser verified the recovery help destination and preservation of the current tab.",
       "signature": "f214c51500e047047aff964e5a50839ccdc7af081940eeeb11f06cab44c7c97a",
       "controls": [
         [
@@ -239,7 +240,7 @@
           1
         ]
       ],
-      "sourceHash": "b329344b35e4cbcbff6c01d1d61800890d389d31f9938b63b180b8beabaefd6f",
+      "sourceHash": "b4fd4ba48267cf08628fbcac0f847ffb7fce14f841a50d9d684a00921a257aac",
       "customContainers": []
     },
     {

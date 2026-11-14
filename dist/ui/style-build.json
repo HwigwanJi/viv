@@ -8,11 +8,11 @@
     },
     {
       "path": "dist/index.html",
-      "sha256": "857aa91d3e45f1c922fc398e4f10b6216da5069666cc5e693eda2b6320a600e6"
+      "sha256": "202ccc6af1e2257838f9889a4905464afac3247327506a826eea69a6e055e80f"
     },
     {
       "path": "dist/install.html",
-      "sha256": "13486584012add86c0d360c0e5f5662b0aa97eb08e509bf72549c6e4ab21b415"
+      "sha256": "27f52acd14ee3e7c1eae4f27ae0d9c0ea5f32350d7be4af5992daeba2e598b72"
     },
     {
       "path": "dist/knowledge.mjs",
@@ -699,7 +699,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "6a0cbbe3fe5efa7e56cd3ec7182ba647bfa4b1aef63b409d3b2da52e09571d90",
+  "inputHash": "e5dacd8df6a1aaaa657772e701394bee1e0515a8b80bbdff3a00df4376e9b998",
   "pages": [
     {
       "path": "dist/index.html",

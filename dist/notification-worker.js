@@ -59,7 +59,7 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
     <p role="status" id="connection-status">${gatewayUnavailable?'연결 경로가 VIV 서버에 닿지 않습니다. 설치한 컴퓨터에서 VIV PC 주소가 열리는지 확인하세요.':'인터넷 연결을 확인하세요. 휴대폰에서 열었다면 설치한 컴퓨터와 같은 Tailscale 네트워크에 연결되어 있는지도 확인하세요.'}</p>
     <button type="button">다시 연결</button>
     ${privateOrigin?`<p>설치한 컴퓨터에서 VIV PC 주소가 열리면 휴대폰 연결을 복구하세요. PC에서도 열리지 않으면 아래에서 서버 다시 시작 방법을 확인하세요.</p>
-    <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#모바일만-복구하기">모바일 연결 복구 안내</a>`:''}
+    <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#모바일만-복구하기" target="_blank" rel="noopener noreferrer">모바일 연결 복구 안내 (새 탭)</a>`:''}
     <details>
       <summary>서버 다시 시작</summary>
       <p>원래 VIV 설치 폴더에서 운영체제에 맞는 명령을 실행하세요.</p>
@@ -68,7 +68,7 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
       <strong>Mac</strong>
       <code>bash scripts/install-viv-mac.sh --resume</code>
     </details>
-    <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#서버-다시-시작">서버 다시 시작 안내</a>
+    <a href="https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/self-host.md#서버-다시-시작" target="_blank" rel="noopener noreferrer">서버 다시 시작 안내 (새 탭)</a>
   </main>
   <script>
   const retry = document.querySelector('button');

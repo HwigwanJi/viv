@@ -60,7 +60,7 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
       assert.match(content, /VIV 서버에 연결할 수 없어요[^]*다시 연결/);
       assert.match(content, status ? /연결 경로가 VIV 서버에 닿지 않습니다/ : /인터넷 연결을 확인하세요/);
       assert.match(content, /VIV PC 주소가 열리면 휴대폰 연결을 복구하세요/);
-      assert.match(content, /모바일 연결 복구 안내/);
+      assert.match(content, /target="_blank" rel="noopener noreferrer">모바일 연결 복구 안내 \(새 탭\)<\/a>/);
     }
   }
   assert.equal(navigate('/api/workspace'), undefined);
@@ -160,10 +160,10 @@ test('VIV startup help is a visible HTML link before the script runs', () => {
   assert.match(html, /data-viv-boot-failure hidden[^]*?<\/div>\s*<noscript>[^<]+<\/noscript>\s*<a data-viv-recovery-link href="https:\/\//);
   assert.equal((html.match(/data-viv-recovery-link/g) || []).length, 1);
   const install = readFileSync(new URL('../dist/install.html', import.meta.url), 'utf8');
-  assert.match(install, /<p class="spaced"><a data-viv-recovery-link[^>]+>VIV 연결·시작 문제 해결<\/a><\/p>/);
+  assert.match(install, /<p class="spaced"><a data-viv-recovery-link[^>]+target="_blank" rel="noopener noreferrer">VIV 연결·시작 문제 해결 \(새 탭\)<\/a><\/p>/);
   assert.equal((install.match(/data-viv-recovery-link/g) || []).length, 1);
   for (const page of [html, install]) {
-    assert.match(page, /data-viv-recovery-link href="https:\/\/github\.com\/HwigwanJi\/viv\/blob\/main\/docs\/agents\/operations\/self-host\.md#시작-오류가-반복될-때" referrerpolicy="no-referrer"/);
+    assert.match(page, /data-viv-recovery-link href="https:\/\/github\.com\/HwigwanJi\/viv\/blob\/main\/docs\/agents\/operations\/self-host\.md#시작-오류가-반복될-때" target="_blank" rel="noopener noreferrer"/);
   }
 });
 
