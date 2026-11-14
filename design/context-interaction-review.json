@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T06:41:19.109Z",
-      "reason": "모의 체결 링크에서 뒤로 가면 같은 날짜와 체결 항목의 포커스가 복구된다.",
+      "reviewedAt": "2026-11-14T09:42:49.002Z",
+      "reason": "캘린더 완료 검색 링크를 키보드로 열면 완료 필터와 실험 이름 입력에 포커스가 전달된다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "947edd98eee3814afb389b1d921cd4b97b76ec4bd132bf367dba5c06bd6a8b3f",
+      "sourceHash": "b02eb86296596f602daf8b8633afdaa442d2e0de98867690cddc2e859ed17bb8",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

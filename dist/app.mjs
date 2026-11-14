@@ -207,7 +207,7 @@ document.addEventListener('click',event=>{
     event.preventDefault();
     const {calDate,calControl}=routeLink.dataset;
     const attribute=calDate?'data-cal-date':'data-cal-control';
-    navigateToHeading(routeHref,'['+attribute+'="'+CSS.escape(calDate||calControl)+'"]');
+    navigateToHeading(routeHref,calControl==='completed'?'[data-experiment-search] input[type="search"]':'['+attribute+'="'+CSS.escape(calDate||calControl)+'"]');
     return;
   }
   const paperGuide=routeHref?.startsWith('#trade?')&&parseStudioRoute(routeHref).params.has('firstDecision');
