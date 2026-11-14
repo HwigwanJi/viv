@@ -22,11 +22,15 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   const mindHref=(profileId,view)=>routeHash(mindSource,'minds',{profileId,view,executionMode:view==='simulations'||!live?'paper':'live'});
   const entries=primary.map(([page,,label])=>({label,group:'주요 화면',keywords:keywords[page]||'',
     taskSuffix:page==='calendar'?'모의검증 일정과 모의 실현 손익':'',href:routeHash(route,page,page==='minds'?{profileId:'all',view:'overview'}:{})}));
+  if(!live&&navigation.paperDecisionResume){
+    entries.push({...navigation.paperDecisionResume,group:'모의 실습',searchOnly:true});
+  }
   entries.push({label:'첫 모의 판단',group:'모의 실습',keywords:'실습 연습 모의투자 현재 확정 시세 BTC-USDT 4시간봉',
     taskSuffix:live?'모의 화면으로 이동':'',href:PAPER_DECISION_ENTRY});
   entries.push({label:'첫 백테스트 실습',group:'모의 실습',keywords:'과거 데이터 보관 시세 BTC 기준 퀀트 연습',
     taskSuffix:live?'모의 화면으로 이동':'',searchOnly:true,href:PAPER_PRACTICE_ENTRY});
-  for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label:view==='simulations'&&live?'전체 모의 시뮬레이션':label,group:'전체 마인드',keywords:keywords[view]||'',href:mindHref('all',view)});
+  for(const [view,label]of COLLECTION_TASKS.slice(1))entries.push({label:view==='simulations'&&live?'전체 모의 시뮬레이션':label,group:'전체 마인드',keywords:(keywords[view]||'')+(!live&&view==='records'?' 저장된 판단 지난 판단':''),
+    href:mindHref('all',view)});
   for(const mind of minds){
     const selected=mind.id===navigation.selectedMindId;
     const context=selected?mind.name+(navigation.scopeStatus==='보관됨'?' · 보관됨':''):'';
@@ -63,6 +67,11 @@ export function studioJumpItems(route,navigation,{routeHash,primary,library,sett
   });
   entries.push({label:'캘린더 사용법',group:'사용 안내',keywords:'캘린더 도움말',href:CALENDAR_GUIDE_URL,
     taskSuffix:'새 탭',searchOnly:true,external:true});
+  if(!live&&!navigation.paperDecisionResume){
+    entries.push({label:'모의 판단 이어보기 안내',group:'사용 안내',
+      href:'https://github.com/HwigwanJi/viv/blob/main/docs/agents/operations/viv-mcp-playbook.md#모의-판단-이어보기',
+      taskSuffix:'새 탭',searchOnly:true,external:true});
+  }
   return entries;
 }
 

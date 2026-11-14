@@ -460,8 +460,9 @@ export function createStudioController(hooks={},options={}){
     const active=value.params.get('view')||views[0]?.[0],items=views.map(([id,label])=>({id,label,active:active===id,disabled:value.page==='minds'&&selected==='all'&&['operations','principles'].includes(id),href:studioRouteHash(value,value.page,{view:id,cursor:null,knowledgePage:null})}));
     if(value.page==='trade')items.push({id:'trade',label:'종목 거래',active:true,href:studioRouteHash(value,'trade')},{id:'records',label:selected==='all'?'전체 운용 기록':'운용 기록',active:false,href:studioRouteHash(value,'minds',{view:'records',profileId:selected,instrumentId:null,cursor:null})},{id:'mind',label:'마인드 관리',active:false,href:studioRouteHash(value,'minds',{view:'overview'})});
     const scopeLoaded=value.page==='minds'&&selected!=='all'&&!!byId(workspace?.investmentProfiles,selected),executionMode=executionModeOf(value),paperScope=executionMode==='paper'&&['all',selected].includes(subscriptionMindId);
+    const paperDecisionResume=executionMode==='paper'&&resumeAttempt?resumeTerminalDestination(value):null;
     const companion=scopeLoaded?buildMindCompanions({paperActivities:eventPaperBatch.items(),workspace,minds:workspaceMindCatalog(workspace,mindData),subscriptions:paperScope&&subscriptionData?.revision===workspace.revision?list(subscriptionData.subscriptions):undefined,liveActivities:liveActivity.items(),executionMode,asOf:new Date().toISOString()}).cards.find(card=>card.profileId===selected):null;
-    return {page:value.page,title:primary,scopeName,scopeLoaded,scopeIdentityMarkup:companion?renderLifeStage(companion,{view:'portrait'}):'',scopeStatus:byId(workspace?.investmentProfiles,selected)?.status==='ARCHIVED'?'보관됨':companion?.liveActivity?mindActivityModel(companion.liveActivity).status:companion?.label||'',scopeAutomationMarkup:companion&&['overview','operations'].includes(active)?renderMindNodeEdit(companion)+renderActionMenu({id:'mind-identity-actions',label:'마인드 작업',content:renderMindAutomationEntry({...companion,profileId:selected,name:profileName(selected),executionMode,automaticScopeSupported:!automaticScopeIssue(savedMind(selected)?.manifest),strategyScope:savedMind(selected)?.manifest?.data.strategyPlan?.scope?.universe,eventStream:!!companion.paperActivity||!!companion.liveActivity||isEventAutomationMind(savedMind(selected)?.manifest)})+button('캐릭터 꾸미기','mind-customize',selected)+button('마인드 편집','profile-edit',selected)}):companion?renderMindAutomationEntry({...companion,automaticScopeSupported:!automaticScopeIssue(savedMind(selected)?.manifest),strategyScope:savedMind(selected)?.manifest?.data?.strategyPlan?.scope?.universe,eventStream:!!companion.paperActivity||isEventAutomationMind(savedMind(selected)?.manifest),archived:byId(workspace?.investmentProfiles,selected)?.status==='ARCHIVED'},{className:'button small'}):'',selectedMindId:selected,minds:list(workspace?.investmentProfiles).filter(p=>p.status!=='ARCHIVED'||p.id===selected).map(p=>({id:p.id,name:profileName(p.id),createdLabel:p.createdAt?when(p.createdAt):null})),showMindPicker:value.page==='minds',items,breadcrumbs:[primary,...(value.page==='minds'?[scopeName]:[]),...(value.page==='trade'?[]:[views.find(v=>v[0]===active)?.[1]||''])]};
+    return {page:value.page,title:primary,scopeName,scopeLoaded,paperDecisionResume,scopeIdentityMarkup:companion?renderLifeStage(companion,{view:'portrait'}):'',scopeStatus:byId(workspace?.investmentProfiles,selected)?.status==='ARCHIVED'?'보관됨':companion?.liveActivity?mindActivityModel(companion.liveActivity).status:companion?.label||'',scopeAutomationMarkup:companion&&['overview','operations'].includes(active)?renderMindNodeEdit(companion)+renderActionMenu({id:'mind-identity-actions',label:'마인드 작업',content:renderMindAutomationEntry({...companion,profileId:selected,name:profileName(selected),executionMode,automaticScopeSupported:!automaticScopeIssue(savedMind(selected)?.manifest),strategyScope:savedMind(selected)?.manifest?.data.strategyPlan?.scope?.universe,eventStream:!!companion.paperActivity||!!companion.liveActivity||isEventAutomationMind(savedMind(selected)?.manifest)})+button('캐릭터 꾸미기','mind-customize',selected)+button('마인드 편집','profile-edit',selected)}):companion?renderMindAutomationEntry({...companion,automaticScopeSupported:!automaticScopeIssue(savedMind(selected)?.manifest),strategyScope:savedMind(selected)?.manifest?.data?.strategyPlan?.scope?.universe,eventStream:!!companion.paperActivity||isEventAutomationMind(savedMind(selected)?.manifest),archived:byId(workspace?.investmentProfiles,selected)?.status==='ARCHIVED'},{className:'button small'}):'',selectedMindId:selected,minds:list(workspace?.investmentProfiles).filter(p=>p.status!=='ARCHIVED'||p.id===selected).map(p=>({id:p.id,name:profileName(p.id),createdLabel:p.createdAt?when(p.createdAt):null})),showMindPicker:value.page==='minds',items,breadcrumbs:[primary,...(value.page==='minds'?[scopeName]:[]),...(value.page==='trade'?[]:[views.find(v=>v[0]===active)?.[1]||''])]};
   }
   const savedMind=id=>list(mindData?.minds).find(m=>m.id===id);
   const profileName=id=>{const profile=byId(workspace?.investmentProfiles,id);return profile?.displayName||profile?.name||savedMind(id)?.name||savedMind(id)?.manifest?.data?.name||'공통';};
@@ -644,7 +645,7 @@ export function createStudioController(hooks={},options={}){
       }
       return renderFirstDecision(view)+terminal.render({...view,instrumentUniverse:terminalUniverseModel()});
     };
-    const resume=resumeAttempt&&executionModeOf(routeValue)==='paper'&&(routeValue.page==='home'||routeValue.page==='minds'&&(routeValue.params.get('view')||'overview')==='overview'&&['all',null].includes(routeValue.params.get('profileId')))?resumeTerminalLink(resumeAttempt):'';
+    const resume=resumeAttempt&&executionModeOf(routeValue)==='paper'&&(routeValue.page==='home'||routeValue.page==='minds'&&(routeValue.params.get('view')||'overview')==='overview'&&['all',null].includes(routeValue.params.get('profileId')))?resumeTerminalLink(routeValue):'';
     return notice+resume+({home:()=>home.render(),trade,minds:renderMinds,calendar:calendar.render,library:renderLibrary,settings:renderSettings}[routeValue.page]||trade)();
   }
   function renderFirstDecision(view){
@@ -1655,9 +1656,18 @@ export function createStudioController(hooks={},options={}){
       if(stored?.key===attempt.key)globalThis.localStorage.removeItem(resumeStorageKey);
     }catch{}
   }
-  function resumeTerminalLink({payload}){
-    const route=studioRouteHash(currentRoute(),'trade',{profileId:payload.mindId,instrumentId:payload.instrumentId,timeframe:payload.timeframe,mode:payload.mode,executionMode:'paper'});
-    return '<div class="callout section">'+esc(profileName(payload.mindId)+' · '+getInstrument(payload.instrumentId).symbol)+' <a class="button small" data-studio-route href="'+esc(route)+'">모의 판단 이어보기</a></div>';
+  function resumeTerminalDestination(route){
+    const {mindId,instrumentId,timeframe,mode}=resumeAttempt.payload;
+    const source={page:'trade',params:new URLSearchParams()};
+    return {
+      label:'모의 판단 이어보기',
+      identity:profileName(mindId)+' · '+getInstrument(instrumentId).symbol,
+      href:studioRouteHash(route.page==='trade'?source:route,'trade',{profileId:mindId,instrumentId,timeframe,mode,executionMode:'paper'})
+    };
+  }
+  function resumeTerminalLink(route){
+    const {label,identity,href}=resumeTerminalDestination(route);
+    return '<div class="callout section">'+esc(identity)+' <a class="button small" data-studio-route href="'+esc(href)+'">'+esc(label)+'</a></div>';
   }
   function terminalRunRecovery(attempt){
     if(!attempt)return '';

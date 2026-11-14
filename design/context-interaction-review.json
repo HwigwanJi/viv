@@ -3256,8 +3256,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T00:41:27.317Z",
-      "reason": "재진입 후 같은 모의 판단을 찾아 열고, 상세 조회 실패 뒤에도 같은 기록으로 복귀하는 경로를 검토했다.",
+      "reviewedAt": "2026-11-14T01:54:41.431Z",
+      "reason": "키보드 검색에서 원래 모의 판단, 전체 기록과 안내 경로를 검토했다.",
       "signature": "c5a242c21eed84066040467abc167c1fc95f20f4a8db09a28a6bce25398f23d6",
       "controls": [
         [
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "2e4d61b097199df9cd263800e2eacad005cf576612a1bd0c2ae438f66cf8dd6a",
+      "sourceHash": "56a9c0db9c73f776cff3968e3ac27bbc3ed835d3fb2f69bd8d311a5181e8e994",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3380,8 +3380,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T23:00:47.066Z",
-      "reason": "미확인 손익 검색 후 캘린더 진입을 터치와 키보드에서 확인했다.",
+      "reviewedAt": "2026-11-14T01:54:41.556Z",
+      "reason": "키보드 검색에서 원래 모의 판단, 전체 기록과 안내 경로를 검토했다.",
       "signature": "5a5bd34dc3178b234a62bd27b92be9522cfc0bac2723329cc2a4131fbb7b8563",
       "controls": [
         [
@@ -3401,7 +3401,7 @@
           2
         ]
       ],
-      "sourceHash": "dbd3f6c34f4cb294e6cb0c2367b01e8d9ed1d89d3d980ffab86559ce5a5c0e5f",
+      "sourceHash": "f19b5e4c513c0e4cbb343670d5351f50da8346016d59a3c95ff94a249c01896f",
       "customContainers": []
     },
     {
