@@ -72,6 +72,50 @@ test('VIV worker recovers unavailable app navigation and leaves other requests t
   assert.ok(listeners.push && listeners.notificationclick);
 });
 
+test('worker reconnect keeps the current address until VIV storage responds', async () => {
+  const listeners = {};
+  runInNewContext(notificationWorker, {
+    self: {location: {origin: 'http://localhost'}, addEventListener: (name, listener) => { listeners[name] = listener; }},
+    fetch: async () => new Response(null, {status: 503}),
+    URL, Response, AbortController, setTimeout, clearTimeout
+  });
+  let pending;
+  listeners.fetch({request:{url:'http://localhost/?source=ai',mode:'navigate',method:'GET'},respondWith:r=>{pending=r;}});
+  const html = await (await pending).text();
+  const status = {};
+  let reconnect, reloads = 0, disabled;
+  const button = {
+    addEventListener: (_, fn) => { reconnect = fn; },
+    getAttribute: () => disabled,
+    setAttribute: (_, value) => { disabled = value; },
+    removeAttribute: () => { disabled = undefined; }
+  };
+  let health = new Response(null, {status:503});
+  runInNewContext(html.match(/<script>([^]*?)<\/script>/)[1], {
+    document:{querySelector:selector=>selector==='button'?button:status},
+    location:{pathname:'/',search:'?source=ai',reload(){reloads++;}},
+    fetch: async (url, options) => {
+      assert.equal(options.cache,'no-store');
+      if(url==='/api/status'){
+        assert.equal(options.redirect,'manual');
+        return health;
+      }
+      assert.equal(url,'/?source=ai');
+      return new Response('<script id="viv-app-entry"></script>',{headers:{'Content-Type':'text/html'}});
+    },
+    AbortController, setTimeout, clearTimeout
+  });
+  await reconnect();
+  assert.match(status.textContent,/서버가 아직 준비 중/);
+  health = Response.json({storage:'other'});
+  await reconnect();
+  assert.match(status.textContent,/다른 서비스나 설치 주소/);
+  assert.equal(reloads,0);
+  health = Response.json({storage:'server'});
+  await reconnect();
+  assert.equal(reloads,1);
+});
+
 function setup(fetch, resources = [], {install = false} = {}) {
   const events = {}, attributes = new Map(), status = {hidden: true}, message = {}, fileStatus = {hidden: true};
   const button = {

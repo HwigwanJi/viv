@@ -223,8 +223,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T03:36:35.468Z",
-      "reason": "Browser verified the recovery help destination and preservation of the current tab.",
+      "reviewedAt": "2026-11-14T12:08:07.077Z",
+      "reason": "서버 상태가 준비될 때까지 복구 화면을 유지하고 같은 판단 주소와 캘린더 날짜로 돌아오는 동선을 확인했다.",
       "signature": "f214c51500e047047aff964e5a50839ccdc7af081940eeeb11f06cab44c7c97a",
       "controls": [
         [
@@ -240,7 +240,7 @@
           1
         ]
       ],
-      "sourceHash": "b4fd4ba48267cf08628fbcac0f847ffb7fce14f841a50d9d684a00921a257aac",
+      "sourceHash": "595456eea0bd85c5797bf929ff9ee4c936a6fd684155e0b7c5c190ebea271fff",
       "customContainers": []
     },
     {

@@ -91,7 +91,17 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
         const entry = location.pathname === '/install.html' ? 'viv-install-entry' : 'viv-app-entry';
         if (/^text\\/html\\b/i.test(page.headers.get('Content-Type') || '') &&
             (await page.text()).includes('id="' + entry + '"')) {
-          location.reload();
+          const health = await fetch('/api/status', {
+            cache: 'no-store', mode: 'same-origin', redirect: 'manual', signal: controller.signal
+          });
+          if (health.ok && /^application\\/json\\b/i.test(health.headers.get('Content-Type') || '') &&
+              (await health.json())?.storage === 'server') {
+            location.reload();
+          } else {
+            status.textContent = health.ok || health.type === 'opaqueredirect'
+              ? '이 주소에서 VIV 서버 상태를 확인할 수 없어요. 다른 서비스나 설치 주소인지 확인하세요.'
+              : 'VIV 서버가 아직 준비 중일 수 있어요. 잠시 뒤 다시 연결을 누르세요.';
+          }
           return;
         }
         status.textContent = '이 주소에서 VIV 화면을 확인할 수 없어요. PC에서 확인한 VIV 설치 주소와 비교하세요.';
