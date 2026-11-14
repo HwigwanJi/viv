@@ -3256,9 +3256,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T02:07:40.236Z",
-      "reason": "첫 판단에서 관측 기간·준비·기록 상세와 원래 실습 복귀를 기존 버튼으로 확인했다.",
-      "signature": "c5a242c21eed84066040467abc167c1fc95f20f4a8db09a28a6bce25398f23d6",
+      "reviewedAt": "2026-11-14T02:14:28.919Z",
+      "reason": "Review first decision observation due time, same decision return on read error, and preserved review and record routes.",
+      "signature": "932dd4c09993b62954639db49fe872150132dbd55610dfd04484a0b1817429e7",
       "controls": [
         [
           "data-auto-action",
@@ -3354,7 +3354,7 @@
         ],
         [
           "helper:button(",
-          188
+          189
         ],
         [
           "helper:renderActionMenu(",
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "33b64643c066164ad9ebeb4176fea9b17c863432626500490dc36b2164eeff34",
+      "sourceHash": "eebaf5b4c57b3635b515d9cac64479d41581bdb109f5696512e8fafc9e2849d8",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
