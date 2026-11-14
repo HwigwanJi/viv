@@ -110,6 +110,9 @@ test('worker reconnect keeps the current address until VIV storage responds', as
   health = Response.json({storage:'other'});
   await reconnect();
   assert.match(status.textContent,/다른 서비스나 설치 주소/);
+  health = new Response(null, {status:403});
+  await reconnect();
+  assert.match(status.textContent,/접근이 거부됐어요/);
   assert.equal(reloads,0);
   health = Response.json({storage:'server'});
   await reconnect();

@@ -83,8 +83,10 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
       const page = await fetch(location.pathname + location.search, {
         cache: 'no-store', mode: 'same-origin', redirect: 'error', signal: controller.signal
       });
-      if (page.status === 401 || page.status === 403) {
-        status.textContent = ${privateOrigin?"'접근이 거부됐어요. 휴대폰의 Tailscale 로그인과 접속 권한을 확인하세요.'":"'접근이 거부됐어요. 현재 주소의 접속 권한을 확인하세요.'"};
+      const denied = response => response.status === 401 || response.status === 403;
+      const accessDenied = ${privateOrigin?"'접근이 거부됐어요. 휴대폰의 Tailscale 로그인과 접속 권한을 확인하세요.'":"'접근이 거부됐어요. 현재 주소의 접속 권한을 확인하세요.'"};
+      if (denied(page)) {
+        status.textContent = accessDenied;
         return;
       }
       if (page.ok) {
@@ -94,7 +96,9 @@ const connectionHelp=(gatewayUnavailable,privateOrigin)=>`<!doctype html>
           const health = await fetch('/api/status', {
             cache: 'no-store', mode: 'same-origin', redirect: 'manual', signal: controller.signal
           });
-          if (health.ok && /^application\\/json\\b/i.test(health.headers.get('Content-Type') || '') &&
+          if (denied(health)) {
+            status.textContent = accessDenied;
+          } else if (health.ok && /^application\\/json\\b/i.test(health.headers.get('Content-Type') || '') &&
               (await health.json())?.storage === 'server') {
             location.reload();
           } else {
