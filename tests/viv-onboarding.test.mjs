@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {buildInvestmentStatus} from '../server/investment-read-model.mjs';
 import assert from 'node:assert/strict';
 import {handleMcp} from '../server/mcp.mjs';
 import {disabledExternalKnowledge,marketKnowledgeHash,selectMarketKnowledge} from '../dist/domain/market-knowledge.mjs';
@@ -345,4 +346,24 @@ test('explicit JEV access rejection opens key recovery and unknown outcomes keep
   assert.equal(providerError.action.action,'records');
   const marketAuth=terminalErrorRecovery({code:'MARKET_UNAVAILABLE',diagnostic:{httpStatus:401}});
   assert.equal(marketAuth.category,'CONNECTION');
+});
+
+
+test('briefing keeps the decision and the exact paper fill state separate',()=>{
+  const now='2026-11-14T05:00:00.000Z';
+  const run={id:'mind-run-example',profileId:'paper-mind',experimentType:'FORWARD_PAPER',decisionAt:now,
+    status:'PAPER_REVIEW_READY',decision:{action:'buy'},execution:{status:'WAITING_EXECUTION_DATA'}};
+  const fill={runId:run.id};
+  const read=(status,ledger)=>{
+    const workspace={revision:1,investmentProfiles:[{id:run.profileId,name:'Paper mind'}],
+      mindRuns:[{...run,execution:{status}}],mindPositions:[{kind:'PAPER_ACCOUNT',profileId:run.profileId,ledger}]};
+    const [row]=buildInvestmentStatus({workspace},{now}).recentDecisions;
+    assert.equal(row.action,'buy');
+    assert.equal(row.status,'PAPER_REVIEW_READY');
+    assert.equal(row.executionStatus,status);
+    return row.fillCount;
+  };
+  assert.equal(read('WAITING_EXECUTION_DATA',[]),0);
+  assert.equal(read('FILLED',[fill]),1);
+  assert.equal(read('FILLED',[]),null);
 });

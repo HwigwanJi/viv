@@ -53,6 +53,10 @@ function cursorDecode(value) {
   } catch (error) { if (error instanceof TradingRecordsError) throw error; throw new TradingRecordsError('TRADING_CURSOR_INVALID', '첫 페이지부터 다시 조회하세요.'); }
 }
 
+export function savedMindRunFills(workspace,run){
+  return list(workspace.mindPositions).flatMap(account=>account.profileId===run.profileId?list(account.ledger).filter(fill=>fill.runId===run.id):[]);
+}
+
 /** Thin owner-scoped projection. The authenticated workspace is supplied by the
  * caller; all filters precede stable revision-bound cursor pagination. */
 export function buildTradingRecords(workspace, query = {}, {now=workspace?.updatedAt??new Date().toISOString()} = {}) {

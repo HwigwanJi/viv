@@ -3257,8 +3257,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T04:48:11.719Z",
-      "reason": "첫 모의 체결 후 같은 판단 상세와 캘린더 날짜로 이어지는 경로 확인.",
+      "reviewedAt": "2026-11-14T05:07:48.719Z",
+      "reason": "응답이 끊긴 모의 체결을 같은 판단 원장에서 재조회하고 확인 불가를 표시한다.",
       "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "16992f390ae11eb33c5c1898a6155dff7e0bbb0e227528acb279b952e0024b35",
+      "sourceHash": "18d0a5c38d478e8d68140c123388f7755a11468de975b74e0e2244018857c5a7",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

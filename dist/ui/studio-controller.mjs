@@ -1262,12 +1262,12 @@ export function createStudioController(hooks={},options={}){
       form('투자 기록 초기화','workspace-reset',scope+'<div class="full actions">'+retry+'</div><input type="hidden" name="previewHash" value="'+esc(preview.previewHash)+'">'+field('확인 문구 · 전체 삭제','confirmation','','text','required pattern="전체 삭제" autocomplete="off"')+'<p class="tiny full">위 삭제 항목의 기록이 영구 삭제됩니다.</p>','','영구 삭제');
     }catch(problem){if(current())hooks.open?.('투자 기록 초기화','<p class="empty error-text wrap-anywhere" role="alert">'+esc(problem.message)+'</p>',retry);}
   }
-  async function openDecision(id){
+  async function openDecision(id,{checkingExecution=false}={}){
     const recoveredAttempt=[...terminalAttempts.values()].find(attempt=>attempt.status==='saved'&&attempt.runId===id);
     const dialogToken=openRecordLoading('결정 상세');
     const current=()=>!disposed&&dialogIsCurrent(dialogToken);
     const showReadError=(message,retry=true)=>{
-      if(current())hooks.open?.('결정 상세','<p class="empty error-text" role="alert">'+esc(message)+'</p>',retry?button('이 판단 다시 조회','decision',id):'');
+      if(current())hooks.open?.('결정 상세','<p class="empty error-text" role="alert">'+(checkingExecution?'모의 체결 저장 여부를 아직 확인하지 못했습니다. ':'')+esc(message)+'</p>',retry?button('이 판단 다시 조회','decision',id,checkingExecution?'data-checking-execution':''):'');
     };
     let value;
     const signal=AbortSignal.timeout(8000);
@@ -1335,7 +1335,8 @@ export function createStudioController(hooks={},options={}){
       const nextTrade=(paperRecord&&paperDecisionLessonReturnLink(route))||(starter&&r.instrumentId===PAPER_DECISION_INSTRUMENT&&decisionTimeframe===PAPER_DECISION_TIMEFRAME&&
         currentRoute().page!=='trade'&&workspace.investmentProfiles.some(profile=>profile.id===r.profileId&&profile.status!=='ARCHIVED')
         ?'<a class="button small" href="'+esc(studioRouteHash(route,'trade',{executionMode:'paper',firstDecision:'1',profileId:r.profileId,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME,...(report?{returnTo:report}:{})}))+'" data-studio-route>이 마인드의 모의 트레이딩 열기</a>':'');
-      hooks.open?.('결정 상세',`${paperRecord?'<p role="status" class="tiny muted">저장된 모의 판단</p>':''}${savedDecisionContext(r,d,v)}${paperExecution}${observationNext}<div class="studio-decision-summary">${terminalTooltipContent([v],{showPinHint:false,showOutcome:!paperRecord})}</div>${basis}${trendBasis}${recordLink}${calendarLink}${nextTrade}${terminalModelMeasures(v)}<section class="spaced"><h3>${providerUsed?'JEV 입력':'실행 입력'}</h3>${philosophy?'<h4>투자 철학</h4><p>'+esc(philosophy)+'</p>':''}${principleDetails}${row(providerUsed?'전송 개인 기억':'연결 기억',`${list(state.approvedMemory||state.approvedPersonalMemory).length}개`)}${row('개인 투자 자료',`${list(state.macroAndNews||state.approvedMarketContexts).length}개`)}${row('공용 투자 자료',`${list(state.externalKnowledge).length}개`)}${externalKnowledgeEvidence(state)}${strategyEvaluationMarkup(r.strategyEvaluation||state.strategyEvaluation,pinnedManifest?.data.strategyPlan?.graph||state.strategyPlan?.graph)}${v.authority&&v.authority!=='JEV_FINAL'&&v.decisionMethod?.measureKind!=='CONFIDENCE'?row(v.decisionMethod?.measureKind==='VOTE'?'최다 투표 비중':'계산 강도',v.decisionMethod?.measureKind==='VOTE'?pct(v.strength):num(v.strength,3)):''}${raw(state.effectiveWeights,'실제 적용한 원칙 가중치')}${r.rawResponse||r.jevResponse?raw(answers,'JEV 원판단과 확률 분포'):''}</section><section class="spaced"><h3>체결·경험</h3>${paperRecord?'':executionStatusRow+executionReason}${table(['방향','수량','체결가','수수료'],(fillsUnconfirmed?[]:list(d.fills)).map(f=>[esc(f.side),num(f.quantity,8),money(f.fillPrice,f.quoteCurrency||v.quoteCurrency),money(f.fee,f.quoteCurrency||v.quoteCurrency)]),fillsUnconfirmed?'이 판단의 체결 내역을 아직 확인하지 못했습니다.':'이 결정에 연결된 체결이 없습니다.')}<div class="actions spaced">${list(d.experiences).map(e=>button('경험 · '+when(e.occurredAt),'experience',e.id)).join('')}${r.outcomeType==='TRADE_PROPOSED'?(migratedLegacyOrder(r)?button('현재 마인드 운용','mind-operations',migratedLegacyOrder(r)):button('모의 주문 검토','order-review',id)):''}${r.status==='PAPER_REVIEW_READY'||r.execution?.status==='PAPER_REVIEW_READY'?button('모의 체결 검토','mind-order-review',id):''}${terminalExecutionRetryable(r)&&!needsObservationBasis?button('모의 실행 다시 시도','mind-order-review',id):''}${showObservationNext?'':observationAction}${id.startsWith('mind-run-')&&canCompareNews?button('JEV 뉴스 입력 비교','news-create',id):''}${showObservationNext?'':observationBasisAction}</div></section>${raw({versions:d.versions,reproducibility:d.reproducibility},'적용 버전·출처·입력 해시')}${raw(r.rawRequest||r.jevRequest,r.jevCalled===false?'실행 입력':'실제 JEV 요청')}${r.rawResponse||r.jevResponse?raw(r.rawResponse||r.jevResponse,'실제 JEV 응답'):''}${raw(r.risk||r.ruleResults,'실행 조건 검사')}${raw(r.execution,'모의 실행 원본')}`);
+      const executionCheck=checkingExecution&&fillCount===0?'<p role="status" class="tiny muted">실행 응답이 끊겼습니다. 지금 원장에 기록된 체결은 0건이며, 요청이 처리 중일 수 있습니다.</p>':'';
+      hooks.open?.('결정 상세',`${executionCheck}${paperRecord?'<p role="status" class="tiny muted">저장된 모의 판단</p>':''}${savedDecisionContext(r,d,v)}${paperExecution}${observationNext}<div class="studio-decision-summary">${terminalTooltipContent([v],{showPinHint:false,showOutcome:!paperRecord})}</div>${basis}${trendBasis}${recordLink}${calendarLink}${nextTrade}${terminalModelMeasures(v)}<section class="spaced"><h3>${providerUsed?'JEV 입력':'실행 입력'}</h3>${philosophy?'<h4>투자 철학</h4><p>'+esc(philosophy)+'</p>':''}${principleDetails}${row(providerUsed?'전송 개인 기억':'연결 기억',`${list(state.approvedMemory||state.approvedPersonalMemory).length}개`)}${row('개인 투자 자료',`${list(state.macroAndNews||state.approvedMarketContexts).length}개`)}${row('공용 투자 자료',`${list(state.externalKnowledge).length}개`)}${externalKnowledgeEvidence(state)}${strategyEvaluationMarkup(r.strategyEvaluation||state.strategyEvaluation,pinnedManifest?.data.strategyPlan?.graph||state.strategyPlan?.graph)}${v.authority&&v.authority!=='JEV_FINAL'&&v.decisionMethod?.measureKind!=='CONFIDENCE'?row(v.decisionMethod?.measureKind==='VOTE'?'최다 투표 비중':'계산 강도',v.decisionMethod?.measureKind==='VOTE'?pct(v.strength):num(v.strength,3)):''}${raw(state.effectiveWeights,'실제 적용한 원칙 가중치')}${r.rawResponse||r.jevResponse?raw(answers,'JEV 원판단과 확률 분포'):''}</section><section class="spaced"><h3>체결·경험</h3>${paperRecord?'':executionStatusRow+executionReason}${table(['방향','수량','체결가','수수료'],(fillsUnconfirmed?[]:list(d.fills)).map(f=>[esc(f.side),num(f.quantity,8),money(f.fillPrice,f.quoteCurrency||v.quoteCurrency),money(f.fee,f.quoteCurrency||v.quoteCurrency)]),fillsUnconfirmed?'이 판단의 체결 내역을 아직 확인하지 못했습니다.':'이 결정에 연결된 체결이 없습니다.')}<div class="actions spaced">${list(d.experiences).map(e=>button('경험 · '+when(e.occurredAt),'experience',e.id)).join('')}${r.outcomeType==='TRADE_PROPOSED'?(migratedLegacyOrder(r)?button('현재 마인드 운용','mind-operations',migratedLegacyOrder(r)):button('모의 주문 검토','order-review',id)):''}${!['FILLED','PARTIALLY_FILLED'].includes(executionStatus)&&(r.status==='PAPER_REVIEW_READY'||executionStatus==='PAPER_REVIEW_READY')?button('모의 체결 검토','mind-order-review',id):''}${terminalExecutionRetryable(r)&&!needsObservationBasis?button('모의 실행 다시 시도','mind-order-review',id):''}${showObservationNext?'':observationAction}${id.startsWith('mind-run-')&&canCompareNews?button('JEV 뉴스 입력 비교','news-create',id):''}${showObservationNext?'':observationBasisAction}</div></section>${raw({versions:d.versions,reproducibility:d.reproducibility},'적용 버전·출처·입력 해시')}${raw(r.rawRequest||r.jevRequest,r.jevCalled===false?'실행 입력':'실제 JEV 요청')}${r.rawResponse||r.jevResponse?raw(r.rawResponse||r.jevResponse,'실제 JEV 응답'):''}${raw(r.risk||r.ruleResults,'실행 조건 검사')}${raw(r.execution,'모의 실행 원본')}`);
       if(recoveredAttempt){forgetTerminalAttempt(recoveredAttempt);redraw();}
     }catch{showReadError('이 판단 기록의 상세 내용을 표시하지 못했습니다. 잠시 후 다시 조회하세요.');}
   }
@@ -1822,6 +1823,7 @@ export function createStudioController(hooks={},options={}){
       if(disposed||!dialogIsCurrent(dialogToken))return;
       const run=value.decision.run||value.decision.record;
       if(run.id!==id||observationBasis&&run.decision?.action!=='hold')throw new Error('받은 기록이 검토할 판단과 일치하지 않습니다.');
+      if(['FILLED','PARTIALLY_FILLED'].includes(run.execution?.status))return openDecision(id);
       const hold=run.decision?.action==='hold';
       const summary=hold?'저장하면 후속 관측에 사용할 시세와 모의 계좌 상태를 기록합니다. 모의 체결은 발생하지 않습니다.':'저장된 결정과 계좌를 대조하고 새 실행 가격·위험·비용 조건을 확인한 뒤 모의 원장에 체결합니다.';
       const save=button(hold?'후속 관측 기준 저장':'모의 체결 실행',hold?'mind-observation-basis-save':'mind-order-execute',id,busy?'disabled':'','primary');
@@ -1973,7 +1975,7 @@ export function createStudioController(hooks={},options={}){
       if(action==='profile-edit'||action==='profile-new')return profileForm(id);
       if(action==='mind-customize')return mindAppearanceForm(id);
       if(action.startsWith('news-'))return await newsComparisons.click(action,id,node);
-      if(action==='decision')return await openDecision(id);
+      if(action==='decision')return await openDecision(id,{checkingExecution:node.hasAttribute('data-checking-execution')});
       if(action==='experience')return await openExperience(id);
       if(action==='candidate')return openCandidate(id);
       if(action==='terminal-failure-download'){
@@ -1994,8 +1996,14 @@ export function createStudioController(hooks={},options={}){
       if(action==='mind-order-review')return await openMindOrderReview(id,{observationBasis:node.hasAttribute('data-observation-basis')});
       if(action==='mind-order-execute'||action==='mind-observation-basis-save'){
         const token=hooks.getDialogToken?.();
-        const value=await mutate('',{runId:id},'/api/workspace/terminal/execute');
         const current=()=>!disposed&&dialogIsCurrent(token);
+        let value;
+        try{value=await mutate('',{runId:id},'/api/workspace/terminal/execute');}
+        catch(problem){
+          if(action!=='mind-order-execute'||problem.serverResponse&&problem.status<500&&problem.code!=='IN_PROGRESS')throw problem;
+          if(current())await openDecision(id,{checkingExecution:true});
+          return;
+        }
         const status=value.execution?.status;
         if(status==='WAITING_EXECUTION_DATA'){
           hooks.toast?.(value.execution.reason||'새 실행 시세를 기다리고 있습니다.');
