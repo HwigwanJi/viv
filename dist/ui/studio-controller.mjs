@@ -385,6 +385,8 @@ export function createStudioController(hooks={},options={}){
   const terminalNow=options.nowMs||Date.now,terminalCacheTtlMs=30000;
   const endpoints={terminal:'/api/workspace/terminal',minds:'/api/workspace/minds',mindForms:'/api/workspace/mind-forms',mindExport:'/api/workspace/minds/export',mindImport:'/api/workspace/mind-documents',mindClassify:'/api/workspace/mind-documents/classify',mindApply:'/api/workspace/mind-documents/publish',terminalEvaluate:'/api/workspace/terminal/evaluate',...options.endpoints};
   const terminalAttempts=new Map();
+  const resumeStorageKey='viv-paper-decision-resume-v1';
+  let resumeAttempt=null;
   let workspace=null,marketInfo=null,status=null,mindData=null,error='',loading=true,busy=false,formSaving=false,root=null,started=false,terminalData=null,terminalLoading=false,terminalError='',terminalFailure=null,terminalGeneration=0,terminalAbort=null,route=parseStudioRoute(''),poll=null,lastTerminalKey='',forms=[],formsProfileId='',formEditor=null,search='',recordPage=0,requestKeys=new Map(),recordsData=null,recordsLoading=false,recordsError='',recordsGeneration=0,recordsAbort=null,lastRecordsKey='',searchTimer=null,recordFieldFocus=null,searchDraft=null;
   let connectionLoading=false,connectionError='',connectionMessage='';
   const connectionOpenGroups={};
@@ -500,7 +502,14 @@ export function createStudioController(hooks={},options={}){
   }
   function acceptWorkspace(value){
     if(Number.isSafeInteger(value?.revision)&&Number.isSafeInteger(workspace?.revision)&&value.revision<workspace.revision)return false;
-    workspace=value;return true;
+    const changedWorkspace=workspace?.createdAt!==value?.createdAt;
+    workspace=value;
+    if(changedWorkspace){
+      terminalAttempts.clear();
+      resumeAttempt=null;
+      if(workspace)restoreTerminalAttempt();
+    }
+    return true;
   }
   async function refreshPanels({quiet=false,revisionChanged=false,skipSubscriptions=false}={}){
     if(disposed)return;
@@ -529,10 +538,10 @@ export function createStudioController(hooks={},options={}){
       return workspace;
     }catch(problem){if(token===coreReadGeneration&&!disposed){loading=false;if(!quiet){error=problem.message;redraw();}}throw problem;}
   }
-  async function mutate(type,payload={},path='/api/workspace/actions',{onCommitted,onRequest,expectedRevision=workspace?.revision,newAttempt=false}={}){
+  async function mutate(type,payload={},path='/api/workspace/actions',{onCommitted,onRequest,expectedRevision=workspace?.revision,newAttempt=false,retryKey}={}){
     if(executionModeOf(currentRoute())==='live'&&!sharedWorkspaceWrite(type,path))throw new Error('모의 운용 작업은 모의 보기에서 진행하세요. 실전 운용은 마인드의 운용 관리에서 확인하세요.');
     if(busy||!workspace)throw new Error('현재 저장을 마친 뒤 다시 실행하세요.');
-    coreReadGeneration++;busy=true;error='';redraw();const fingerprint=JSON.stringify({path,type,payload}),key=(!newAttempt&&requestKeys.get(fingerprint))||crypto.randomUUID();requestKeys.set(fingerprint,key);onRequest?.(key);
+    coreReadGeneration++;busy=true;error='';redraw();const fingerprint=JSON.stringify({path,type,payload}),key=retryKey||(!newAttempt&&requestKeys.get(fingerprint))||crypto.randomUUID();requestKeys.set(fingerprint,key);onRequest?.(key);
     try{const body=path==='/api/workspace/actions'?{type,payload,idempotencyKey:key,expectedRevision}:{...payload,idempotencyKey:key,expectedRevision},value=await (['/api/workspace/accounts/budget','/api/workspace/accounts/allocate'].includes(path)?submitPaperFunding(request,path,body):request(path,body));try{onCommitted?.(value);}catch{}const refreshQuantUsage=path.startsWith('/api/workspace/mind-documents');if(refreshQuantUsage)quantLibrary.invalidate();requestKeys.delete(fingerprint);if(value.workspace)acceptWorkspace(value.workspace);else try{await refresh({quiet:true,coreOnly:true,skipSubscriptions:path.startsWith('/api/workspace/mind-subscriptions/')||path.startsWith('/api/workspace/paper-adaptation/')});}catch(problem){error='저장 완료 · 최신 화면 조회 실패. '+problem.message+' 새로고침으로 저장 상태를 확인하세요.';}if(['/api/workspace/accounts/budget','/api/workspace/accounts/allocate'].includes(path)){eventPaperBatch.invalidate();await eventPaperBatch.load({force:true});}if(refreshQuantUsage){try{if(value.workspace)setMindCatalog(await request(endpoints.minds));await Promise.all([quantLibrary.load(),loadMindLibrary({force:true})]);}catch(problem){error='저장 완료 · 검토 목록 조회 실패. '+problem.message;}}if(path.startsWith('/api/workspace/mind-subscriptions/'))await loadMindSubscriptions({force:true,quiet:true});return value;}
     catch(problem){if(problem.serverResponse===true&&(path==='/api/workspace/market-captures/collect'&&problem.code||path===endpoints.terminalEvaluate&&problem.recovery?.category==='JEV_AUTH'))requestKeys.delete(fingerprint);try{await refresh({quiet:true,coreOnly:true});}catch{}throw problem;}
     finally{busy=false;redraw();}
@@ -584,6 +593,8 @@ export function createStudioController(hooks={},options={}){
   async function loadTerminal({force=false}={}){
     if(!workspace||currentRoute().page!=='trade')return;
     const query=terminalQuery(),key=query.toString();
+    const attempt=terminalAttempts.get(key);
+    if(attempt?.status==='restore')void checkTerminalAttempt(attempt);
     const revision=workspace.revision,age=terminalNow()-terminalReadAt;
     if(!force&&lastTerminalKey===key&&(terminalLoading&&terminalRequestRevision===revision||terminalData&&Number.isSafeInteger(terminalReadRevision)&&terminalReadRevision===revision&&age>=0&&age<terminalCacheTtlMs))return;
     terminalAbort?.abort();terminalAbort=new AbortController();const token=++terminalGeneration;lastTerminalKey=key;terminalRequestRevision=revision;terminalReadRevision=null;terminalReadAt=0;terminalLoading=true;terminalError='';terminalData=null;redraw();
@@ -633,7 +644,8 @@ export function createStudioController(hooks={},options={}){
       }
       return renderFirstDecision(view)+terminal.render({...view,instrumentUniverse:terminalUniverseModel()});
     };
-    return notice+({home:()=>home.render(),trade,minds:renderMinds,calendar:calendar.render,library:renderLibrary,settings:renderSettings}[routeValue.page]||trade)();
+    const resume=resumeAttempt&&executionModeOf(routeValue)==='paper'&&(routeValue.page==='home'||routeValue.page==='minds'&&(routeValue.params.get('view')||'overview')==='overview'&&['all',null].includes(routeValue.params.get('profileId')))?resumeTerminalLink(resumeAttempt):'';
+    return notice+resume+({home:()=>home.render(),trade,minds:renderMinds,calendar:calendar.render,library:renderLibrary,settings:renderSettings}[routeValue.page]||trade)();
   }
   function renderFirstDecision(view){
     const current=currentRoute();
@@ -1235,6 +1247,7 @@ export function createStudioController(hooks={},options={}){
     }catch(problem){if(current())hooks.open?.('투자 기록 초기화','<p class="empty error-text wrap-anywhere" role="alert">'+esc(problem.message)+'</p>',retry);}
   }
   async function openDecision(id){
+    const recoveredAttempt=[...terminalAttempts.values()].find(attempt=>attempt.status==='saved'&&attempt.runId===id);
     const dialogToken=openRecordLoading('결정 상세');
     const current=()=>!disposed&&dialogIsCurrent(dialogToken);
     const showReadError=(message,retry=true)=>{
@@ -1294,6 +1307,7 @@ export function createStudioController(hooks={},options={}){
         currentRoute().page!=='trade'&&workspace.investmentProfiles.some(profile=>profile.id===r.profileId&&profile.status!=='ARCHIVED')
         ?'<a class="button small" href="'+esc(studioRouteHash(route,'trade',{executionMode:'paper',firstDecision:'1',profileId:r.profileId,instrumentId:PAPER_DECISION_INSTRUMENT,timeframe:PAPER_DECISION_TIMEFRAME,...(report?{returnTo:report}:{})}))+'" data-studio-route>이 마인드의 모의 트레이딩 열기</a>':'');
       hooks.open?.('결정 상세',`${paperRecord?'<p role="status" class="tiny muted">저장된 모의 판단</p>':''}${savedDecisionContext(r,d,v)}${paperExecution}<div class="studio-decision-summary">${terminalTooltipContent([v],{showPinHint:false,showOutcome:!paperRecord})}</div>${basis}${trendBasis}${recordLink}${nextTrade}${terminalModelMeasures(v)}<section class="spaced"><h3>${providerUsed?'JEV 입력':'실행 입력'}</h3>${philosophy?'<h4>투자 철학</h4><p>'+esc(philosophy)+'</p>':''}${principleDetails}${row(providerUsed?'전송 개인 기억':'연결 기억',`${list(state.approvedMemory||state.approvedPersonalMemory).length}개`)}${row('개인 투자 자료',`${list(state.macroAndNews||state.approvedMarketContexts).length}개`)}${row('공용 투자 자료',`${list(state.externalKnowledge).length}개`)}${externalKnowledgeEvidence(state)}${strategyEvaluationMarkup(r.strategyEvaluation||state.strategyEvaluation,pinnedManifest?.data.strategyPlan?.graph||state.strategyPlan?.graph)}${v.authority&&v.authority!=='JEV_FINAL'&&v.decisionMethod?.measureKind!=='CONFIDENCE'?row(v.decisionMethod?.measureKind==='VOTE'?'최다 투표 비중':'계산 강도',v.decisionMethod?.measureKind==='VOTE'?pct(v.strength):num(v.strength,3)):''}${raw(state.effectiveWeights,'실제 적용한 원칙 가중치')}${r.rawResponse||r.jevResponse?raw(answers,'JEV 원판단과 확률 분포'):''}</section><section class="spaced"><h3>체결·경험</h3>${paperRecord?'':executionStatusRow+executionReason}${table(['방향','수량','체결가','수수료'],(fillsUnconfirmed?[]:list(d.fills)).map(f=>[esc(f.side),num(f.quantity,8),money(f.fillPrice,f.quoteCurrency||v.quoteCurrency),money(f.fee,f.quoteCurrency||v.quoteCurrency)]),fillsUnconfirmed?'이 판단의 체결 내역을 아직 확인하지 못했습니다.':'이 결정에 연결된 체결이 없습니다.')}<div class="actions spaced">${list(d.experiences).map(e=>button('경험 · '+when(e.occurredAt),'experience',e.id)).join('')}${r.outcomeType==='TRADE_PROPOSED'?(migratedLegacyOrder(r)?button('현재 마인드 운용','mind-operations',migratedLegacyOrder(r)):button('모의 주문 검토','order-review',id)):''}${r.status==='PAPER_REVIEW_READY'||r.execution?.status==='PAPER_REVIEW_READY'?button('모의 체결 검토','mind-order-review',id):''}${terminalExecutionRetryable(r)&&!needsObservationBasis?button('모의 실행 다시 시도','mind-order-review',id):''}${id.startsWith('mind-run-')?button('후속 관측 상태 보기','mind-observation',id)+(canCompareNews?button('JEV 뉴스 입력 비교','news-create',id):''):''}${needsObservationBasis?button('후속 관측 기준 검토','mind-order-review',id,'data-observation-basis'):''}</div></section>${raw({versions:d.versions,reproducibility:d.reproducibility},'적용 버전·출처·입력 해시')}${raw(r.rawRequest||r.jevRequest,r.jevCalled===false?'실행 입력':'실제 JEV 요청')}${r.rawResponse||r.jevResponse?raw(r.rawResponse||r.jevResponse,'실제 JEV 응답'):''}${raw(r.risk||r.ruleResults,'실행 조건 검사')}${raw(r.execution,'모의 실행 원본')}`);
+      if(recoveredAttempt){forgetTerminalAttempt(recoveredAttempt);redraw();}
     }catch{showReadError('이 판단 기록의 상세 내용을 표시하지 못했습니다. 잠시 후 다시 조회하세요.');}
   }
   function openKnowledge(id){if(list(mindData?.documents).some(d=>d.id===id||(d.document||d).id===id))return documentDetail(id);if(byId(workspace.experiences,id))return openExperience(id);if(byId(workspace.memoryCandidates,id))return openCandidate(id);hooks.toast?.('연결된 경험과 학습 후보를 다시 조회하세요.');}
@@ -1613,11 +1627,43 @@ export function createStudioController(hooks={},options={}){
       default: return;
     }
   }
+  function restoreTerminalAttempt(){
+    try{
+      const saved=JSON.parse(globalThis.localStorage?.getItem(resumeStorageKey)||'null');
+      const payload=saved?.payload;
+      if(saved?.workspaceAt!==workspace.createdAt||!payload||!byId(workspace.investmentProfiles,payload.mindId)||
+        !/^[a-f0-9-]{36}$/i.test(saved.key)||payload.executionMode!=='paper'||payload.mode!=='live'||
+        !getInstrument(payload.instrumentId).timeframes.includes(payload.timeframe)||
+        !/^[a-f0-9]{64}$/.test(payload.expectedPolicyHash)||!Number.isFinite(Date.parse(payload.expectedMarketAsOf)))return;
+      const {instrumentId,timeframe,mindId,mode,executionMode,expectedPolicyHash,expectedMarketAsOf}=payload;
+      const scope=new URLSearchParams({instrumentId,timeframe,profileId:mindId,mode,executionMode}).toString();
+      resumeAttempt={key:saved.key,scope,payload:{mindId,instrumentId,timeframe,mode,executionMode,expectedPolicyHash,expectedMarketAsOf},status:'restore'};
+      terminalAttempts.set(scope,resumeAttempt);
+    }catch{}
+  }
+  function rememberTerminalAttempt(attempt){
+    terminalAttempts.set(attempt.scope,attempt);
+    resumeAttempt=attempt;
+    try{globalThis.localStorage?.setItem(resumeStorageKey,JSON.stringify({key:attempt.key,payload:attempt.payload,workspaceAt:workspace.createdAt}));}catch{}
+  }
+  function forgetTerminalAttempt(attempt){
+    if(!attempt||terminalAttempts.get(attempt.scope)?.key!==attempt.key)return;
+    terminalAttempts.delete(attempt.scope);
+    if(resumeAttempt?.key===attempt.key)resumeAttempt=null;
+    try{
+      const stored=JSON.parse(globalThis.localStorage?.getItem(resumeStorageKey)||'null');
+      if(stored?.key===attempt.key)globalThis.localStorage.removeItem(resumeStorageKey);
+    }catch{}
+  }
+  function resumeTerminalLink({payload}){
+    const route=studioRouteHash(currentRoute(),'trade',{profileId:payload.mindId,instrumentId:payload.instrumentId,timeframe:payload.timeframe,mode:payload.mode,executionMode:'paper'});
+    return '<div class="callout section">'+esc(profileName(payload.mindId)+' · '+getInstrument(payload.instrumentId).symbol)+' <a class="button small" data-studio-route href="'+esc(route)+'">모의 판단 이어보기</a></div>';
+  }
   function terminalRunRecovery(attempt){
     if(!attempt)return '';
-    const {status,runId}=attempt;
+    const {runId}=attempt,status=attempt.status==='restore'?'checking':attempt.status;
     const message={checking:'모의 판단의 저장 여부를 확인 중입니다.',pending:'서버에서 이 모의 판단을 처리 중입니다.',unavailable:'저장 여부를 확인할 수 없습니다. 연결이 돌아오면 다시 확인하세요.',missing:'아직 저장된 판단을 찾지 못했습니다. 같은 요청으로 다시 실행하거나 저장 여부를 확인할 수 있습니다.',saved:'모의 판단이 저장됐습니다.',failed:'판단을 완료하지 못했습니다. 저장된 요청 기록에서 이유를 확인할 수 있습니다.'}[status];
-    const actions=status==='saved'?button('저장된 판단 열기','terminal-attempt-open',runId,'','primary'):status==='failed'?button('요청 기록 확인','terminal-attempt-failure',attempt.eventId):status==='checking'?'':button('저장 여부 다시 확인','terminal-attempt-check')+(status==='missing'?button('같은 요청 다시 실행','terminal-attempt-retry','','','primary'):'');
+    const actions=status==='saved'?button('저장된 판단 열기','terminal-attempt-open',runId,'','primary'):status==='failed'?button('요청 기록 확인','terminal-attempt-failure',attempt.eventId):status==='checking'?'':button('저장 여부 다시 확인','terminal-attempt-check')+(status==='missing'?button('같은 요청 다시 실행','terminal-attempt-retry','','','primary')+button('그만 확인하기','terminal-attempt-dismiss'):'');
     return '<div class="terminal-run-requirement" data-terminal-run-recovery><span role="status" tabindex="-1">'+message+'</span>'+actions+'</div>';
   }
   async function checkTerminalAttempt(attempt){
@@ -1642,7 +1688,7 @@ export function createStudioController(hooks={},options={}){
     if(busy||attempt&&attempt.status!=='missing')return;
     const dialogToken=hooks.getDialogToken?.();
     const payload=attempt?.payload??{mindId:profileId,instrumentId:instrument.id,timeframe,mode,executionMode:'paper',expectedPolicyHash:policyHash,expectedMarketAsOf:marketAsOf};
-    let key;
+    let submitted;
     try{
       if(group){
         const cursor=group.cursorAt;
@@ -1653,8 +1699,15 @@ export function createStudioController(hooks={},options={}){
         await loadTerminal({force:true});
         return;
       }
-      const result=await mutate('',payload,endpoints.terminalEvaluate,{onRequest:value=>{key=value;}});
-      terminalAttempts.delete(scope);
+      const result=await mutate('',payload,endpoints.terminalEvaluate,{retryKey:attempt?.key,onRequest:key=>{
+        submitted={key,payload,scope,status:'checking'};
+        rememberTerminalAttempt(submitted);
+      }});
+      if(!result.run?.id?.startsWith('mind-run-')){
+        await checkTerminalAttempt(submitted);
+        return;
+      }
+      Object.assign(submitted,{status:'saved',runId:result.run.id});
       terminalFailure=null;
       if(disposed)return;
       if(!dialogIsCurrent(dialogToken)){
@@ -1664,13 +1717,11 @@ export function createStudioController(hooks={},options={}){
       await Promise.all([loadTerminal({force:true}),openDecision(result.run.id)]);
     }catch(problem){
       const authRejected=problem.recovery?.category==='JEV_AUTH';
-      if(key&&(!problem.serverResponse||problem.code==='IN_PROGRESS'||problem.status>=500&&!problem.providerFailureEventId&&!problem.terminalReadiness)){
-        const recovery={key,payload,scope};
-        terminalAttempts.set(scope,recovery);
-        await checkTerminalAttempt(recovery);
+      if(submitted&&(!problem.serverResponse||problem.code==='IN_PROGRESS'||problem.status>=500&&!problem.providerFailureEventId&&!problem.terminalReadiness)){
+        await checkTerminalAttempt(submitted);
         return;
       }
-      terminalAttempts.delete(scope);
+      forgetTerminalAttempt(submitted);
       if(problem.providerFailureEventId&&(authRejected||problem.recovery?.action?.retryPolicy==='INSPECT_EXISTING_ATTEMPT')){
         terminalFailure={profileId,instrumentId:instrument.id,timeframe,marketAsOf,policyHash,eventId:problem.providerFailureEventId,recovery:problem.recovery};
       }
@@ -1759,8 +1810,6 @@ export function createStudioController(hooks={},options={}){
         const scope=terminalQuery().toString(),attempt=terminalAttempts.get(scope);
         if(!attempt||busy)return;
         if(action==='terminal-attempt-open'&&attempt.status==='saved'&&id===attempt.runId){
-          terminalAttempts.delete(scope);
-          redraw();
           return openDecision(id);
         }
         if(action==='terminal-attempt-failure'&&attempt.status==='failed'&&id===attempt.eventId){
@@ -1768,11 +1817,12 @@ export function createStudioController(hooks={},options={}){
           await refresh({quiet:true,coreOnly:true});
           if(disposed||!dialogIsCurrent(token)||currentRoute().page!=='trade'||terminalQuery().toString()!==scope)return;
           terminalFailureEvent(id);
-          terminalAttempts.delete(scope);
+          forgetTerminalAttempt(attempt);
           redraw();
           return openTerminalFailure(id);
         }
         if(action==='terminal-attempt-retry'&&attempt.status==='missing')return runSelected();
+        if(action==='terminal-attempt-dismiss'&&attempt.status==='missing'){forgetTerminalAttempt(attempt);redraw();return;}
         if(action==='terminal-attempt-check'&&['pending','missing','unavailable'].includes(attempt.status)){
           const focused=root?.ownerDocument.activeElement===node;
           await checkTerminalAttempt(attempt);
@@ -2118,7 +2168,7 @@ export function createStudioController(hooks={},options={}){
   }
   function recoveryDialogClose(event){if(event.target.matches?.('#detail-dialog')){catalogPickerCleanup?.();catalogPickerCleanup=null;recoveryGeneration++;recoveryData=null;const restore=universeImportReturn,importer=event.target.querySelector?.('[data-studio-form="sector-import"]');if(restore&&importer?.dataset.studioId===restore.mindId&&restore.routeKey===studioRouteHash(currentRoute(),currentRoute().page)){universeImportReturn=null;return openUniverseEditor(restore.mindId,restore.draft,restore.searches).catch(problem=>hooks.toast?.(problem.message));}universeImportReturn=null;}}
   async function routeChanged(value){catalogPickerCleanup?.();catalogPickerCleanup=null;if(automationFocus&&(value.page!=='minds'||value.params.get('view')!=='operations'||value.params.get('profileId')!==automationFocus||executionModeOf(value)!=='paper'))automationFocus=null;if(automationIntent&&(value.page!=='minds'||value.params.get('view')!=='operations'||value.params.get('profileId')!==automationIntent.mindId||executionModeOf(value)!=='paper'))automationIntent=null;recoveryGeneration++;recoveryData=null;universeImportReturn=null;route=value;await Promise.all([calendar.load(),home.load(),loadLiveActivity(),loadEventPaperBatch()]);if(subscriptionMindId!==mindSubscriptionScope(value))clearMindSubscriptions();if(value.page==='trade')await Promise.all([loadTerminal(),terminalUniverse.load()]);if(isRecordsRoute(value))await loadRecords();else{lastRecordsKey='';clearTimeout(searchTimer);recordFieldFocus=null;searchDraft=null;}await library.load();await quantLibrary.load();await loadMindLibrary();await loadKnowledgePinTitles();await loadCapabilities();await loadCaptureStatus();await brokers.load();await Promise.all([automatedTrading.load(),eventPaper.load(),loadLiveActivity(),loadPaperActivity()]);await completeLiveAutomationEntry();await loadMindSubscriptions();await loadCompanionValuations();completeAutomationEntry();await loadMemoryView();await simulations.routeChanged();}
-  async function start(){if(started)return;started=true;loading=true;library.start();quantLibrary.start();simulations.start();if(typeof document!=='undefined'){activityPreviews=installMindActivityPreviews(document);document.addEventListener('click',click);document.addEventListener('submit',submit);document.addEventListener('change',change);document.addEventListener('input',input);document.addEventListener('compositionend',input);document.addEventListener('toggle',capabilityToggle,true);document.addEventListener('close',recoveryDialogClose,true);document.addEventListener('keydown',recoveryDialogKeydown);document.addEventListener('focusin',mindActionFocusChanged);}const results=await Promise.allSettled([readCore('/api/workspace?view=studio'),readCore('/api/status'),readCore(endpoints.minds)]);if(results[0].status==='fulfilled'){workspace=results[0].value.workspace;marketInfo=results[0].value.market;}else error=results[0].reason.message;if(results[1].status==='fulfilled')status=results[1].value;if(results[2].status==='fulfilled')setMindCatalog(results[2].value);else error=results[2].reason.message;loading=false;redraw();if(workspace){await Promise.all([calendar.load(),home.load(),loadLiveActivity(),loadEventPaperBatch()]);await Promise.all([loadTerminal(),currentRoute().page==='trade'?terminalUniverse.load():Promise.resolve()]);await loadRecords();await library.load();await quantLibrary.load();await loadMindLibrary();await loadKnowledgePinTitles();await loadCapabilities();await loadCaptureStatus();await brokers.load();await Promise.all([automatedTrading.load(),eventPaper.load(),loadLiveActivity(),loadPaperActivity()]);await completeLiveAutomationEntry();await loadMindSubscriptions();await loadCompanionValuations();await loadMemoryView();await simulations.load();}poll=setInterval(()=>{if(!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'){const route=currentRoute(),liveOperation=route.page==='minds'&&executionModeOf(route)==='live'&&['overview','operations'].includes(route.params.get('view'))&&route.params.get('profileId')&&route.params.get('profileId')!=='all';return (liveOperation?loadLiveActivity({force:true}):refresh({quiet:true})).catch(()=>{});}},30000);poll.unref?.();companionValuationPoll=setInterval(()=>{if(!disposed&&!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'&&eventPaper.handles())return eventPaper.load({maxAgeMs:5000}).catch(()=>{});if(!disposed&&!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'&&eventPaperBatchView())return Promise.allSettled([loadEventPaperBatch({maxAgeMs:5000}),companionValuationView()?loadCompanionValuations({maxAgeMs:20000}):Promise.resolve()]);if(!disposed&&!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'&&liveActivityView())return loadLiveActivity({maxAgeMs:5000}).catch(()=>{});if(!disposed&&!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'&&companionValuationView())return loadCompanionValuations({maxAgeMs:20000}).catch(()=>{});},5000);companionValuationPoll.unref?.();}
+  async function start(){if(started)return;started=true;loading=true;library.start();quantLibrary.start();simulations.start();if(typeof document!=='undefined'){activityPreviews=installMindActivityPreviews(document);document.addEventListener('click',click);document.addEventListener('submit',submit);document.addEventListener('change',change);document.addEventListener('input',input);document.addEventListener('compositionend',input);document.addEventListener('toggle',capabilityToggle,true);document.addEventListener('close',recoveryDialogClose,true);document.addEventListener('keydown',recoveryDialogKeydown);document.addEventListener('focusin',mindActionFocusChanged);}const results=await Promise.allSettled([readCore('/api/workspace?view=studio'),readCore('/api/status'),readCore(endpoints.minds)]);if(results[0].status==='fulfilled'){acceptWorkspace(results[0].value.workspace);marketInfo=results[0].value.market;}else error=results[0].reason.message;if(results[1].status==='fulfilled')status=results[1].value;if(results[2].status==='fulfilled')setMindCatalog(results[2].value);else error=results[2].reason.message;loading=false;redraw();if(workspace){await Promise.all([calendar.load(),home.load(),loadLiveActivity(),loadEventPaperBatch()]);await Promise.all([loadTerminal(),currentRoute().page==='trade'?terminalUniverse.load():Promise.resolve()]);await loadRecords();await library.load();await quantLibrary.load();await loadMindLibrary();await loadKnowledgePinTitles();await loadCapabilities();await loadCaptureStatus();await brokers.load();await Promise.all([automatedTrading.load(),eventPaper.load(),loadLiveActivity(),loadPaperActivity()]);await completeLiveAutomationEntry();await loadMindSubscriptions();await loadCompanionValuations();await loadMemoryView();await simulations.load();}poll=setInterval(()=>{if(!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'){const route=currentRoute(),liveOperation=route.page==='minds'&&executionModeOf(route)==='live'&&['overview','operations'].includes(route.params.get('view'))&&route.params.get('profileId')&&route.params.get('profileId')!=='all';return (liveOperation?loadLiveActivity({force:true}):refresh({quiet:true})).catch(()=>{});}},30000);poll.unref?.();companionValuationPoll=setInterval(()=>{if(!disposed&&!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'&&eventPaper.handles())return eventPaper.load({maxAgeMs:5000}).catch(()=>{});if(!disposed&&!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'&&eventPaperBatchView())return Promise.allSettled([loadEventPaperBatch({maxAgeMs:5000}),companionValuationView()?loadCompanionValuations({maxAgeMs:20000}):Promise.resolve()]);if(!disposed&&!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'&&liveActivityView())return loadLiveActivity({maxAgeMs:5000}).catch(()=>{});if(!disposed&&!busy&&typeof document!=='undefined'&&document.visibilityState==='visible'&&companionValuationView())return loadCompanionValuations({maxAgeMs:20000}).catch(()=>{});},5000);companionValuationPoll.unref?.();}
   function destroy(){disposed=true;calendar.destroy();mindHudRuntime.destroy();mindGameRuntime.destroy();eventPaperBatch.destroy();paperActivity.destroy();liveActivity.destroy();activityPreviews?.destroy();liveAutomationIntent=null;coreReadGeneration++;automatedTrading.destroy();eventPaper.destroy();terminalUniverse.dispose();catalogPickerCleanup?.();catalogPickerCleanup=null;automationIntent=null;automationFocus=null;clearInterval(poll);clearInterval(companionValuationPoll);clearTimeout(searchTimer);terminalAbort?.abort();recordsAbort?.abort();mindLibraryAbort?.abort();mindLibraryGeneration++;subscriptionAbort?.abort();valuationAbort?.abort();companionValuationGeneration++;companionValuationAbort?.abort();memoryAbort?.abort();valuationGeneration++;memoryGeneration++;terminalGeneration++;recordsGeneration++;captureGeneration++;subscriptionGeneration++;recoveryGeneration++;home.destroy();library.destroy();quantLibrary.destroy();simulations.destroy();unmount();if(typeof document!=='undefined'){document.removeEventListener('click',click);document.removeEventListener('submit',submit);document.removeEventListener('change',change);document.removeEventListener('input',input);document.removeEventListener('compositionend',input);document.removeEventListener('toggle',capabilityToggle,true);document.removeEventListener('close',recoveryDialogClose,true);document.removeEventListener('keydown',recoveryDialogKeydown);document.removeEventListener('focusin',mindActionFocusChanged);mindActionFocus=null;}}
   return {render,navigation,mount,unmount,start,destroy,refresh,routeChanged,openDecision,openDocument:documentDetail,openResearch:library.detail,openStrategyDraft,request,state:()=>({workspace,status,loading,busy,formSaving,error,terminalData,terminalError,terminalLoading,terminalFailure,recordsData,recordsError,recordsLoading,mindLibraryData,mindLibraryLoading,mindLibraryError,captureData,captureLoading,captureCollecting,captureStatusError,captureActionError,subscriptionData,subscriptionLoading,subscriptionError,valuationData,valuationLoading,valuationError,memoryData,memoryLoading,memoryError}),terminal,library,quantLibrary,simulations,home};
 }

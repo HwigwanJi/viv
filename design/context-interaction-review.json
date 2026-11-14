@@ -3256,9 +3256,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T00:14:45.408Z",
-      "reason": "격리 브라우저에서 모의 판단의 응답이 끊긴 뒤 저장 확인, 같은 결과 열기, 저장 전 연결 실패를 검토했다.",
-      "signature": "a7a2533c143ec242265a41fc42d55c929f7e95d1a417e217c126f7dd9cad0071",
+      "reviewedAt": "2026-11-14T00:41:27.317Z",
+      "reason": "재진입 후 같은 모의 판단을 찾아 열고, 상세 조회 실패 뒤에도 같은 기록으로 복귀하는 경로를 검토했다.",
+      "signature": "c5a242c21eed84066040467abc167c1fc95f20f4a8db09a28a6bce25398f23d6",
       "controls": [
         [
           "data-auto-action",
@@ -3330,7 +3330,7 @@
         ],
         [
           "element:a",
-          40
+          41
         ],
         [
           "element:button",
@@ -3354,7 +3354,7 @@
         ],
         [
           "helper:button(",
-          187
+          188
         ],
         [
           "helper:renderActionMenu(",
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "a4f50ae3a2b291f334ae3e26a2eade37c62e57a4ca9be543651f00ba9f002d76",
+      "sourceHash": "2e4d61b097199df9cd263800e2eacad005cf576612a1bd0c2ae438f66cf8dd6a",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
