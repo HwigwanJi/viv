@@ -4,7 +4,7 @@
   "inputs": [
     {
       "path": "dist/app.mjs",
-      "sha256": "d5b2280b6ec265b315653231679256f40af463dc33a9aaf7ad4b9d817c483c46"
+      "sha256": "3ac316d526c209792cdc5f8c553dab8598bd74b8820cea5040af76c483ef2bae"
     },
     {
       "path": "dist/index.html",
@@ -60,7 +60,7 @@
     },
     {
       "path": "dist/ui/app-notifications.mjs",
-      "sha256": "693c36235e81df9433b39fb4240368cb0f9e8f28dc7a34d19b6eafc421868189"
+      "sha256": "b1e440206c625773b1074bd44b8595439a4e280cea7fe245863dd142b202e2d3"
     },
     {
       "path": "dist/ui/automated-trading.mjs",
@@ -336,7 +336,7 @@
     },
     {
       "path": "dist/ui/simulation-playground.mjs",
-      "sha256": "cb2face19d8839bd5a1a0a18d095b7a910e1bd25644d705eb579498f831f90d1"
+      "sha256": "c32b3130b8d319a7960249be18a08fecc6e1b847edd32341cec43e135f746dc9"
     },
     {
       "path": "dist/ui/simulation-pre-provider-recovery.mjs",
@@ -388,7 +388,7 @@
     },
     {
       "path": "dist/ui/studio-controller.mjs",
-      "sha256": "18d0a5c38d478e8d68140c123388f7755a11468de975b74e0e2244018857c5a7"
+      "sha256": "c9a7b2b56bd47b872b8d502433592e4f97909958dffb1735c322315d61b6a565"
     },
     {
       "path": "dist/ui/studio-shell.mjs",
@@ -448,7 +448,11 @@
     },
     {
       "path": "dist/ui/workspace-calendar.mjs",
-      "sha256": "b13698b6edc0890a9f849ea21ed20e3172d173346e626720769ecbe798ee1338"
+      "sha256": "2255ee8ef164f1a6bc7392ba506e0ac959640b321f60283b6be4d284173cc5b9"
+    },
+    {
+      "path": "dist/ui/workspace-mode.mjs",
+      "sha256": "125cfedc61385f6cb8e06647a82bf2041e5c07226fbfa6c70f1a0abf1304fcb4"
     },
     {
       "path": "package-lock.json",
@@ -464,7 +468,7 @@
     },
     {
       "path": "scripts/style-contract.mjs",
-      "sha256": "c3c6dfc5dc548dbfa7c9ede102e0d20889430ecd51581157172685cad3d3c5c0"
+      "sha256": "a225075071a1819c31777784836fc3764a83b6933a2f228808cf698f25ae5986"
     },
     {
       "path": "styles/components/action-menu.css",
@@ -600,7 +604,7 @@
     },
     {
       "path": "styles/components/vibe-workspace.css",
-      "sha256": "5b1bc1323dcaf7b8078bc4fac2a438083814e42b57a16deebea83547b0aaee5f"
+      "sha256": "5fe0f29d81aafb920f9dc2a8b0b51b6cf19243e7679c3cad8f276e6b6b830eb9"
     },
     {
       "path": "styles/components/viv-intro.css",
@@ -699,7 +703,7 @@
       "sha256": "bd029e978cc2240d093548bc4f949794af2ed2afb9d8946ba0c7a073a4b64b71"
     }
   ],
-  "inputHash": "0b0e4f4de80fb56cc4907d452135870b3f9da712d1758f832dac057cbe2aebc5",
+  "inputHash": "452cff5dd21d609b477a1f1d5cce9af5cab52ccdebb3e2050ad4568193c7e359",
   "pages": [
     {
       "path": "dist/index.html",
@@ -786,7 +790,7 @@
     },
     {
       "path": "dist/style.css",
-      "sha256": "acfb76b4fcb9f5e5b1c33288ade1f9e3865fc4c8b1443d9c07e521e92bb3eaef"
+      "sha256": "bd842c065174cb0ad1d456616b2f94fe10d0c508b4c65c8b71d3c344f42afa02"
     },
     {
       "path": "dist/ui/console.css",
@@ -794,7 +798,7 @@
     },
     {
       "path": "dist/ui/trading-terminal.css",
-      "sha256": "ff9ba1f069697f7c566529d354a642ae47fff81e5db249decbda861b221c003c"
+      "sha256": "3f46b046fa6140fc07cb8f9c0d011cdb4dd4f1d8a677584db5c6426180286f94"
     },
     {
       "path": "dist/ui/mind-avatar.css",

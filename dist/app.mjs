@@ -17,6 +17,8 @@ import {installHelpTooltips} from './ui/help-tooltip.mjs';
 import {installActionMenus} from './ui/action-menu.mjs';
 import {renderStudioContext,renderMindWorkspace,studioPrimaryDestination,studioBreadcrumbs,renderStudioBreadcrumbs,createStudioRouteFocus,createStudioDialogNavigation,studioJumpItems,studioJumpResearchItems,renderStudioJump,filterStudioJump,selectStudioJump} from './ui/studio-shell.mjs';
 
+import {createWorkspaceLocations,isPaperWorkspace,workspaceModeLabel,workspaceRoute} from './ui/workspace-mode.mjs';
+
 installHelpTooltips(document);
 installActionMenus(document,{window});
 
@@ -32,6 +34,9 @@ const calendarEntrySelector=link=>'[data-cal-entry="'+link.dataset.calEntry+'"][
 const calendarEntryFallback=section=>section==='active'?($('[data-cal-control="active-toggle"]')||$('#viv-cal-active-title')):$('.viv-cal-day')&&$('.viv-cal-grid [aria-current="date"]');
 const getDialogToken=()=>dialogLifecycleToken+':'+location.hash;
 const primaryLocations=new Map();
+const defaultWorkspace='#minds?profileId=all&executionMode=paper&view=overview';
+const parseWorkspaceRoute=hash=>workspaceRoute(parseStudioRoute,hash);
+const workspaceLocations=createWorkspaceLocations({window,parseRoute:parseWorkspaceRoute,defaultHash:defaultWorkspace});
 const calendarStorage=optionalSessionStorage(),calendarLocationKey='viv.calendar.location';
 const validCalendarDate=(date,month)=>date?.startsWith(month+'-')&&calendarDay(date+'T12:00:00Z')===date;
 try{
@@ -47,11 +52,11 @@ const routeMotion=createRouteMotion();
 matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change',()=>routeMotion.stop());
 const entityMenu=createEntityMenu({onError:toast,navigateHref:navigateToHeading});
 const dialogFocus=createDialogFocusController({getDialog:()=>$('#detail-dialog'),getContainer:()=>$('#app'),getActiveElement:()=>document.activeElement,restoreFallback:restoreCompanionDialogFocus});
-const formDrafts=createFormDrafts(document,{getScope:()=>{const route=parseStudioRoute(location.hash);return [route.page,route.params.get('profileId')||'all',executionModeOf(route)].join('|');}});
+const formDrafts=createFormDrafts(document,{getScope:()=>{const route=parseWorkspaceRoute(location.hash);return [route.page,route.params.get('profileId')||'all',executionModeOf(route)].join('|');}});
 const routeFocus=createStudioRouteFocus({getHash:()=>location.hash,find:selector=>document.querySelector(selector)});
 function navigateToHeading(href,selector='.studio-content h1[tabindex="-1"]'){routeFocus.request(href,selector);if(location.hash===href)routeFocus.flush();else location.hash=href;}
 const dialogNavigation=createStudioDialogNavigation({getDialog:()=>$('#detail-dialog'),cleanup:cleanupStrategyEditor,restore:restoreDialogFocus});
-const studio=createStudioController({render,open:openDialog,openStrategyEditor,close:closeDialog,getDialogToken,toast,navigate,download,getRoute:()=>parseStudioRoute(location.hash)});
+const studio=createStudioController({render,open:openDialog,openStrategyEditor,close:closeDialog,getDialogToken,toast,navigate,switchMode,download,getRoute:()=>parseWorkspaceRoute(location.hash)});
 const appInstall=createAppInstall({window,navigator,open:openDialog,onError:toast,onInstalled:()=>toast('VIV 앱을 설치했습니다.')});
 const appNotifications=createAppNotifications({window,navigator,open:openDialog,getDialogToken,onError:toast,openDocument:id=>studio.openDocument(id)});
 
@@ -59,18 +64,26 @@ function toast(message){const node=$('#toast');node.textContent=message;node.cla
 function download(name,value,type='application/json'){const blob=new Blob([typeof value==='string'?value:JSON.stringify(value,null,2)],{type}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function cleanupStrategyEditor(){strategyEditorCleanup?.();strategyEditorCleanup=null;$('#detail-dialog').classList.remove('strategy-dialog');}
 function setDialogPresentation(dialog,presentation){const docked=presentation==='reader'&&innerWidth>=pixelToken('--ui-reader-breakpoint'),wasDocked=dialog.dataset.readerDocked==='true';if(dialog.open&&wasDocked!==docked)dialog.close();dialog.dataset.presentation=presentation;dialog.dataset.readerDocked=String(docked);document.documentElement.dataset.readerOpen=String(docked);if(!dialog.open){if(docked)dialog.show();else dialog.showModal();}}
-function openDialog(title,body,actions='',{presentation='modal',context=''}={}){dialogLifecycleToken++;cleanupStrategyEditor();entityMenu.close();const dialog=$('#detail-dialog');formDrafts.capture();dialogFocus.beforeOpen({replaceOrigin:presentation==='reader'&&!dialog.contains(document.activeElement)});dialog.innerHTML=`<div class="dialog-head"><div><h2 id="dialog-title">${esc(title)}</h2>${context?`<p class="dialog-context">${esc(context)}</p>`:''}</div><button class="shell-control" data-studio-action="close-dialog" aria-label="닫기">${icon('close')}</button></div><div class="dialog-body">${body}</div>${actions?`<div class="dialog-actions">${actions}</div>`:''}`;layoutDialogForm(dialog);formDrafts.prepare(dialog);setDialogPresentation(dialog,presentation);dialogFocus.focusCurrent();if(presentation==='reader')routeFocus.flush();entityMenu.refresh();}
+function openDialog(title,body,actions='',{presentation='modal',context=''}={}){dialogLifecycleToken++;cleanupStrategyEditor();entityMenu.close();const dialog=$('#detail-dialog');formDrafts.capture();dialogFocus.beforeOpen({replaceOrigin:presentation==='reader'&&!dialog.contains(document.activeElement)});dialog.innerHTML=`<div class="dialog-head"><div><h2 id="dialog-title">${esc(title)}</h2><div>현재 화면 · ${workspaceModeLabel(executionModeOf(parseWorkspaceRoute(location.hash)))}</div>${context?`<p class="dialog-context">${esc(context)}</p>`:''}</div><button class="shell-control" data-studio-action="close-dialog" aria-label="닫기">${icon('close')}</button></div><div class="dialog-body">${body}</div>${actions?`<div class="dialog-actions">${actions}</div>`:''}`;layoutDialogForm(dialog);formDrafts.prepare(dialog);setDialogPresentation(dialog,presentation);dialogFocus.focusCurrent();if(presentation==='reader')routeFocus.flush();entityMenu.refresh();}
 async function openStrategyEditor(options){openDialog(options.readOnly?'판단 경로':'전략 편집','<div data-strategy-editor-root><p class="loading">편집기 불러오는 중…</p></div>');const token=getDialogToken();$('#detail-dialog').classList.add('strategy-dialog');try{const {mountStrategyGraphEditor}=await import('./vendor/strategy-graph-editor.mjs');if(token!==getDialogToken()||!$('#detail-dialog').open)return;strategyEditorCleanup=mountStrategyGraphEditor($('#detail-dialog [data-strategy-editor-root]'),{...options,onClose:closeDialog});return strategyEditorCleanup;}catch(problem){if(token===getDialogToken())openDialog('편집기 연결 오류','<p>'+esc(problem.message)+'</p>');}}
 function restoreDialogFocus(){dialogFocus.restore();}
 function closeDialog(){dialogLifecycleToken++;formDrafts.capture();cleanupStrategyEditor();const dialog=$('#detail-dialog');if(dialog.open){appNotifications.dismiss();dialog.close();document.documentElement.dataset.readerOpen='false';restoreDialogFocus();}}
 function navigate(page,params={}){
   dialogLifecycleToken++;dialogNavigation.beforeRouteChange();closeSidebar();
-  const current=parseStudioRoute(location.hash),hash=studioRouteHash(current,page,params),next=parseStudioRoute(hash);
+  const current=parseWorkspaceRoute(location.hash),hash=studioRouteHash(current,page,params),next=parseStudioRoute(hash);
   if(current.page==='minds'&&next.page==='minds'&&(current.params.get('profileId')||'all')!==(next.params.get('profileId')||'all'))routeFocus.request(hash,'.studio-mind-workspace h1[tabindex="-1"], .studio-content h1[tabindex="-1"]');
   location.hash=hash;
 }
+function switchMode(mode){
+  const route=parseWorkspaceRoute(location.hash);
+  if(executionModeOf(route)===mode)return;
+  const hash=workspaceLocations.forMode(mode);
+  if(hash){location.hash=hash;return;}
+  if(isPaperWorkspace(route))navigate('minds',{profileId:'all',view:'overview',executionMode:mode});
+  else navigate(route.page,{executionMode:mode,notice:null,brokerSetup:null,portfolio:null,returnTo:null});
+}
 const primaryHref=(route,page)=>studioPrimaryDestination(route,page,primaryLocations.get(page),{routeHash:studioRouteHash,primaryRouteHash:studioPrimaryRouteHash});
-function navigatePrimary(page){dialogLifecycleToken++;dialogNavigation.beforeRouteChange();closeSidebar();location.hash=primaryHref(parseStudioRoute(location.hash),page);}
+function navigatePrimary(page){dialogLifecycleToken++;dialogNavigation.beforeRouteChange();closeSidebar();location.hash=primaryHref(parseWorkspaceRoute(location.hash),page);}
 
 let hudRenderPending=false;
 document.addEventListener('mind-hud-settled',()=>{if(hudRenderPending&&!document.querySelector('[data-hud-interacting]')){hudRenderPending=false;render();}});
@@ -85,7 +98,10 @@ function render(){
   const retainedCalendar=sameRoute&&(calendarDate?'[data-cal-date="'+CSS.escape(calendarDate)+'"]':calendarControl?'[data-cal-control="'+CSS.escape(calendarControl)+'"]':active?.dataset?.calEntry?calendarEntrySelector(active):null);
   const activeHud=active?.closest?.('[data-mind-hud]'),hudFocus=sameRoute&&activeHud?{key:activeHud.dataset.hudKey,selector:active.matches('[data-hud-viewport]')?'[data-hud-viewport]':['hudGo','hudSeries','hudPeriod'].find(key=>active.dataset[key]!==undefined)}:null;
   if(hudFocus&&hudFocus.selector!=='[data-hud-viewport]'){const key=hudFocus.selector;hudFocus.selector=key?'[data-'+key.replace(/[A-Z]/g,c=>'-'+c.toLowerCase())+'="'+CSS.escape(document.activeElement.dataset[key])+'"]':null;}
-  const token=++renderGeneration,route=parseStudioRoute(location.hash),navigation=studio.navigation(route),railOnly=['home','minds'].includes(route.page);
+  const token=++renderGeneration,route=parseWorkspaceRoute(location.hash),navigation=studio.navigation(route),railOnly=['home','minds'].includes(route.page);
+  const mode=executionModeOf(route);
+  document.documentElement.dataset.vivMode=mode;
+  workspaceLocations.remember(route);
   const savedLocation=route.params.has('brokerSetup')?studioRouteHash(route,route.page,{brokerSetup:null}):'#'+route.page+(route.params.size?'?'+route.params:'');
   if(route.page==='calendar'&&primaryLocations.get('calendar')!==savedLocation){
     const month=calendarMonth(route.params.get('month')),date=route.params.get('date');
@@ -98,7 +114,7 @@ function render(){
   dialogFocus.beforeRender({sameRoute:document.querySelector('.vibe-shell')?.dataset.chromeKey?.split('|')[0]===location.hash});
   entityMenu.unmount({preserveMenu:true});studio.unmount();
   const mainNavigation=NAV.filter(([id])=>id!=='settings').map(([id,image,label])=>`<a href="${esc(primaryHref(route,id))}" data-nav="${id}"${route.page===id?' aria-current="page"':''}>${icon(image)}<span>${label}</span></a>`).join('');
-  const markup=`<div class="shell studio-shell vibe-shell studio-page-${route.page}${railOnly?' studio-mind-shell':''}${route.page==='home'?' studio-home-shell':''}"><main class="main"><header class="topbar vibe-topbar">${investmentBrandMarkup({href:primaryHref(route,'home')})}<nav class="vibe-navigation" aria-label="주요 메뉴">${mainNavigation}</nav><div class="top-actions">${studio.state().status?.runners?.disabled?'<span class="tiny muted" role="status">자동 주문 중지</span>':''}<button class="studio-jump-trigger" data-studio-jump-open aria-label="화면 찾기" title="화면 찾기 (Ctrl+K)"><svg class="app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg></button>${appNotifications.button()}${renderExecutionModeToggle(executionModeOf(route))}<span class="vibe-tools">${renderActionMenu({id:'workspace-tools',label:'작업 공간 메뉴',compact:true,content:`<a href="${esc(primaryHref(route,'settings'))}" data-nav="settings">설정</a><button class="shell-control" data-shell="theme" aria-label="테마 변경"></button>${route.page==='settings'?appInstall.button():''}`})}</span></div></header>${['library','settings'].includes(route.page)?`<section class="vibe-context" aria-label="${esc(navigation.title)} 메뉴">${renderStudioContext(navigation,route,{parseRoute:parseStudioRoute,routeHash:studioRouteHash})}</section>`:''}<div class="content studio-content ${route.page==='trade'?'studio-trading-content':route.page==='home'?'studio-home-content':''} ${['settings'].includes(route.page)||route.page==='minds'&&route.params.get('view')==='principles'?'studio-reading-content':''}">${renderMindWorkspace(navigation,route,{parseRoute:parseStudioRoute,routeHash:studioRouteHash})}${studio.render(route)}</div><nav class="vibe-mobile-dock" aria-label="모바일 주요 메뉴">${mainNavigation}</nav></main></div>`;
+  const markup=`<div class="shell studio-shell vibe-shell studio-page-${route.page}${railOnly?' studio-mind-shell':''}${route.page==='home'?' studio-home-shell':''}"><main class="main"><header class="topbar vibe-topbar">${investmentBrandMarkup({href:primaryHref(route,'home')})}<nav class="vibe-navigation" aria-label="주요 메뉴">${mainNavigation}</nav><div class="top-actions">${studio.state().status?.runners?.disabled?'<span class="tiny muted" role="status">자동 주문 중지</span>':''}<button class="studio-jump-trigger" data-studio-jump-open aria-label="화면 찾기" title="화면 찾기 (Ctrl+K)"><svg class="app-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg></button>${appNotifications.button()}${renderExecutionModeToggle(mode)}<span class="vibe-tools">${renderActionMenu({id:'workspace-tools',label:'작업 공간 메뉴',compact:true,content:`<a href="${esc(primaryHref(route,'settings'))}" data-nav="settings">설정</a><button class="shell-control" data-shell="theme" aria-label="테마 변경"></button>${route.page==='settings'?appInstall.button():''}`})}</span></div></header><div class="vibe-mode-rail">${workspaceModeLabel(mode)}</div>${['library','settings'].includes(route.page)?`<section class="vibe-context" aria-label="${esc(navigation.title)} 메뉴">${renderStudioContext(navigation,route,{parseRoute:parseStudioRoute,routeHash:studioRouteHash})}</section>`:''}<div class="content studio-content ${route.page==='trade'?'studio-trading-content':route.page==='home'?'studio-home-content':''} ${['settings'].includes(route.page)||route.page==='minds'&&route.params.get('view')==='principles'?'studio-reading-content':''}">${renderMindWorkspace(navigation,route,{parseRoute:parseStudioRoute,routeHash:studioRouteHash})}${studio.render(route)}</div><nav class="vibe-mobile-dock" aria-label="모바일 주요 메뉴">${mainNavigation}</nav></main></div>`;
 
   const chromeKey=location.hash+'|'+Boolean(studio.state().status?.runners?.disabled),shell=$('.vibe-shell');
   if(shell?.dataset.chromeKey===chromeKey){
@@ -175,11 +191,11 @@ function studioJumpEntries(route){
 function refreshStudioJump(){
   const dialog=$('#detail-dialog'),query=dialog.querySelector('[data-studio-jump-query]');if(!dialog.open||!query)return;
   const state=studio.state(),loading=state.loading||jumpRetrying,error=state.workspace?'':state.error;dialog.querySelector('[data-studio-jump-loading]').hidden=!loading;dialog.querySelector('[data-studio-jump-problem]').hidden=!error||loading;dialog.querySelector('[data-studio-jump-error]').textContent=error;dialog.querySelector('[data-studio-jump-retry]').disabled=loading;
-  const entries=studioJumpEntries(parseStudioRoute(location.hash)),key=JSON.stringify(entries),filterOptions={researchLoading:jumpResearch?.loading};if(key===jumpEntriesKey){filterStudioJump(dialog,query.value,filterOptions);return;}jumpEntriesKey=key;
+  const entries=studioJumpEntries(parseWorkspaceRoute(location.hash)),key=JSON.stringify(entries),filterOptions={researchLoading:jumpResearch?.loading};if(key===jumpEntriesKey){filterStudioJump(dialog,query.value,filterOptions);return;}jumpEntriesKey=key;
   const active=dialog.querySelector('[data-studio-jump-item]:focus'),selected=dialog.querySelector('[data-studio-jump-item][aria-selected="true"]'),href=(selected||active)?.getAttribute('href'),results=dialog.querySelector('.studio-jump-results'),scroll=results.scrollTop,next=document.createElement('template');next.innerHTML=renderStudioJump(entries);results.replaceChildren(...next.content.querySelector('.studio-jump-results').childNodes);filterStudioJump(dialog,query.value,filterOptions);results.scrollTop=scroll;
   const replacement=[...results.querySelectorAll('[data-studio-jump-item]')].find(item=>!item.hidden&&item.getAttribute('href')===href),selection=selectStudioJump(dialog,replacement);if(active)query.focus({preventScroll:true});if(document.activeElement===query)selection?.scrollIntoView({block:'nearest'});
 }
-function openStudioJump(){if($('#detail-dialog').open||studio.state().formSaving)return;cancelJumpResearch();const route=parseStudioRoute(location.hash),entries=studioJumpEntries(route);jumpEntriesKey=JSON.stringify(entries);openDialog('빠른 이동',renderStudioJump(entries,{modeLabel:executionModeOf(route)==='live'?'실전':'모의',loading:studio.state().loading||jumpRetrying,error:studio.state().workspace?'':studio.state().error}));filterStudioJump($('#detail-dialog'),'');$('#detail-dialog [data-studio-jump-query]')?.focus();}
+function openStudioJump(){if($('#detail-dialog').open||studio.state().formSaving)return;cancelJumpResearch();const route=parseWorkspaceRoute(location.hash),entries=studioJumpEntries(route);jumpEntriesKey=JSON.stringify(entries);openDialog('빠른 이동',renderStudioJump(entries,{modeLabel:executionModeOf(route)==='live'?'실전':'모의',loading:studio.state().loading||jumpRetrying,error:studio.state().workspace?'':studio.state().error}));filterStudioJump($('#detail-dialog'),'');$('#detail-dialog [data-studio-jump-query]')?.focus();}
 document.addEventListener('click',event=>{if(event.target.closest('[data-studio-jump-open]'))openStudioJump();});
 document.addEventListener('click',async event=>{if(!event.target.closest('[data-studio-jump-retry]')||jumpRetrying)return;jumpRetrying=true;refreshStudioJump();$('#detail-dialog [data-studio-jump-query]')?.focus();try{await studio.refresh({coreOnly:true});}catch{/* refresh preserves the source error for the recovery UI. */}finally{jumpRetrying=false;refreshStudioJump();}});
 document.addEventListener('input',event=>{if(event.target.matches('[data-studio-jump-query]'))searchJumpResearch(event.target,{composing:event.isComposing});});
@@ -248,7 +264,8 @@ $('#detail-dialog').addEventListener('cancel',event=>{
   event.preventDefault();
   if(!studio.state().formSaving)closeDialog();
 });
-document.addEventListener('keydown',event=>{if(event.key==='/'&&!event.metaKey&&!event.ctrlKey&&!event.isComposing&&!event.target.closest('input,textarea,select,[contenteditable="true"]')&&!$('#detail-dialog').open){event.preventDefault();const hash=studioRouteHash(parseStudioRoute(location.hash),'trade');routeFocus.request(hash,'[data-terminal-search]');navigate('trade');queueMicrotask(()=>{studio.terminal.focusInstrumentSearch();routeFocus.flush();});}});
-window.addEventListener('hashchange',()=>{dialogLifecycleToken++;dialogNavigation.beforeRouteChange();routeFocus.routeChanged(location.hash);render();studio.routeChanged(parseStudioRoute(location.hash));appNotifications.routeChanged();});
-const initial=parseStudioRoute(location.hash);if(location.hash!=='#'+initial.page+(initial.params.size?'?'+initial.params:''))history.replaceState(null,'','#'+initial.page+(initial.params.size?'?'+initial.params:''));
+document.addEventListener('keydown',event=>{if(event.key==='/'&&!event.metaKey&&!event.ctrlKey&&!event.isComposing&&!event.target.closest('input,textarea,select,[contenteditable="true"]')&&!$('#detail-dialog').open){event.preventDefault();const hash=studioRouteHash(parseWorkspaceRoute(location.hash),'trade');routeFocus.request(hash,'[data-terminal-search]');navigate('trade');queueMicrotask(()=>{studio.terminal.focusInstrumentSearch();routeFocus.flush();});}});
+window.addEventListener('hashchange',()=>{dialogLifecycleToken++;dialogNavigation.beforeRouteChange();routeFocus.routeChanged(location.hash);render();studio.routeChanged(parseWorkspaceRoute(location.hash));appNotifications.routeChanged();});
+workspaceLocations.restoreOnLaunch();
+const initial=parseWorkspaceRoute(location.hash);if(location.hash!=='#'+initial.page+(initial.params.size?'?'+initial.params:''))history.replaceState(null,'','#'+initial.page+(initial.params.size?'?'+initial.params:''));
 studio.start();render();appNotifications.start();

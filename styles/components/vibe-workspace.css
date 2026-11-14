@@ -35,6 +35,44 @@
 .vibe-shell .execution-view-toggle { @apply inline-flex items-center p-ui-1 gap-0 rounded-ui-full border-0 bg-field; }
 .vibe-shell .execution-view-toggle button { @apply min-h-0 h-ui-9 px-ui-5 py-0 rounded-ui-full border-0 bg-transparent shadow-none text-ui-xs text-secondary; }
 .vibe-shell .execution-view-toggle button[aria-pressed="true"] { @apply bg-surface text-foreground; }
+/* The mode rail stays visible while reading either workspace. */
+.vibe-shell .vibe-topbar {
+  @apply z-40;
+  background: var(--viv-mode-surface);
+}
+:root[data-viv-mode="paper"] {
+  --viv-mode-ink: var(--ds-info);
+  --viv-mode-surface: var(--ds-info-bg);
+}
+:root[data-viv-mode="live"] {
+  --viv-mode-ink: var(--ds-danger);
+  --viv-mode-surface: var(--ds-danger-bg);
+}
+.vibe-shell .vibe-topbar .execution-view-toggle button[aria-pressed="true"] {
+  color: var(--viv-mode-ink);
+  background: var(--viv-mode-surface);
+  font-weight: var(--ds-weight-bold);
+  @apply ring-1 ring-inset ring-current;
+}
+.viv-mode-label {
+  @apply inline-flex items-center gap-ui-2;
+  color: var(--viv-mode-ink);
+  font-weight: var(--ds-weight-bold);
+  white-space: nowrap;
+}
+.viv-mode-label svg {
+  @apply w-ui-5 h-ui-5 shrink-0;
+}
+.vibe-shell .vibe-mode-rail {
+  @apply sticky z-30 flex items-center gap-ui-3 px-ui-8 py-ui-2 border-b-2 border-current;
+  top: var(--vibe-header-height);
+  background: var(--viv-mode-surface);
+  color: var(--viv-mode-ink);
+  font-size: var(--ds-font-size-xs);
+}
+#detail-dialog > .dialog-head .viv-mode-label {
+  font-size: var(--ds-font-size-xs);
+}
 .vibe-tools { @apply relative; }
 .vibe-shell .vibe-tools .ui-action-menu-trigger { @apply flex items-center justify-center w-ui-9 h-ui-9 min-h-0 p-0 rounded-ui-full border-0 bg-transparent shadow-none text-secondary; }
 .vibe-tools .ui-action-menu-panel > .shell-control { @apply w-full justify-start; }

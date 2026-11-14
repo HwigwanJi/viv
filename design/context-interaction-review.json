@@ -11,9 +11,9 @@
         "navigation",
         "readonly"
       ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T09:42:49.002Z",
-      "reason": "캘린더 완료 검색 링크를 키보드로 열면 완료 필터와 실험 이름 입력에 포커스가 전달된다.",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-15",
+      "reason": "상단과 대화상자의 현재 모드 표시, 일반 실행에서 마지막 화면 복원과 명시 링크 우선, 모드 선택 시 이전 위치 이동을 공용 라우트와 연결했다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "b02eb86296596f602daf8b8633afdaa442d2e0de98867690cddc2e859ed17bb8",
+      "sourceHash": "3ac316d526c209792cdc5f8c553dab8598bd74b8820cea5040af76c483ef2bae",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -409,11 +409,11 @@
         "primitive",
         "navigation"
       ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-10T13:44:49.618Z",
-      "reason": "118: 알림 변경 ack와 후속 GET 실패 분리. 오래된 읽음/삭제/복원/승인 동작 방지·복사/내용/닫기 유지. 기존 재조회 버튼으로 복구하고 상세 읽지 않음 선택 보존. 알림함/요청/휴지통/개별 상세/원본 상태 보호와 메뉴 호출부 검토.",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-15",
+      "reason": "알림의 기존 승인 버튼에 실전 운용 문맥을 직접 표시하고 승인 대상과 요청 경로를 보존했다.",
       "signature": "adcf96ec6c68661b79152111486d952681bc41b1d59f8e27b3c150eeed8b124e",
-      "sourceHash": "693c36235e81df9433b39fb4240368cb0f9e8f28dc7a34d19b6eafc421868189",
+      "sourceHash": "b1e440206c625773b1074bd44b8595439a4e280cea7fe245863dd142b202e2d3",
       "matrix": "design/context-action-matrix.json",
       "controls": [
         [
@@ -3256,9 +3256,9 @@
         "primitive",
         "navigation"
       ],
-      "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T10:38:45.000Z",
-      "reason": "모의 체결 검토를 닫거나 기록에서 체결을 실행한 후 동일 판단 상세를 다시 열고 원장 상태를 확인했다.",
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-15",
+      "reason": "기존 모드 버튼과 키보드 초점 복귀를 유지하고 모의 전용 캘린더와 실험실의 라우팅을 정규화했다.",
       "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "260f4a45b6fa1e4c15787f5f3e48ab86f7937adb671c6381874697b82bc55a3b",
+      "sourceHash": "c9a7b2b56bd47b872b8d502433592e4f97909958dffb1735c322315d61b6a565",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3891,6 +3891,18 @@
       ],
       "sourceHash": "c6fcdea904141f11626ceb10c2271ea1837b77a7fc295e737770ea2c455ac893",
       "customContainers": []
+    },
+    {
+      "file": "dist/ui/workspace-mode.mjs",
+      "owners": [
+        "readonly"
+      ],
+      "review": "SOURCE_REVIEWED",
+      "reviewedAt": "2026-11-15",
+      "reason": "장식 아이콘과 현재 모드 텍스트를 렌더링한다. 보이는 모드와 경로를 같은 값에서 가져온다.",
+      "signature": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "sourceHash": "125cfedc61385f6cb8e06647a82bf2041e5c07226fbfa6c70f1a0abf1304fcb4",
+      "controls": []
     }
   ],
   "actionMatrix": "design/context-action-matrix.json",
