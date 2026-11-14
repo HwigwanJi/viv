@@ -12,8 +12,8 @@
         "readonly"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T04:08:58.616Z",
-      "reason": "캘린더 메뉴와 화면 찾기가 같은 마지막 위치로 이동한다. 브라우저에서 실행 모드, 재접속, 터치 및 키보드 조작을 확인한다.",
+      "reviewedAt": "2026-11-14T04:38:08.644Z",
+      "reason": "모의 첫 판단에서 캘린더 날짜로 이동하고 같은 기록으로 돌아가는 조작을 검증합니다.",
       "signature": "0b08a00d019402f9040fdcb82093a8302f4cd4a151f92ab7ca8ad59733ba0bc9",
       "controls": [
         [
@@ -41,7 +41,7 @@
           1
         ]
       ],
-      "sourceHash": "eb5865d40788bbaa8474713d7d7dddc8c099b975e64f29f4dd747c7d9ce599f7",
+      "sourceHash": "d5b2280b6ec265b315653231679256f40af463dc33a9aaf7ad4b9d817c483c46",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
@@ -3257,9 +3257,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T02:49:20.863Z",
-      "reason": "Verified that failed capture status is retried by read-only observation refresh before suggesting any write.",
-      "signature": "45d7a809d89ef02b0bf1172cad740f90ae650f43704105969620ccf18abd6cbb",
+      "reviewedAt": "2026-11-14T04:38:08.754Z",
+      "reason": "모의 첫 판단에서 캘린더 날짜로 이동하고 같은 기록으로 돌아가는 조작을 검증합니다.",
+      "signature": "0e11b76fa4d3f72a8e6ed311510fb1f30181d130345b6554e6bc3a016a09556e",
       "controls": [
         [
           "data-auto-action",
@@ -3331,7 +3331,7 @@
         ],
         [
           "element:a",
-          43
+          44
         ],
         [
           "element:button",
@@ -3366,7 +3366,7 @@
           1
         ]
       ],
-      "sourceHash": "15f8badc91bf8a5bd4f2940148c81830bd167afeae68db01ac2817a1e4ddc42c",
+      "sourceHash": "628c1c08f4745a10e25628bc9197dc5f5da2e074dc6bcf2bb524493e45f8d604",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },

@@ -1,4 +1,4 @@
-import {calendarDay,calendarMonth} from '../dist/system/calendar-date.mjs';
+import {calendarDay,calendarMonth,paperDecisionCalendarTime} from '../dist/system/calendar-date.mjs';
 import {paperDecisionRecordHash} from '../dist/system/paper-decision-links.mjs';
 import {getEventPaperReport} from '../dist/domain/event-paper-execution.mjs';
 import {normalizeOperationWindow,operationWindowState} from '../dist/domain/operation-window.mjs';
@@ -70,8 +70,7 @@ export function buildWorkspaceCalendar(workspace,events,experiments,{month,now,r
     }catch{eventLedgerUnavailable=true;}
   }
   for(const run of workspace.mindRuns??[]){
-    if(run.experimentType!=='FORWARD_PAPER'||run.executionMode==='live'||run.mode==='replay'||run.automation?.portfolioCycle?.phase==='SCREENING'||run.execution?.status==='SCREENING_ONLY')continue;
-    const at=validTime(run.decisionCompletedAt??run.decisionAt);
+    const at=paperDecisionCalendarTime(run);
     if(at&&at<=now)add(at,{kind:'activity',label:run.status==='FAILED'?'모의 판단 실패':'모의 판단 기록',name:name(run.profileId),href:paperDecisionRecordHash(run.id)});
   }
   for(const row of experiments){

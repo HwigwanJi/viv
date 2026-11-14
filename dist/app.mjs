@@ -213,9 +213,10 @@ document.addEventListener('click',event=>{
   const recordRoute=routeHref?.startsWith('#minds?')?parseStudioRoute(routeHref):null;
   const savedDecision=recordRoute?.params.get('view')==='records'&&recordRoute.params.get('kind')==='decisions'&&executionModeOf(recordRoute)==='paper'&&recordRoute.params.get('search');
   const observationCapture=routeLink?.hasAttribute('data-observation-capture');
+  const decisionCalendar=routeLink?.hasAttribute('data-paper-decision-calendar');
   const paperPractice=routeLink?.hasAttribute('data-first-decision-practice');
   const paperReportReturn=routeLink?.hasAttribute('data-paper-report-return');
-  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice||paperReportReturn||savedDecision||observationCapture?routeLink:null);
+  const destination=settingsLink||event.target.closest('[data-studio-jump-item][data-studio-route], [data-broker-paper-home]')||(paperGuide||paperPractice||paperReportReturn||savedDecision||observationCapture||decisionCalendar?routeLink:null);
   if(destination&&isPlainNavigationClick(event)){
     event.preventDefault();
     dialogLifecycleToken++;

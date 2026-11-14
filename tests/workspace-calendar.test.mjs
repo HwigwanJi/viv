@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildWorkspaceCalendar,handleWorkspaceCalendar} from '../server/workspace-calendar.mjs';
-import {calendarDay,moveCalendarMonth} from '../dist/system/calendar-date.mjs';
+import {calendarDay,moveCalendarMonth,paperDecisionCalendarTime} from '../dist/system/calendar-date.mjs';
 import {createWorkspace,dispatchWorkspaceAction} from '../dist/domain/workspace.mjs';
 import {mindAvatarIdentity} from '../dist/ui/mind-avatar.mjs';
 import {createWorkspaceCalendar} from '../dist/ui/workspace-calendar.mjs';
@@ -38,6 +38,20 @@ test('calendar buckets settled paper PnL by Korean date and preserves currencies
   assert.ok(!disabled.days.flatMap(d=>d.entries).some(x=>x.label==='다음 판단 예정'));
   assert.equal(calendarDay('2026-11-11T15:00:00Z'),'2026-11-12');
   assert.equal(moveCalendarMonth('2026-12',1),'2027-01');
+});
+
+test('a paper decision is listed on its Korean completion day',()=>{
+  const run={id:'paper-test',experimentType:'FORWARD_PAPER',
+    decisionAt:'2026-11-14T14:59:59Z',decisionCompletedAt:'2026-11-14T15:00:00Z'};
+  const completion=paperDecisionCalendarTime(run);
+  assert.equal(calendarDay(completion),'2026-11-15');
+  const days=buildWorkspaceCalendar({mindRuns:[run]},[],[],{month:'2026-11',now:'2026-11-14T15:01:00Z'}).days;
+  assert.equal(days[0].date,calendarDay(completion));
+  assert.equal(days[0].entries[0].at,completion);
+  assert.equal(paperDecisionCalendarTime({...run,decisionCompletedAt:'invalid'}),null);
+  for(const fields of [{executionMode:'live'},{mode:'replay'},{execution:{status:'SCREENING_ONLY'}}]){
+    assert.equal(paperDecisionCalendarTime({...run,...fields}),null);
+  }
 });
 
 test('calendar only accepts owner-scoped month reads',async()=>{
