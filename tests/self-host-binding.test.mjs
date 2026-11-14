@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createServer} from 'node:http';
 import {spawnSync} from 'node:child_process';
-import {copyFile,mkdir,mkdtemp,readdir,readFile,rmdir,unlink,writeFile} from 'node:fs/promises';
+import {copyFile,mkdir,mkdtemp,readdir,readFile,rmdir,symlink,unlink,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {basename,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -99,4 +99,25 @@ test('Windows launcher resumes its own folder and leaves the normal resume recei
   assert.ifError(open.error);
   assert.equal(open.status,0,open.stderr);
   assert.equal(open.stdout.trim(),'OPEN '+url);
+});
+
+test('the port check runs from a linked installation folder',async t=>{
+  const project=await mkdtemp(join(tmpdir(),'viv binding '));
+  const real=join(project,'original'),alias=join(project,'installation link');
+  await mkdir(real);
+  const file=join(real,'self-host-binding.mjs');
+  await copyFile(new URL('../scripts/self-host-binding.mjs',import.meta.url),file);
+  await symlink(real,alias,process.platform==='win32'?'junction':'dir');
+  t.after(async()=>{if(process.platform==='win32')await rmdir(alias);else await unlink(alias);await unlink(file);await rmdir(real);await rmdir(project);});
+  const server=createServer();
+  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  try{
+    const {port}=server.address();
+    const result=spawnSync(process.execPath,[join(alias,'self-host-binding.mjs'),String(port),'a'.repeat(32),'fixed'],{encoding:'utf8',timeout:10000});
+    assert.ifError(result.error);
+    assert.equal(result.status,0,result.stderr);
+    assert.equal(JSON.parse(result.stdout).state,'occupied');
+  }finally{
+    await new Promise((resolve,reject)=>server.close(error=>error?reject(error):resolve()));
+  }
 });

@@ -1,4 +1,5 @@
 import {createServer} from 'node:net';
+import {realpathSync} from 'node:fs';
 import {pathToFileURL} from 'node:url';
 
 const loopback=port=>'http://127.0.0.1:'+port;
@@ -32,7 +33,7 @@ export async function selectSelfHostPort(port,setupId,allowFallback){
 
 export const boundMcpUrl=(port,setupId)=>loopback(port)+'/mcp?installation='+setupId;
 
-if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
+if(process.argv[1]&&import.meta.url===pathToFileURL(realpathSync(process.argv[1],{throwIfNoEntry:false})??process.argv[1]).href){
   const [port,setupId,fallback]=process.argv.slice(2);
   console.log(JSON.stringify(await selectSelfHostPort(Number(port),setupId,fallback==='fallback')));
 }
