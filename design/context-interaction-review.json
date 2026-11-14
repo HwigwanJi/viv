@@ -2730,9 +2730,9 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-13T19:03:58.233Z",
-      "reason": "저장 백테스트의 AI 호출 이력과 현재 모의 판단을 실행할 때의 JEV 전송·이용료 안내를 구분한다.",
-      "signature": "dc0d94ae7cf480ce2915278886d8fb2042fa4068faf2828a3702acb34c7bb40a",
+      "reviewedAt": "2026-11-14T07:11:13.490Z",
+      "reason": "완료한 실습의 보고서에서 해당 한국 날짜의 캘린더로 이동하고 같은 보고서를 다시 열었다.",
+      "signature": "fbe7c87a1c58e2c929c87215ff85e276c8197aedad2178d3c65cac9a676116f8",
       "controls": [
         [
           "data-simulation-action",
@@ -2772,7 +2772,7 @@
         ],
         [
           "element:a",
-          2
+          3
         ],
         [
           "element:button",
@@ -2803,7 +2803,7 @@
           2
         ]
       ],
-      "sourceHash": "cb2face19d8839bd5a1a0a18d095b7a910e1bd25644d705eb579498f831f90d1",
+      "sourceHash": "0a73e4d826cca55f66b0d380ebe47a123208009df018d74c3785a7a04c670db3",
       "customContainers": []
     },
     {

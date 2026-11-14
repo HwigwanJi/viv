@@ -2,6 +2,7 @@ import {isMindStrategyPlanActive} from '../domain/mind-strategy-plan.mjs';
 import {graphRequiresJev} from '../domain/strategy-graph.mjs';
 import {JEV_DECISION_DISCLOSURE} from './terminal-workspace-controls.mjs';
 import {PAPER_DECISION_INSTRUMENT,PAPER_DECISION_TIMEFRAME} from '../system/paper-decision-links.mjs';
+import {calendarDay,calendarMonth,simulationCalendarTime} from '../system/calendar-date.mjs';
 import {JEV_EXECUTION_CALL_LIMIT} from '../domain/jev-question.mjs';
 import {preProviderRecoveryCandidate,canPreparePreProviderRecovery,renderPreProviderRecovery} from './simulation-pre-provider-recovery.mjs';
 import {simulationMarketScope,simulationAssetParameters,simulationObservedCosts,simulationEventReturnBasis,eventGraph} from './simulation-asset-scope.mjs';
@@ -336,6 +337,12 @@ export function createSimulationPlayground(hooks={},options={}){
     const savedCallLimit=s.jevBudget?.maximum??s.config.maxJevCalls;
     const runCost=isOpen(s)&&!running&&savedCallLimit>0?'<span class="tiny">AI 호출 상한 '+number(savedCallLimit,0)+'회 · 제공사 요금 적용 가능</span>':'';
     const controls=(fromLearning?button('전략 튜닝으로 돌아가기','learning-back'):comparison?button('비교로 돌아가기','comparison-back'):button('실험 목록','back'))+(s.lineage?.sourceSimulationId?button('원본 실험','open',s.lineage.sourceSimulationId):'')+(reviewing?'':runCost+primary)+renderActionMenu({id:'simulation-report-actions',label:'실험 작업',content:secondary});
+    const completedDate=s.status==='COMPLETED'&&s.config.mode==='MECHANICAL'&&!s.archivedAt&&!s.experiment&&current().params.get('executionMode')!=='live'
+      ?calendarDay(simulationCalendarTime(s.attempt?.completedAt,s.updatedAt)):null;
+    const completedMonth=calendarMonth(completedDate?.slice(0,7));
+    const calendarHref=completedMonth?'#calendar?'+new URLSearchParams({month:completedMonth,date:completedDate,executionMode:'paper'}):null;
+    const calendarLink=calendarHref?'<a class="button small" href="'+esc(calendarHref)+'" data-studio-route data-cal-date="'+completedDate+'">'+
+      (s.attempt?.completedAt?'캘린더에서 완료 날짜 보기':'캘린더에서 결과 날짜 보기')+'</a>':'';
     const practiceMind=active==='overview'&&s.status==='COMPLETED'&&s.config.mode==='MECHANICAL'&&current().params.get('executionMode')!=='live'
       ?minds().find(mind=>mind.id===s.config.mindId):null;
     const currentPolicy=practiceMind?.manifest;
@@ -348,7 +355,7 @@ export function createSimulationPlayground(hooks={},options={}){
       const ai=currentPolicy?(needsJev?'JEV 연결이 필요합니다. '+JEV_DECISION_DISCLOSURE+' ':'JEV 키 없이 계산합니다. '):'AI 조건은 발행 정책에서 확인합니다. ';
       nextPractice='<div class="actions spaced"><a class="button small" href="'+esc(practiceHref)+'" data-studio-route>현재 시세 모의 판단 준비</a><span class="tiny muted">'+esc(policy+'BTC-USDT 확정 시세와 USDT 모의 자금이 필요합니다. '+ai)+'</span></div>';
     }
-    return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls,s.status==='COMPLETED')+(s.status==='COMPLETED'?'<span id="simulation-result-status" class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+'</span><span>'+esc(simulationExecutionBasis(s))+'</span>'+(s.config.mode==='MECHANICAL'?'<span>이 백테스트의 AI 호출 0회</span>':'')+'<span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(id==='overview'&&prepared?'저장한 조건':label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
+    return '<div class="simulation-report-workspace">'+header(simulationDisplayName(s),controls,s.status==='COMPLETED')+(s.status==='COMPLETED'?'<span id="simulation-result-status" class="simulation-complete-status" role="status">완료</span>':runStatus(s))+'<div class="lab-context-line"><span>'+esc(modeLabel(s.config.mode))+' · '+esc(simulationMarketScope(s).label)+'</span><span>'+esc(simulationExecutionBasis(s))+'</span>'+(s.config.mode==='MECHANICAL'?'<span>이 백테스트의 AI 호출 0회</span>':'')+'<span>'+esc(when(s.config.startAt))+' — '+esc(when(s.config.endAt))+'</span></div>'+(calendarLink?'<div class="actions spaced">'+calendarLink+'</div>':'')+nextPractice+(active!=='overview'&&(modelUnavailable(s)||modelPartial(s))?readinessBanner(s):'')+'<nav class="studio-local-tabs" aria-label="시뮬레이션 결과">'+SIMULATION_TABS.map(([id,label])=>button(id==='overview'&&prepared?'저장한 조건':label,'tab',id,'aria-current="'+(active===id?'page':'false')+'"')).join('')+'</nav>'+(active==='overview'?overview(s,reviewing?primary:''):active==='conditions'?conditionsView(s):active==='report'?report(s):records(s))+'</div>';
   }
   function runStatus(s){
     if(s.status!=='ACTION_REQUIRED')return `<div class="simulation-run-status" role="status" aria-live="polite"><strong>${running?'실행 중':s.status==='RUNNING'?'이어서 실행 가능':statusLabel(s.status)}</strong><span>${esc(commandStatus)}</span>${s.lastError?'<span class="error-text">'+esc(s.lastError.message||s.lastError.code)+'</span>':''}</div>`;

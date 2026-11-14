@@ -54,6 +54,21 @@ test('paper record status filters follow the saved execution and flag missing fi
   assert.equal(rows('PAPER_FILL_UNCONFIRMED')[0].executionStatus,'PAPER_FILL_UNCONFIRMED');
 });
 
+test('completed practice opens the saved Korean date in the calendar',async()=>{
+  let simulation={id:'practice',status:'COMPLETED',config:{mindId:'mind-a',name:'실습',mode:'MECHANICAL'},
+    attempt:{completedAt:'2026-11-30T15:00:00.000Z'},updatedAt:'2026-12-02T00:00:00.000Z'};
+  const params=new URLSearchParams('view=simulations&profileId=all&simulationId=practice&executionMode=paper');
+  const app=createSimulationPlayground({getRoute:()=>({page:'minds',params}),request:async()=>({simulation})});
+  await app.load();
+  assert.match(app.render(),/#calendar\?month=2026-12&amp;date=2026-12-01&amp;executionMode=paper[^>]*>캘린더에서 완료 날짜 보기/);
+  simulation={...simulation,attempt:null};
+  await app.load({force:true});
+  assert.match(app.render(),/date=2026-12-02[^>]*>캘린더에서 결과 날짜 보기/);
+  simulation={...simulation,archivedAt:simulation.updatedAt};
+  await app.load({force:true});
+  assert.doesNotMatch(app.render(),/캘린더에서 결과 날짜 보기/);
+});
+
 test('saved keyless practice shows its inputs before the only execute button',async()=>{
   let simulation={
     id:'practice-saved',status:'CREATED',config:{

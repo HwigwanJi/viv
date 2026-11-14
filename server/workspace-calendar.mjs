@@ -1,4 +1,4 @@
-import {calendarDay,calendarMonth,paperDecisionCalendarTime} from '../dist/system/calendar-date.mjs';
+import {calendarDay,calendarMonth,paperDecisionCalendarTime,simulationCalendarTime} from '../dist/system/calendar-date.mjs';
 import {paperDecisionRecordHash} from '../dist/system/paper-decision-links.mjs';
 import {getEventPaperReport} from '../dist/domain/event-paper-execution.mjs';
 import {normalizeOperationWindow,operationWindowState} from '../dist/domain/operation-window.mjs';
@@ -79,7 +79,7 @@ export function buildWorkspaceCalendar(workspace,events,experiments,{month,now,r
     const state=experimentStates.get(row.status);
     if(state)active.push({name:row.name,kind:'experiment',state,progress:row.progress,href,
       ...(['CREATED','READY'].includes(row.status)?{period:row.period}:{})});
-    if(row.status==='COMPLETED')add(row.completedAt??row.updatedAt,{kind:'experiment',label:row.completedAt?'과거 시세 검증 완료':'과거 시세 결과 갱신',name:row.name,href,period:row.period,totalReturn:row.metrics?.totalReturn,returnLabel:row.metricsLabel});
+    if(row.status==='COMPLETED')add(simulationCalendarTime(row.completedAt,row.updatedAt),{kind:'experiment',label:row.completedAt?'과거 시세 검증 완료':'과거 시세 결과 갱신',name:row.name,href,period:row.period,totalReturn:row.metrics?.totalReturn,returnLabel:row.metricsLabel});
   }
   return {month,today:calendarDay(now),asOf:now,active,eventLedgerUnavailable,
     days:[...days.values()].sort((a,b)=>a.date.localeCompare(b.date)).map(day=>({...day,

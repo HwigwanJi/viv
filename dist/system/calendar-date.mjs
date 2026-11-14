@@ -4,6 +4,10 @@ export function calendarDay(value){
   if(value===null||value===undefined||!Number.isFinite(new Date(value).getTime()))return null;
   return koreanDay.format(new Date(value));
 }
+export function simulationCalendarTime(completedAt,updatedAt){
+  const at=completedAt??updatedAt;
+  return typeof at==='string'&&Number.isFinite(Date.parse(at))?at:null;
+}
 export function paperDecisionCalendarTime(run){
   if(run.experimentType!=='FORWARD_PAPER'||run.executionMode==='live'||run.mode==='replay'||
      run.automation?.portfolioCycle?.phase==='SCREENING'||run.execution?.status==='SCREENING_ONLY')return null;
