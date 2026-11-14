@@ -277,6 +277,10 @@ VIV 서버가 꺼져 있으면 **설치했던 VIV 폴더**에서 다음 명령�
 
 **Windows**
 
+원래 설치 폴더에서 **Open VIV.cmd**를 더블클릭하세요. 저장된 포트로 서버를 시작하고 기본 브라우저에서 VIV를 엽니다. 이전 보고서 탭을 새로고침하거나 즐겨찾기한 주소를 다시 열면 같은 기록으로 돌아갑니다. 문제가 생기면 열린 창에서 오류를 확인할 수 있습니다.
+
+터미널에서 서버만 다시 시작하려면 아래 명령을 사용하세요.
+
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-viv.ps1 -Resume
 ```

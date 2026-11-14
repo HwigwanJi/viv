@@ -4,15 +4,22 @@ param(
     [ValidateSet('PC','PCMobile')][string]$Target,
     [ValidateSet('Codex','Claude','Manual')][string]$Client = 'Codex',
     [ValidateRange(1024,65535)][int]$Port,
-    [switch]$Resume
+    [switch]$Resume,
+    [switch]$OpenBrowser
 )
 
 $ErrorActionPreference = 'Stop'
+if ($OpenBrowser -and !$Resume) { throw 'Use -OpenBrowser with -Resume.' }
 if ($Resume) {
     if ($PSBoundParameters.ContainsKey('Port') -or $PSBoundParameters.ContainsKey('Target') -or $PSBoundParameters.ContainsKey('Client')) {
         throw 'Use -Resume by itself to reopen this VIV installation.'
     }
-    & (Join-Path $PSScriptRoot 'setup-self-host.ps1') -Resume
+    $result = & (Join-Path $PSScriptRoot 'setup-self-host.ps1') -Resume
+    if ($OpenBrowser) {
+        Start-Process -FilePath ($result | ConvertFrom-Json).desktopUrl
+    } else {
+        $result
+    }
     return
 }
 if (!$Target) {

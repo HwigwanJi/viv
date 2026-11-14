@@ -4,6 +4,7 @@ design/generated/system-manifest.json text eol=lf
 scripts/check-mind-companion-ui.mjs text eol=lf
 package*.json text eol=lf
 scripts/*.sh text eol=lf
+*.cmd text eol=crlf
 scripts/build-styles.mjs text eol=lf
 styles/** text eol=lf
 dist/*.html text eol=lf

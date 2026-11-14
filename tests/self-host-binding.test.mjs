@@ -77,3 +77,26 @@ test('restoring a DB without its configuration exits before setup creates runtim
     await rmdir(project);
   }
 });
+
+test('Windows launcher resumes its own folder and leaves the normal resume receipt available',{skip:process.platform!=='win32'},async t=>{
+  const project=await mkdtemp(join(tmpdir(),'viv launcher '));
+  const scripts=join(project,'scripts'),launcher=join(project,'Open VIV.cmd');
+  const installer=join(scripts,'install-viv.ps1'),setup=join(scripts,'setup-self-host.ps1');
+  await mkdir(scripts);
+  t.after(async()=>{for(const file of [launcher,installer,setup])await unlink(file);await rmdir(scripts);await rmdir(project);});
+  await copyFile(new URL('../Open%20VIV.cmd',import.meta.url),launcher);
+  await copyFile(new URL('../scripts/install-viv.ps1',import.meta.url),installer);
+  const url='http://127.0.0.1:15280';
+  await writeFile(setup,"param([switch]$Resume)\nif (!$Resume) { throw 'Expected -Resume' }\nfunction global:Start-Process([string]$FilePath) { Write-Output ('OPEN ' + $FilePath) }\n'{\"desktopUrl\":\""+url+"\",\"desktopStatus\":\"reused\"}'\n");
+  const powershell=join(process.env.SystemRoot,'System32','WindowsPowerShell','v1.0','powershell.exe');
+  const common=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File'];
+  const opts={cwd:tmpdir(),encoding:'utf8',timeout:15000};
+  const receipt=spawnSync(powershell,[...common,installer,'-Resume'],opts);
+  assert.ifError(receipt.error);
+  assert.equal(receipt.status,0,receipt.stderr);
+  assert.equal(JSON.parse(receipt.stdout).desktopUrl,url);
+  const open=spawnSync(process.env.ComSpec,['/d','/s','/c','""'+launcher+'""'],{...opts,windowsVerbatimArguments:true});
+  assert.ifError(open.error);
+  assert.equal(open.status,0,open.stderr);
+  assert.equal(open.stdout.trim(),'OPEN '+url);
+});
