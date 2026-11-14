@@ -1841,10 +1841,11 @@ export function createStudioController(hooks={},options={}){
       if(disposed||!dialogIsCurrent(token))return;
       const captureNeeded=['COLLECTION_REQUIRED','WAITING_SETTLEMENT','COOLDOWN'].includes(capture?.status);
       const captureLink=captureNeeded?'<a class="button small primary" href="'+esc(studioRouteHash(route,'settings',{view:'data',executionMode:'paper',resumeObservation:'1',returnTo:paperDecisionRecordHref(id,route)}))+'" data-studio-route data-observation-capture>확정 시세 보관 열기</a>':'';
-      const recovery=captureNeeded?'<p class="tiny muted spaced">OKX BTC-USDT 확정 시세를 보관한 뒤 이 판단의 관측을 이어가세요.</p>'+
+      const captureUnknown=needsSource&&paperBtc&&!capture;
+      const recovery=captureUnknown?'<p class="tiny muted spaced" role="alert">확정 시세 보관 상태를 확인하지 못했습니다. 관측 상태를 다시 조회하세요.</p>':captureNeeded?'<p class="tiny muted spaced">OKX BTC-USDT 확정 시세를 보관한 뒤 이 판단의 관측을 이어가세요.</p>'+
         (capture.canCollect===false?row('다음 수집 가능',esc(when(capture.nextAllowedAt))):''):
         list(value.reasons).map(reason=>'<p class="tiny muted spaced">'+esc(reason.message)+'</p>').join('');
-      const action=captureLink||(value.status==='DATA_REQUIRED'?
+      const action=captureLink||(value.status==='DATA_REQUIRED'&&!captureUnknown?
         button('관측 자료 수집','mind-observe',id,busy?'disabled':''):button('관측 상태 다시 조회','mind-observation',id));
       const result=observation?row('순수익률',pct(observation.metrics?.netReturn))+
         row('동기간 보유 대조',pct(observation.metrics?.benchmarkReturn))+

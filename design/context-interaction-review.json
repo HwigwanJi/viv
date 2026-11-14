@@ -3256,8 +3256,8 @@
         "navigation"
       ],
       "review": "BROWSER_VERIFIED",
-      "reviewedAt": "2026-11-14T02:42:22.293Z",
-      "reason": "Verified exact paper observation recovery, focus steering and retained retry behavior.",
+      "reviewedAt": "2026-11-14T02:49:20.863Z",
+      "reason": "Verified that failed capture status is retried by read-only observation refresh before suggesting any write.",
       "signature": "45d7a809d89ef02b0bf1172cad740f90ae650f43704105969620ccf18abd6cbb",
       "controls": [
         [
@@ -3365,7 +3365,7 @@
           1
         ]
       ],
-      "sourceHash": "a4aad5a556e34f02ce0bd5c6269d77930546c0fecb91402eccf04d3b823dc7de",
+      "sourceHash": "15f8badc91bf8a5bd4f2940148c81830bd167afeae68db01ac2817a1e4ddc42c",
       "matrix": "design/context-action-matrix.json",
       "customContainers": []
     },
